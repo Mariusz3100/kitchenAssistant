@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
+import org.hibernate.Session;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -29,11 +30,14 @@ import org.jsoup.select.Elements;
 
 
 
+
+
 import webscrappers.AuchanWebScrapper;
 import madkit.kernel.Agent;
 import madkit.kernel.AgentAddress;
 import madkit.kernel.Message;
 import madkit.message.StringMessage;
+import mariusz.ambroziak.kassistant.dao.DaoProvider;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.utils.StringHolder;
 
@@ -205,12 +209,12 @@ public class RecipeAgent extends Agent{
 		ArrayList<Produkt> results;
 		results=checkInDb(text);
 
-		if(results.size()<1){
+		if(results==null||results.size()<1){
 			results=adjustForBaseWordForm(text);
 		}
 
 
-		if(results.size()<1){
+		if(results==null||results.size()<1){
 			Produkt x=checkShops(text);
 			if(x!=null)
 				results.add(x);
@@ -223,8 +227,16 @@ public class RecipeAgent extends Agent{
 
 
 	private ArrayList<Produkt> checkInDb(String text) {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<Produkt> retValue=new ArrayList<Produkt>();
+
+		retValue.addAll(
+				DaoProvider.getInstance()
+				.getProduktDao()
+				.getProduktsBySpacedName(text));
+
+
+
+		return retValue;
 	}
 
 

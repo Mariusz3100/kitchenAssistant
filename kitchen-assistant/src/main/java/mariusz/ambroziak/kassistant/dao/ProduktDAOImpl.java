@@ -14,9 +14,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 public class ProduktDAOImpl implements ProduktDAO {
 	private SessionFactory sessionFactory;
-
+	
 	public ProduktDAOImpl(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
+
 	}
 
 	@Override
@@ -43,13 +44,47 @@ public class ProduktDAOImpl implements ProduktDAO {
 
 	@Override
 	@Transactional
-	public Produkt getProduktByURL(String url) {
-		Produkt produkt = (Produkt) sessionFactory.getCurrentSession()
+	public List<Produkt> getProduktsByURL(String url) {
+		@SuppressWarnings("unchecked")
+		List<Produkt> produkt =  sessionFactory.getCurrentSession()
 				.createCriteria(Produkt.class)
 				.add(Restrictions.eq("url", url))
-				.list().get(0);
+				.list();
 		
 		return produkt;
 	}
+
+	
+	
+	@Override
+	@Transactional
+	public void addProdukt(Produkt produkt) {
+		this.sessionFactory.getCurrentSession().save(produkt);
+	}
+
+	@Transactional
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Produkt> getProduktsBySpacedName(String name) {
+		String[] parts=name.split(" ");
+		
+		Criteria crit=sessionFactory.getCurrentSession()
+				.createCriteria(Produkt.class);
+		//crit.add(Restrictions.i));
+		for(String x:parts){
+			crit=crit.add(Restrictions.ilike("nazwa", "%"+x+"%"));
+		}
+//		crit.add(Restrictions.ilike("x", "y"))
+		return crit.list();
+	}
+
+
+//	private ProduktDAO singleton;
+//	
+//	public ProduktDAO getSingleton(){
+//		return singleton;
+//	}
+
+
 
 }

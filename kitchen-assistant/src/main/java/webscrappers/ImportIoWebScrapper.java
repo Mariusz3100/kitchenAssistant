@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import mariusz.ambroziak.kassistant.agents.ClockAgent;
+import mariusz.ambroziak.kassistant.dao.DaoProvider;
+import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.utils.SystemEnv;
 
 import org.json.JSONArray;
@@ -40,7 +42,7 @@ import com.codesnippets4all.json.parsers.JsonParserFactory;
 
 public abstract class ImportIoWebScrapper {
 	 private static final int ENJOY_YOUR_OWN_WAIT_TIME = 500;
-	private static final float ticketsFactor = 0.01f;
+	private static final float ticketsFactor = 0.001f;
 //	DatabaseInterface interfac;
 	 ArrayList<String> detailsToBeSavedList;
 		private float tickets=1;
@@ -95,7 +97,7 @@ public abstract class ImportIoWebScrapper {
 				
 				
 				
-				processProductsUrl(url);
+				getNewUrlsFromFile(url);
 				
 				
 			}
@@ -123,12 +125,12 @@ public abstract class ImportIoWebScrapper {
 			try {
 	
 				if(detailsToBeSavedList.isEmpty()){
-					processProductsUrl(getProductsURL());
+					getNewUrlsFromFile(getProductsURL());
 	
 				}else{
 					String detailsUrl=detailsToBeSavedList.get(0);
 					detailsToBeSavedList.remove(0);
-					getAndsaveDetails(detailsUrl);
+					getAndSaveDetailsIfNew(detailsUrl);
 	
 				}
 	
@@ -152,7 +154,7 @@ public abstract class ImportIoWebScrapper {
 		}
 	}
 
-	private void processProductsUrl(String url)
+	private void getNewUrlsFromFile(String url)
 			throws UnsupportedEncodingException,
 			IOException, MalformedURLException {
 		URLConnection connection = null;
@@ -173,7 +175,7 @@ public abstract class ImportIoWebScrapper {
 	
 			String detailsURL=res.getString("prodphoto_link");
 
-			if(!checkForExistingDetails(detailsURL))	
+			//if(!checkForExistingDetails(detailsURL))	
 				rememberDetailsToBeSaved(detailsURL);
 			
 
@@ -217,34 +219,40 @@ public abstract class ImportIoWebScrapper {
 	}
 	
 	
-	
 	protected boolean checkForExistingDetails(String detailsURL) {
-		String query="select count(product_id) from product where url='"+detailsURL+"';";
-//		query=query.replaceAll("__url__", detailsURL);
-		
-		ResultSet rs=interfac.runQuery(query);
-		
-		if(rs==null)return false;
-		else
-			{
-			try {
-				rs.next();
-				return rs.getInt("count")>0?true:false;
+		return 
+				DaoProvider.getInstance().getProduktDao().getProduktsByURL(detailsURL).size()
+				>0;
 
-
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			}
-	
-		return false;
 	}
 	
 	
-	protected void getAndsaveDetails(String detailsURL)
-			throws UnsupportedEncodingException, IOException,
-			MalformedURLException {
+//	protected boolean checkForExistingDetails(String detailsURL) {
+//		String query="select count(product_id) from product where url='"+detailsURL+"';";
+////		query=query.replaceAll("__url__", detailsURL);
+//		
+//		ResultSet rs=interfac.runQuery(query);
+//		
+//		if(rs==null)return false;
+//		else
+//			{
+//			try {
+//				rs.next();
+//				return rs.getInt("count")>0?true:false;
+//
+//
+//			} catch (SQLException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//			}
+//	
+//		return false;
+//	}
+	
+	
+	protected void getAndSaveDetails(String detailsURL)
+			{
 
 		while(!SystemEnv.AgentsOn)
 			try {
@@ -256,12 +264,15 @@ public abstract class ImportIoWebScrapper {
 		updateTickets();
 		substractTickets();
 		
+		try {
 		URLConnection connection;
 		String detailsQuery=detailsBaseUrl+"?"+urlParamName+"="+URLEncoder.encode(detailsURL,java.nio.charset.StandardCharsets.UTF_8.toString())+
 				"&"+userParamName+"="+auchanUser+"&"+apiKeyParamName+"="+detailedApiKey;
 //		System.out.println("new File(\"xxx\")."+new File("xxx").getAbsolutePath());
 		
-		connection = new URL(detailsQuery).openConnection();//connection.getRequestProperties()
+		
+			connection = new URL(detailsQuery).openConnection();
+		
 		connection.setRequestProperty("Accept-Charset", java.nio.charset.StandardCharsets.UTF_8.toString());
 		InputStream detResponse = connection.getInputStream();
 		InputStreamReader inputStreamReader = new InputStreamReader(detResponse,java.nio.charset.StandardCharsets.UTF_8.toString());
@@ -273,73 +284,84 @@ public abstract class ImportIoWebScrapper {
 			jsonDetRespons+=respLine;
 		}
 
-		try {
+		
 			JSONObject jsonObjecttemp = new JSONObject(jsonDetRespons);
 			if(jsonObjecttemp.has("results"))
 				{
 				JSONArray jsonResults=jsonObjecttemp.getJSONArray("results");
 	
 				JSONObject details=jsonResults.getJSONObject(0);
-				String query=insertQuery;
-				
-				//String idQuery="SELECT nextval('product_id_seq');";
-	//			int id=0;
-				//ResultSet rs=interfac.runQuery(idQuery);
-	//			if(rs!=null){
-	//				try {
-	//					rs.next();
-	//
-	//					id=rs.getInt("nextval");
-	//					System.out.println("id=rs.getInt(\"nextval\");: "+id);
-	//				} catch (SQLException e) {
-	//					// TODO Auto-generated catch block
-	//					e.printStackTrace();
-	//				}
-	//			}
-	//			System.out.println("idQuery: "+idQuery+" rs "+rs);
-	
 				
 				
-				query=query.replace("__id__", " nextval('product_product_id_seq') ");
-				
-				if(details.has("wartosci_odzywcze")){
-					
-					query=query.replace("__odzywcze__", details.getString("wartosci_odzywcze"));
-					
-				}
-				
-				query=query.replace("__nazwa__", details.getString("nazwa"));
-				query=query.replace("__url__", detailsURL);
-				
-				if(details.has("sklad"))
-					query=query.replace("__sklad__", details.getString("sklad"));
-				else
-					query=query.replace("__sklad__", "");
-				
-				query=query.replace("__opis__", details.getString("opis"));
-				System.out.println("Insert query: "+query);
-				
-				String nutrValsInsertQuery=null;
-				String nutrVals=null;
-				
-				if(details.has("wartosci_odzywcze")){
-				nutrVals=details.getString("wartosci_odzywcze");
-				}
-	//				nutrValsInsertQuery=processNutrValuesQuery(nutrVals);
-	//				if(nutrValsInsertQuery!=null&&!nutrValsInsertQuery.equals("")){
-	//					query=query.replace("__briefly_Processed__", "true");
-	//	
-	//				}else{
-						query=query.replace("__briefly_Processed__", "false");
-	
-	//				}
+				saveJSONDetails(detailsURL,details);
 				
 				
-				interfac.runNoResultQuery(query);
+				
+				
+				
+//				String query=insertQuery;
+//				
+//				//String idQuery="SELECT nextval('product_id_seq');";
+//	//			int id=0;
+//				//ResultSet rs=interfac.runQuery(idQuery);
+//	//			if(rs!=null){
+//	//				try {
+//	//					rs.next();
+//	//
+//	//					id=rs.getInt("nextval");
+//	//					System.out.println("id=rs.getInt(\"nextval\");: "+id);
+//	//				} catch (SQLException e) {
+//	//					// TODO Auto-generated catch block
+//	//					e.printStackTrace();
+//	//				}
+//	//			}
+//	//			System.out.println("idQuery: "+idQuery+" rs "+rs);
+//	
+//				
+//				
+//				query=query.replace("__id__", " nextval('product_product_id_seq') ");
+//				
+//				if(details.has("wartosci_odzywcze")){
+//					
+//					query=query.replace("__odzywcze__", details.getString("wartosci_odzywcze"));
+//					
+//				}
+//				
+//				query=query.replace("__nazwa__", details.getString("nazwa"));
+//				query=query.replace("__url__", detailsURL);
+//				
+//				if(details.has("sklad"))
+//					query=query.replace("__sklad__", details.getString("sklad"));
+//				else
+//					query=query.replace("__sklad__", "");
+//				
+//				query=query.replace("__opis__", details.getString("opis"));
+//				System.out.println("Insert query: "+query);
+//				
+//				String nutrValsInsertQuery=null;
+//				String nutrVals=null;
+//				
+//				if(details.has("wartosci_odzywcze")){
+//				nutrVals=details.getString("wartosci_odzywcze");
+//				}
+//	//				nutrValsInsertQuery=processNutrValuesQuery(nutrVals);
+//	//				if(nutrValsInsertQuery!=null&&!nutrValsInsertQuery.equals("")){
+//	//					query=query.replace("__briefly_Processed__", "true");
+//	//	
+//	//				}else{
+//						query=query.replace("__briefly_Processed__", "false");
+//	
+//	//				}
+//				
+//				
+////				interfac.runNoResultQuery(query);
 			}else{
 				System.out.println("no results found");
 			}
 		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -349,6 +371,45 @@ public abstract class ImportIoWebScrapper {
 	}
 	
 	
+	private void saveJSONDetails(String detailsURL, JSONObject details) {
+		
+		
+//		String url=details.getString("details");
+		String nazwa=details.getString("nazwa");
+		String sklad=details.getString("sklad");
+		String opis=details.getString("opis");
+		int cenaMala=details.getInt("cena_mala");
+		int cenaDuza=details.getInt("cena_duza");
+
+		
+		Produkt p=new Produkt(detailsURL, nazwa, sklad, opis, (cenaDuza+cenaMala/100l), false, false);
+		
+		DaoProvider.getInstance().getProduktDao().addProdukt(p);
+		
+//		if(details.has("wartosci_odzywcze")){
+//			
+//			query=query.replace("__odzywcze__", details.getString("wartosci_odzywcze"));
+//			
+//		}
+//		
+//		query=query.replace("__nazwa__", details.getString("nazwa"));
+//		query=query.replace("__url__", detailsURL);
+//		
+//		if(details.has("sklad"))
+//			query=query.replace("__sklad__", details.getString("sklad"));
+//		else
+//			query=query.replace("__sklad__", "");
+//		
+//		query=query.replace("__opis__", details.getString("opis"));
+//		System.out.println("Insert query: "+query);
+//		
+//		String nutrValsInsertQuery=null;
+//		String nutrVals=null;
+//		
+//		if(details.has("wartosci_odzywcze")){
+//		nutrVals=details.getString("wartosci_odzywcze");
+	}
+
 	public ArrayList<Produkt> lookForInShop(String url,String lookFor) throws UnsupportedEncodingException,
 	IOException, MalformedURLException {
 		updateTickets();
@@ -374,7 +435,7 @@ public abstract class ImportIoWebScrapper {
 			String detailsUrl=res.getString("prodphoto_link");
 			String nazwa=res.getString("prodboxtext_link/_text");
 			
-			if(!checkForExistingDetails(detailsUrl))	
+	//		if(!checkForExistingDetails(detailsUrl))	
 				rememberDetailsToBeSaved(detailsUrl);
 			
 			boolean found=true;
@@ -386,7 +447,7 @@ public abstract class ImportIoWebScrapper {
 			
 			if(found){
 				retValue.add(new Produkt(nazwa,detailsUrl));
-				getAndsaveDetails(detailsUrl);
+				getAndSaveDetailsIfNew(detailsUrl);
 			}
 
 	
@@ -397,6 +458,12 @@ public abstract class ImportIoWebScrapper {
 	}
 	
 	
+	private void getAndSaveDetailsIfNew(String detailsUrl) {
+		if(!checkForExistingDetails(detailsUrl))
+			getAndSaveDetails(detailsUrl);
+		
+	}
+
 	private String processNutrValuesQuery(String nutrVals) {
 		if(nutrVals==null||nutrVals.equals(""))
 			return null;

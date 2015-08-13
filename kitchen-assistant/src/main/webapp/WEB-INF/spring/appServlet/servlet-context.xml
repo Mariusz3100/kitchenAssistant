@@ -39,4 +39,15 @@
 	    </constructor-arg>
 	</bean>    	
 	
+	
+	<bean id="daoProvider" class="mariusz.ambroziak.kassistant.dao.DaoProvider">
+	    <constructor-arg>
+	        <ref bean="userDao" />
+	    </constructor-arg>
+	    
+	    	    <constructor-arg>
+	        <ref bean="produktDao" />
+	    </constructor-arg>
+	</bean>    	
+	
 </beans>

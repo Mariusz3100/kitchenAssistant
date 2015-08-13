@@ -45,10 +45,10 @@ public class HomeController {
 	public ModelAndView produkts1() {
 		List<Produkt> listProdukts = new ArrayList<Produkt>();
 
-		Produkt x= produktDao.getProduktByURL("aaa");
-		listProdukts.add(x);
+		List<Produkt> x= produktDao.getProduktsByURL("aaa");
+		
 		ModelAndView model = new ModelAndView("produktsList");
-		model.addObject("produktList", listProdukts);
+		model.addObject("produktList", x);
 		return model;
 	}
 	

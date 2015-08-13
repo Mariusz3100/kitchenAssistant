@@ -3,8 +3,11 @@ package mariusz.ambroziak.kassistant;
 import java.io.File;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import madkit.kernel.Madkit;
 import mariusz.ambroziak.kassistant.agents.ClockAgent;
+import mariusz.ambroziak.kassistant.agents.config.AgentsSystem;
 import mariusz.ambroziak.kassistant.model.User;
 
 import org.springframework.stereotype.Controller;
@@ -44,28 +47,7 @@ public class AgentsController {
 	@RequestMapping(value="/agents/start")
 	@ResponseBody
 	public String startAgents() {
-//		StringHolder.servletBasePath = request.getServletContext().getRealPath("/");
-//		new File("alalalalalalabamba.txt").createNewFile();
-		String[] args2 = { "--launchAgents",
-		"agent.AuchanAgent,false;",
-		"agent.RecipeAgent,false;",
-		"agent.ShopsListAgent,false" };
-	//	Madkit.main(args2);
-		
-		new Madkit("--launchAgents", 
-//				"agents.AuchanAgent,true,1;",
-//				"agents.RecipeAgent,true,1;",
-				"mariusz.ambroziak.kassistant.agents.ClockAgent,false,1;"
-//				"agents.TestAgent,true,1;",
-//				"agents.ShopsListAgent,true,1;"
-				);
-		
-		
-//		response.setCharacterEncoding(StringHolder.SERVLET_RESPONSE_ENCODING);
-		//response.getWriter().write("Agent System Started¹ê³Ÿz¿óæ");
-		
-		
-		return "agent system started";
+		return AgentsSystem.startSystem();
 	}
 	
 	
@@ -74,5 +56,24 @@ public class AgentsController {
 	public String checkClock() {
 		return "time is :"+ClockAgent.getTimePassed();
 	}
+	
+	
+	@RequestMapping(value="/agents/param")
+	@ResponseBody
+	public String checkClock(HttpServletRequest request) {
+		System.out.println("xx");
+		
+		return "time is :"+ClockAgent.getTimePassed();
+	}
+	
+	
+	@RequestMapping(value="/agents/result")
+	
+	public ModelAndView form(HttpServletRequest request) {
+		System.out.println("xx");
+		
+		return new ModelAndView("form");
+	}
+	
 	
 }

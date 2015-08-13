@@ -49,9 +49,10 @@ public class AuchanAgent extends Agent {
 		while(true){
 			
 			
-			m = (StringMessage) waitNextMessage();
+			m = (StringMessage) nextMessage();
 			if(m!=null)
-				processMessage(m);
+				;
+//				processMessage(m);
 			else
 				webScrapper.enjoyYourOwn();
 		}
@@ -118,7 +119,7 @@ public class AuchanAgent extends Agent {
 			createGroup(StringHolder.AGENT_COMMUNITY,StringHolder.SCRAPPERS_GROUP);
 		}
 		
-		requestRole(StringHolder.AGENT_COMMUNITY,StringHolder.SCRAPPERS_GROUP, AUCHAN_WEB_SCRAPPER_NAME);// Request the role RoleTest1.
+		requestRole(StringHolder.AGENT_COMMUNITY,StringHolder.SCRAPPERS_GROUP, AUCHAN_WEB_SCRAPPER_NAME);
 
 		webScrapper=AuchanWebScrapper.getAuchanWebScrapper();
 		super.activate();

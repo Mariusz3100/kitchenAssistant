@@ -33,7 +33,8 @@ public class FileInputInterface {
 				if(br==null)br = new BufferedReader(new InputStreamReader(new FileInputStream(inputFile)));
 				
 				String temp=br.readLine();
-				if(temp==null)System.out.println("\n\nOutOfFile\n\n");
+				if(temp==null)
+					System.out.println("\n\nOutOfFile\n\n");
 				for(int i=0;(lineBuffer.length()<1)||(i<10&&temp!=null);i++){
 					
 					if(temp.contains("\t"))
