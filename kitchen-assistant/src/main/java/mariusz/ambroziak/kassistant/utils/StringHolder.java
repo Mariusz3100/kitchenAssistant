@@ -8,6 +8,7 @@ public class StringHolder {
 
 	public static String  workingDirectory="";
 	public static final String SCRAPPERS_GROUP = "webScrappers";
+	public static final String GUIDANCE_GROUP = "guiders";
 //	public static final String SERVLETS_GROUP = "servlets";
 	public static final String AGENT_COMMUNITY ="kitchenAssistant";
 

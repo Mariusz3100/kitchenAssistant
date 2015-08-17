@@ -9,10 +9,10 @@ public class AgentsSystem {
 		
 //		StringHolder.servletBasePath = request.getServletContext().getRealPath("/");
 //		new File("alalalalalalabamba.txt").createNewFile();
-		String[] args2 = { "--launchAgents",
-		"agent.AuchanAgent,false;",
-		"agent.RecipeAgent,false;",
-		"agent.ShopsListAgent,false" };
+//		String[] args2 = { "--launchAgents",
+//		"agent.AuchanAgent,false;",
+//		"agent.RecipeAgent,false;",
+//		"agent.ShopsListAgent,false" };
 	//	Madkit.main(args2);
 		
 		new Madkit("--launchAgents", 
@@ -25,7 +25,7 @@ public class AgentsSystem {
 		
 		
 //		response.setCharacterEncoding(StringHolder.SERVLET_RESPONSE_ENCODING);
-		//response.getWriter().write("Agent System Started¹ê³Ÿz¿óæ");
+		//response.getWriter().write("Agent System Startedï¿½ê³Ÿzï¿½ï¿½ï¿½");
 		
 		
 		return "agent system started";

@@ -375,14 +375,12 @@ public abstract class ImportIoWebScrapper {
 		
 		
 //		String url=details.getString("details");
-		String nazwa=details.getString("nazwa");
-		String sklad=details.getString("sklad");
-		String opis=details.getString("opis");
-		int cenaMala=details.getInt("cena_mala");
-		int cenaDuza=details.getInt("cena_duza");
-
+		String nazwa=extractNazwa(details);
+		String sklad=extractSklad(details);
+		String opis=extractOpis(details);
+		long cena = extractCena(details);
 		
-		Produkt p=new Produkt(detailsURL, nazwa, sklad, opis, (cenaDuza+cenaMala/100l), false, false);
+		Produkt p=new Produkt(detailsURL, nazwa, sklad, opis, cena, false, false);
 		
 		DaoProvider.getInstance().getProduktDao().addProdukt(p);
 		
@@ -410,6 +408,12 @@ public abstract class ImportIoWebScrapper {
 //		nutrVals=details.getString("wartosci_odzywcze");
 	}
 
+	public abstract String extractNazwa(JSONObject details);
+	public abstract String extractSklad(JSONObject details);
+	public abstract String extractOpis(JSONObject details);
+	public abstract long extractCena(JSONObject details);
+
+	
 	public ArrayList<Produkt> lookForInShop(String url,String lookFor) throws UnsupportedEncodingException,
 	IOException, MalformedURLException {
 		updateTickets();

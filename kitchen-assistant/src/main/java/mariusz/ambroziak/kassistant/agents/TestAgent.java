@@ -10,7 +10,7 @@ import madkit.message.StringMessage;
 import mariusz.ambroziak.kassistant.utils.StringHolder;
 
 
-public class TestAgent extends Agent {
+public class TestAgent extends BaseAgent {
 
 	/**
 	 * 

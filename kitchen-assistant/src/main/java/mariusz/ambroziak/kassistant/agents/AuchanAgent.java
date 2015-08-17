@@ -13,6 +13,8 @@ import java.util.logging.Level;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 //import database.holders.DBOpenshiftInterface;
 //import database.holders.DbLocalInterface;
@@ -26,8 +28,9 @@ import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.utils.StringHolder;
 import mariusz.ambroziak.kassistant.utils.SystemEnv;
 
-public class AuchanAgent extends Agent {
+public class AuchanAgent extends BaseAgent {
 	public static final String AUCHAN_WEB_SCRAPPER_NAME = "auchanWebScrapper";
+	
 	private int counter=0;
 	
 	public static boolean agentOn=true;
@@ -35,8 +38,10 @@ public class AuchanAgent extends Agent {
 	
 	public AuchanAgent() {
 		super();
+		AGENT_ROLE = AUCHAN_WEB_SCRAPPER_NAME;	
 		
-		
+		AGENT_COMMUNITY=StringHolder.AGENT_COMMUNITY;
+		AGENT_GROUP = StringHolder.SCRAPPERS_GROUP;
 	}
 	
 	@Override
@@ -49,10 +54,9 @@ public class AuchanAgent extends Agent {
 		while(true){
 			
 			
-			m = (StringMessage) nextMessage();
+			m = nextMessage();
 			if(m!=null)
-				;
-//				processMessage(m);
+				processMessage(m);
 			else
 				webScrapper.enjoyYourOwn();
 		}
@@ -64,13 +68,20 @@ public class AuchanAgent extends Agent {
 
 		
 	}
+	
+	@ResponseBody
+	@RequestMapping("/agents/"+AUCHAN_WEB_SCRAPPER_NAME)
+	public String showData(){
+		return htmlLogs.toString().replace("\n", "\n<br>");
+	}
+
 
 	private Produkt processMessage(StringMessage m) {
 		JSONObject message=new JSONObject(m.getContent());
 
 		try {
 			ArrayList<Produkt> x=webScrapper.lookup(message.getString(StringHolder.SEARCH4_NAME));
-			AgentAddress other=getAgentWithRole(StringHolder.AGENT_COMMUNITY, StringHolder.SCRAPPERS_GROUP, RecipeAgent.PARSER_NAME);
+			AgentAddress other=getAgentWithRole(AGENT_COMMUNITY, AGENT_GROUP, AGENT_ROLE);
 
 			if(x==null||x.size()==0){
 				sendMessage(other, new StringMessage(""));
@@ -83,7 +94,7 @@ public class AuchanAgent extends Agent {
 				
 				StringMessage messageToSend = new StringMessage(result.toString());
 				messageToSend.getSender();
-				sendMessageWithRole(other, messageToSend,AUCHAN_WEB_SCRAPPER_NAME);
+				sendMessageWithRole(other, messageToSend,AGENT_ROLE);
 			}
 			
 		} catch (UnsupportedEncodingException e) {
@@ -115,11 +126,11 @@ public class AuchanAgent extends Agent {
 		setLogLevel(Level.FINEST);
 //		setWarningLogLevel(Level.FINEST);
 		
-		if(!isGroup(StringHolder.AGENT_COMMUNITY,StringHolder.SCRAPPERS_GROUP)){
-			createGroup(StringHolder.AGENT_COMMUNITY,StringHolder.SCRAPPERS_GROUP);
+		if(!isGroup(AGENT_COMMUNITY,AGENT_GROUP)){
+			createGroup(AGENT_COMMUNITY,AGENT_GROUP);
 		}
 		
-		requestRole(StringHolder.AGENT_COMMUNITY,StringHolder.SCRAPPERS_GROUP, AUCHAN_WEB_SCRAPPER_NAME);
+		requestRole(AGENT_COMMUNITY,AGENT_GROUP, AGENT_ROLE);
 
 		webScrapper=AuchanWebScrapper.getAuchanWebScrapper();
 		super.activate();

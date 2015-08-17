@@ -1,11 +1,13 @@
 package mariusz.ambroziak.kassistant;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import madkit.kernel.Madkit;
+import mariusz.ambroziak.kassistant.agents.BaseAgent;
 import mariusz.ambroziak.kassistant.agents.ClockAgent;
 import mariusz.ambroziak.kassistant.agents.config.AgentsSystem;
 import mariusz.ambroziak.kassistant.model.User;
@@ -21,59 +23,84 @@ import org.springframework.web.servlet.ModelAndView;
 public class AgentsController {
 
 	
-	@RequestMapping(value="/agents")
-	@ResponseBody
-	public String users() {
-		String html="<html>\r\n" + 
-				"    <head>\r\n" + 
-				"        <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\r\n" + 
-				"        <title>Home</title>\r\n" + 
-				"    </head>\r\n" + 
-				"    <body>";
-		
-		html+="hello World!";
-		
-		
-		
-		
-		
-		html+="    </body>\r\n" + 
-				"</html>";
-		
-		return html;
-	}
+//	@RequestMapping(value="/agents")
+//	@ResponseBody
+//	public String users() {
+//		String html="<html>\r\n" + 
+//				"    <head>\r\n" + 
+//				"        <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\r\n" + 
+//				"        <title>Home</title>\r\n" + 
+//				"    </head>\r\n" + 
+//				"    <body>";
+//		
+//		html+="hello World!";
+//		
+//		
+//		
+//		
+//		
+//		html+="    </body>\r\n" + 
+//				"</html>";
+//		
+//		return html;
+//	}
 	
 	
 	@RequestMapping(value="/agents/start")
 	@ResponseBody
 	public String startAgents() {
-		return AgentsSystem.startSystem();
+		return "<h3>"+AgentsSystem.startSystem()+"</h3>";
 	}
 	
 	
-	@RequestMapping(value="/agents/checkClock")
-	@ResponseBody
-	public String checkClock() {
-		return "time is :"+ClockAgent.getTimePassed();
-	}
+//	@RequestMapping(value="/agents/clock")
+//	@ResponseBody
+//	public String checkClock() {
+//		return "time is :"+ClockAgent.getTimePassed();
+//	}
 	
 	
-	@RequestMapping(value="/agents/param")
-	@ResponseBody
-	public String checkClock(HttpServletRequest request) {
-		System.out.println("xx");
+	@RequestMapping(value="/agents/all")
+	public ModelAndView getAllAgents(){
+		ModelAndView mav=new ModelAndView("agentList");
 		
-		return "time is :"+ClockAgent.getTimePassed();
-	}
-	
-	
-	@RequestMapping(value="/agents/result")
-	
-	public ModelAndView form(HttpServletRequest request) {
-		System.out.println("xx");
+		mav.addObject("agents", BaseAgent.getExtent());
 		
-		return new ModelAndView("form");
+		return mav;
 	}
+	
+	
+	@RequestMapping(value="/agents/info")
+	@ResponseBody
+	public ModelAndView getAgent(HttpServletRequest request){
+		HashMap<String, BaseAgent> allAgents = BaseAgent.getExtent();
+		
+		String agentName=request.getParameter("name");
+		ModelAndView mav;
+		if(agentName==null||agentName.equals("")
+				||!allAgents.containsKey(agentName)){
+			mav=new ModelAndView("agentInfoEmpty");
+		}else{
+			mav=new ModelAndView("agentInfo");
+			mav.addObject("agent", allAgents.get(agentName));
+			mav.addObject("name", agentName);
+//			mav.addObject("newLine", "\n");
+		}
+		
+		return mav;
+	}
+//		
+//		return "time is :"+ClockAgent.getTimePassed();
+//	}
+	
+	
+//	@RequestMapping(value="/agents/result")
+//	
+//	public ModelAndView form(HttpServletRequest request) {
+//		System.out.println("xx");
+//		
+//		return new ModelAndView("form");
+//	}
 	
 	
 }

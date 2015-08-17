@@ -8,11 +8,13 @@ import madkit.kernel.AgentAddress;
 import madkit.kernel.Message;
 
 
-public class ClockAgent extends Agent {
+public class ClockAgent extends BaseAgent {
 
 	/**
 	 * 
 	 */
+
+	
 	private static float timePassed=0;
 
 	ArrayList<AgentAddress> adresses;

@@ -41,12 +41,12 @@ import mariusz.ambroziak.kassistant.dao.DaoProvider;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.utils.StringHolder;
 
-public class RecipeAgent extends Agent{
+public class RecipeAgent extends BaseAgent{
 
-	public static final String PARSER_NAME = "recipeParser";
 	static ArrayList<RecipeAgent> agents;
 	private boolean busy=false;
 
+	public static final String PARSER_NAME = "recipeParser";
 
 	private static final long serialVersionUID = 1L;
 	private static final String selectSkladnikQ = "select * from product where nazwa ilike '__nazwa_skladnika__'";
@@ -93,23 +93,32 @@ public class RecipeAgent extends Agent{
 
 	@Override
 	protected void activate() {
-		if(!isGroup(StringHolder.AGENT_COMMUNITY,StringHolder.SCRAPPERS_GROUP)){
-			createGroup(StringHolder.AGENT_COMMUNITY,StringHolder.SCRAPPERS_GROUP);
+		if(!isGroup(AGENT_COMMUNITY,AGENT_GROUP)){
+			createGroup(AGENT_COMMUNITY,AGENT_GROUP);
 		}
 		
-		requestRole(StringHolder.AGENT_COMMUNITY, StringHolder.SCRAPPERS_GROUP, PARSER_NAME);// Request the role RoleTest1.
+		requestRole(AGENT_COMMUNITY, AGENT_GROUP, AGENT_ROLE);// Request the role RoleTest1.
 //		interfac=DatabaseInterface.getDBInterface();
 
 		if(agents==null)agents=new ArrayList<RecipeAgent>();
 		agents.add(this);
-		AgentAddress x=getAgentWithRole(StringHolder.AGENT_COMMUNITY, StringHolder.SCRAPPERS_GROUP, "manager");
+//		AgentAddress x=getAgentWithRole(AGENT_COMMUNITY, AGENT_GROUP, "manager");
 
 //		pause(500);
 
-		super.activate();
+		
 		setLogLevel(Level.FINEST);
-
+		super.activate();
 	}
+
+	public RecipeAgent() {
+		super();
+		AGENT_COMMUNITY=StringHolder.AGENT_COMMUNITY;
+		AGENT_GROUP = StringHolder.SCRAPPERS_GROUP;
+		AGENT_ROLE=PARSER_NAME;
+		
+	}
+
 
 	@Override
 	protected void end() {

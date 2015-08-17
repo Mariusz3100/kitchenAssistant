@@ -10,16 +10,25 @@ import madkit.message.StringMessage;
 import mariusz.ambroziak.kassistant.utils.StringHolder;
 
 
-public class ShopsListAgent extends Agent {
+public class ShopsListAgent extends BaseAgent {
 
+	private static final String GUIDANCE_GROUP = StringHolder.GUIDANCE_GROUP;
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	public static final String SHOP_LIST_NAME = "shopsList";
 
-	ArrayList<AgentAddress> adresses;
+ArrayList<AgentAddress> adresses;
 	
+	public ShopsListAgent() {
+	super();
+	
+	AGENT_COMMUNITY=StringHolder.AGENT_COMMUNITY;
+	AGENT_GROUP = StringHolder.GUIDANCE_GROUP;
+	AGENT_ROLE=SHOP_LIST_NAME;
+}
+
 	public static ShopsListAgent instance;
 	
 	@Override
@@ -32,7 +41,7 @@ public class ShopsListAgent extends Agent {
 			m=waitNextMessage();
 				
 			if(m.getSender().getRole().equals("manager")){
-				AgentAddress x=getAgentWithRole(StringHolder.AGENT_COMMUNITY, StringHolder.SCRAPPERS_GROUP, AuchanAgent.AUCHAN_WEB_SCRAPPER_NAME);
+				AgentAddress x=getAgentWithRole(AGENT_COMMUNITY, StringHolder.SCRAPPERS_GROUP, AuchanAgent.AUCHAN_WEB_SCRAPPER_NAME);
 				StringMessage newM=new StringMessage(((StringMessage)m).getContent());
 				sendMessageWithRole(x, newM,ShopsListAgent.SHOP_LIST_NAME);
 //				this.getExistingRoles(
@@ -44,14 +53,14 @@ public class ShopsListAgent extends Agent {
 			}
 
 			if(m.getSender().getRole().equals(RecipeAgent.PARSER_NAME)){
-				AgentAddress x=getAgentWithRole(StringHolder.AGENT_COMMUNITY, StringHolder.SCRAPPERS_GROUP, AuchanAgent.AUCHAN_WEB_SCRAPPER_NAME);
+				AgentAddress x=getAgentWithRole(AGENT_COMMUNITY, StringHolder.SCRAPPERS_GROUP, AuchanAgent.AUCHAN_WEB_SCRAPPER_NAME);
 				StringMessage newM=new StringMessage(((StringMessage)m).getContent());
 				sendMessageWithRole(x, newM,ShopsListAgent.SHOP_LIST_NAME);
 
 			}
 
 			if(m.getSender().getRole().equals(AuchanAgent.AUCHAN_WEB_SCRAPPER_NAME)){
-				AgentAddress x=getAgentWithRole(StringHolder.AGENT_COMMUNITY, StringHolder.SCRAPPERS_GROUP, RecipeAgent.PARSER_NAME);
+				AgentAddress x=getAgentWithRole(AGENT_COMMUNITY, StringHolder.SCRAPPERS_GROUP, RecipeAgent.PARSER_NAME);
 				StringMessage newM=new StringMessage(((StringMessage)m).getContent());
 
 				sendMessageWithRole(x, newM,SHOP_LIST_NAME);
@@ -67,11 +76,11 @@ public class ShopsListAgent extends Agent {
 		// TODO Auto-generated method stub
 		super.activate();
 		
-		if(!isGroup(StringHolder.AGENT_COMMUNITY,StringHolder.SCRAPPERS_GROUP)){
-			createGroup(StringHolder.AGENT_COMMUNITY,StringHolder.SCRAPPERS_GROUP);
+		if(!isGroup(AGENT_COMMUNITY,GUIDANCE_GROUP)){
+			createGroup(AGENT_COMMUNITY,GUIDANCE_GROUP);
 		}
 		
-		requestRole(StringHolder.AGENT_COMMUNITY, StringHolder.SCRAPPERS_GROUP, ShopsListAgent.SHOP_LIST_NAME);
+		requestRole(AGENT_COMMUNITY, GUIDANCE_GROUP, AGENT_ROLE);
 		setLogLevel(Level.FINEST);
 
 		
