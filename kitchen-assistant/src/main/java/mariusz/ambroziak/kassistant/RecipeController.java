@@ -13,6 +13,7 @@ import mariusz.ambroziak.kassistant.agents.RecipeAgent;
 import mariusz.ambroziak.kassistant.agents.config.AgentsSystem;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.User;
+import mariusz.ambroziak.kassistant.model.jsp.SearchResult;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,29 +30,43 @@ public class RecipeController {
 	
 
 	
-	@RequestMapping(value="/recipe/result")
-	@ResponseBody
-	public ModelAndView checkClock(HttpServletRequest request) {
-		System.out.println("xx");
-		
-		String url=request.getParameter("recipeurl");
-		
-		Map<String,ArrayList<Produkt>> result=RecipeAgent.parse(url);
-
-		ModelAndView mav=new ModelAndView("recipeParsed");
-		
-		mav.addObject("ingredients",result);
-		
-		return mav;
-	}
+//	@RequestMapping(value="/recipe/result")
+//	@ResponseBody
+//	public ModelAndView checkClock(HttpServletRequest request) {
+//		System.out.println("xx");
+//		
+//		String url=request.getParameter("recipeurl");
+//		
+//		Map<String,ArrayList<Produkt>> result=RecipeAgent.parse(url);
+//
+//		ModelAndView mav=new ModelAndView("recipeParsed");
+//		
+//		mav.addObject("ingredients",result);
+//		
+//		return mav;
+//	}
 	
 	
 	@RequestMapping(value="/recipe")
 	
 	public ModelAndView form(HttpServletRequest request) {
-		System.out.println("xx");
+		String url=request.getParameter("recipeurl");
 		
-		return new ModelAndView("form");
+		
+		
+		if(url==null||url.equals("")){
+		
+			return new ModelAndView("form");
+		}else{
+			ArrayList<SearchResult> result=RecipeAgent.parse(url);
+
+			ModelAndView mav=new ModelAndView("recipeParsed");
+			
+			mav.addObject("results",result);
+			
+			return mav;
+		}
+			
 	}
 	
 	

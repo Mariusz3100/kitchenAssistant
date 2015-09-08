@@ -16,11 +16,11 @@ public class AgentsSystem {
 	//	Madkit.main(args2);
 		
 		new Madkit("--launchAgents", 
-//				"mariusz.ambroziak.kassistant.agents.AuchanAgent,false,1;",
+				"mariusz.ambroziak.kassistant.agents.AuchanAgent,false,1;",
 				"mariusz.ambroziak.kassistant.agents.RecipeAgent,false,1;",
-				"mariusz.ambroziak.kassistant.agents.ClockAgent,false,1;"
+				"mariusz.ambroziak.kassistant.agents.ClockAgent,false,1;",
 //				"agents.TestAgent,true,1;",
-//				"agents.ShopsListAgent,true,1;"
+				"mariusz.ambroziak.kassistant.agents.ShopsListAgent,false,1;"
 				);
 		
 		

@@ -3,8 +3,7 @@
    "http://www.w3.org/TR/html4/loose.dtd">
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<c:set var="newLine" value="
-" />
+
 
 
 
@@ -24,8 +23,7 @@
         	<div>
         		${fn:replace(agent.htmlLog, newLine, '<br />')}
         	</div>
-        	<br><br>
-        	<div>${agent.htmlLog}</div>	
+
 					        	
         </div>
     </body>

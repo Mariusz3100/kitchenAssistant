@@ -5,13 +5,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Array;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -32,13 +35,32 @@ import org.jsoup.select.Elements;
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 import webscrappers.AuchanWebScrapper;
+import webscrappers.SJPWebScrapper;
 import madkit.kernel.Agent;
 import madkit.kernel.AgentAddress;
 import madkit.kernel.Message;
 import madkit.message.StringMessage;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
+import mariusz.ambroziak.kassistant.dao.ProduktDAO;
+import mariusz.ambroziak.kassistant.model.Base_Word;
 import mariusz.ambroziak.kassistant.model.Produkt;
+import mariusz.ambroziak.kassistant.model.Variant_Word;
+import mariusz.ambroziak.kassistant.model.jsp.SearchResult;
+import mariusz.ambroziak.kassistant.utils.Converter;
 import mariusz.ambroziak.kassistant.utils.StringHolder;
 
 public class RecipeAgent extends BaseAgent{
@@ -97,8 +119,10 @@ public class RecipeAgent extends BaseAgent{
 			createGroup(AGENT_COMMUNITY,AGENT_GROUP);
 		}
 		
-		requestRole(AGENT_COMMUNITY, AGENT_GROUP, AGENT_ROLE);// Request the role RoleTest1.
-//		interfac=DatabaseInterface.getDBInterface();
+		requestRole(AGENT_COMMUNITY, AGENT_GROUP, AGENT_ROLE);
+//		requestRole(AGENT_COMMUNITY, ShopsListAgent.GUIDANCE_GROUP, AGENT_ROLE);
+		
+		//		interfac=DatabaseInterface.getDBInterface();
 
 		if(agents==null)agents=new ArrayList<RecipeAgent>();
 		agents.add(this);
@@ -114,7 +138,7 @@ public class RecipeAgent extends BaseAgent{
 	public RecipeAgent() {
 		super();
 		AGENT_COMMUNITY=StringHolder.AGENT_COMMUNITY;
-		AGENT_GROUP = StringHolder.SCRAPPERS_GROUP;
+//		AGENT_GROUP = StringHolder.SERVLETS_GROUP;
 		AGENT_ROLE=PARSER_NAME;
 		
 	}
@@ -126,7 +150,7 @@ public class RecipeAgent extends BaseAgent{
 		super.end();
 	}
 
-	public static Map<String,ArrayList<Produkt>> parse(String url){
+	public static ArrayList<SearchResult> parse(String url){
 		RecipeAgent freeOne=null;
 		
 		if(agents==null){
@@ -152,7 +176,7 @@ public class RecipeAgent extends BaseAgent{
 			}
 	}
 		freeOne.busy=true;
-		Map<String,ArrayList<Produkt>> result= freeOne.parseRecipe(url);
+		ArrayList<SearchResult> result= freeOne.parseRecipe(url);
 		freeOne.busy=false;
 		return result;
 	}
@@ -160,9 +184,9 @@ public class RecipeAgent extends BaseAgent{
 
 
 
-	public Map<String,ArrayList<Produkt>> parseRecipe(String url){
+	public ArrayList<SearchResult> parseRecipe(String url){
 		
-		Map<String,ArrayList<Produkt>> retValue=new HashMap<String, ArrayList<Produkt>>();
+		ArrayList<SearchResult> retValue=new ArrayList<SearchResult>();
 //		StringBuilder outPage=new StringBuilder();
 		try{
 			URLConnection connection = new URL(url).openConnection();//connection.getRequestProperties()
@@ -185,11 +209,17 @@ public class RecipeAgent extends BaseAgent{
 			for(Element e:ings){
 //				ArrayList<Produkt> znalezioneProdukty=new ArrayList<Produkt>()
 				
-				ArrayList<Produkt> potencjalneSkladniki = retrieveSkladnik(e.text());
-				retValue.put(e.text(), potencjalneSkladniki);
+				List<Produkt> potencjalneSkladniki = retrieveSkladnik(e.text());
+				retValue.add(new SearchResult(e.text(), potencjalneSkladniki));
 				
-	//			outPage.append("<br>\nFor something called "+e.text()+":<br>\n");
-
+				htmlLog("\n"+e.text()+"->\n");
+				
+				if(potencjalneSkladniki!=null&&potencjalneSkladniki.size()>0)
+					for(Produkt p:potencjalneSkladniki){
+						htmlLog(p.getUrl()+"\n");
+					}
+				else
+					htmlLog("Nothing Found\n");
 //				if(potencjalneSkladniki.size()==0)
 //				{
 //					outPage.append("Nothing found\n<br>\n");
@@ -213,25 +243,72 @@ public class RecipeAgent extends BaseAgent{
 		return retValue;
 	}
 
-	private ArrayList<Produkt> retrieveSkladnik(String text) {
+	private List<Produkt> retrieveSkladnik(String text) {
 		System.out.println(text);
-		ArrayList<Produkt> results;
+		List<Produkt> results;
+		ArrayList<String> baseWords = null;
+		
+		
+		
 		results=checkInDb(text);
 
 		if(results==null||results.size()<1){
-			results=adjustForBaseWordForm(text);
+			baseWords=getBaseWords(text);
+			
+			results=checkInDb(baseWords);
 		}
-
 
 		if(results==null||results.size()<1){
-			Produkt x=checkShops(text);
-			if(x!=null)
-				results.add(x);
+			
+			if(baseWords==null)
+				baseWords=getBaseWords(text);
+			
+			results=checkShops(baseWords);
+		}
+		
+		
+		if(results==null||results.size()<1){
+			results=checkShops(text);
 		}
 
+
+		
+		
 		return results;
 
 
+	}
+
+
+	private List<Produkt> checkShops(ArrayList<String> baseWords) {
+		return checkShops(Converter.listToString(baseWords));
+	}
+
+
+	private ArrayList<String> getBaseWords(String text) {
+		String[] words=text.split(" ");
+		ArrayList<String> wordsList=new ArrayList<String>();
+		
+		for(String x : words){
+			Base_Word base_Name = DaoProvider.getInstance().getVariantWordDao().getBase_Name(x.toLowerCase());
+			if(base_Name!=null)
+				wordsList.add(base_Name.getB_word());
+			else
+				wordsList.add(getAndSaveNewRelation(x.toLowerCase()));
+		}
+		
+		return wordsList;
+	}
+
+
+	private String getAndSaveNewRelation(String x) {
+		String retValue=SJPWebScrapper.scrapWord(Converter.getOnlyLetters(x));
+		retValue=Converter.getOnlyLetters(retValue);
+		if(retValue==null)retValue="";
+		
+		DaoProvider.getInstance().getVariantWordDao().addRelation(x.toLowerCase(),retValue.toLowerCase());
+		
+		return retValue;
 	}
 
 
@@ -248,64 +325,74 @@ public class RecipeAgent extends BaseAgent{
 		return retValue;
 	}
 
+	private ArrayList<Produkt> checkInDb(Collection<String> texts) {
+		ArrayList<Produkt> retValue=new ArrayList<Produkt>();
 
-	private ArrayList<Produkt> adjustForBaseWordForm(String text) {
-		// TODO Auto-generated method stub
-		return null;
+		retValue.addAll(
+				DaoProvider.getInstance()
+				.getProduktDao()
+				.getProduktsByNames(texts));
+
+
+
+		return retValue;
 	}
 
+//	private List<Produkt> adjustForBaseWordForm(String text) {
+//		String[] words=text.split(" ");
+//		ArrayList<String> wordsList=new ArrayList<String>();
+//		
+//		for(String x : words)
+//			wordsList.add(x);
+//		
+//		ProduktDAO produktDao = DaoProvider.getInstance().getProduktDao();
+//		
+//		return produktDao.getProduktsByVariantNames(wordsList);
+//		
+//	}
 
-	private Produkt checkShops(String text) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+//
+//	private Produkt checkShops(String text) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 
 //	 JsonParserFactory factory=JsonParserFactory.getInstance();
 
 
-//	private Produkt checkShops(String text) {
-//		
-//		JSONObject json = new JSONObject();
-//		
-//		json.put(StringHolder.SEARCH4_NAME, text);
-//		
-//		getName();
-////		AgentAddress x=getAgentWithRole(StringHolder.AGENT_COMMUNITY, StringHolder.SERVLETS_GROUP, ShopsListAgent.SHOP_LIST_NAME);
-//		AgentAddress x=getAgentWithRole(StringHolder.AGENT_COMMUNITY, StringHolder.SCRAPPERS_GROUP, ShopsListAgent.SHOP_LIST_NAME);
-////		StringMessage newM=new StringMessage(((StringMessage)m).getContent());
-////		sendMessage(x, newM);
-//		this.getExistingRoles(
-//				this.getExistingCommunities().first()
-//				, 
-//		this.getExistingGroups(
-//		this.getExistingCommunities().first()
-//		).first());
-//		StringMessage messageToSend = new StringMessage(json.toString());
-//		sendMessageWithRole(x, messageToSend,PARSER_NAME);
-//
-//		StringMessage response=(StringMessage) waitNextMessage();
-//		
-//		//		AuchanWebScrapper aws=AuchanWebScrapper.getAuchanWebScrapper();
-//		//		
-//		//		
-//		//		
-//		//		try {
-//		//			return aws.lookup(text);
-//		//		} catch (UnsupportedEncodingException e) {
-//		//			e.printStackTrace();
-//		//		} catch (MalformedURLException e) {
-//		//			e.printStackTrace();
-//		//		} catch (IOException e) {
-//		//			e.printStackTrace();
-//		//		}
-//		
-//		if(response.getContent().equals(""))
-//				return null;
-//		else{
+	private ArrayList<Produkt> checkShops(String text) {
+		
+		JSONObject json = new JSONObject();
+		
+		json.put(StringHolder.SEARCH4_NAME, text);
+		
+		
+		AgentAddress x=getAgentWithRole(StringHolder.AGENT_COMMUNITY, AGENT_GROUP, ShopsListAgent.SHOP_LIST_NAME);
+
+		StringMessage messageToSend = new StringMessage(json.toString());
+		sendMessageWithRole(x, messageToSend,PARSER_NAME);
+		
+		StringMessage response=(StringMessage) waitNextMessage();
+
+		if(response.getContent().equals(""))
+				return null;
+		else{
+			JSONObject jsonObject = new JSONObject(response.getContent());
+			
 //			Map y= factory.newJsonParser().parseJson(response.getContent());
-//			return new Produkt((String)(y.get("nazwa")), (String)(y.get("url")));
-//		}
-//	}
+			ProduktDAO produktDao = DaoProvider.getInstance().getProduktDao();
+			
+			String ids=jsonObject.getString("ids");
+			
+			ArrayList<Produkt> retValue=new ArrayList<Produkt>();
+			
+			for(String id:ids.split(" ")){
+				retValue.add(produktDao.getById(Long.parseLong(id)));
+			}
+			
+			return retValue;
+		}
+	}
 //
 //	private ArrayList<Produkt> adjustForBaseWordForm(String text) {
 //		String query=selectProductThroughBaseWord.replaceAll("__v_word__", text);

@@ -16,6 +16,7 @@ import org.json.JSONObject;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+
 //import database.holders.DBOpenshiftInterface;
 //import database.holders.DbLocalInterface;
 //import database.holders.StringHolder;
@@ -41,7 +42,7 @@ public class AuchanAgent extends BaseAgent {
 		AGENT_ROLE = AUCHAN_WEB_SCRAPPER_NAME;	
 		
 		AGENT_COMMUNITY=StringHolder.AGENT_COMMUNITY;
-		AGENT_GROUP = StringHolder.SCRAPPERS_GROUP;
+//		AGENT_GROUP = StringHolder.SCRAPPERS_GROUP;
 	}
 	
 	@Override
@@ -76,25 +77,33 @@ public class AuchanAgent extends BaseAgent {
 	}
 
 
-	private Produkt processMessage(StringMessage m) {
+	private boolean processMessage(StringMessage m) {
 		JSONObject message=new JSONObject(m.getContent());
 
 		try {
 			ArrayList<Produkt> x=webScrapper.lookup(message.getString(StringHolder.SEARCH4_NAME));
-			AgentAddress other=getAgentWithRole(AGENT_COMMUNITY, AGENT_GROUP, AGENT_ROLE);
-
+			AgentAddress other=getAgentWithRole(AGENT_COMMUNITY, AGENT_GROUP, ShopsListAgent.SHOP_LIST_NAME);
+			
 			if(x==null||x.size()==0){
 				sendMessage(other, new StringMessage(""));
-
+				htmlLog("Nie uda³o siê znaleŸæ ¿adnego produktu dla "+message.getString(StringHolder.SEARCH4_NAME)+" w sklepie auchan.\n");
+				return false;
 			}else{
 				JSONObject result=new JSONObject();
-				result.put("nazwa", x.get(0).getNazwa());
-				result.put("url", x.get(0).getUrl());
+				String foundProdukts="";
+				
+				for(Produkt p:x){
+					foundProdukts+=p.getId()+" ";
+				}
+				result.put("ids", foundProdukts);
+				
 				result.put(StringHolder.SEARCH4_NAME, message.getString(StringHolder.SEARCH4_NAME));
 				
 				StringMessage messageToSend = new StringMessage(result.toString());
 				messageToSend.getSender();
 				sendMessageWithRole(other, messageToSend,AGENT_ROLE);
+				htmlLog("W sklepie auchan znaleziono produkt(y) o id ["+foundProdukts+"]\n");
+				return true;
 			}
 			
 		} catch (UnsupportedEncodingException e) {
@@ -111,7 +120,7 @@ public class AuchanAgent extends BaseAgent {
 			e.printStackTrace();
 		}
 		
-		return null;
+		return false;
 	}
 
 	@Override
@@ -131,7 +140,9 @@ public class AuchanAgent extends BaseAgent {
 		}
 		
 		requestRole(AGENT_COMMUNITY,AGENT_GROUP, AGENT_ROLE);
+//		requestRole(AGENT_COMMUNITY, ShopsListAgent.GUIDANCE_GROUP, AGENT_ROLE);
 
+		
 		webScrapper=AuchanWebScrapper.getAuchanWebScrapper();
 		super.activate();
 	}

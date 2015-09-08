@@ -8,7 +8,7 @@
 </head>
 <body>
 
-	<form action="/recipe/result">
+	<form>
 		Paste url:<br> <input type="text" name="recipeurl">
 	</form>
 	

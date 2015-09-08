@@ -7,9 +7,11 @@ public class StringHolder {
 	public static final String SEARCH4_NAME = "search4";
 
 	public static String  workingDirectory="";
-	public static final String SCRAPPERS_GROUP = "webScrappers";
-	public static final String GUIDANCE_GROUP = "guiders";
-//	public static final String SERVLETS_GROUP = "servlets";
+	
+	public static String AGENT_GROUP="group";
+	public static final String SCRAPPERS_GROUP =AGENT_GROUP;// "webScrappers";
+	public static final String GUIDANCE_GROUP = AGENT_GROUP;//"guiders";
+	public static final String SERVLETS_GROUP = AGENT_GROUP;//"servlets";
 	public static final String AGENT_COMMUNITY ="kitchenAssistant";
 
 	public static final String SERVLET_RESPONSE_ENCODING ="ISO-8859-2";

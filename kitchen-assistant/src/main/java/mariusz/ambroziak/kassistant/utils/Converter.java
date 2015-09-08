@@ -1,18 +1,21 @@
 package mariusz.ambroziak.kassistant.utils;
 
+import java.util.ArrayList;
+
 public class Converter {
 	private static String[] converts=
 		{
-		"Å‚-\\$0142",
-		"Ä…-\\$0105",
+		"³-\\$0142",
+		"¹-\\$0105",
 		",-\\$002C",
-		"Å¼-\\$017C",
-		"Åº-\\$017A",
-		"Ä‡-\\$0107",
-		"Å„-\\$0144",
-		"Ã³-\\$00F3",
+		"¿-\\$017C",
+		"Ÿ-\\$017A",
+		"æ-\\$0107",
+		"ñ-\\$0144",
+		"ó-\\$00F3",
 		" -\\$0020"
 		};
+	
 	
 	
 	public static String auchanConvertion(String input){
@@ -29,11 +32,23 @@ public class Converter {
 		
 	}
 	
+	public static String getOnlyLetters(String text){
+		return text.replaceAll("[^A-Za-z]", "");
+	}
+	
 	
 	public static void main(String args[]){
 		System.out.println(auchanConvertion("saÅ‚ata lodowa"));
 	}
 	
-	
+	public static String listToString(ArrayList<String> words){
+		String retValue="";
+		
+		for(String x:words){
+			retValue+=x+" ";
+		}
+		
+		return retValue.trim();
+	}
 	
 }

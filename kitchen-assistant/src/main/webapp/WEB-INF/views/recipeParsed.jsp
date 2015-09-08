@@ -10,23 +10,26 @@
 </head>
 <body>
 
-        <div align="center">
+        <div>
 	        <h1>Dla url "${url}" znaleziono następujące składniki:</h1>
-        	<table border="1">
-        		<tr>
-        		<th>nazwa</th>
-	        	<th>url</th>
-	        	<th>cena</th>
-	        	</tr>
-				<c:forEach var="produkt" items="${ingredients}">
-	        	<tr>
-	        		<td>${produkt.nazwa}</td>
-					<td>${produkt.url}</td>
-					<td>${produkt.cena}</td>
+        	
+        	<c:forEach var="result" items="${results}">
+        	
+        	<br>
+        	Dla składnika ${result.searchPhrase } znaleziono następujące produkty:
+        	
+	        	
+					<c:forEach var="produkt" items="${result.produkts}">
+		        		-
+		        		${produkt.cena}
+		        		${produkt.nazwa}
+						${produkt.url}
 						
-	        	</tr>
-				</c:forEach>	        	
-        	</table>
+						<br/>	
+		        	
+					</c:forEach>	        	
+	        	</table>
+        	</c:forEach>
         </div>
 
 </body>

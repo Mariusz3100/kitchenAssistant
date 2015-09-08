@@ -16,7 +16,7 @@
 	        		${agent.key}
 	        		
 	        		${agent.value}
-	        		<a href="/agents/${agent.key}">link</a>
+	        		<a href="../agents/info?name=${agent.key}">szczegóły</a>
 	        		<br>
 	        		<br>
 				</c:forEach>	        	

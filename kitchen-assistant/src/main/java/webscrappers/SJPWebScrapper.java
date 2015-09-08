@@ -8,6 +8,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
+import mariusz.ambroziak.kassistant.dao.Base_WordDAOImpl;
+import mariusz.ambroziak.kassistant.dao.Variant_WordDAOImpl;
+import mariusz.ambroziak.kassistant.model.Base_Word;
+import mariusz.ambroziak.kassistant.model.Variant_Word;
+import mariusz.ambroziak.kassistant.utils.StringHolder;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -32,14 +38,20 @@ public class SJPWebScrapper {
 				response+=respLine;
 			}
 			
-			Document doc = Jsoup.parse(response);
-			Element e=doc.select(".anchor-title")
-					.select("[href*=http://sjp.pwn.pl/so/]")
-					.first();
-			if(e==null)
-				retValue=null;
-			else
-				retValue=e.attr("title");
+			if(response.indexOf("Nie znaleziono ¿adnych wyników wyszukiwania")>-1)
+			{
+				retValue="";
+			}else{
+				Document doc = Jsoup.parse(response);
+				
+				Element e=doc.select(".anchor-title")
+						.select("[href*=http://sjp.pwn.pl/so/]")
+						.first();
+				if(e==null)
+					retValue=Base_WordDAOImpl.niepoprawneSlowoBazowe;
+				else
+					retValue=e.attr("title");
+			}
 			
 			
 		} catch (MalformedURLException e) {
@@ -53,5 +65,9 @@ public class SJPWebScrapper {
 		
 		return retValue;
 
+	}
+	
+	public static void main(String[] args){
+		scrapWord("asaadad");
 	}
 }

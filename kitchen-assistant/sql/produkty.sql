@@ -11,7 +11,7 @@
 
   
 
- CONSTRAINT product_pk PRIMARY KEY (id)
+ CONSTRAINT produkt_pk PRIMARY KEY (id)
 )
 
 

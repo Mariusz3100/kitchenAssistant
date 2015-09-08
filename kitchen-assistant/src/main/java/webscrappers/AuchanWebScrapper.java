@@ -111,26 +111,35 @@ public class AuchanWebScrapper extends ImportIoWebScrapper {
 	}
 
 	public long extractCena(JSONObject details) {
-		int cenaMala=details.getInt("cena_mala");
-		int cenaDuza=details.getInt("cena_duza");
-	
 		
-		long cena = cenaDuza+cenaMala/100l;
-		return cena;
+		if(details.has("cena_mala")&&details.has("cena_duza")){
+			int cenaMala=details.getInt("cena_mala");
+			int cenaDuza=details.getInt("cena_duza");
+		
+			
+			long cena = cenaDuza+cenaMala/100l;
+			return cena;
+		}
+		else return -1l;
+		
 	}
 
 	public String extractOpis(JSONObject details) {
-		return details.getString("opis");
+		if(details.has("opis"))
+			return details.getString("opis");
+		else return "";
 	}
 
 	public String extractSklad(JSONObject details) {
-		return details.getString("sklad");
+		if(details.has("sklad"))
+			return details.getString("sklad");
+		else return "";
 	}
 
 	public String extractNazwa(JSONObject details) {
-	//	if(details.has("nazwa"))
+		if(details.has("nazwa"))
 			return details.getString("nazwa");
-	//	else return "";
+		else return "";
 	}
 	
 }

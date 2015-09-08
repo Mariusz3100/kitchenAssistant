@@ -17,7 +17,7 @@ import javax.validation.constraints.Size;
 public class Produkt {
 
 	   @Id
-	   @GeneratedValue(strategy=GenerationType.AUTO)
+	   @GeneratedValue(strategy = GenerationType.IDENTITY)
 	   private Long id;
 	   
 	
@@ -134,6 +134,14 @@ public class Produkt {
 
 		public void setWstepnie_przetworzony(boolean wstepnie_przetworzony) {
 			this.wstepnie_przetworzony = wstepnie_przetworzony;
+		}
+
+		@Override
+		public String toString() {
+			return "Produkt [id=" + id + ", url=" + url + ", nazwa=" + nazwa
+					+ ", sklad=" + sklad + ", opis=" + opis + ", cena=" + cena
+					+ ", przetworzony=" + przetworzony
+					+ ", wstepnie_przetworzony=" + wstepnie_przetworzony + "]";
 		}
 }
 

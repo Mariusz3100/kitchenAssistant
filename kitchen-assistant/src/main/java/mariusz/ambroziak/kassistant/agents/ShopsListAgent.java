@@ -12,7 +12,7 @@ import mariusz.ambroziak.kassistant.utils.StringHolder;
 
 public class ShopsListAgent extends BaseAgent {
 
-	private static final String GUIDANCE_GROUP = StringHolder.GUIDANCE_GROUP;
+//	public static final String GUIDANCE_GROUP = StringHolder.GUIDANCE_GROUP;
 	/**
 	 * 
 	 */
@@ -25,7 +25,7 @@ ArrayList<AgentAddress> adresses;
 	super();
 	
 	AGENT_COMMUNITY=StringHolder.AGENT_COMMUNITY;
-	AGENT_GROUP = StringHolder.GUIDANCE_GROUP;
+//	AGENT_GROUP = StringHolder.GUIDANCE_GROUP;
 	AGENT_ROLE=SHOP_LIST_NAME;
 }
 
@@ -76,11 +76,11 @@ ArrayList<AgentAddress> adresses;
 		// TODO Auto-generated method stub
 		super.activate();
 		
-		if(!isGroup(AGENT_COMMUNITY,GUIDANCE_GROUP)){
-			createGroup(AGENT_COMMUNITY,GUIDANCE_GROUP);
+		if(!isGroup(AGENT_COMMUNITY,AGENT_GROUP)){
+			createGroup(AGENT_COMMUNITY,AGENT_GROUP);
 		}
 		
-		requestRole(AGENT_COMMUNITY, GUIDANCE_GROUP, AGENT_ROLE);
+		requestRole(AGENT_COMMUNITY, AGENT_GROUP, AGENT_ROLE);
 		setLogLevel(Level.FINEST);
 
 		

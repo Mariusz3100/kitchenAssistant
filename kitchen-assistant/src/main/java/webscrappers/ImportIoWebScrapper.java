@@ -38,22 +38,20 @@ import org.jsoup.select.Elements;
 import com.codesnippets4all.json.parsers.JSONParser;
 import com.codesnippets4all.json.parsers.JsonParserFactory;
 
-
-
 public abstract class ImportIoWebScrapper {
 	 private static final int ENJOY_YOUR_OWN_WAIT_TIME = 500;
-	private static final float ticketsFactor = 0.001f;
+	private static final float ticketsFactor = 0.01f;
 //	DatabaseInterface interfac;
 	 ArrayList<String> detailsToBeSavedList;
-		private float tickets=1;
+		private float tickets=0;
 		private float lastTime=0;
 
-	 
+	 private StringBuilder scrapperLog;
 	public ImportIoWebScrapper() {
 //		interfac=DatabaseInterface.getDBInterface();
 		detailsToBeSavedList=new ArrayList<String>();
 		lastTime=ClockAgent.getTimePassed();
-
+		scrapperLog=new StringBuilder();
 	}
 	final String insertQuery="insert into product (product_id,  url,nazwa,sklad,opis,brieflyProcessed)values(__id__,'__url__','__nazwa__','__sklad__','__opis__',__briefly_Processed__);";
 	final String countQuery="select count(p_id) from product where url='__url__';";
@@ -126,7 +124,12 @@ public abstract class ImportIoWebScrapper {
 	
 				if(detailsToBeSavedList.isEmpty()){
 					getNewUrlsFromFile(getProductsURL());
+					 scrapperLog.append("New urls retrieved from file, current state: ");
 	
+					 for(String x:detailsToBeSavedList){
+						 scrapperLog.append(x+"; ");
+					}
+					 
 				}else{
 					String detailsUrl=detailsToBeSavedList.get(0);
 					detailsToBeSavedList.remove(0);
@@ -379,9 +382,11 @@ public abstract class ImportIoWebScrapper {
 		String sklad=extractSklad(details);
 		String opis=extractOpis(details);
 		long cena = extractCena(details);
-		
+		if(detailsURL!=null)
+			detailsURL=detailsURL.split(";")[0];
 		Produkt p=new Produkt(detailsURL, nazwa, sklad, opis, cena, false, false);
 		
+		scrapperLog.append("Saving data from \""+detailsURL+"\": "+p);
 		DaoProvider.getInstance().getProduktDao().addProdukt(p);
 		
 //		if(details.has("wartosci_odzywcze")){

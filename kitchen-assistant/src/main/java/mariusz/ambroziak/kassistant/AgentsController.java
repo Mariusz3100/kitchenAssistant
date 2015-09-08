@@ -71,20 +71,19 @@ public class AgentsController {
 	
 	
 	@RequestMapping(value="/agents/info")
-	@ResponseBody
 	public ModelAndView getAgent(HttpServletRequest request){
 		HashMap<String, BaseAgent> allAgents = BaseAgent.getExtent();
 		
 		String agentName=request.getParameter("name");
 		ModelAndView mav;
 		if(agentName==null||agentName.equals("")
-				||!allAgents.containsKey(agentName)){
+				||allAgents==null||!allAgents.containsKey(agentName)){
 			mav=new ModelAndView("agentInfoEmpty");
 		}else{
 			mav=new ModelAndView("agentInfo");
 			mav.addObject("agent", allAgents.get(agentName));
 			mav.addObject("name", agentName);
-//			mav.addObject("newLine", "\n");
+			mav.addObject("newLine", "\n");
 		}
 		
 		return mav;

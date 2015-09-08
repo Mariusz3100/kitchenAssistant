@@ -12,11 +12,12 @@
 <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="org.postgresql.Driver"/>
         
-        <property name="url" value="jdbc:postgresql://localhost:5432/postgres"/>
-        <property name="username" value="root"/>
+        <property name="url" value="jdbc:postgresql://localhost:5434/hibernate2"/>
+        <property name="username" value="postgres"/>
         <property name="password" value="password"/>
     </bean>	
  	
+ 	 
 <!-- 	 
 	<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="org.postgresql.Driver"/>
@@ -25,8 +26,8 @@
         <property name="username" value="adminznmndu7"/>
         <property name="password" value="NCaSJwYdxkyA"/>
     </bean>	
-  -->   
-	
+    
+	-->
 	<!-- 
 	
 	jdbc:postgresql://127.6.211.2:5432/tomcatpack
