@@ -107,7 +107,7 @@ public class Variant_WordDAOImpl implements Variant_WordDAO {
 		return al;
 		
 	}
-
+	@Transactional
 	@Override
 	public void addVariant_word(Variant_Word vw) {
 		this.sessionFactory.getCurrentSession().save(vw);

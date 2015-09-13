@@ -20,10 +20,10 @@
 	        	<th>cena</th>
 	        	<th>przetworzony</th>
 	        	<th>częściowo przetworzony</th>
-	        	<th>stuff?</th>
+	        	
 				<c:forEach var="produkt" items="${produktList}" varStatus="status">
 	        	<tr>
-	        		<td>${produkt.p_id}</td>
+	        		<td>${produkt.id}</td>
 					<td>${produkt.url}</td>
 					<td>${produkt.nazwa}</td>
 					<td>${produkt.sklad}</td>
@@ -31,7 +31,7 @@
 					<td>${produkt.cena}</td>
 					<td>${produkt.przetworzony}</td>	
 					<td>${produkt.wstepnie_przetworzony}</td>		
-					<td>${produkt.thing}</td>	
+						
 	        	</tr>
 				</c:forEach>	        	
         	</table>

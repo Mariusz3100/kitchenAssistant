@@ -48,6 +48,10 @@ import org.jsoup.select.Elements;
 
 
 
+
+
+
+
 import webscrappers.AuchanWebScrapper;
 import webscrappers.SJPWebScrapper;
 import madkit.kernel.Agent;
@@ -61,6 +65,7 @@ import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.Variant_Word;
 import mariusz.ambroziak.kassistant.model.jsp.SearchResult;
 import mariusz.ambroziak.kassistant.utils.Converter;
+import mariusz.ambroziak.kassistant.utils.PrzepisyPLQExtract;
 import mariusz.ambroziak.kassistant.utils.StringHolder;
 
 public class RecipeAgent extends BaseAgent{
@@ -209,10 +214,17 @@ public class RecipeAgent extends BaseAgent{
 			for(Element e:ings){
 //				ArrayList<Produkt> znalezioneProdukty=new ArrayList<Produkt>()
 				
-				List<Produkt> potencjalneSkladniki = retrieveSkladnik(e.text());
-				retValue.add(new SearchResult(e.text(), potencjalneSkladniki));
+				String ingredient = e.text();
+				String quantity=e.parent().select("class^=quantity").text();
 				
-				htmlLog("\n"+e.text()+"->\n");
+				 retrieveQuantity(quantity);
+				
+				List<Produkt> potencjalneSkladniki = retrieveSkladnik(ingredient);
+				
+				
+				retValue.add(new SearchResult(ingredient, potencjalneSkladniki));
+				
+				htmlLog("\n"+ingredient+"->\n");
 				
 				if(potencjalneSkladniki!=null&&potencjalneSkladniki.size()>0)
 					for(Produkt p:potencjalneSkladniki){
@@ -242,6 +254,14 @@ public class RecipeAgent extends BaseAgent{
 
 		return retValue;
 	}
+
+	private void retrieveQuantity(String quantity) {
+		PrzepisyPLQExtract.extractQuantity(quantity);
+		
+		
+		
+	}
+
 
 	private List<Produkt> retrieveSkladnik(String text) {
 		System.out.println(text);

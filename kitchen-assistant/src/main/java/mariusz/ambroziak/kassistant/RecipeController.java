@@ -69,5 +69,26 @@ public class RecipeController {
 			
 	}
 	
+	@RequestMapping(value="/recipe2")
+	
+	public ModelAndView form2(HttpServletRequest request) {
+		String url=request.getParameter("recipeurl");
+		
+		
+		
+		if(url==null||url.equals("")){
+		
+			return new ModelAndView("form");
+		}else{
+			ArrayList<SearchResult> result=RecipeAgent.parse(url);
+
+			ModelAndView mav=new ModelAndView("recipeParsed");
+			
+			mav.addObject("results",result);
+			
+			return mav;
+		}
+			
+	}
 	
 }

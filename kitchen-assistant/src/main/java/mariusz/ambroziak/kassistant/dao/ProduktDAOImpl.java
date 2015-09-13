@@ -12,6 +12,7 @@ import mariusz.ambroziak.kassistant.model.User;
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.transaction.annotation.Transactional;
@@ -78,7 +79,6 @@ public class ProduktDAOImpl implements ProduktDAO {
 	}
 
 	@Transactional
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<Produkt> getProduktsBySpacedName(String name) {
 		String[] parts=name.split(" ");
@@ -146,20 +146,16 @@ public class ProduktDAOImpl implements ProduktDAO {
 				.createCriteria(Produkt.class)
 				.add(Restrictions.idEq(id))
 				.list();
+		
+		if(produkts.size()>0)
+			throw new  DataIntegrityViolationException(
+					"In the table Produkt there is more than one produkt for id: "+id);
+
+		
 		if(produkts==null || produkts.size()==0)
 			return null;
 		else
 			return produkts.get(0);
 	}
 	
-
-
-//	private ProduktDAO singleton;
-//	
-//	public ProduktDAO getSingleton(){
-//		return singleton;
-//	}
-
-
-
 }

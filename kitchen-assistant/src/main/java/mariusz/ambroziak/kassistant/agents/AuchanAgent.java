@@ -93,7 +93,7 @@ public class AuchanAgent extends BaseAgent {
 				String foundProdukts="";
 				
 				for(Produkt p:x){
-					foundProdukts+=p.getId()+" ";
+					foundProdukts+=p.getP_id()+" ";
 				}
 				result.put("ids", foundProdukts);
 				

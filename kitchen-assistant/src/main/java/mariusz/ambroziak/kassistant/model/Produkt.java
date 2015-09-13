@@ -18,7 +18,7 @@ public class Produkt {
 
 	   @Id
 	   @GeneratedValue(strategy = GenerationType.IDENTITY)
-	   private Long id;
+	   private Long p_id;
 	   
 	
 
@@ -72,13 +72,16 @@ public class Produkt {
 		this.wstepnie_przetworzony = wstepnie_przetworzony;
 	}
 
-	public Long getId() {
-			return id;
-		}
+	
 
-		public void setId(Long id) {
-			this.id = id;
-		}
+
+		public Long getP_id() {
+		return p_id;
+	}
+
+	public void setP_id(Long p_id) {
+		this.p_id = p_id;
+	}
 
 		public String getUrl() {
 			return url;
@@ -138,12 +141,22 @@ public class Produkt {
 
 		@Override
 		public String toString() {
-			return "Produkt [id=" + id + ", url=" + url + ", nazwa=" + nazwa
+			return "Produkt [id=" + p_id + ", url=" + url + ", nazwa=" + nazwa
 					+ ", sklad=" + sklad + ", opis=" + opis + ", cena=" + cena
 					+ ", przetworzony=" + przetworzony
 					+ ", wstepnie_przetworzony=" + wstepnie_przetworzony + "]";
 		}
+		
+		public void setThing(String thing) {
+			
+		}
+
+		public String getThing() {
+			return "stuff";
+		}
 }
+
+
 
 
 /*

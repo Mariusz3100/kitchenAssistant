@@ -42,6 +42,22 @@
 		</constructor-arg>
 
 	</bean>
+	
+	
+	<bean id="recipeDao" class="mariusz.ambroziak.kassistant.dao.RecipeDAOImpl">
+		<constructor-arg>
+			<ref bean="sessionFactory" />
+		</constructor-arg>
+
+	</bean>
+
+	<bean id="amountTypeDao" class="mariusz.ambroziak.kassistant.dao.Amount_TypeDAOImpl">
+		<constructor-arg>
+			<ref bean="sessionFactory" />
+		</constructor-arg>
+
+	</bean>
+
 
 	<bean id="variant_wordDao" class="mariusz.ambroziak.kassistant.dao.Variant_WordDAOImpl">
 		<constructor-arg>
