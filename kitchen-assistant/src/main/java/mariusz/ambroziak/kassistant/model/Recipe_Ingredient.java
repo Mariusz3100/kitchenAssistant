@@ -24,7 +24,7 @@ public class Recipe_Ingredient {
 	float amount;
 	 
 	 @NotNull 
-	Long  a_type_id;
+	String amount_type;
 
 	public Long getRec_ing_id() {
 		return rec_ing_id;
@@ -58,12 +58,13 @@ public class Recipe_Ingredient {
 		this.amount = amount;
 	}
 
-	public Long getA_type_id() {
-		return a_type_id;
+	public String getAmount_type() {
+		return amount_type;
 	}
 
-	public void setA_type_id(Long a_type_id) {
-		this.a_type_id = a_type_id;
+	public void setAmount_type(String amount_type) {
+		this.amount_type = amount_type;
 	}
+
 
 }

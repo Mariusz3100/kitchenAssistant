@@ -47,26 +47,29 @@ public class RecipeController {
 //	}
 	
 	
-	@RequestMapping(value="/recipe")
+	@RequestMapping(value="/recipeForm")
 	
-	public ModelAndView form(HttpServletRequest request) {
-		String url=request.getParameter("recipeurl");
-		
-		
-		
-		if(url==null||url.equals("")){
+	public ModelAndView recipeFrom(HttpServletRequest request) {
 		
 			return new ModelAndView("form");
-		}else{
-			ArrayList<SearchResult> result=RecipeAgent.parse(url);
 
-			ModelAndView mav=new ModelAndView("recipeParsed");
-			
-			mav.addObject("results",result);
-			
-			return mav;
-		}
-			
+	}
+	
+	@RequestMapping(value="/recipeParsed")
+	public ModelAndView recipeParsed(HttpServletRequest request) {
+		String url=request.getParameter("recipeurl");
+
+
+		ArrayList<SearchResult> result=RecipeAgent.parse(url);
+
+		ModelAndView mav=new ModelAndView("recipeParsed");
+
+		mav.addObject("url",url);
+		mav.addObject("results",result);
+
+		return mav;
+
+
 	}
 	
 	@RequestMapping(value="/recipe2")

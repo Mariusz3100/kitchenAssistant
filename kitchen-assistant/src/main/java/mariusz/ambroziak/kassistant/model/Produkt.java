@@ -42,7 +42,7 @@ public class Produkt {
 	   private String opis;
 	   
 	   @NotNull
-	   private long cena;
+	   private float cena;
 	   
 	   @NotNull
 	   private boolean przetworzony=false;
@@ -61,7 +61,7 @@ public class Produkt {
 	}
 
 	public Produkt(String url, String nazwa, String sklad, String opis,
-			long cena, boolean przetworzony, boolean wstepnie_przetworzony) {
+			float cena, boolean przetworzony, boolean wstepnie_przetworzony) {
 		super();
 		this.url = url;
 		this.nazwa = nazwa;
@@ -115,11 +115,11 @@ public class Produkt {
 			this.opis = opis;
 		}
 
-		public long getCena() {
+		public float getCena() {
 			return cena;
 		}
 
-		public void setCena(long cena) {
+		public void setCena(float cena) {
 			this.cena = cena;
 		}
 

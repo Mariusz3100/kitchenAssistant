@@ -147,7 +147,7 @@ public class ProduktDAOImpl implements ProduktDAO {
 				.add(Restrictions.idEq(id))
 				.list();
 		
-		if(produkts.size()>0)
+		if(produkts.size()>1)
 			throw new  DataIntegrityViolationException(
 					"In the table Produkt there is more than one produkt for id: "+id);
 

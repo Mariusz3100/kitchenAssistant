@@ -52,16 +52,29 @@ import org.jsoup.select.Elements;
 
 
 
+
+
+
+
+
+
+
+
+
 import webscrappers.AuchanWebScrapper;
 import webscrappers.SJPWebScrapper;
 import madkit.kernel.Agent;
 import madkit.kernel.AgentAddress;
 import madkit.kernel.Message;
 import madkit.message.StringMessage;
+import mariusz.ambroziak.kassistant.dao.Base_WordDAOImpl;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
 import mariusz.ambroziak.kassistant.dao.ProduktDAO;
+import mariusz.ambroziak.kassistant.dao.Variant_WordDAOImpl;
 import mariusz.ambroziak.kassistant.model.Base_Word;
 import mariusz.ambroziak.kassistant.model.Produkt;
+import mariusz.ambroziak.kassistant.model.Recipe;
+import mariusz.ambroziak.kassistant.model.Recipe_Ingredient;
 import mariusz.ambroziak.kassistant.model.Variant_Word;
 import mariusz.ambroziak.kassistant.model.jsp.SearchResult;
 import mariusz.ambroziak.kassistant.utils.Converter;
@@ -181,7 +194,7 @@ public class RecipeAgent extends BaseAgent{
 			}
 	}
 		freeOne.busy=true;
-		ArrayList<SearchResult> result= freeOne.parseRecipe(url);
+		ArrayList<SearchResult> result= freeOne.getFromDbOrParse(url);
 		freeOne.busy=false;
 		return result;
 	}
@@ -189,7 +202,28 @@ public class RecipeAgent extends BaseAgent{
 
 
 
+	private ArrayList<SearchResult> getFromDbOrParse(String url) {
+		
+		Recipe recipeByURL = DaoProvider.getInstance().getRecipeDao().getRecipeByURL(url);
+		
+		if(recipeByURL==null)
+			return parseRecipe(url);
+		else
+			return retrieveFromDb();
+	}
+
+
+	private ArrayList<SearchResult> retrieveFromDb() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
 	public ArrayList<SearchResult> parseRecipe(String url){
+		Recipe recipe=new Recipe();
+		
+		recipe.setUrl(url);
+		
 		
 		ArrayList<SearchResult> retValue=new ArrayList<SearchResult>();
 //		StringBuilder outPage=new StringBuilder();
@@ -215,14 +249,37 @@ public class RecipeAgent extends BaseAgent{
 //				ArrayList<Produkt> znalezioneProdukty=new ArrayList<Produkt>()
 				
 				String ingredient = e.text();
-				String quantity=e.parent().select("class^=quantity").text();
+				Recipe_Ingredient quantityRetrieved =null;
 				
-				 retrieveQuantity(quantity);
+				if(ingredient.indexOf('(')>0&&ingredient.indexOf(')')>0){
+					String attemptedQ=
+							ingredient.substring(ingredient.indexOf('(')+1,ingredient.indexOf(')'));
+						
+					try{
+						quantityRetrieved=retrieveQuantity(attemptedQ);
+					}catch(IllegalArgumentException ex){
+						quantityRetrieved=null;
+					}
+					
+					ingredient=ingredient.replaceAll(attemptedQ, "")
+							.replaceAll("\\(", "")
+							.replaceAll("\\)", "").trim();
+					
+				}
 				
+				if(quantityRetrieved==null){
+					String quantity=extractQuantity(e);
+					quantityRetrieved = retrieveQuantity(quantity);
+				}
+					
+				
+				 
+				 
 				List<Produkt> potencjalneSkladniki = retrieveSkladnik(ingredient);
 				
 				
-				retValue.add(new SearchResult(ingredient, potencjalneSkladniki));
+				retValue.add(new SearchResult(ingredient,quantityRetrieved.getAmount_type()+"_"+quantityRetrieved.getAmount(),
+						potencjalneSkladniki));
 				
 				htmlLog("\n"+ingredient+"->\n");
 				
@@ -232,15 +289,7 @@ public class RecipeAgent extends BaseAgent{
 					}
 				else
 					htmlLog("Nothing Found\n");
-//				if(potencjalneSkladniki.size()==0)
-//				{
-//					outPage.append("Nothing found\n<br>\n");
-//
-//				}
-				
-//				for(Produkt p:potencjalneSkladniki){
-//					outPage.append(p.getNazwa()+" \t "+p.getUrl()+"<br>\n");
-//				}
+
 
 			}
 
@@ -255,8 +304,19 @@ public class RecipeAgent extends BaseAgent{
 		return retValue;
 	}
 
-	private void retrieveQuantity(String quantity) {
-		PrzepisyPLQExtract.extractQuantity(quantity);
+
+	private String extractQuantity(Element e) {
+		
+		String quantity=e.parent().select(".quantity").text();
+		
+		
+		if(quantity==null||quantity.equals(""))
+			quantity=e.parent().parent().select(".quantity").text();
+		return quantity;
+	}
+
+	private Recipe_Ingredient retrieveQuantity(String quantity) {
+		return PrzepisyPLQExtract.extractQuantity(quantity);
 		
 		
 		
@@ -264,7 +324,6 @@ public class RecipeAgent extends BaseAgent{
 
 
 	private List<Produkt> retrieveSkladnik(String text) {
-		System.out.println(text);
 		List<Produkt> results;
 		ArrayList<String> baseWords = null;
 		
@@ -275,7 +334,10 @@ public class RecipeAgent extends BaseAgent{
 		if(results==null||results.size()<1){
 			baseWords=getBaseWords(text);
 			
-			results=checkInDb(baseWords);
+			baseWords=removeNiepoprawne(baseWords);
+			
+			if(baseWords.size()>0)
+				results=checkInDb(baseWords);
 		}
 
 		if(results==null||results.size()<1){
@@ -283,7 +345,10 @@ public class RecipeAgent extends BaseAgent{
 			if(baseWords==null)
 				baseWords=getBaseWords(text);
 			
-			results=checkShops(baseWords);
+			baseWords=removeNiepoprawne(baseWords);
+			
+			if(baseWords.size()>0)
+				results=checkShops(baseWords);
 		}
 		
 		
@@ -300,8 +365,34 @@ public class RecipeAgent extends BaseAgent{
 	}
 
 
+	private ArrayList<String> removeNiepoprawne(ArrayList<String> baseWords) {
+		ArrayList<String> retValue=new ArrayList<String>();
+
+		for(String x:baseWords){
+			if(!x.equals(Base_WordDAOImpl.niepoprawneSlowoBazowe))
+				retValue.add(x);
+		}
+
+		return retValue;
+	}
+	
+	private String removeNiepoprawne(String baseWords) {
+		return baseWords.replaceAll(Base_WordDAOImpl.niepoprawneSlowoBazowe, 
+				"");
+	}
+
 	private List<Produkt> checkShops(ArrayList<String> baseWords) {
-		return checkShops(Converter.listToString(baseWords));
+		
+		String baseWordsString="";
+		
+		
+		for(String x:baseWords){
+			if(!Base_WordDAOImpl.niepoprawneSlowoBazowe.equals(baseWordsString))
+				baseWordsString+=x+" ";
+		}
+		
+		
+		return checkShops(baseWordsString);
 	}
 
 
@@ -311,25 +402,19 @@ public class RecipeAgent extends BaseAgent{
 		
 		for(String x : words){
 			Base_Word base_Name = DaoProvider.getInstance().getVariantWordDao().getBase_Name(x.toLowerCase());
-			if(base_Name!=null)
-				wordsList.add(base_Name.getB_word());
+			if(base_Name!=null){
+				if(!Base_WordDAOImpl.niepoprawneSlowoBazowe.equals(base_Name.getB_word()))
+					wordsList.add(base_Name.getB_word());
+			}
 			else
-				wordsList.add(getAndSaveNewRelation(x.toLowerCase()));
+				wordsList.add(SJPWebScrapper.getAndSaveNewRelation(x.toLowerCase()));
 		}
 		
 		return wordsList;
 	}
 
 
-	private String getAndSaveNewRelation(String x) {
-		String retValue=SJPWebScrapper.scrapWord(Converter.getOnlyLetters(x));
-		retValue=Converter.getOnlyLetters(retValue);
-		if(retValue==null)retValue="";
-		
-		DaoProvider.getInstance().getVariantWordDao().addRelation(x.toLowerCase(),retValue.toLowerCase());
-		
-		return retValue;
-	}
+
 
 
 	private ArrayList<Produkt> checkInDb(String text) {

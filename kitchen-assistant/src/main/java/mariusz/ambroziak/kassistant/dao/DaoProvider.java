@@ -10,6 +10,10 @@ public class DaoProvider {
 	private Variant_WordDAO variantWordDao;
 
 	private Base_WordDAO baseWordDao;
+	
+	private RecipeDAO recipeDao;
+
+	private ProblemDAO problemDao;
 
 	
 	public Base_WordDAO getBaseWordDao() {
@@ -28,12 +32,14 @@ public class DaoProvider {
 		return produktDao;
 	}
 
-	public DaoProvider(Base_WordDAO baseWordDao,UserDAO userDao, ProduktDAO produktDao,Variant_WordDAO variantWordDao) {
+	public DaoProvider(Base_WordDAO baseWordDao,UserDAO userDao, ProduktDAO produktDao,Variant_WordDAO variantWordDao,RecipeDAO recipeDao,ProblemDAO problemDao) {
 		super();
+		this.problemDao=problemDao;
 		this.userDao = userDao;
 		this.produktDao = produktDao;
 		this.variantWordDao=variantWordDao;
 		this.baseWordDao=baseWordDao;
+		this.recipeDao=recipeDao;
 		
 		
 		if(singleton==null)
@@ -42,9 +48,17 @@ public class DaoProvider {
 			throw new IllegalStateException("two instances of daoProvider");
 	}
 	
+	public RecipeDAO getRecipeDao() {
+		return recipeDao;
+	}
+
 	public static DaoProvider getInstance(){
 		return singleton;
 	}
 	
+	public ProblemDAO getProblemDao() {
+		return problemDao;
+	}
+
 	private static DaoProvider singleton; 
 }

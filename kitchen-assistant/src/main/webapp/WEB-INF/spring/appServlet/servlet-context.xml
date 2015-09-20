@@ -42,8 +42,8 @@
 		</constructor-arg>
 
 	</bean>
-	
-	
+
+
 	<bean id="recipeDao" class="mariusz.ambroziak.kassistant.dao.RecipeDAOImpl">
 		<constructor-arg>
 			<ref bean="sessionFactory" />
@@ -74,7 +74,12 @@
 		</constructor-arg>
 	</bean>
 
-
+	<bean id="problemDao" class="mariusz.ambroziak.kassistant.dao.ProblemDAOImpl">
+		<constructor-arg>
+			<ref bean="sessionFactory" />
+		</constructor-arg>
+	</bean>
+	
 	<bean id="daoProvider" class="mariusz.ambroziak.kassistant.dao.DaoProvider">
 		<constructor-arg>
 			<ref bean="userDao" />
@@ -85,11 +90,19 @@
 		</constructor-arg>
 
 		<constructor-arg>
+			<ref bean="problemDao" />
+		</constructor-arg>
+		
+		<constructor-arg>
 			<ref bean="variant_wordDao" />
 		</constructor-arg>
 
 		<constructor-arg>
 			<ref bean="base_wordDao" />
+		</constructor-arg>
+
+		<constructor-arg>
+			<ref bean="recipeDao" />
 		</constructor-arg>
 
 	</bean>

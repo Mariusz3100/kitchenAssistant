@@ -43,6 +43,12 @@ public class ClockAgent extends BaseAgent {
 	}
 
 	@Override
+	public String toString() {
+		
+		return super.toString()+"\n\n"+getTimePassed();
+	}
+
+	@Override
 	protected void activate() {
 //		timePassed=System.currentTimeMillis();
 		setLogLevel(Level.FINEST);

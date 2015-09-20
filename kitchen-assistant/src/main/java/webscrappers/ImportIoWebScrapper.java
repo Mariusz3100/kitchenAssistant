@@ -20,6 +20,7 @@ import java.net.URLEncoder;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import mariusz.ambroziak.kassistant.agents.ClockAgent;
@@ -34,6 +35,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import com.codesnippets4all.json.parsers.JSONParser;
 import com.codesnippets4all.json.parsers.JsonParserFactory;
@@ -171,19 +173,30 @@ public abstract class ImportIoWebScrapper {
 		connection.setRequestProperty("Accept-Charset", charset);
 		String jsonRespons = getResponseText(connection);
 
-		JSONArray jsonResults=new JSONObject(jsonRespons).getJSONArray("results");
-		
-		for(int i=0;i<jsonResults.length()&&SystemEnv.AgentsOn;i++){
-			JSONObject res=jsonResults.getJSONObject(i);
-	
-			String detailsURL=res.getString("prodphoto_link");
-
-			//if(!checkForExistingDetails(detailsURL))	
-				rememberDetailsToBeSaved(detailsURL);
+		JSONObject jsonObjecttemp = new JSONObject(jsonRespons);
+		if(jsonObjecttemp.has("results"))
+			{
+			JSONArray jsonResults=new JSONObject(jsonRespons).getJSONArray("results");
 			
+			for(int i=0;i<jsonResults.length()&&SystemEnv.AgentsOn;i++){
+				JSONObject res=jsonResults.getJSONObject(i);
+		
+				String detailsURL=res.getString("prodphoto_link");
 
+				//if(!checkForExistingDetails(detailsURL))	
+					rememberDetailsToBeSaved(detailsURL);
+				
+
+				
+			}
+			
+			
+		}else{
+			System.out.println("no results found on "+url);
 			
 		}
+		
+
 	}
 
 	private void updateTickets() {
@@ -222,15 +235,22 @@ public abstract class ImportIoWebScrapper {
 	}
 	
 	
-	protected boolean checkForExistingDetails(String detailsURL) {
-		return 
-				DaoProvider.getInstance().getProduktDao().getProduktsByURL(detailsURL).size()
-				>0;
+	protected Produkt checkForExistingDetails(String detailsURL) {
+		List<Produkt> produktsByURL = DaoProvider.getInstance().getProduktDao().getProduktsByURL(detailsURL);
 
+		if(produktsByURL.size()>1)
+			throw new  DataIntegrityViolationException(
+					"In the table recipe there is more than one recipe for url: "+detailsURL);
+		else
+			if(produktsByURL.size()==1)
+				return produktsByURL.get(0);
+			else 
+				return null;
+		
 	}
-	
-	
-//	protected boolean checkForExistingDetails(String detailsURL) {
+
+
+	//	protected boolean checkForExistingDetails(String detailsURL) {
 //		String query="select count(product_id) from product where url='"+detailsURL+"';";
 ////		query=query.replaceAll("__url__", detailsURL);
 //		
@@ -254,7 +274,7 @@ public abstract class ImportIoWebScrapper {
 //	}
 	
 	
-	protected void getAndSaveDetails(String detailsURL)
+	protected Produkt getAndSaveDetails(String detailsURL)
 			{
 
 		while(!SystemEnv.AgentsOn)
@@ -296,70 +316,12 @@ public abstract class ImportIoWebScrapper {
 				JSONObject details=jsonResults.getJSONObject(0);
 				
 				
-				saveJSONDetails(detailsURL,details);
+				return saveJSONDetails(detailsURL,details);
 				
 				
-				
-				
-				
-//				String query=insertQuery;
-//				
-//				//String idQuery="SELECT nextval('product_id_seq');";
-//	//			int id=0;
-//				//ResultSet rs=interfac.runQuery(idQuery);
-//	//			if(rs!=null){
-//	//				try {
-//	//					rs.next();
-//	//
-//	//					id=rs.getInt("nextval");
-//	//					System.out.println("id=rs.getInt(\"nextval\");: "+id);
-//	//				} catch (SQLException e) {
-//	//					// TODO Auto-generated catch block
-//	//					e.printStackTrace();
-//	//				}
-//	//			}
-//	//			System.out.println("idQuery: "+idQuery+" rs "+rs);
-//	
-//				
-//				
-//				query=query.replace("__id__", " nextval('product_product_id_seq') ");
-//				
-//				if(details.has("wartosci_odzywcze")){
-//					
-//					query=query.replace("__odzywcze__", details.getString("wartosci_odzywcze"));
-//					
-//				}
-//				
-//				query=query.replace("__nazwa__", details.getString("nazwa"));
-//				query=query.replace("__url__", detailsURL);
-//				
-//				if(details.has("sklad"))
-//					query=query.replace("__sklad__", details.getString("sklad"));
-//				else
-//					query=query.replace("__sklad__", "");
-//				
-//				query=query.replace("__opis__", details.getString("opis"));
-//				System.out.println("Insert query: "+query);
-//				
-//				String nutrValsInsertQuery=null;
-//				String nutrVals=null;
-//				
-//				if(details.has("wartosci_odzywcze")){
-//				nutrVals=details.getString("wartosci_odzywcze");
-//				}
-//	//				nutrValsInsertQuery=processNutrValuesQuery(nutrVals);
-//	//				if(nutrValsInsertQuery!=null&&!nutrValsInsertQuery.equals("")){
-//	//					query=query.replace("__briefly_Processed__", "true");
-//	//	
-//	//				}else{
-//						query=query.replace("__briefly_Processed__", "false");
-//	
-//	//				}
-//				
-//				
-////				interfac.runNoResultQuery(query);
 			}else{
-				System.out.println("no results found");
+				System.out.println("no results found on "+detailsURL);
+				return null;
 			}
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
@@ -369,19 +331,19 @@ public abstract class ImportIoWebScrapper {
 			e.printStackTrace();
 		}
 
-		
+		return null;
 		
 	}
 	
 	
-	private void saveJSONDetails(String detailsURL, JSONObject details) {
+	private Produkt saveJSONDetails(String detailsURL, JSONObject details) {
 		
 		
 //		String url=details.getString("details");
 		String nazwa=extractNazwa(details);
 		String sklad=extractSklad(details);
 		String opis=extractOpis(details);
-		long cena = extractCena(details);
+		float cena = extractCena(details);
 		if(detailsURL!=null)
 			detailsURL=detailsURL.split(";")[0];
 		Produkt p=new Produkt(detailsURL, nazwa, sklad, opis, cena, false, false);
@@ -389,34 +351,13 @@ public abstract class ImportIoWebScrapper {
 		scrapperLog.append("Saving data from \""+detailsURL+"\": "+p);
 		DaoProvider.getInstance().getProduktDao().addProdukt(p);
 		
-//		if(details.has("wartosci_odzywcze")){
-//			
-//			query=query.replace("__odzywcze__", details.getString("wartosci_odzywcze"));
-//			
-//		}
-//		
-//		query=query.replace("__nazwa__", details.getString("nazwa"));
-//		query=query.replace("__url__", detailsURL);
-//		
-//		if(details.has("sklad"))
-//			query=query.replace("__sklad__", details.getString("sklad"));
-//		else
-//			query=query.replace("__sklad__", "");
-//		
-//		query=query.replace("__opis__", details.getString("opis"));
-//		System.out.println("Insert query: "+query);
-//		
-//		String nutrValsInsertQuery=null;
-//		String nutrVals=null;
-//		
-//		if(details.has("wartosci_odzywcze")){
-//		nutrVals=details.getString("wartosci_odzywcze");
+		return p;
 	}
 
 	public abstract String extractNazwa(JSONObject details);
 	public abstract String extractSklad(JSONObject details);
 	public abstract String extractOpis(JSONObject details);
-	public abstract long extractCena(JSONObject details);
+	public abstract float extractCena(JSONObject details);
 
 	
 	public ArrayList<Produkt> lookForInShop(String url,String lookFor) throws UnsupportedEncodingException,
@@ -433,7 +374,14 @@ public abstract class ImportIoWebScrapper {
 		connection.setRequestProperty("Accept-Charset", charset);
 		String jsonRespons = getResponseText(connection);
 		
-		JSONArray jsonResults=new JSONObject(jsonRespons).getJSONArray("results");
+		JSONObject jsonResponseObject = new JSONObject(jsonRespons);
+		
+		if(!jsonResponseObject.has("results"))
+		{
+			System.out.println("Problem");
+		}
+		
+		JSONArray jsonResults=jsonResponseObject.getJSONArray("results");
 		
 		
 		for(int i=0;i<jsonResults.length()&&SystemEnv.AgentsOn;i++){
@@ -455,8 +403,8 @@ public abstract class ImportIoWebScrapper {
 			}
 			
 			if(found){
-				retValue.add(new Produkt(nazwa,detailsUrl));
-				getAndSaveDetailsIfNew(detailsUrl);
+				retValue.add(getAndSaveDetailsIfNew(detailsUrl));
+				
 			}
 
 	
@@ -467,9 +415,12 @@ public abstract class ImportIoWebScrapper {
 	}
 	
 	
-	private void getAndSaveDetailsIfNew(String detailsUrl) {
-		if(!checkForExistingDetails(detailsUrl))
-			getAndSaveDetails(detailsUrl);
+	private Produkt getAndSaveDetailsIfNew(String detailsUrl) {
+		Produkt existingDetails = checkForExistingDetails(detailsUrl);
+		if(existingDetails!=null)
+			return existingDetails;
+		else
+			return getAndSaveDetails(detailsUrl);
 		
 	}
 

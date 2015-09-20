@@ -110,14 +110,14 @@ public class AuchanWebScrapper extends ImportIoWebScrapper {
 		return input.getLine();
 	}
 
-	public long extractCena(JSONObject details) {
+	public float extractCena(JSONObject details) {
 		
 		if(details.has("cena_mala")&&details.has("cena_duza")){
 			int cenaMala=details.getInt("cena_mala");
 			int cenaDuza=details.getInt("cena_duza");
 		
 			
-			long cena = cenaDuza+cenaMala/100l;
+			float cena = cenaDuza+cenaMala/100f;
 			return cena;
 		}
 		else return -1l;

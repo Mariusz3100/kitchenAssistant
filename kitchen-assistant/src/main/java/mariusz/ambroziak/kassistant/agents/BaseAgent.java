@@ -28,57 +28,89 @@ public abstract class BaseAgent extends Agent {
 	public String AGENT_ROLE;
 
 	private static HashMap<String,BaseAgent> extent;
-	
+
 	public static HashMap<String, BaseAgent> getExtent() {
 		return extent;
 	}
 
 	//	private static String AgentName;
 	protected StringBuilder htmlLogs;
-	
+
 	public BaseAgent(){
 		htmlLogs=new StringBuilder();
 		addNewAgent(this);
 	}
-	
-	
+
+
 	private void addNewAgent(BaseAgent ba){
 		if(extent==null)
 			extent=new HashMap<String, BaseAgent>();
-		
+
 		String key=ba.getClass().getSimpleName();
-		
+
 		int keyCount=0;
 		while(extent.containsKey(key)){
 			++keyCount;
 			key=ba.getClass().getSimpleName()+keyCount;
 		}
-		
+
 		extent.put(key, ba);
 	}
-	
+
 	@Override
-	public StringMessage nextMessage() {
+	public Message waitNextMessage() {
+		Message m=super.waitNextMessage();
 		
-		StringMessage sm=(StringMessage) super.nextMessage();
-		
+		if(m.getSender().getRole().equals("manager"))
+			System.out.println("ALERT!!!!");
+			
+		StringMessage sm=(StringMessage) m;
+
 		if(sm!=null){
 			String data="Agent \""+this.toString()+"\" received message:\n ";
-			
-			
-			data+=sm.getContent()+" \n";
-			
+
+
+			data+="<<"+sm.getContent()+">>\n";
+
 			data+="at "+ClockAgent.getTimePassed()+"}\n\n";
+
+			htmlLog(data);
+		}
+		return sm;
+
+
+
+	}
+
+
+	@Override
+	public StringMessage nextMessage() {
+
+		StringMessage sm=(StringMessage) super.nextMessage();
+
+
+		
+		if(sm!=null){
+			if(sm.getSender().getRole().equals("manager"))
+				System.out.println("ALERT!!!!");
 			
+			
+			String data="Agent \""+this.toString()+"\" received message:\n ";
+
+
+			data+="<<"+sm.getContent()+">>\n";
+
+			data+="at "+ClockAgent.getTimePassed()+"}\n\n";
+
 			htmlLog(data);
 		}
 		return sm;
 	}
-	
+
 	public void htmlLog(String data){
 		htmlLogs.append(data);
 	}
-	
+
 	public String getHtmlLog(){
 		return htmlLogs.toString();
 	}
@@ -87,14 +119,14 @@ public abstract class BaseAgent extends Agent {
 	@Override
 	public ReturnCode sendMessageWithRole(final AgentAddress receiver, final Message message, final String senderRole) {
 		String data="{Agent \""+this.toString()+"\" sent message:\n ";
-		
-		data+=((StringMessage)message).getContent()+" \n";
+
+		data+="<"+((StringMessage)message).getContent()+">\n";
 		data+="to agent \""+receiver.toString()+"\"\n ";
 
 		data+="at "+ClockAgent.getTimePassed()+"}\n\n";
-		
+
 		htmlLog(data);
-		
+
 		return super.sendMessageWithRole(receiver,message,senderRole);	
 	}
 	@Override
@@ -105,7 +137,7 @@ public abstract class BaseAgent extends Agent {
 				+ "AGENT_GROUP:" + AGENT_GROUP + ", "
 				+ "AGENT_ROLE="+ AGENT_ROLE + "]";
 	}
-	
-	
-	
+
+
+
 }

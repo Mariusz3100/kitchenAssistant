@@ -10,7 +10,9 @@ import mariusz.ambroziak.kassistant.model.Base_Word;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.User;
 import mariusz.ambroziak.kassistant.model.Variant_Word;
+import mariusz.ambroziak.kassistant.utils.Converter;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
@@ -48,7 +50,7 @@ public class Variant_WordDAOImpl implements Variant_WordDAO {
 		@SuppressWarnings("unchecked")
 		List<Variant_Word> words =  sessionFactory.getCurrentSession()
 				.createCriteria(Variant_Word.class)
-				.add(Restrictions.eq("v_word", name))
+				.add(Restrictions.eq("v_word", Converter.escapeSql(name)))
 				.list();
 		
 		return words;
@@ -58,7 +60,11 @@ public class Variant_WordDAOImpl implements Variant_WordDAO {
 	@Transactional
 	@Override
 	public Base_Word getBase_Name(String name) {
-		String query=joinBaseQ.replaceAll("__variant_word__", name);
+		
+		
+		String query=joinBaseQ.replaceAll("__variant_word__", Converter.escapeSql(Converter.escapeSql(name)));
+		
+		
 		@SuppressWarnings("unchecked")
 		List<Base_Word> words =  sessionFactory.getCurrentSession()
 				.createSQLQuery(query)
@@ -79,7 +85,7 @@ public class Variant_WordDAOImpl implements Variant_WordDAO {
 		
 		Iterator<String> i=names.iterator();
 		while(i.hasNext()){
-			namesSet+="'"+i.next()+"'";
+			namesSet+="'"+Converter.escapeSql(i.next())+"'";
 			if(i.hasNext())
 				namesSet+=", ";
 		}
@@ -110,12 +116,16 @@ public class Variant_WordDAOImpl implements Variant_WordDAO {
 	@Transactional
 	@Override
 	public void addVariant_word(Variant_Word vw) {
+		//if(vw.getV_word().indexOf('\''))
+		
 		this.sessionFactory.getCurrentSession().save(vw);
 	}
 
 	@Transactional
 	@Override
 	public void addRelation(String variantWord, String baseWord) {
+		variantWord=Converter.escapeSql(variantWord);
+		baseWord=Converter.escapeSql(baseWord);
 		
 		Base_Word bw=base_wordDao.getBase_Name(baseWord);
 		
