@@ -142,4 +142,10 @@ public class AuchanWebScrapper extends ImportIoWebScrapper {
 		else return "";
 	}
 	
+	public String extractWartosciOdzywcze(JSONObject details) {
+		if(details.has("wartosci_odzywcze"))
+			return details.getString("wartosci_odzywcze");
+		else return "";
+	}
+	
 }
