@@ -55,6 +55,11 @@ public class RecipeController {
 
 	}
 	
+	
+
+	
+	
+	
 	@RequestMapping(value="/recipeParsed")
 	public ModelAndView recipeParsed(HttpServletRequest request) {
 		String url=request.getParameter("recipeurl");
@@ -83,14 +88,27 @@ public class RecipeController {
 		
 			return new ModelAndView("form");
 		}else{
-			ArrayList<SearchResult> result=RecipeAgent.parse(url);
+			
+			if(url.startsWith("-")){
+				ArrayList<SearchResult> result=RecipeAgent.parse(url);
 
-			ModelAndView mav=new ModelAndView("recipeParsed");
-			
-			mav.addObject("results",result);
-			
-			return mav;
+				ModelAndView mav=new ModelAndView("recipeParsed");
+				
+				mav.addObject("results",result);
+				
+				return mav;				
+				
+			}else{
+				ArrayList<SearchResult> result=RecipeAgent.parse(url);
+	
+				ModelAndView mav=new ModelAndView("quantitiesTested");
+				
+				mav.addObject("results",result);
+				
+				return mav;
+			}
 		}
+		
 			
 	}
 	
