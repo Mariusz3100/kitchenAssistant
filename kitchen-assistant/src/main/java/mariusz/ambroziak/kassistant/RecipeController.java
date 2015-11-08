@@ -1,6 +1,7 @@
 package mariusz.ambroziak.kassistant;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+
+import testing.QuantityTesting;
 
 
 
@@ -60,56 +63,86 @@ public class RecipeController {
 	
 	
 	
-	@RequestMapping(value="/recipeParsed")
-	public ModelAndView recipeParsed(HttpServletRequest request) {
+	@RequestMapping(value="/chooseProdukts")
+	public ModelAndView chooseProdukts(HttpServletRequest request) {
 		String url=request.getParameter("recipeurl");
 
-
-		ArrayList<SearchResult> result=RecipeAgent.parse(url);
-
-		ModelAndView mav=new ModelAndView("recipeParsed");
-
-		mav.addObject("url",url);
-		mav.addObject("results",result);
-
-		return mav;
-
-
-	}
+		if(!url.startsWith("-")){
+			ArrayList<SearchResult> result=RecipeAgent.parse(url);
 	
-	@RequestMapping(value="/recipe2")
+			ModelAndView mav=new ModelAndView("recipeParsed");
 	
-	public ModelAndView form2(HttpServletRequest request) {
-		String url=request.getParameter("recipeurl");
-		
-		
-		
-		if(url==null||url.equals("")){
-		
-			return new ModelAndView("form");
+			mav.addObject("url",url);
+			mav.addObject("results",result);
+	
+			return mav;
 		}else{
+			List<String> result=QuantityTesting.testQuantity(url.substring(1));
 			
-			if(url.startsWith("-")){
-				ArrayList<SearchResult> result=RecipeAgent.parse(url);
-
-				ModelAndView mav=new ModelAndView("recipeParsed");
-				
-				mav.addObject("results",result);
-				
-				return mav;				
-				
-			}else{
-				ArrayList<SearchResult> result=RecipeAgent.parse(url);
-	
-				ModelAndView mav=new ModelAndView("quantitiesTested");
-				
-				mav.addObject("results",result);
-				
-				return mav;
-			}
+			ModelAndView mav=new ModelAndView("quantitiesTested");
+			
+			mav.addObject("results",result);
+			
+			return mav;
 		}
 		
-			
+
 	}
+	
+	
+	@RequestMapping(value="/chooseQuantities")
+	public ModelAndView chooseQuantities(HttpServletRequest request) {
+			try {
+				request.setCharacterEncoding(java.nio.charset.StandardCharsets.UTF_8.toString());
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		String url=request.getParameter("recipeurl");
+			
+			request.getParameterMap();
+			ModelAndView mav=new ModelAndView("recipeParsed");
+	
+			
+			return mav;
+		
+		
+
+	}
+	
+//	@RequestMapping(value="/recipe2")
+//	
+//	public ModelAndView form2(HttpServletRequest request) {
+//		String url=request.getParameter("recipeurl");
+//		
+//		
+//		
+//		if(url==null||url.equals("")){
+//		
+//			return new ModelAndView("form");
+//		}else{
+//			
+//			if(url.startsWith("-")){
+//				ArrayList<SearchResult> result=RecipeAgent.parse(url);
+//
+//				ModelAndView mav=new ModelAndView("recipeParsed");
+//				
+//				mav.addObject("results",result);
+//				
+//				return mav;				
+//				
+//			}else{
+//				ArrayList<SearchResult> result=RecipeAgent.parse(url);
+//	
+//				ModelAndView mav=new ModelAndView("quantitiesTested");
+//				
+//				mav.addObject("results",result);
+//				
+//				return mav;
+//			}
+//		}
+//		
+//			
+//	}
 	
 }

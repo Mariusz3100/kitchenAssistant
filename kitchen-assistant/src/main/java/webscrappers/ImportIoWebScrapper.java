@@ -42,7 +42,7 @@ import com.codesnippets4all.json.parsers.JsonParserFactory;
 
 public abstract class ImportIoWebScrapper {
 	 private static final int ENJOY_YOUR_OWN_WAIT_TIME = 500;
-	private static final float ticketsFactor = 0.01f;
+	private static final float ticketsFactor = 0.001f;
 //	DatabaseInterface interfac;
 	 ArrayList<String> detailsToBeSavedList;
 		private float tickets=0;

@@ -61,6 +61,7 @@ import org.jsoup.select.Elements;
 
 
 
+
 import webscrappers.AuchanWebScrapper;
 import webscrappers.SJPWebScrapper;
 import madkit.kernel.Agent;
@@ -76,6 +77,7 @@ import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.Recipe;
 import mariusz.ambroziak.kassistant.model.Recipe_Ingredient;
 import mariusz.ambroziak.kassistant.model.Variant_Word;
+import mariusz.ambroziak.kassistant.model.jsp.QuantityProdukt;
 import mariusz.ambroziak.kassistant.model.jsp.SearchResult;
 import mariusz.ambroziak.kassistant.utils.Converter;
 import mariusz.ambroziak.kassistant.utils.PrzepisyPLQExtract;
@@ -249,28 +251,12 @@ public class RecipeAgent extends BaseAgent{
 //				ArrayList<Produkt> znalezioneProdukty=new ArrayList<Produkt>()
 				
 				String ingredient = e.text();
-				Recipe_Ingredient quantityRetrieved =null;
+//				Recipe_Ingredient quantityRetrieved =null;
 				
-				if(ingredient.indexOf('(')>0&&ingredient.indexOf(')')>0){
-					String attemptedQ=
-							ingredient.substring(ingredient.indexOf('(')+1,ingredient.indexOf(')'));
-						
-					try{
-						quantityRetrieved=retrieveQuantity(attemptedQ);
-					}catch(IllegalArgumentException ex){
-						quantityRetrieved=null;
-					}
-					
-					ingredient=ingredient.replaceAll(attemptedQ, "")
-							.replaceAll("\\(", "")
-							.replaceAll("\\)", "").trim();
-					
-				}
 				
-				if(quantityRetrieved==null){
-					String quantity=extractQuantity(e);
-					quantityRetrieved = retrieveQuantity(quantity);
-				}
+				QuantityProdukt produktAndAmount=retrieveProduktAmountData(e);
+				
+				
 					
 				
 				 
@@ -278,7 +264,7 @@ public class RecipeAgent extends BaseAgent{
 				List<Produkt> potencjalneSkladniki = retrieveSkladnik(ingredient);
 				
 				
-				retValue.add(new SearchResult(ingredient,quantityRetrieved.getAmount_type()+"_"+quantityRetrieved.getAmount(),
+				retValue.add(new SearchResult(ingredient,produktAndAmount.getAmountType()+"_"+produktAndAmount.getAmount(),
 						potencjalneSkladniki));
 				
 				htmlLog("\n"+ingredient+"->\n");
@@ -305,6 +291,39 @@ public class RecipeAgent extends BaseAgent{
 	}
 
 
+	private QuantityProdukt retrieveProduktAmountData(Element e) {
+		// TODO Auto-generated method stub
+		String ingredient = e.text();
+		QuantityProdukt retValue =null;
+		
+//		if(ingredient.indexOf('(')>0&&ingredient.indexOf(')')>0){
+//			String attemptedQ=
+//					ingredient.substring(ingredient.indexOf('(')+1,ingredient.indexOf(')'));
+//				
+//			try{
+//				retValue=retrieveQuantity(attemptedQ);
+//			}catch(IllegalArgumentException ex){
+//				retValue=null;
+//			}
+//			
+//			ingredient=ingredient.replaceAll(attemptedQ, "")
+//					.replaceAll("\\(", "")
+//					.replaceAll("\\)", "").trim();
+//			
+//		}
+//		
+//		if(retValue==null){
+//			String quantity=extractQuantity(e);
+//			retValue = retrieveQuantity(quantity);
+//		}
+//		
+//		
+		
+		retValue=PrzepisyPLQExtract.retrieveProduktAmountData(e);
+		return retValue;
+	}
+
+
 	private String extractQuantity(Element e) {
 		
 		String quantity=e.parent().select(".quantity").text();
@@ -315,7 +334,7 @@ public class RecipeAgent extends BaseAgent{
 		return quantity;
 	}
 
-	private Recipe_Ingredient retrieveQuantity(String quantity) {
+	private static QuantityProdukt retrieveQuantity(String quantity) {
 		return PrzepisyPLQExtract.extractQuantity(quantity);
 		
 		

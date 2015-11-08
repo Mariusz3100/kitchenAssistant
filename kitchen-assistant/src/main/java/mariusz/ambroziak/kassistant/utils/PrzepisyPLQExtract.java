@@ -3,11 +3,15 @@ package mariusz.ambroziak.kassistant.utils;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
+
+import org.jsoup.nodes.Element;
 
 import webscrappers.SJPWebScrapper;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
 import mariusz.ambroziak.kassistant.model.Base_Word;
 import mariusz.ambroziak.kassistant.model.Recipe_Ingredient;
+import mariusz.ambroziak.kassistant.model.jsp.QuantityProdukt;
 
 public class PrzepisyPLQExtract {
 	private static Map<String,QuantityTranslation> translations;
@@ -50,13 +54,13 @@ public class PrzepisyPLQExtract {
 		
 	}
 	
-	public static Recipe_Ingredient extractQuantity(String text){
-		Recipe_Ingredient retValue=new Recipe_Ingredient();
+	public static QuantityProdukt extractQuantity(String text){
+		QuantityProdukt retValue=new QuantityProdukt();
 		
 		if(text==null||text.equals(""))
 		{
-			retValue.setAmount(1);
-			retValue.setAmount_type(AmountTypes.szt.getType());
+			retValue.setAmount(-1);
+			retValue.setAmountType(AmountTypes.szt);
 			return retValue;
 		}
 		
@@ -70,11 +74,11 @@ public class PrzepisyPLQExtract {
 		retValue.setAmount(Float.parseFloat(elems[0].replaceAll(",", ".")));
 		for(AmountTypes at:AmountTypes.values()){
 			if(at.getType().equals(elems[1])){
-				retValue.setAmount_type(at.getType());
+				retValue.setAmountType(at);
 			}
 		}
 		
-		if(retValue.getAmount_type()==null){
+		if(retValue.getAmountType()==null){
 			QuantityTranslation quantityTranslation = translations.get(elems[1]);
 			
 			if(quantityTranslation==null){
@@ -101,13 +105,13 @@ public class PrzepisyPLQExtract {
 			
 			if(quantityTranslation==null)
 			{
-				retValue.setAmount(1);
-				retValue.setAmount_type(AmountTypes.szt.getType());
+				retValue.setAmount(-1);
+				retValue.setAmountType(AmountTypes.szt);
 				
 				ProblemLogger.logProblem("Nieznana miara "+elems[1]);
 				return retValue;
 			}else{
-				retValue.setAmount_type(quantityTranslation.getTargetAmountType().getType());
+				retValue.setAmountType(quantityTranslation.getTargetAmountType());
 				retValue.setAmount(retValue.getAmount()*quantityTranslation.getMultiplier());
 			}
 		}
@@ -141,4 +145,47 @@ public class PrzepisyPLQExtract {
 			this.multiplier = multiplier;
 		}
 	}
+	
+	
+	public static QuantityProdukt retrieveProduktAmountData(Element e) {
+		// TODO Auto-generated method stub
+		String ingredient = e.text();
+		QuantityProdukt retValue =null;
+		
+		if(ingredient.indexOf('(')>0&&ingredient.indexOf(')')>0){
+			String attemptedQ=
+					ingredient.substring(ingredient.indexOf('(')+1,ingredient.indexOf(')'));
+				
+			try{
+				retValue=extractQuantity(attemptedQ);
+			}catch(IllegalArgumentException ex){
+				retValue=null;
+			}
+			
+			ingredient=ingredient.replaceAll(Pattern.quote(attemptedQ), "")
+					.replaceAll("\\(", "")
+					.replaceAll("\\)", "").trim();
+			
+		}
+		
+		if(retValue==null){
+			String quantity=extractQuantityString(e);
+			retValue = extractQuantity(quantity);
+		}
+		
+		
+		return retValue;
+	}
+
+	
+	private static String extractQuantityString(Element e) {
+		
+		String quantity=e.parent().select(".quantity").text();
+		
+		
+		if(quantity==null||quantity.equals(""))
+			quantity=e.parent().parent().select(".quantity").text();
+		return quantity;
+	}
+	
 }

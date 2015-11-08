@@ -12,6 +12,7 @@ import java.util.List;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.Recipe;
 import mariusz.ambroziak.kassistant.model.Recipe_Ingredient;
+import mariusz.ambroziak.kassistant.model.jsp.QuantityProdukt;
 import mariusz.ambroziak.kassistant.model.jsp.SearchResult;
 import mariusz.ambroziak.kassistant.utils.PrzepisyPLQExtract;
 
@@ -50,7 +51,7 @@ public class QuantityTesting {
 //					ArrayList<Produkt> znalezioneProdukty=new ArrayList<Produkt>()
 					
 					String ingredient = e.text();
-					Recipe_Ingredient quantityRetrieved =null;
+					QuantityProdukt quantityRetrieved =null;
 					
 					if(ingredient.indexOf('(')>0&&ingredient.indexOf(')')>0){
 						String attemptedQ=
@@ -77,7 +78,7 @@ public class QuantityTesting {
 					 
 					 
 					retValue.add(e.parent()+" -> "+
-					quantityRetrieved.getAmount()+":"+quantityRetrieved.getAmount_type());
+					quantityRetrieved.getAmount()+":"+quantityRetrieved.getAmountType());
 					
 
 
@@ -93,7 +94,7 @@ public class QuantityTesting {
 
 			return retValue;
 		}
-	private static Recipe_Ingredient retrieveQuantity(String quantity) {
+	private static QuantityProdukt retrieveQuantity(String quantity) {
 		return PrzepisyPLQExtract.extractQuantity(quantity);
 		
 		

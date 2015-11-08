@@ -18,6 +18,7 @@ import java.net.URLEncoder;
 
 
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 import javax.swing.text.Document;
 
@@ -33,6 +34,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 
 //import words.Converter;
+
 
 
 
@@ -93,10 +95,12 @@ public class AuchanWebScrapper extends ImportIoWebScrapper {
 	IOException, MalformedURLException {
 		String search4=Converter.auchanConvertion(lookFor);
 //		String tempSearch4=search4.replaceAll("\\\\$","\\\\\\\\$");
+		
+	//	Pattern.quote(lookFor);
 		String search4withSpaces=search4.replaceAll("\\$", " ");
 				
 		
-		String urlWithSpaces=auchanSearchUrl.replaceAll("__search__",search4withSpaces );
+		String urlWithSpaces=auchanSearchUrl.replaceAll("__search__",search4withSpaces);
 		
 		String finalUrl=urlWithSpaces.replaceAll(" ","\\$");
 

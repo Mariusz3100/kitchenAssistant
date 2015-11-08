@@ -1,6 +1,7 @@
 package mariusz.ambroziak.kassistant.model.jsp;
 
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 import mariusz.ambroziak.kassistant.model.Produkt;
@@ -24,6 +25,16 @@ public class SearchResult {
 	public void setQuantity(String quantity) {
 		this.quantity = quantity;
 	}
+	public String getSearchPhraseEncoded() {
+		String retValue=
+				Base64.getEncoder().encodeToString(searchPhrase.getBytes());
+		return retValue;
+	}
+	
+	public void setSearchPhraseEncoded(String searchPhrase) {
+		this.searchPhrase = new String(Base64.getDecoder().decode(searchPhrase.getBytes()));
+	}
+	
 	public String getSearchPhrase() {
 		return searchPhrase;
 	}
