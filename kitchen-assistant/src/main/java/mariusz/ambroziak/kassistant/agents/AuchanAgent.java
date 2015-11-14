@@ -32,6 +32,8 @@ import mariusz.ambroziak.kassistant.utils.SystemEnv;
 public class AuchanAgent extends BaseAgent {
 	public static final String AUCHAN_WEB_SCRAPPER_NAME = "auchanWebScrapper";
 	
+	public static final String acceptedURL="http://www.auchandirect.pl/sklep/artykuly/wyszukiwarka/[0-9]+/.+";
+	
 	private int counter=0;
 	
 	public static boolean agentOn=true;
@@ -47,7 +49,7 @@ public class AuchanAgent extends BaseAgent {
 	
 	@Override
 	protected void live() {
-//		File f=new File(filename);
+		super.live();
 
 		
 		StringMessage m;
@@ -96,7 +98,8 @@ public class AuchanAgent extends BaseAgent {
 					foundProdukts+=p.getP_id()+" ";
 				}
 				result.put("ids", foundProdukts);
-				
+				result.put(StringHolder.MESSAGE_CREATOR_NAME, AUCHAN_WEB_SCRAPPER_NAME);
+
 				result.put(StringHolder.SEARCH4_NAME, message.getString(StringHolder.SEARCH4_NAME));
 				
 				StringMessage messageToSend = new StringMessage(result.toString());

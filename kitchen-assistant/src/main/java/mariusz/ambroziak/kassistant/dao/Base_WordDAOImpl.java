@@ -8,6 +8,7 @@ import mariusz.ambroziak.kassistant.model.User;
 import mariusz.ambroziak.kassistant.model.Variant_Word;
 
 import org.hibernate.Criteria;
+import org.hibernate.Hibernate;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -51,10 +52,37 @@ public class Base_WordDAOImpl implements Base_WordDAO {
 			return words.get(0);
 	}
 
+	
+	
+	@Transactional
+	@Override
+	public Base_Word getBase_NameInitializedVar(String name) {
+		@SuppressWarnings("unchecked")
+		List<Base_Word> words =  sessionFactory.getCurrentSession()
+				.createCriteria(Base_Word.class)
+				.add(Restrictions.eq("b_word", name))
+				.list();
+		
+		
+		if(words==null||words.size()<1)
+			return null;
+		else
+			{
+				Hibernate.initialize(words.get(0).getVariantWords());	
+				return words.get(0);
+			}
+	}
+	@Transactional
 	@Override
 	public void addBase_Word(Base_Word bw) {
 		this.sessionFactory.getCurrentSession().save(bw);
 		
+	}
+
+	@Override
+	@Transactional
+	public void initializeVariantWords(Base_Word bw) {
+		Hibernate.initialize(bw.getVariantWords());		
 	}
 
 

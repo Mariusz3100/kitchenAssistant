@@ -16,6 +16,7 @@ public interface ProduktDAO {
 	public List<Produkt> getProduktsByNazwa(String nazwa);
 	public List<Produkt> getProduktsByVariantNames(Collection<String> name);
 	List<Produkt> getProduktsByNames(Collection<String> parts);
+	List<Produkt> getProduktsByUrlILike(String url);
 	
 
 }

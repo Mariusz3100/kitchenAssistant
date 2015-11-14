@@ -107,4 +107,7 @@
 
 	</bean>
 
+
+	<bean id="jspConstants" class="mariusz.ambroziak.kassistant.utils.JspStringHolder"/>
+
 </beans>

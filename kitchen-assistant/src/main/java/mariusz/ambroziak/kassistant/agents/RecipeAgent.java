@@ -29,39 +29,6 @@ import org.jsoup.select.Elements;
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import webscrappers.AuchanWebScrapper;
 import webscrappers.SJPWebScrapper;
 import madkit.kernel.Agent;
@@ -80,6 +47,8 @@ import mariusz.ambroziak.kassistant.model.Variant_Word;
 import mariusz.ambroziak.kassistant.model.jsp.QuantityProdukt;
 import mariusz.ambroziak.kassistant.model.jsp.SearchResult;
 import mariusz.ambroziak.kassistant.utils.Converter;
+import mariusz.ambroziak.kassistant.utils.MessageCounter;
+import mariusz.ambroziak.kassistant.utils.MessageTypes;
 import mariusz.ambroziak.kassistant.utils.PrzepisyPLQExtract;
 import mariusz.ambroziak.kassistant.utils.StringHolder;
 
@@ -100,6 +69,7 @@ public class RecipeAgent extends BaseAgent{
 					"inner join variant_word on variant_word.base_word_id=base_word.base_word_id \n" + 
 					"inner join product on product.nazwa ilike '%'||b_word||'%'\n" + 
 					"where v_word='__v_word__'";
+	private static final boolean checkShops = false;
 
 //	DatabaseInterface interfac;
 
@@ -171,6 +141,49 @@ public class RecipeAgent extends BaseAgent{
 	}
 
 	public static ArrayList<SearchResult> parse(String url){
+		RecipeAgent freeOne = getFreeAgent();
+		freeOne.busy=true;
+		ArrayList<SearchResult> result= freeOne.getFromDbOrParseRecipe(url);
+		freeOne.busy=false;
+		return result;
+	}
+
+
+	public static ArrayList<SearchResult> getProdukt(String produktUrl){
+		RecipeAgent freeOne = getFreeAgent();
+		freeOne.busy=true;
+		ArrayList<SearchResult> result= freeOne.getFromDbOrParseProdukt(produktUrl);
+		freeOne.busy=false;
+		return result;
+	}
+	
+	
+	private ArrayList<SearchResult> getFromDbOrParseProdukt(String produktUrl) {
+		
+		if(checkShops){
+			JSONObject json = new JSONObject();
+			
+			json.put(StringHolder.PRODUKT_URL_NAME, produktUrl);
+			json.put(StringHolder.MESSAGE_CREATOR_NAME, PARSER_NAME);
+			json.put(StringHolder.MESSAGE_TYPE_NAME, MessageTypes.GetProduktData);
+			json.put(StringHolder.MESSAGE_ID_NAME, MessageCounter.getCount());
+			
+			AgentAddress x=getAgentWithRole(StringHolder.AGENT_COMMUNITY, AGENT_GROUP, ShopsListAgent.SHOP_LIST_NAME);
+	
+			StringMessage messageToSend = new StringMessage(json.toString());
+			sendMessageWithRole(x, messageToSend,PARSER_NAME);
+			
+			StringMessage response=(StringMessage) waitNextMessage();
+
+			
+			
+		}
+		
+		return null;
+	}
+
+
+	private static RecipeAgent getFreeAgent() {
 		RecipeAgent freeOne=null;
 		
 		if(agents==null){
@@ -195,16 +208,13 @@ public class RecipeAgent extends BaseAgent{
 				}
 			}
 	}
-		freeOne.busy=true;
-		ArrayList<SearchResult> result= freeOne.getFromDbOrParse(url);
-		freeOne.busy=false;
-		return result;
+		return freeOne;
 	}
 
 	
 
 
-	private ArrayList<SearchResult> getFromDbOrParse(String url) {
+	private ArrayList<SearchResult> getFromDbOrParseRecipe(String url) {
 		
 		Recipe recipeByURL = DaoProvider.getInstance().getRecipeDao().getRecipeByURL(url);
 		
@@ -485,36 +495,41 @@ public class RecipeAgent extends BaseAgent{
 
 
 	private ArrayList<Produkt> checkShops(String text) {
-		
-		JSONObject json = new JSONObject();
-		
-		json.put(StringHolder.SEARCH4_NAME, text);
-		
-		
-		AgentAddress x=getAgentWithRole(StringHolder.AGENT_COMMUNITY, AGENT_GROUP, ShopsListAgent.SHOP_LIST_NAME);
-
-		StringMessage messageToSend = new StringMessage(json.toString());
-		sendMessageWithRole(x, messageToSend,PARSER_NAME);
-		
-		StringMessage response=(StringMessage) waitNextMessage();
-
-		if(response.getContent().equals(""))
-				return null;
-		else{
-			JSONObject jsonObject = new JSONObject(response.getContent());
+		if(checkShops){
+			JSONObject json = new JSONObject();
 			
-//			Map y= factory.newJsonParser().parseJson(response.getContent());
-			ProduktDAO produktDao = DaoProvider.getInstance().getProduktDao();
+			json.put(StringHolder.SEARCH4_NAME, text);
+			json.put(StringHolder.MESSAGE_CREATOR_NAME, PARSER_NAME);
+			json.put(StringHolder.MESSAGE_TYPE_NAME, MessageTypes.SearchFor);
 			
-			String ids=jsonObject.getString("ids");
 			
-			ArrayList<Produkt> retValue=new ArrayList<Produkt>();
+			AgentAddress x=getAgentWithRole(StringHolder.AGENT_COMMUNITY, AGENT_GROUP, ShopsListAgent.SHOP_LIST_NAME);
+	
+			StringMessage messageToSend = new StringMessage(json.toString());
+			sendMessageWithRole(x, messageToSend,PARSER_NAME);
 			
-			for(String id:ids.split(" ")){
-				retValue.add(produktDao.getById(Long.parseLong(id)));
+			StringMessage response=(StringMessage) waitNextMessage();
+	
+			if(response.getContent().equals(""))
+					return null;
+			else{
+				JSONObject jsonObject = new JSONObject(response.getContent());
+				
+	//			Map y= factory.newJsonParser().parseJson(response.getContent());
+				ProduktDAO produktDao = DaoProvider.getInstance().getProduktDao();
+				
+				String ids=jsonObject.getString("ids");
+				
+				ArrayList<Produkt> retValue=new ArrayList<Produkt>();
+				
+				for(String id:ids.split(" ")){
+					retValue.add(produktDao.getById(Long.parseLong(id)));
+				}
+				
+				return retValue;
 			}
-			
-			return retValue;
+		}else{
+			return null;
 		}
 	}
 //

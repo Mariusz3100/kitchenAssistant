@@ -1,7 +1,12 @@
 package mariusz.ambroziak.kassistant.agents;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
+import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -25,6 +30,26 @@ public abstract class BaseAgent extends Agent {
 
 	public String AGENT_COMMUNITY = StringHolder.AGENT_COMMUNITY;
 
+	@Override
+	protected void live() {
+		StringMessage m;
+		
+		m = nextMessage();
+		
+		if(m!=null){
+		
+			JSONObject j=new JSONObject(((StringMessage)m).getContent());
+			
+			messages.put(j.getInt(StringHolder.MESSAGE_ID_NAME),m);
+		} else
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	}
+
 	public String AGENT_ROLE;
 
 	private static HashMap<String,BaseAgent> extent;
@@ -33,6 +58,8 @@ public abstract class BaseAgent extends Agent {
 		return extent;
 	}
 
+	protected Map<Integer, StringMessage> messages;
+	
 	//	private static String AgentName;
 	protected StringBuilder htmlLogs;
 
@@ -57,6 +84,53 @@ public abstract class BaseAgent extends Agent {
 		extent.put(key, ba);
 	}
 
+	
+	@Override
+	protected void activate() {
+		messages=new HashMap<Integer, StringMessage>();
+		
+		super.activate();
+	}
+
+
+	public Message waitNextMessageWithId(int id) {
+		
+		while(true){
+			StringMessage stringMessage = messages.get(id);
+			if(stringMessage!=null){
+				messages.remove(id);
+				return stringMessage;
+				
+			}
+			else
+				pause(1000);
+		}
+		
+
+	}
+	
+	public Message getAnyMessageOrNull() {
+		Set<Integer> keySet = messages.keySet();
+		Iterator<Integer> iterator = keySet.iterator();
+		
+		
+		if(iterator.hasNext())
+		{
+			Integer next = iterator.next();
+			
+			StringMessage stringMessage = messages.get(next);
+			
+			messages.remove(next);
+			
+			return stringMessage;
+		}else{
+			return null;
+		}
+		
+
+	}
+	
+	
 	@Override
 	public Message waitNextMessage() {
 		Message m=super.waitNextMessage();

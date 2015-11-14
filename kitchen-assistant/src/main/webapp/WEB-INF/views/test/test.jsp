@@ -9,6 +9,8 @@
 <head>
 
  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+ <jsp:include page="../include/constants.jsp"/>
+ 
 <title>Insert title here</title>
 </head>
 <body>
@@ -18,7 +20,7 @@
 	
 		<form action="test2">
 
-			
+			opcjaName:${opcjaName}
 
 				<br>
 				

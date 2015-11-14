@@ -18,6 +18,7 @@ import java.net.URLEncoder;
 
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.swing.text.Document;
@@ -39,6 +40,9 @@ import org.jsoup.nodes.Element;
 
 
 
+
+
+
 import com.codesnippets4all.json.parsers.JsonParserFactory;
 
 //import database.holders.DBOpenshiftInterface;
@@ -50,6 +54,8 @@ import com.codesnippets4all.json.parsers.JsonParserFactory;
 public class AuchanWebScrapper extends ImportIoWebScrapper {
 	private String auchanSearchUrl="http://www.auchandirect.pl/sklep/wyszukiwarka/__search__";
 	String filename="\\classes\\auchanEntries.txt";
+	public static final String pattern="http://www.auchandirect.pl/sklep/artykuly/wyszukiwarka/[0-9]+/";
+
 	FileInputInterface input;
 	
 	private AuchanWebScrapper() {
@@ -150,6 +156,33 @@ public class AuchanWebScrapper extends ImportIoWebScrapper {
 		if(details.has("wartosci_odzywcze"))
 			return details.getString("wartosci_odzywcze");
 		else return "";
+	}
+
+	@Override
+	protected String cutDownProduktUrl(String url) {
+		
+		
+		
+		return cutDownProduktUrlAuchan();
+	}
+
+	public static String cutDownProduktUrlAuchan() {
+		String a="http://www.auchandirect.pl/sklep/artykuly/wyszukiwarka/93300504/SuperFish-Filet-swiezy-z-Lososia-ze-s";
+		
+//		boolean z = Pattern.matches(b,a);
+	    Pattern p = Pattern.compile(pattern);
+
+	    
+	    
+		Matcher m=p.matcher(a);
+		
+		if(m.matches()){
+			m.find();
+			
+			String shortUrl=m.group();
+			return shortUrl;
+	    }
+		return null;
 	}
 	
 }

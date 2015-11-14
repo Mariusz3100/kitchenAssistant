@@ -134,7 +134,7 @@ public class Variant_WordDAOImpl implements Variant_WordDAO {
 			this.sessionFactory.getCurrentSession().save(bw);
 		}
 		
-		Variant_Word vw=new Variant_Word(variantWord,bw.getId());
+		Variant_Word vw=new Variant_Word(variantWord,bw);
 		
 		this.sessionFactory.getCurrentSession().save(vw);
 		

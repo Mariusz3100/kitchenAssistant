@@ -15,6 +15,7 @@ import mariusz.ambroziak.kassistant.agents.config.AgentsSystem;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.User;
 import mariusz.ambroziak.kassistant.model.jsp.SearchResult;
+import mariusz.ambroziak.kassistant.utils.JspStringHolder;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -70,7 +71,7 @@ public class RecipeController {
 		if(!url.startsWith("-")){
 			ArrayList<SearchResult> result=RecipeAgent.parse(url);
 	
-			ModelAndView mav=new ModelAndView("recipeParsed");
+			ModelAndView mav=new ModelAndView("chooseProducts");
 	
 			mav.addObject("url",url);
 			mav.addObject("results",result);
@@ -101,10 +102,32 @@ public class RecipeController {
 		String url=request.getParameter("recipeurl");
 			
 			request.getParameterMap();
-			ModelAndView mav=new ModelAndView("recipeParsed");
+			
+			
+			
+			
+			int i=1;
+			while(true){
+				String searchPhrase=request.getParameter(JspStringHolder.skladnik_name+i+JspStringHolder.searchPhrase_name);
+				String wybranyProdukt=request.getParameter(JspStringHolder.skladnik_name+i+JspStringHolder.skladnikRadio_name);
+				String innaOpcjaRadio=JspStringHolder.innaOpcja_name;
+				
+				
+				if(JspStringHolder.innaOpcja_name.equals(wybranyProdukt)){
+					String innyUrl=request.getParameter(JspStringHolder.skladnik_name+i+JspStringHolder.innyUrl_name);
+					
+				
+				}
+				
+				
+			}
+			
+			
+			
+	//		ModelAndView mav=new ModelAndView("chooseProducts");
 	
 			
-			return mav;
+//			return mav;
 		
 		
 

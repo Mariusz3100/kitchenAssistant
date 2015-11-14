@@ -234,9 +234,14 @@ public abstract class ImportIoWebScrapper {
 		return jsonRespons;
 	}
 	
+	protected abstract String cutDownProduktUrl(String url);
 	
 	protected Produkt checkForExistingDetails(String detailsURL) {
-		List<Produkt> produktsByURL = DaoProvider.getInstance().getProduktDao().getProduktsByURL(detailsURL);
+		
+		String shortUrl=cutDownProduktUrl(detailsURL);
+		
+		
+		List<Produkt> produktsByURL = DaoProvider.getInstance().getProduktDao().getProduktsByURL(shortUrl+"%");
 
 		if(produktsByURL.size()>1)
 			throw new  DataIntegrityViolationException(

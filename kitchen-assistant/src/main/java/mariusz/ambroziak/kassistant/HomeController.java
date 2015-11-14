@@ -17,6 +17,7 @@ import mariusz.ambroziak.kassistant.model.User;
 import mariusz.ambroziak.kassistant.model.Variant_Word;
 import mariusz.ambroziak.kassistant.utils.AmountTypes;
 
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -55,6 +56,67 @@ public class HomeController {
 		return model;
 	}
 
+	@RequestMapping(value="/vwords")
+	public ModelAndView words() {
+		List<Variant_Word> vWordList = variant_wordDao.list();
+		ModelAndView model = new ModelAndView("List");
+		
+		ArrayList<String> strings=new ArrayList<String>();
+		
+		for(Variant_Word v:vWordList){
+			strings.add(v.getId()+":"+v.getV_word()
+					+" -> "+v.getBase_word().getId()+":"+v.getBase_word().getB_word());
+		}
+		
+		model.addObject("list", strings);
+		return model;
+	}
+	@RequestMapping(value="/bwords")
+	public ModelAndView bwords() {
+		List<Base_Word> vWordList = base_wordDao.list();
+		ModelAndView model = new ModelAndView("List");
+		
+		ArrayList<String> strings=new ArrayList<String>();
+		
+		for(Base_Word b:vWordList){
+			String temp = b.getId()+":"+b.getB_word()
+					+" -> ";
+			Hibernate.initialize(b);
+			for(Variant_Word v:b.getVariantWords()){
+				temp+=v.getV_word()+",";
+			}
+			
+			strings.add(temp);
+		}
+		
+		model.addObject("list", strings);
+		return model;
+	}
+	
+	
+	@RequestMapping(value="/bwords1")
+	public ModelAndView bwords1() {
+		Base_Word word = base_wordDao.getBase_NameInitializedVar("jajko");
+		ModelAndView model = new ModelAndView("List");
+		
+		ArrayList<String> strings=new ArrayList<String>();
+		
+//		for(Base_Word b:vWordList){
+			String temp = word.getId()+":"+word.getB_word()
+					+" -> ";
+			
+//			base_wordDao.initializeVariantWords(b);
+			for(Variant_Word v:word.getVariantWords()){
+				temp+=v.getV_word()+",";
+			}
+			
+			strings.add(temp);
+//		}
+		
+		model.addObject("list", strings);
+		return model;
+	}
+	
 	@RequestMapping(value="/produkts")
 	public ModelAndView produkts() {
 		List<Produkt> listProdukts = produktDao.list();

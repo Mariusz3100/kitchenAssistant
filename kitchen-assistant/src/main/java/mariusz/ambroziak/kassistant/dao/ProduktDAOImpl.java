@@ -59,6 +59,18 @@ public class ProduktDAOImpl implements ProduktDAO {
 		
 		return produkt;
 	}
+	
+	@Override
+	@Transactional
+	public List<Produkt> getProduktsByUrlILike(String url) {
+		@SuppressWarnings("unchecked")
+		List<Produkt> produkt =  sessionFactory.getCurrentSession()
+				.createCriteria(Produkt.class)
+				.add(Restrictions.ilike("url", url))
+				.list();
+		
+		return produkt;
+	}
 
 	@Override
 	@Transactional

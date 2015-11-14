@@ -5,7 +5,14 @@ public class StringHolder {
 	public static String servletBasePath="";
 	public static String auchanFilename="auchanEntries.txt";
 	public static final String SEARCH4_NAME = "search4";
+	public static final String PRODUKT_URL_NAME = "produktUrl";
 
+	
+	
+	public static final String MESSAGE_CREATOR_NAME = "Message_creator";
+	public static final String MESSAGE_TYPE_NAME = "Message_Type";
+	public static final String MESSAGE_ID_NAME = "Message_ID";
+	
 	public static String  workingDirectory="";
 	
 	public static String AGENT_GROUP="group";
