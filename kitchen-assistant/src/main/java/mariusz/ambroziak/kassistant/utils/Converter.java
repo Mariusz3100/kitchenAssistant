@@ -1,6 +1,7 @@
 package mariusz.ambroziak.kassistant.utils;
 
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 public class Converter {
 	private static String[] converts=
@@ -15,15 +16,19 @@ public class Converter {
 		"ó-\\$00F3",
 		"ê-\\$0119",
 		" -\\$0020",
-		"œ-\\$015B"
-
+		"œ-\\$015B",
 		};
 
-
+	private static String[] ommissions=
+		{
+		")",
+		"(",
+		"+",
+		};
 
 	public static String auchanConvertion(String input){
 		String result=input;
-
+		
 		for(String change:converts){
 			String[] split=change.split("-");
 
@@ -31,6 +36,12 @@ public class Converter {
 
 		}
 
+		for(String change:ommissions){
+
+			result=result.replaceAll(Pattern.quote(change), "");
+
+		}
+		
 		return result;
 
 	}

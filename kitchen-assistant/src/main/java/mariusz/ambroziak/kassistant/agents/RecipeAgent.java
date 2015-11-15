@@ -69,7 +69,7 @@ public class RecipeAgent extends BaseAgent{
 					"inner join variant_word on variant_word.base_word_id=base_word.base_word_id \n" + 
 					"inner join product on product.nazwa ilike '%'||b_word||'%'\n" + 
 					"where v_word='__v_word__'";
-	private static final boolean checkShops = false;
+	public  static final boolean checkShops = true;
 
 //	DatabaseInterface interfac;
 
@@ -522,9 +522,10 @@ public class RecipeAgent extends BaseAgent{
 				
 				ArrayList<Produkt> retValue=new ArrayList<Produkt>();
 				
-				for(String id:ids.split(" ")){
-					retValue.add(produktDao.getById(Long.parseLong(id)));
-				}
+				if(ids!=null&&!ids.equals(""))
+					for(String id:ids.split(" ")){
+						retValue.add(produktDao.getById(Long.parseLong(id)));
+					}
 				
 				return retValue;
 			}

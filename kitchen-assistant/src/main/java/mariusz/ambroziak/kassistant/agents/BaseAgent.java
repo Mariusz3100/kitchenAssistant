@@ -32,22 +32,22 @@ public abstract class BaseAgent extends Agent {
 
 	@Override
 	protected void live() {
-		StringMessage m;
-		
-		m = nextMessage();
-		
-		if(m!=null){
-		
-			JSONObject j=new JSONObject(((StringMessage)m).getContent());
-			
-			messages.put(j.getInt(StringHolder.MESSAGE_ID_NAME),m);
-		} else
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+//		StringMessage m;
+//		
+//		m = nextMessage();
+//		
+//		if(m!=null){
+//		
+//			JSONObject j=new JSONObject(((StringMessage)m).getContent());
+//			
+//			messages.put(j.getInt(StringHolder.MESSAGE_ID_NAME),m);
+//		} else
+//			try {
+//				Thread.sleep(1000);
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 	}
 
 	public String AGENT_ROLE;
@@ -58,7 +58,7 @@ public abstract class BaseAgent extends Agent {
 		return extent;
 	}
 
-	protected Map<Integer, StringMessage> messages;
+//	protected Map<Integer, StringMessage> messages;
 	
 	//	private static String AgentName;
 	protected StringBuilder htmlLogs;
@@ -87,48 +87,48 @@ public abstract class BaseAgent extends Agent {
 	
 	@Override
 	protected void activate() {
-		messages=new HashMap<Integer, StringMessage>();
+//		messages=new HashMap<Integer, StringMessage>();
 		
 		super.activate();
 	}
 
-
-	public Message waitNextMessageWithId(int id) {
-		
-		while(true){
-			StringMessage stringMessage = messages.get(id);
-			if(stringMessage!=null){
-				messages.remove(id);
-				return stringMessage;
-				
-			}
-			else
-				pause(1000);
-		}
-		
-
-	}
-	
-	public Message getAnyMessageOrNull() {
-		Set<Integer> keySet = messages.keySet();
-		Iterator<Integer> iterator = keySet.iterator();
-		
-		
-		if(iterator.hasNext())
-		{
-			Integer next = iterator.next();
-			
-			StringMessage stringMessage = messages.get(next);
-			
-			messages.remove(next);
-			
-			return stringMessage;
-		}else{
-			return null;
-		}
-		
-
-	}
+//
+//	public Message waitNextMessageWithId(int id) {
+//		
+//		while(true){
+//			StringMessage stringMessage = messages.get(id);
+//			if(stringMessage!=null){
+//				messages.remove(id);
+//				return stringMessage;
+//				
+//			}
+//			else
+//				pause(1000);
+//		}
+//		
+//
+//	}
+//	
+//	public Message getAnyMessageOrNull() {
+//		Set<Integer> keySet = messages.keySet();
+//		Iterator<Integer> iterator = keySet.iterator();
+//		
+//		
+//		if(iterator.hasNext())
+//		{
+//			Integer next = iterator.next();
+//			
+//			StringMessage stringMessage = messages.get(next);
+//			
+//			messages.remove(next);
+//			
+//			return stringMessage;
+//		}else{
+//			return null;
+//		}
+//		
+//
+//	}
 	
 	
 	@Override

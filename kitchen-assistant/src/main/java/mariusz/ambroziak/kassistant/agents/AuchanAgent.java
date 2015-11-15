@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 
+
 //import database.holders.DBOpenshiftInterface;
 //import database.holders.DbLocalInterface;
 //import database.holders.StringHolder;
@@ -26,6 +27,7 @@ import madkit.kernel.AgentAddress;
 import madkit.kernel.Message;
 import madkit.message.StringMessage;
 import mariusz.ambroziak.kassistant.model.Produkt;
+import mariusz.ambroziak.kassistant.utils.MessageTypes;
 import mariusz.ambroziak.kassistant.utils.StringHolder;
 import mariusz.ambroziak.kassistant.utils.SystemEnv;
 
@@ -61,7 +63,7 @@ public class AuchanAgent extends BaseAgent {
 			if(m!=null)
 				processMessage(m);
 			else
-				webScrapper.enjoyYourOwn();
+				enjoyYourOwn();
 		}
 		
 		
@@ -71,6 +73,11 @@ public class AuchanAgent extends BaseAgent {
 
 		
 	}
+
+	public void enjoyYourOwn() {
+		if(RecipeAgent.checkShops)
+			webScrapper.enjoyYourOwn();
+	}
 	
 	@ResponseBody
 	@RequestMapping("/agents/"+AUCHAN_WEB_SCRAPPER_NAME)
@@ -79,35 +86,41 @@ public class AuchanAgent extends BaseAgent {
 	}
 
 
-	private boolean processMessage(StringMessage m) {
+	private void processMessage(StringMessage m) {
 		JSONObject message=new JSONObject(m.getContent());
 
 		try {
 			ArrayList<Produkt> x=webScrapper.lookup(message.getString(StringHolder.SEARCH4_NAME));
 			AgentAddress other=getAgentWithRole(AGENT_COMMUNITY, AGENT_GROUP, ShopsListAgent.SHOP_LIST_NAME);
 			
+			
+			JSONObject result=new JSONObject();
+			
 			if(x==null||x.size()==0){
-				sendMessage(other, new StringMessage(""));
+				result.put("ids", "");
 				htmlLog("Nie uda³o siê znaleŸæ ¿adnego produktu dla "+message.getString(StringHolder.SEARCH4_NAME)+" w sklepie auchan.\n");
-				return false;
 			}else{
-				JSONObject result=new JSONObject();
+				
 				String foundProdukts="";
 				
 				for(Produkt p:x){
 					foundProdukts+=p.getP_id()+" ";
 				}
 				result.put("ids", foundProdukts);
-				result.put(StringHolder.MESSAGE_CREATOR_NAME, AUCHAN_WEB_SCRAPPER_NAME);
-
-				result.put(StringHolder.SEARCH4_NAME, message.getString(StringHolder.SEARCH4_NAME));
 				
-				StringMessage messageToSend = new StringMessage(result.toString());
-				messageToSend.getSender();
-				sendMessageWithRole(other, messageToSend,AGENT_ROLE);
+				
+				
+				
 				htmlLog("W sklepie auchan znaleziono produkt(y) o id ["+foundProdukts+"]\n");
-				return true;
+				
 			}
+			
+			result.put(StringHolder.MESSAGE_CREATOR_NAME, AUCHAN_WEB_SCRAPPER_NAME);
+			result.put(StringHolder.MESSAGE_TYPE_NAME, MessageTypes.SearchFor);
+			result.put(StringHolder.SEARCH4_NAME, message.getString(StringHolder.SEARCH4_NAME));
+			StringMessage messageToSend = new StringMessage(result.toString());
+
+			sendMessageWithRole(other, messageToSend,AGENT_ROLE);
 			
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
@@ -123,7 +136,6 @@ public class AuchanAgent extends BaseAgent {
 			e.printStackTrace();
 		}
 		
-		return false;
 	}
 
 	@Override

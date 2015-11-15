@@ -55,7 +55,7 @@ public class ShopsListAgent extends BaseAgent {
 			if(json.get(StringHolder.MESSAGE_TYPE_NAME)==null
 					||json.get(StringHolder.MESSAGE_TYPE_NAME).equals("")){
 				ProblemLogger.logProblem("Message has no type: "+content);
-			}else if(json.get(StringHolder.MESSAGE_TYPE_NAME).equals(MessageTypes.SearchFor)){
+			}else if(json.get(StringHolder.MESSAGE_TYPE_NAME).equals(MessageTypes.SearchFor.toString())){
 		
 				if(m.getSender().getRole().equals("manager")){
 					processDamnManagerMessage(m);
@@ -75,7 +75,7 @@ public class ShopsListAgent extends BaseAgent {
 	
 				}
 				
-			}else if(json.get(StringHolder.MESSAGE_TYPE_NAME).equals(MessageTypes.GetProduktData)){
+			}else if(json.get(StringHolder.MESSAGE_TYPE_NAME).equals(MessageTypes.GetProduktData.toString())){
 				
 			}
 

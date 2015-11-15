@@ -26,6 +26,7 @@ import java.util.Map;
 import mariusz.ambroziak.kassistant.agents.ClockAgent;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
 import mariusz.ambroziak.kassistant.model.Produkt;
+import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 import mariusz.ambroziak.kassistant.utils.SystemEnv;
 
 import org.json.JSONArray;
@@ -45,7 +46,7 @@ public abstract class ImportIoWebScrapper {
 	private static final float ticketsFactor = 0.001f;
 //	DatabaseInterface interfac;
 	 ArrayList<String> detailsToBeSavedList;
-		private float tickets=0;
+		private float tickets=-1000;
 		private float lastTime=0;
 
 	 private StringBuilder scrapperLog;
@@ -162,15 +163,7 @@ public abstract class ImportIoWebScrapper {
 	private void getNewUrlsFromFile(String url)
 			throws UnsupportedEncodingException,
 			IOException, MalformedURLException {
-		URLConnection connection = null;
-		
-		updateTickets();
-		substractTickets();
-		String query=baseUrl+"?"+urlParamName+"="+URLEncoder.encode(url,java.nio.charset.StandardCharsets.UTF_8.toString())+
-				"&"+userParamName+"="+auchanUser+"&"+apiKeyParamName+"="+apiKey;
-		
-		connection = new URL(query).openConnection();
-		connection.setRequestProperty("Accept-Charset", charset);
+		URLConnection connection = getConnection(url);
 		String jsonRespons = getResponseText(connection);
 
 		JSONObject jsonObjecttemp = new JSONObject(jsonRespons);
@@ -197,6 +190,47 @@ public abstract class ImportIoWebScrapper {
 		}
 		
 
+	}
+
+	public URLConnection getConnection(String originalUrl)
+			throws UnsupportedEncodingException, 
+			MalformedURLException {
+		
+		
+		updateTickets();
+		substractTickets();
+		String query=baseUrl+"?"+urlParamName+"="+URLEncoder.encode(originalUrl,java.nio.charset.StandardCharsets.UTF_8.toString())+
+				"&"+userParamName+"="+auchanUser+"&"+apiKeyParamName+"="+apiKey;
+		URLConnection connection = waitTillConnOpen(query);
+		connection.setRequestProperty("Accept-Charset", charset);
+		return connection;
+	}
+
+	public URLConnection waitTillConnOpen(String query) {
+		
+		URLConnection connection = null;
+		boolean successful=false;
+		int sleep=1000;	
+		while(!successful){		
+			try {
+				connection = new URL(query).openConnection();
+				connection.setConnectTimeout(100000);
+				successful=true;
+			} catch (IOException e) {
+				ProblemLogger.logProblem(
+						"There was a problem with accessing url '"+query+"' Waiting "+sleep+" ms");
+				
+				try {
+					Thread.sleep(sleep);
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				sleep*=2;
+			//	e.printStackTrace();
+			}
+		}
+		return connection;
 	}
 
 	private void updateTickets() {
@@ -241,7 +275,7 @@ public abstract class ImportIoWebScrapper {
 		String shortUrl=cutDownProduktUrl(detailsURL);
 		
 		
-		List<Produkt> produktsByURL = DaoProvider.getInstance().getProduktDao().getProduktsByURL(shortUrl+"%");
+		List<Produkt> produktsByURL = DaoProvider.getInstance().getProduktDao().getProduktsByUrlILike(shortUrl+"%");
 
 		if(produktsByURL.size()>1)
 			throw new  DataIntegrityViolationException(
@@ -369,13 +403,9 @@ public abstract class ImportIoWebScrapper {
 	IOException, MalformedURLException {
 		updateTickets();
 		substractTickets();
-		
-		URLConnection connection = null;
 		ArrayList<Produkt> retValue=new ArrayList<Produkt>();
-		String query=baseUrl+"?"+urlParamName+"="+URLEncoder.encode(url,java.nio.charset.StandardCharsets.UTF_8.toString())+
-				"&"+userParamName+"="+auchanUser+"&"+apiKeyParamName+"="+apiKey;
-		
-		connection = new URL(query).openConnection();
+
+		URLConnection connection = getSearchForConnection(url);
 		connection.setRequestProperty("Accept-Charset", charset);
 		String jsonRespons = getResponseText(connection);
 		
@@ -417,6 +447,19 @@ public abstract class ImportIoWebScrapper {
 		
 		return retValue;
 		
+	}
+
+	public URLConnection getSearchForConnection(String originalUrl)
+			throws UnsupportedEncodingException, 
+			MalformedURLException {
+		URLConnection connection = null;
+		String query=baseUrl+"?"+urlParamName+"="+URLEncoder.encode(originalUrl,java.nio.charset.StandardCharsets.UTF_8.toString())+
+				"&"+userParamName+"="+auchanUser+"&"+apiKeyParamName+"="+apiKey;
+		
+
+			connection = waitTillConnOpen( query);
+
+		return connection;
 	}
 	
 	

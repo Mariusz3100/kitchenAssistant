@@ -163,18 +163,17 @@ public class AuchanWebScrapper extends ImportIoWebScrapper {
 		
 		
 		
-		return cutDownProduktUrlAuchan();
+		return cutDownProduktUrlAuchan(url);
 	}
 
-	public static String cutDownProduktUrlAuchan() {
-		String a="http://www.auchandirect.pl/sklep/artykuly/wyszukiwarka/93300504/SuperFish-Filet-swiezy-z-Lososia-ze-s";
+	public static String cutDownProduktUrlAuchan(String url) {
 		
 //		boolean z = Pattern.matches(b,a);
 	    Pattern p = Pattern.compile(pattern);
 
 	    
 	    
-		Matcher m=p.matcher(a);
+		Matcher m=p.matcher(url);
 		
 		if(m.matches()){
 			m.find();

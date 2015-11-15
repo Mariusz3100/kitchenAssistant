@@ -15,8 +15,8 @@ public interface ProduktDAO {
 	public List<Produkt> getProduktsBySpacedVariantName(String name);
 	public List<Produkt> getProduktsByNazwa(String nazwa);
 	public List<Produkt> getProduktsByVariantNames(Collection<String> name);
-	List<Produkt> getProduktsByNames(Collection<String> parts);
-	List<Produkt> getProduktsByUrlILike(String url);
+	public List<Produkt> getProduktsByNames(Collection<String> parts);
+	public List<Produkt> getProduktsByUrlILike(String url);
 	
 
 }
