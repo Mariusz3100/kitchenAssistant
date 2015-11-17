@@ -61,7 +61,9 @@ public abstract class ImportIoWebScrapper {
 
 	
 	String charset = java.nio.charset.StandardCharsets.UTF_8.name();  // Or in Java 7 and later, use the constant: java.nio.charset.StandardCharsets.UTF_8.name()
-	String baseUrl="https://api.import.io/store/data/320a8ee3-a82a-4ed7-b349-f9e7f2eac1de/_query";
+	String baseUrl="";//="https://api.import.io/store/data/320a8ee3-a82a-4ed7-b349-f9e7f2eac1de/_query";
+//	String baseUrlNew="https://api.import.io/store/data/929a8342-f326-422b-a31b-53552799b6fa/_query";
+
 	String detailsBaseUrl="";
 
 	String urlParamName="input/webpage/url";
@@ -71,7 +73,7 @@ public abstract class ImportIoWebScrapper {
 	String auchanUser="04ffe01c-7080-4817-8856-dac23896d915";
 	
 	String apiKeyParamName="_apikey";
-	String apiKey="";
+	String groupApiKey="";
 //			"04ffe01c-7080-4817-8856-dac23896d915%3AOcR"+
 	//		"fx0W9As5LXwlU6bNA%2FkjhmtfdHgzR5or1c4xrry1rs"+
 	//		"VPxU7ByGI46fw04%2BGMpIe5hTXFTu0mKQ74mvy%2BHUA%3D%3D";	
@@ -200,7 +202,7 @@ public abstract class ImportIoWebScrapper {
 		updateTickets();
 		substractTickets();
 		String query=baseUrl+"?"+urlParamName+"="+URLEncoder.encode(originalUrl,java.nio.charset.StandardCharsets.UTF_8.toString())+
-				"&"+userParamName+"="+auchanUser+"&"+apiKeyParamName+"="+apiKey;
+				"&"+userParamName+"="+auchanUser+"&"+apiKeyParamName+"="+groupApiKey;
 		URLConnection connection = waitTillConnOpen(query);
 		connection.setRequestProperty("Accept-Charset", charset);
 		return connection;
@@ -210,23 +212,26 @@ public abstract class ImportIoWebScrapper {
 		
 		URLConnection connection = null;
 		boolean successful=false;
-		int sleep=1000;	
+		int timeOut=100000;	
 		while(!successful){		
 			try {
 				connection = new URL(query).openConnection();
-				connection.setConnectTimeout(100000);
+				connection.setConnectTimeout(timeOut);
+				connection.setRequestProperty("Accept-Charset", charset);
+				connection.getInputStream();
+
 				successful=true;
 			} catch (IOException e) {
 				ProblemLogger.logProblem(
-						"There was a problem with accessing url '"+query+"' Waiting "+sleep+" ms");
+						"There was a problem with accessing url '"+query+"' Waiting "+timeOut+" ms");
 				
-				try {
-					Thread.sleep(sleep);
-				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				sleep*=2;
+//				try {
+//					Thread.sleep(timeOut);
+//				} catch (InterruptedException e1) {
+//					// TODO Auto-generated catch block
+//					e1.printStackTrace();
+//				}
+				timeOut*=2;
 			//	e.printStackTrace();
 			}
 		}
@@ -268,14 +273,13 @@ public abstract class ImportIoWebScrapper {
 		return jsonRespons;
 	}
 	
-	protected abstract String cutDownProduktUrl(String url);
 	
 	protected Produkt checkForExistingDetails(String detailsURL) {
 		
-		String shortUrl=cutDownProduktUrl(detailsURL);
+		String shortUrl=getUrlPattern(detailsURL);
 		
 		
-		List<Produkt> produktsByURL = DaoProvider.getInstance().getProduktDao().getProduktsByUrlILike(shortUrl+"%");
+		List<Produkt> produktsByURL = DaoProvider.getInstance().getProduktDao().getProduktsByUrlILike(shortUrl);
 
 		if(produktsByURL.size()>1)
 			throw new  DataIntegrityViolationException(
@@ -406,7 +410,6 @@ public abstract class ImportIoWebScrapper {
 		ArrayList<Produkt> retValue=new ArrayList<Produkt>();
 
 		URLConnection connection = getSearchForConnection(url);
-		connection.setRequestProperty("Accept-Charset", charset);
 		String jsonRespons = getResponseText(connection);
 		
 		JSONObject jsonResponseObject = new JSONObject(jsonRespons);
@@ -424,8 +427,8 @@ public abstract class ImportIoWebScrapper {
 //			String productDesc=res.getString("prodboxtext_link/_text");
 			
 
-			String detailsUrl=res.getString("prodphoto_link");
-			String nazwa=res.getString("prodboxtext_link/_text");
+			String detailsUrl=getShortestWorkingUrl(res.getString("link"));
+			String nazwa=res.getString("nazwa");
 			
 	//		if(!checkForExistingDetails(detailsUrl))	
 				rememberDetailsToBeSaved(detailsUrl);
@@ -454,7 +457,7 @@ public abstract class ImportIoWebScrapper {
 			MalformedURLException {
 		URLConnection connection = null;
 		String query=baseUrl+"?"+urlParamName+"="+URLEncoder.encode(originalUrl,java.nio.charset.StandardCharsets.UTF_8.toString())+
-				"&"+userParamName+"="+auchanUser+"&"+apiKeyParamName+"="+apiKey;
+				"&"+userParamName+"="+auchanUser+"&"+apiKeyParamName+"="+groupApiKey;
 		
 
 			connection = waitTillConnOpen( query);
@@ -495,4 +498,8 @@ public abstract class ImportIoWebScrapper {
 		
 		return null;
 	}
+
+	protected abstract String getUrlPattern(String url);
+
+	protected abstract String getShortestWorkingUrl(String url);
 }

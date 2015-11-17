@@ -148,7 +148,15 @@ public class RecipeAgent extends BaseAgent{
 		return result;
 	}
 
-
+	public static List<Produkt> parseProdukt(String searchPhrase){
+		RecipeAgent freeOne = getFreeAgent();
+		freeOne.busy=true;
+		List<Produkt> result= freeOne.retrieveSkladnik(searchPhrase);
+		freeOne.busy=false;
+		return result;
+	}
+	
+	
 	public static ArrayList<SearchResult> getProdukt(String produktUrl){
 		RecipeAgent freeOne = getFreeAgent();
 		freeOne.busy=true;

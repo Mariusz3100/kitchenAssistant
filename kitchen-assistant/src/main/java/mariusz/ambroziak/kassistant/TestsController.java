@@ -35,8 +35,8 @@ public class TestsController {
 
 	
 
-	@RequestMapping(value="/test")
-	public ModelAndView test(HttpServletRequest request) {
+	@RequestMapping(value="/test1")
+	public ModelAndView test1(HttpServletRequest request) {
 
 		ModelAndView mav=new ModelAndView("test/test");
 		
@@ -63,7 +63,38 @@ public class TestsController {
 
 	}
 	
-	
+	@RequestMapping(value="/test/getSkladnik")
+	public ModelAndView getSkladknik(HttpServletRequest request) {
+		try {
+			request.setCharacterEncoding(java.nio.charset.StandardCharsets.UTF_8.toString());
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		ModelAndView mav;
+		String name=request.getParameter("skladnik");
+
+		if(name==null)
+		{
+			mav=new ModelAndView("test/form");
+		}else{
+			List<Produkt> parseProdukt = RecipeAgent.parseProdukt(name);
+			
+			ArrayList<String> result=new ArrayList<String>();
+			
+			for(Produkt p:parseProdukt)
+				result.add(p.getNazwa()+" : "+p.getUrl());
+			
+			mav=new ModelAndView("List");
+			mav.addObject("list", result);
+
+		}
+		
+		
+		return mav;
+
+
+	}	
 
 	
 }

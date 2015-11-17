@@ -4,7 +4,7 @@ import mariusz.ambroziak.kassistant.dao.DaoProvider;
 import mariusz.ambroziak.kassistant.model.Problem;
 
 public class ProblemLogger {
-	public static final int singleMessageLength = 200;
+	public static final int singleMessageLength = 90;
 	
 	public static void logProblem(String message){
 		
@@ -13,10 +13,18 @@ public class ProblemLogger {
 			DaoProvider.getInstance().getProblemDao().addProblem(p);
 		}else{
 			Long nextId=0l;
-			while(message.length()>singleMessageLength){
-				String smallMessage=message.substring(message.length()-200,message.length());
-				message=message.substring(0, message.length()-200);
+			while(message.length()>0){
+				String smallMessage;
+				if(message.length()>singleMessageLength){
+					smallMessage=message.substring(message.length()-singleMessageLength,message.length());
+					message=message.substring(0, message.length()-singleMessageLength);
+				}else{
+					smallMessage=message;
+					message="";
+				}
 				
+				
+
 				Problem p=new Problem(nextId,smallMessage,false);
 				
 				DaoProvider.getInstance().getProblemDao().addProblem(p);
@@ -27,6 +35,13 @@ public class ProblemLogger {
 		}
 			
 		
+		
+	}
+	
+	
+	public static void main(String[] args){
+		ProblemLogger.logProblem("test problem....."
+				+ "................................ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd................................................................................................................................................................");
 		
 	}
 }

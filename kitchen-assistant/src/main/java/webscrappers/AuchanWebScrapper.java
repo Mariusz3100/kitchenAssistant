@@ -54,17 +54,26 @@ import com.codesnippets4all.json.parsers.JsonParserFactory;
 public class AuchanWebScrapper extends ImportIoWebScrapper {
 	private String auchanSearchUrl="http://www.auchandirect.pl/sklep/wyszukiwarka/__search__";
 	String filename="\\classes\\auchanEntries.txt";
-	public static final String pattern="http://www.auchandirect.pl/sklep/artykuly/wyszukiwarka/[0-9]+/";
+	public static final String workingUrlPattern="http://www.auchandirect.pl/sklep/artykuly/wyszukiwarka/[0-9]+/[a-zA-Z_0-9-]+";
+	public static final String shortestPattern="http://www.auchandirect.pl/sklep/artykuly/wyszukiwarka/[0-9]+/";
 
 	FileInputInterface input;
 	
 	private AuchanWebScrapper() {
 		super();
-		baseUrl="https://api.import.io/store/data/320a8ee3-a82a-4ed7-b349-f9e7f2eac1de/_query";
-		detailsBaseUrl="https://api.import.io/store/data/3f572a71-b7ee-48b9-b947-2c0d6f6e43b6/_query";
-		apiKey="04ffe01c-7080-4817-8856-dac23896d915%3AOcR"+
-				"fx0W9As5LXwlU6bNA%2FkjhmtfdHgzR5or1c4xrry1rs"+
-				"VPxU7ByGI46fw04%2BGMpIe5hTXFTu0mKQ74mvy%2BHUA%3D%3D";
+//		baseUrl="https://api.import.io/store/data/320a8ee3-a82a-4ed7-b349-f9e7f2eac1de/_query";
+		baseUrl="https://api.import.io/store/data/929a8342-f326-422b-a31b-53552799b6fa/_query";
+		
+		detailsBaseUrl="https://api.import.io/store/data/929a8342-f326-422b-a31b-53552799b6fa/_query";
+//		apiKey="04ffe01c-7080-4817-8856-dac23896d915%3AOcR"+
+//				"fx0W9As5LXwlU6bNA%2FkjhmtfdHgzR5or1c4xrry1rs"+
+//				"VPxU7ByGI46fw04%2BGMpIe5hTXFTu0mKQ74mvy%2BHUA%3D%3D";
+
+		
+		groupApiKey="04ffe01c708048178856dac23896d91539c45fc745bd02ce"
+				+ "4b5f0954e9b340fe48e19ad7dd1e0cd1e68af5738c6ba"
+				+ "f2d6bb153f153b072188e3a7f0d38f8632921ee614d71"
+				+ "53bb498a43be26bf2f8750";
 		
 		detailedApiKey="04ffe01c-7080-4817-8856-dac23896d915%3"+
 				"AOcRfx0W9As5LXwlU6bNA%2FkjhmtfdHgzR5or1c4xrry1rsVPxU7B"+
@@ -159,19 +168,47 @@ public class AuchanWebScrapper extends ImportIoWebScrapper {
 	}
 
 	@Override
-	protected String cutDownProduktUrl(String url) {
+	protected String getUrlPattern(String url) {
 		
 		
 		
-		return cutDownProduktUrlAuchan(url);
+		return getAuchanUrlPattern(url);
 	}
 
-	public static String cutDownProduktUrlAuchan(String url) {
+	@Override
+	protected String getShortestWorkingUrl(String url) {
+		
+		
+		
+		return getAuchanShortestWorkingUrl(url);
+	}
+
+		
+	
+	public static String getAuchanUrlPattern(String url) {
 		
 //		boolean z = Pattern.matches(b,a);
-	    Pattern p = Pattern.compile(pattern);
+	    Pattern p = Pattern.compile(shortestPattern);
 
 	    
+	    
+		Matcher m=p.matcher(url);
+		
+		if(m.matches()){
+			m.find();
+			
+			String shortUrl=m.group();
+			return shortUrl+"%";
+	    }
+		return null;
+	}
+	
+	public static String getAuchanShortestWorkingUrl(String url) {
+		
+//		boolean z = Pattern.matches(b,a);
+	    Pattern p = Pattern.compile(workingUrlPattern);
+
+	    arrrrgh
 	    
 		Matcher m=p.matcher(url);
 		

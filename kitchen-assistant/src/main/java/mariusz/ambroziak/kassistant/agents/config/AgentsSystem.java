@@ -1,6 +1,7 @@
 package mariusz.ambroziak.kassistant.agents.config;
 
 import madkit.kernel.Madkit;
+import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 
 public class AgentsSystem {
 
@@ -26,7 +27,6 @@ public class AgentsSystem {
 		
 //		response.setCharacterEncoding(StringHolder.SERVLET_RESPONSE_ENCODING);
 		//response.getWriter().write("Agent System Started�곟z���");
-		
 		
 		return "agent system started";
 	}
