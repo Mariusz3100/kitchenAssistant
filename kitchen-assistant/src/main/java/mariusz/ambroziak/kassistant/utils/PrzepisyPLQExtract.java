@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 import org.jsoup.nodes.Element;
 
-import webscrappers.SJPWebScrapper;
+import webscrappers.Jsoup.SJPWebScrapper;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
 import mariusz.ambroziak.kassistant.model.Base_Word;
 import mariusz.ambroziak.kassistant.model.Recipe_Ingredient;

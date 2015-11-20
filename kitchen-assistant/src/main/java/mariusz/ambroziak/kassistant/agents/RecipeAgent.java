@@ -29,8 +29,9 @@ import org.jsoup.select.Elements;
 
 
 
+
 import webscrappers.AuchanWebScrapper;
-import webscrappers.SJPWebScrapper;
+import webscrappers.Jsoup.SJPWebScrapper;
 import madkit.kernel.Agent;
 import madkit.kernel.AgentAddress;
 import madkit.kernel.Message;
