@@ -199,5 +199,7 @@ public class AuchanGroup {
 			System.out.println(a+" "+b);
 			
 		}
+		
 	}
+	
 }
