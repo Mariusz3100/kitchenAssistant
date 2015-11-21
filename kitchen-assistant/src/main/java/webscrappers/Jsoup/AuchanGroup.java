@@ -10,6 +10,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import mariusz.ambroziak.kassistant.dao.Base_WordDAOImpl;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
@@ -21,18 +23,19 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+
 public class AuchanGroup {
 	private static String auchanSearchUrl="http://www.auchandirect.pl/sklep/wyszukiwarka/__search__";
 	String filename="\\classes\\auchanEntries.txt";
-	public static final String workingUrlPattern="http://www.auchandirect.pl/sklep/artykuly/wyszukiwarka/[0-9]+/[a-zA-Z_0-9-]+";
+	public static final String workingUrlPattern="http://www.auchandirect.pl/sklep/artykuly/wyszukiwarka/[0-9]+/[a-zA-Z_0-9-]+?";
 	public static final String shortestPattern="http://www.auchandirect.pl/sklep/artykuly/wyszukiwarka/[0-9]+/";
 
 	public static final String noResults="Przykro nam ale nie znaleziono wyników dla podanego zapytania"; 
 	public static final String validLinkPart="/sklep/artykuly/wyszukiwarka/";
 	public static final String baseURL="http://www.auchandirect.pl";
 
-	public static ArrayList<ProduktScrapped> searchFor(String searchPhrase){
-		ArrayList<ProduktScrapped> retValue=new ArrayList<ProduktScrapped>();
+	public static ArrayList<GA_ProduktScrapped> searchFor(String searchPhrase){
+		ArrayList<GA_ProduktScrapped> retValue=new ArrayList<GA_ProduktScrapped>();
 		
 		String search4=Converter.auchanConvertion(searchPhrase);
 //		String tempSearch4=search4.replaceAll("\\\\$","\\\\\\\\$");
@@ -65,7 +68,7 @@ public class AuchanGroup {
 						if(link.attr("href").indexOf(validLinkPart)>-1){
 							String l=link.absUrl("href");
 							String nazwa=link.ownText();
-							ProduktScrapped produktFound=new ProduktScrapped(nazwa,l);
+							GA_ProduktScrapped produktFound=new GA_ProduktScrapped(nazwa,l);
 							
 							retValue.add(produktFound);
 
@@ -144,8 +147,57 @@ public class AuchanGroup {
 //		return retValue;
 //	}
 //	
-//	
+
+	
+	
+	public static String getAuchanUrlPattern(String url) {
+		
+//		boolean z = Pattern.matches(b,a);
+	    Pattern p = Pattern.compile(shortestPattern);
+
+	    
+	    
+		Matcher m=p.matcher(url);
+		
+		if(m.find()){
+			
+			
+			String shortUrl=m.group();
+			return shortUrl+"%";
+	    }
+		return null;
+	}
+	
+	public static String getAuchanShortestWorkingUrl(String url) {
+		
+		boolean z = Pattern.matches(workingUrlPattern,url);
+	    Pattern p = Pattern.compile(workingUrlPattern);
+
+	    
+	    
+		Matcher m=p.matcher(url);
+		
+		if(m.find()){
+			
+			
+			String shortUrl=m.group();
+			return shortUrl;
+	    }
+		return null;
+	}
+	
+	
+	
 	public static void main(String[] args){
-		searchFor("mro¿one owoce");
+		ArrayList<GA_ProduktScrapped> searchFor = searchFor("mro¿one owoce");
+		
+		for(GA_ProduktScrapped p:searchFor){
+			String a=getAuchanShortestWorkingUrl(p.getUrl());
+			
+			String b=getAuchanUrlPattern(p.getUrl());
+			
+			System.out.println(a+" "+b);
+			
+		}
 	}
 }

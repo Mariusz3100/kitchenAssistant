@@ -1,6 +1,6 @@
 package webscrappers.Jsoup;
 
-public class ProduktScrapped {
+public class GA_ProduktScrapped {
 	private String nazwa;
 	private String url;
 	
@@ -11,7 +11,7 @@ public class ProduktScrapped {
 	public void setNazwa(String nazwa) {
 		this.nazwa = nazwa;
 	}
-	public ProduktScrapped(String nazwa, String url) {
+	public GA_ProduktScrapped(String nazwa, String url) {
 		super();
 		this.nazwa = nazwa;
 		this.url = url;
