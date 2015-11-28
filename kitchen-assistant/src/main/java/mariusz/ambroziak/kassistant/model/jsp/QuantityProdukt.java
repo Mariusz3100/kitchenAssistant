@@ -5,6 +5,8 @@ import mariusz.ambroziak.kassistant.utils.AmountTypes;
 public class QuantityProdukt {
 	private String produktName;
 	private AmountTypes amountType;
+	private float amount;
+
 	public String getProduktName() {
 		return produktName;
 	}
@@ -23,5 +25,4 @@ public class QuantityProdukt {
 	public void setAmount(float amount) {
 		this.amount = amount;
 	}
-	private float amount;
 }

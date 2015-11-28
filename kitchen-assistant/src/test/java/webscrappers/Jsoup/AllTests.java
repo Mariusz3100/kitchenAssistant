@@ -5,7 +5,9 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({})
+@SuiteClasses({AuchanGroupConnectingTest.class,
+	AuchanGroupTest.class,
+	AuchanParticularConnectingTest.class})
 public class AllTests {
 
 }

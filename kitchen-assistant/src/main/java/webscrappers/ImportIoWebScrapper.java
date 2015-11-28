@@ -43,10 +43,10 @@ import com.codesnippets4all.json.parsers.JsonParserFactory;
 
 public abstract class ImportIoWebScrapper {
 	 private static final int ENJOY_YOUR_OWN_WAIT_TIME = 500;
-	private static final float ticketsFactor = 0.001f;
+	private static final float ticketsFactor = 1f;
 //	DatabaseInterface interfac;
 	 ArrayList<String> detailsToBeSavedList;
-		private float tickets=-1000;
+		private float tickets=0;
 		private float lastTime=0;
 
 	 private StringBuilder scrapperLog;
@@ -66,7 +66,7 @@ public abstract class ImportIoWebScrapper {
 
 	String detailsBaseUrl="";
 
-	String urlParamName="input/webpage/url";
+	String urlParamName="input=webpage/url";
 //	String auchanURLToProcess=	"http%3A%2F%2Fwww.auchandirect.pl%2Fsklep%2Fartykuly%2F1160_1181_1292%2FProdukty-Swieze%2FCukiernia%2FCiasta-Ciastka";
 	
 	String userParamName="_user";
@@ -176,7 +176,7 @@ public abstract class ImportIoWebScrapper {
 			for(int i=0;i<jsonResults.length()&&SystemEnv.AgentsOn;i++){
 				JSONObject res=jsonResults.getJSONObject(i);
 		
-				String detailsURL=res.getString("prodphoto_link");
+				String detailsURL=res.getString("link");
 
 				//if(!checkForExistingDetails(detailsURL))	
 					rememberDetailsToBeSaved(detailsURL);
@@ -198,13 +198,12 @@ public abstract class ImportIoWebScrapper {
 			throws UnsupportedEncodingException, 
 			MalformedURLException {
 		
-		
+
 		updateTickets();
 		substractTickets();
-		String query=baseUrl+"?"+urlParamName+"="+URLEncoder.encode(originalUrl,java.nio.charset.StandardCharsets.UTF_8.toString())+
+		String query=baseUrl+"?"+urlParamName+":"+URLEncoder.encode(originalUrl,java.nio.charset.StandardCharsets.UTF_8.toString())+
 				"&"+userParamName+"="+auchanUser+"&"+apiKeyParamName+"="+groupApiKey;
 		URLConnection connection = waitTillConnOpen(query);
-		connection.setRequestProperty("Accept-Charset", charset);
 		return connection;
 	}
 
@@ -320,19 +319,32 @@ public abstract class ImportIoWebScrapper {
 	protected Produkt getAndSaveDetails(String detailsURL)
 			{
 
-		while(!SystemEnv.AgentsOn)
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+//		while(!SystemEnv.AgentsOn)
+//			try {
+//				Thread.sleep(1000);
+//			} catch (InterruptedException e1) {
+//				// TODO Auto-generated catch block
+//				e1.printStackTrace();
+//			}
 		updateTickets();
 		substractTickets();
 		
+		Produkt produktDetails = getProduktDetails(detailsURL);
+
+		if(produktDetails==null){
+			scrapperLog.append("No data found at: "+produktDetails);
+		}else{
+			scrapperLog.append("Saving data from \""+detailsURL+"\": "+produktDetails);
+			DaoProvider.getInstance().getProduktDao().addProdukt(produktDetails);
+		}
+		return produktDetails;
+		
+	}
+
+	public  Produkt getProduktDetails(String detailsURL) {
 		try {
 		URLConnection connection;
-		String detailsQuery=detailsBaseUrl+"?"+urlParamName+"="+URLEncoder.encode(detailsURL,java.nio.charset.StandardCharsets.UTF_8.toString())+
+		String detailsQuery=detailsBaseUrl+"?"+urlParamName+":"+URLEncoder.encode(detailsURL,java.nio.charset.StandardCharsets.UTF_8.toString())+
 				"&"+userParamName+"="+auchanUser+"&"+apiKeyParamName+"="+detailedApiKey;
 //		System.out.println("new File(\"xxx\")."+new File("xxx").getAbsolutePath());
 		
@@ -359,7 +371,7 @@ public abstract class ImportIoWebScrapper {
 				JSONObject details=jsonResults.getJSONObject(0);
 				
 				
-				return saveJSONDetails(detailsURL,details);
+				return getDetailsFromJson(detailsURL,details);
 				
 				
 			}else{
@@ -373,13 +385,11 @@ public abstract class ImportIoWebScrapper {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 		return null;
-		
 	}
 	
 	
-	private Produkt saveJSONDetails(String detailsURL, JSONObject details) {
+	private Produkt getDetailsFromJson(String detailsURL, JSONObject details) {
 		
 		
 //		String url=details.getString("details");
@@ -391,8 +401,7 @@ public abstract class ImportIoWebScrapper {
 			detailsURL=detailsURL.split(";")[0];
 		Produkt p=new Produkt(detailsURL, nazwa, sklad, opis, cena, false, false);
 		
-		scrapperLog.append("Saving data from \""+detailsURL+"\": "+p);
-		DaoProvider.getInstance().getProduktDao().addProdukt(p);
+//		scrapperLog.append("Scrapped data from \""+detailsURL+"\": "+p);
 		
 		return p;
 	}

@@ -17,6 +17,8 @@ public class Converter {
 		"ê-\\$0119",
 		" -\\$0020",
 		"œ-\\$015B",
+		"%-\\$0025",
+		
 		};
 
 	private static String[] ommissions=

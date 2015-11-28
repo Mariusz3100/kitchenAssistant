@@ -1,4 +1,4 @@
-package webscrappers.Jsoup;
+package webscrappers.Jsoup.auchan;
 
 public class ProduktScrapped {
 	private String nazwa;

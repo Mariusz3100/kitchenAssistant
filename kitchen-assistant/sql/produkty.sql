@@ -1,7 +1,8 @@
 ﻿CREATE TABLE Produkt
 (
   p_id serial not null,
-  url varchar(200) not null,
+  urlId varchar(100) not null,
+  shopId varchar(5),
   nazwa varchar(200),
   sklad varchar(2000),
   opis varchar(2000),
@@ -15,6 +16,10 @@
 )
 
 
-CREATE INDEX produkt_url_index
+CREATE INDEX produkt_urlId_index
  ON produkt
- ( url );
+ ( urlId );
+
+CREATE INDEX produkt_shopId_index
+ ON produkt
+ ( shopId );
