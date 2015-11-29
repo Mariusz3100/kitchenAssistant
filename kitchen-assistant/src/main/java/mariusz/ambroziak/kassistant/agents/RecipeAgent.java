@@ -30,7 +30,9 @@ import org.jsoup.select.Elements;
 
 
 
-import webscrappers.AuchanWebScrapper;
+import org.postgresql.translation.messages_bg;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import webscrappers.Jsoup.SJPWebScrapper;
 import madkit.kernel.Agent;
 import madkit.kernel.AgentAddress;
@@ -50,6 +52,7 @@ import mariusz.ambroziak.kassistant.model.jsp.SearchResult;
 import mariusz.ambroziak.kassistant.utils.Converter;
 import mariusz.ambroziak.kassistant.utils.MessageCounter;
 import mariusz.ambroziak.kassistant.utils.MessageTypes;
+import mariusz.ambroziak.kassistant.utils.ParameterHolder;
 import mariusz.ambroziak.kassistant.utils.PrzepisyPLQExtract;
 import mariusz.ambroziak.kassistant.utils.StringHolder;
 
@@ -58,18 +61,13 @@ public class RecipeAgent extends BaseAgent{
 	static ArrayList<RecipeAgent> agents;
 	private boolean busy=false;
 
+	@Autowired
+	private ProduktDAO produktDao;
+	
+	
 	public static final String PARSER_NAME = "recipeParser";
 
 	private static final long serialVersionUID = 1L;
-	private static final String selectSkladnikQ = "select * from product where nazwa ilike '__nazwa_skladnika__'";
-	private static final String selectBaseWordQ = 
-			"select * from base_word  inner join variant_word on variant_word.base_word_id=base_word.base_word_id where v_word='__variant_word__'";
-
-	private static final String selectProductThroughBaseWord = 
-			"select * from base_word \n" + 
-					"inner join variant_word on variant_word.base_word_id=base_word.base_word_id \n" + 
-					"inner join product on product.nazwa ilike '%'||b_word||'%'\n" + 
-					"where v_word='__v_word__'";
 	public  static final boolean checkShops = true;
 
 //	DatabaseInterface interfac;
@@ -81,22 +79,23 @@ public class RecipeAgent extends BaseAgent{
 
 	@Override
 	protected void live() {
-//		AgentAddress other = null;
-//		
-//		while (other == null) {
-//			other = getAgentWithRole(StringHolder.AGENT_COMMUNITY, StringHolder.SERVLETS_GROUP,  PARSER_NAME);
-//
-//		}
-//		
-//
-//		sendMessage(other, new Message());// Sending the message to the agent we found.
-//
-//		super.live();
-
+		
+		StringMessage m=(StringMessage) waitNextMessageKA();
+		
+		processMessage(m);
+		
 		while(true){
-			pause(100000);
+			pause(1000);
 		}
 	}
+
+	private void processMessage(StringMessage m) {
+		Message messageSentEarlier = getMessageSentEarlier(m.getConversationID());
+		
+		
+		
+	}
+
 
 	@Override
 	protected void pause(int milliSeconds) {
@@ -169,26 +168,37 @@ public class RecipeAgent extends BaseAgent{
 	
 	private ArrayList<SearchResult> getFromDbOrParseProdukt(String produktUrl) {
 		
-		if(checkShops){
-			JSONObject json = new JSONObject();
-			
-			json.put(StringHolder.PRODUKT_URL_NAME, produktUrl);
-			json.put(StringHolder.MESSAGE_CREATOR_NAME, PARSER_NAME);
-			json.put(StringHolder.MESSAGE_TYPE_NAME, MessageTypes.GetProduktData);
-			json.put(StringHolder.MESSAGE_ID_NAME, MessageCounter.getCount());
-			
-			AgentAddress x=getAgentWithRole(StringHolder.AGENT_COMMUNITY, AGENT_GROUP, ShopsListAgent.SHOP_LIST_NAME);
-	
-			StringMessage messageToSend = new StringMessage(json.toString());
-			sendMessageWithRole(x, messageToSend,PARSER_NAME);
-			
-			StringMessage response=(StringMessage) waitNextMessage();
-
-			
-			
-		}
 		
+		List<Produkt> produkts = getProduktFromDbByUrl(produktUrl);
+		
+		
+		if(produkts==null||produkts.size()<1){
+			if(ParameterHolder.isCheckShops()){
+				JSONObject json = new JSONObject();
+				
+				json.put(StringHolder.PRODUKT_URL_NAME, produktUrl);
+				json.put(StringHolder.MESSAGE_CREATOR_NAME, PARSER_NAME);
+				json.put(StringHolder.MESSAGE_TYPE_NAME, MessageTypes.GetProduktData);
+				json.put(StringHolder.MESSAGE_ID_NAME, MessageCounter.getCount());
+				
+				AgentAddress x=getAgentWithRole(StringHolder.AGENT_COMMUNITY, AGENT_GROUP, ShopsListAgent.SHOP_LIST_NAME);
+		
+				StringMessage messageToSend = new StringMessage(json.toString());
+				StringMessage response=(StringMessage) 
+						sendMessageWithRoleAndWaitForReplyKA(x, messageToSend,PARSER_NAME);
+				
+				//TODO resume work
+	
+				
+				
+			}
+		}
 		return null;
+	}
+
+
+	public List<Produkt> getProduktFromDbByUrl(String produktUrl) {
+		return produktDao.getProduktsByURL(produktUrl);
 	}
 
 
@@ -275,10 +285,6 @@ public class RecipeAgent extends BaseAgent{
 				
 				QuantityProdukt produktAndAmount=retrieveProduktAmountData(e);
 				
-				
-					
-				
-				 
 				 
 				List<Produkt> potencjalneSkladniki = retrieveSkladnik(ingredient);
 				
@@ -515,9 +521,9 @@ public class RecipeAgent extends BaseAgent{
 			AgentAddress x=getAgentWithRole(StringHolder.AGENT_COMMUNITY, AGENT_GROUP, ShopsListAgent.SHOP_LIST_NAME);
 	
 			StringMessage messageToSend = new StringMessage(json.toString());
-			sendMessageWithRole(x, messageToSend,PARSER_NAME);
+			StringMessage response=(StringMessage) 
+					sendMessageWithRoleAndWaitForReplyKA(x, messageToSend,PARSER_NAME);
 			
-			StringMessage response=(StringMessage) waitNextMessage();
 	
 			if(response.getContent().equals(""))
 					return null;

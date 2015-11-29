@@ -13,6 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import madkit.kernel.Agent;
 import madkit.kernel.AgentAddress;
+import madkit.kernel.ConversationID;
 import madkit.kernel.Message;
 import madkit.kernel.AbstractAgent.ReturnCode;
 import madkit.message.StringMessage;
@@ -30,29 +31,51 @@ public abstract class BaseAgent extends Agent {
 
 	public String AGENT_COMMUNITY = StringHolder.AGENT_COMMUNITY;
 
-	@Override
-	protected void live() {
-//		StringMessage m;
-//		
-//		m = nextMessage();
-//		
-//		if(m!=null){
-//		
-//			JSONObject j=new JSONObject(((StringMessage)m).getContent());
-//			
-//			messages.put(j.getInt(StringHolder.MESSAGE_ID_NAME),m);
-//		} else
-//			try {
-//				Thread.sleep(1000);
-//			} catch (InterruptedException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
+
+
+	
+	public Message sendMessageWithRoleAndWaitForReplyKA(AgentAddress receiver,
+			Message messageToSend, String senderRole) {
+	
+		String data="{Agent \""+this.toString()+"\" sent message:\n ";
+
+		data+="id:"+messageToSend.getConversationID()+" content:<"+((StringMessage)messageToSend).getContent()+">\n";
+		data+="to agent \""+receiver.toString()+"\"\n ";
+					
+		data+="at "+ClockAgent.getTimePassed()+"}\n\n";
+
+		htmlLog(data);
+		
+		return super.sendMessageWithRoleAndWaitForReply(receiver, messageToSend,
+				senderRole);
+	}
+
+
+
+	
+	public Message sendReplyWithRoleAndWaitForReplyKA(Message messageToReplyTo,
+			Message reply, String senderRole, Integer timeOutMilliSeconds) {
+		// TODO Auto-generated method stub
+		
+		String data="{Agent \""+this.toString()+"\" sent message:\n ";
+
+		data+="id:"+reply.getConversationID()+" content:<"+((StringMessage)reply).getContent()+">\n";
+		data+="as a reply to message: id:"+reply.getConversationID()+" content:<"+((StringMessage)reply).getContent()+">\n ";
+		if(timeOutMilliSeconds!=null)
+			data+=" with timeout "+timeOutMilliSeconds+" ";
+					
+		data+="at "+ClockAgent.getTimePassed()+"}\n\n";
+
+		htmlLog(data);
+		
+		return super.sendReplyWithRoleAndWaitForReply(messageToReplyTo, reply,
+				senderRole, timeOutMilliSeconds);
 	}
 
 	public String AGENT_ROLE;
 
 	private static HashMap<String,BaseAgent> extent;
+	
 
 	public static HashMap<String, BaseAgent> getExtent() {
 		return extent;
@@ -68,7 +91,20 @@ public abstract class BaseAgent extends Agent {
 		addNewAgent(this);
 	}
 
-
+	private HashMap<ConversationID,Message> messagesSent;
+	
+	protected void addMessageToList(Message m){
+		if(messagesSent==null)
+			messagesSent=new HashMap<ConversationID,Message>();
+		
+		messagesSent.put(m.getConversationID(),m);
+	}
+	
+	protected Message getMessageSentEarlier(ConversationID id){
+		return messagesSent.get(id);
+	}
+	
+	
 	private void addNewAgent(BaseAgent ba){
 		if(extent==null)
 			extent=new HashMap<String, BaseAgent>();
@@ -85,54 +121,9 @@ public abstract class BaseAgent extends Agent {
 	}
 
 	
-	@Override
-	protected void activate() {
-//		messages=new HashMap<Integer, StringMessage>();
-		
-		super.activate();
-	}
 
-//
-//	public Message waitNextMessageWithId(int id) {
-//		
-//		while(true){
-//			StringMessage stringMessage = messages.get(id);
-//			if(stringMessage!=null){
-//				messages.remove(id);
-//				return stringMessage;
-//				
-//			}
-//			else
-//				pause(1000);
-//		}
-//		
-//
-//	}
-//	
-//	public Message getAnyMessageOrNull() {
-//		Set<Integer> keySet = messages.keySet();
-//		Iterator<Integer> iterator = keySet.iterator();
-//		
-//		
-//		if(iterator.hasNext())
-//		{
-//			Integer next = iterator.next();
-//			
-//			StringMessage stringMessage = messages.get(next);
-//			
-//			messages.remove(next);
-//			
-//			return stringMessage;
-//		}else{
-//			return null;
-//		}
-//		
-//
-//	}
 	
-	
-	@Override
-	public Message waitNextMessage() {
+	public Message waitNextMessageKA() {
 		Message m=super.waitNextMessage();
 		
 		if(m.getSender().getRole().equals("manager"))
@@ -157,12 +148,12 @@ public abstract class BaseAgent extends Agent {
 	}
 
 
-	@Override
-	public StringMessage nextMessage() {
+	
+	public StringMessage nextMessageKA() {
 
 		StringMessage sm=(StringMessage) super.nextMessage();
 
-
+		
 		
 		if(sm!=null){
 			if(sm.getSender().getRole().equals("manager"))
@@ -172,7 +163,7 @@ public abstract class BaseAgent extends Agent {
 			String data="Agent \""+this.toString()+"\" received message:\n ";
 
 
-			data+="<<"+sm.getContent()+">>\n";
+			data+="id:"+sm.getConversationID()+" content:<"+sm.getContent()+">\n";
 
 			data+="at "+ClockAgent.getTimePassed()+"}\n\n";
 
@@ -190,8 +181,10 @@ public abstract class BaseAgent extends Agent {
 	}
 
 
-	@Override
-	public ReturnCode sendMessageWithRole(final AgentAddress receiver, final Message message, final String senderRole) {
+	
+	public ReturnCode sendMessageWithRoleKA(final AgentAddress receiver, final Message message, final String senderRole) {
+		addMessageToList(message);
+		
 		String data="{Agent \""+this.toString()+"\" sent message:\n ";
 
 		data+="<"+((StringMessage)message).getContent()+">\n";
@@ -203,6 +196,11 @@ public abstract class BaseAgent extends Agent {
 
 		return super.sendMessageWithRole(receiver,message,senderRole);	
 	}
+	
+	
+	
+	
+	
 	@Override
 	public String toString() {
 		return super.toString()+

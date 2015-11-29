@@ -117,13 +117,13 @@ public class HomeController {
 		return model;
 	}
 	
-	@RequestMapping(value="/produkts")
-	public ModelAndView produkts() {
-		List<Produkt> listProdukts = produktDao.list();
-		ModelAndView model = new ModelAndView("produktsList");
-		model.addObject("produktList", listProdukts);
-		return model;
-	}
+//	@RequestMapping(value="/produkts")
+//	public ModelAndView produkts() {
+//		List<Produkt> listProdukts = produktDao.list();
+//		ModelAndView model = new ModelAndView("produktsList");
+//		model.addObject("produktList", listProdukts);
+//		return model;
+//	}
 
 	@RequestMapping(value="/recipes")
 	public ModelAndView recipes() {

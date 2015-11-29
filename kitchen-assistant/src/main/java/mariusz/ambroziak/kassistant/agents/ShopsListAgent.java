@@ -47,7 +47,7 @@ public class ShopsListAgent extends BaseAgent {
 
 		while(true){
 			
-			m=waitNextMessage();
+			m=waitNextMessageKA();
 				
 			String content=((StringMessage)m).getContent();
 			JSONObject json=new JSONObject(content);

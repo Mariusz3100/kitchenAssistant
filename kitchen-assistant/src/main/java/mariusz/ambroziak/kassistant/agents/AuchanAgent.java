@@ -18,16 +18,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 
 
-//import database.holders.DBOpenshiftInterface;
-//import database.holders.DbLocalInterface;
-//import database.holders.StringHolder;
-import webscrappers.AuchanWebScrapper;
+
 import madkit.kernel.Agent;
 import madkit.kernel.AgentAddress;
 import madkit.kernel.Message;
 import madkit.message.StringMessage;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.utils.MessageTypes;
+import mariusz.ambroziak.kassistant.utils.ParameterHolder;
 import mariusz.ambroziak.kassistant.utils.StringHolder;
 import mariusz.ambroziak.kassistant.utils.SystemEnv;
 
@@ -36,10 +34,9 @@ public class AuchanAgent extends BaseAgent {
 	
 	public static final String acceptedURL="http://www.auchandirect.pl/sklep/artykuly/wyszukiwarka/[0-9]+/.+";
 	
-	private int counter=0;
 	
 	public static boolean agentOn=true;
-	AuchanWebScrapper webScrapper;
+//	AuchanWebScrapper webScrapper;
 	
 	public AuchanAgent() {
 		super();
@@ -59,7 +56,7 @@ public class AuchanAgent extends BaseAgent {
 		while(true){
 			
 			
-			m = nextMessage();
+			m = nextMessageKA();
 			if(m!=null)
 				processMessage(m);
 			else
@@ -75,7 +72,7 @@ public class AuchanAgent extends BaseAgent {
 	}
 
 	public void enjoyYourOwn() {
-		if(RecipeAgent.checkShops)
+		if(ParameterHolder.isCheckShops())
 			webScrapper.enjoyYourOwn();
 	}
 	
@@ -88,7 +85,7 @@ public class AuchanAgent extends BaseAgent {
 
 	private void processMessage(StringMessage m) {
 		JSONObject message=new JSONObject(m.getContent());
-
+		
 		try {
 			ArrayList<Produkt> x=webScrapper.lookup(message.getString(StringHolder.SEARCH4_NAME));
 			AgentAddress other=getAgentWithRole(AGENT_COMMUNITY, AGENT_GROUP, ShopsListAgent.SHOP_LIST_NAME);
@@ -120,7 +117,8 @@ public class AuchanAgent extends BaseAgent {
 			result.put(StringHolder.SEARCH4_NAME, message.getString(StringHolder.SEARCH4_NAME));
 			StringMessage messageToSend = new StringMessage(result.toString());
 
-			sendMessageWithRole(other, messageToSend,AGENT_ROLE);
+			sendMessageWithRoleKA(other, messageToSend,AGENT_ROLE);
+			
 			
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
