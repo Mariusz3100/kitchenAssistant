@@ -11,6 +11,7 @@ import java.net.URLConnection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.hibernate.cfg.NotYetImplementedException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -20,7 +21,7 @@ import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 
 public abstract class AuchanAbstractScrapper{
 
-	public static final String singleUrlAtTheEndOfEveryUrl="A";
+	public static final String singleCharAtTheEndOfEveryUrl="A";
 	public static final String UrlPattern = "\\Qhttp://www.auchandirect.pl/sklep/artykuly/\\E(\\Qwyszukiwarka/\\E|[0-9_]+\\/)[LV]*[0-9]+\\/";
 //	public static final String workingUrlPattern = "http://www.auchandirect.pl/sklep/artykuly/[[wyszukiwarka/]|[[0-9_]+/]][LV]?[0-9]+/[a-zA-Z_0-9-]+?";
 //	public static final String shortestPattern = "http://www.auchandirect.pl/sklep/artykuly/[[wyszukiwarka/]|[[0-9_]+/]][LV]?[0-9]+/";
@@ -89,7 +90,9 @@ public abstract class AuchanAbstractScrapper{
 //		    }
 //			return null;
 //		}
+	
 
+	
 	public static String getAuchanShortestWorkingUrl(String url) {
 		
 		boolean z = Pattern.matches(UrlPattern,url);
@@ -103,9 +106,10 @@ public abstract class AuchanAbstractScrapper{
 			
 			
 			String shortUrl=m.group();
-			return shortUrl+singleUrlAtTheEndOfEveryUrl;
+			return shortUrl+singleCharAtTheEndOfEveryUrl;
 	    }
-		return null;
+		ProblemLogger.logProblem("Short url not found");
+		return "";
 	}
 
 	public static boolean checkIf404Page(String pageContent) {

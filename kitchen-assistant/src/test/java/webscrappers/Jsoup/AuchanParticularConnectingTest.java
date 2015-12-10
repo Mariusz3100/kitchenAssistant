@@ -32,6 +32,7 @@ public class AuchanParticularConnectingTest {
 	@Test
 	public void test3() throws Page404Exception {
 		String url="http://www.auchandirect.pl/sklep/artykuly/wyszukiwarka/95100534/A";
+		url="http://www.auchandirect.pl/sklep/artykuly/wyszukiwarka/94500687/Bakoma-Jogurt-naturalny-";
 		ProduktDetails pd=AuchanParticular.getProduktDetails(url);
 		
 		

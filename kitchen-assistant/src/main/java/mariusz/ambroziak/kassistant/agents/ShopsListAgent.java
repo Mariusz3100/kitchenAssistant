@@ -27,7 +27,7 @@ public class ShopsListAgent extends BaseAgent {
 
 	ArrayList<AgentAddress> adresses;
 	
-	private static Map<String,AgentAddress> shopUrlMap;
+//	private static Map<String,AgentAddress> shopUrlMap;
 	
 	
 	public ShopsListAgent() {
@@ -49,6 +49,11 @@ public class ShopsListAgent extends BaseAgent {
 			
 			m=waitNextMessageKA();
 				
+			
+			if(m.getSender().getRole().equals("manager")){
+				processDamnManagerMessage(m);
+			}
+			
 			String content=((StringMessage)m).getContent();
 			JSONObject json=new JSONObject(content);
 			
@@ -57,9 +62,7 @@ public class ShopsListAgent extends BaseAgent {
 				ProblemLogger.logProblem("Message has no type: "+content);
 			}else if(json.get(StringHolder.MESSAGE_TYPE_NAME).equals(MessageTypes.SearchFor.toString())){
 		
-				if(m.getSender().getRole().equals("manager")){
-					processDamnManagerMessage(m);
-				}
+
 	
 				if(m.getSender().getRole().equals(RecipeAgent.PARSER_NAME)){
 					AgentAddress x=getAgentWithRole(AGENT_COMMUNITY, StringHolder.SCRAPPERS_GROUP, AuchanAgent.AUCHAN_WEB_SCRAPPER_NAME);
@@ -76,8 +79,21 @@ public class ShopsListAgent extends BaseAgent {
 				}
 				
 			}else if(json.get(StringHolder.MESSAGE_TYPE_NAME).equals(MessageTypes.GetProduktData.toString())){
+				AgentAddress x=getAgentWithRole(AGENT_COMMUNITY, StringHolder.SCRAPPERS_GROUP, AuchanAgent.AUCHAN_WEB_SCRAPPER_NAME);
+				StringMessage newM=new StringMessage(((StringMessage)m).getContent());
+				addMessagesRelation((StringMessage) m,newM);
 				
+				sendMessageWithRoleKA(x, newM,ShopsListAgent.SHOP_LIST_NAME);
+			}else if(json.get(StringHolder.MESSAGE_TYPE_NAME).equals(MessageTypes.GetProduktDataResponse.toString())){
+//				AgentAddress x=getAgentWithRole(AGENT_COMMUNITY, StringHolder.SCRAPPERS_GROUP, AuchanAgent.AUCHAN_WEB_SCRAPPER_NAME);
+				StringMessage originalOne=getOriginalMessage(m.getConversationID());
+				StringMessage newM=new StringMessage(((StringMessage)m).getContent());
+				sendReply(originalOne, newM);//(x, newM,ShopsListAgent.SHOP_LIST_NAME);
+				
+				//				StringMessage newM=new StringMessage(((StringMessage)m).getContent());
+//				sendMessageWithRole(x, newM,ShopsListAgent.SHOP_LIST_NAME);
 			}
+			
 
 		}
 
@@ -116,27 +132,27 @@ public class ShopsListAgent extends BaseAgent {
 //				getAgentWithRole(StringHolder.AGENT_COMMUNITY, StringHolder.SCRAPPERS_GROUP, "auchanWebScrapper"));
 	
 	
-	setUpData();
+//	setUpData();
 	
 	
 	
 	
 	}
 
-	private void setUpData() {
-		setUpUrlMap();
+//	private void setUpData() {
+//		setUpUrlMap();
+//
+//	}
 
-	}
-
-	public void setUpUrlMap() {
-		if(shopUrlMap==null){
-			shopUrlMap=new HashMap<String, AgentAddress>();
-		}
-		
-		AgentAddress x=getAgentWithRole(AGENT_COMMUNITY, StringHolder.SCRAPPERS_GROUP, AuchanAgent.AUCHAN_WEB_SCRAPPER_NAME);
-
-		shopUrlMap.put(AuchanAgent.acceptedURL,x);
-	}
+//	public void setUpUrlMap() {
+//		if(shopUrlMap==null){
+//			shopUrlMap=new HashMap<String, AgentAddress>();
+//		}
+//		
+//		AgentAddress x=getAgentWithRole(AGENT_COMMUNITY, StringHolder.SCRAPPERS_GROUP, AuchanAgent.AUCHAN_WEB_SCRAPPER_NAME);
+//
+//		shopUrlMap.put(AuchanAgent.acceptedURL,x);
+//	}
 
 	@Override
 	protected void end() {

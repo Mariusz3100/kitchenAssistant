@@ -6,6 +6,8 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
+import mariusz.ambroziak.kassistant.model.Produkt;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -14,7 +16,7 @@ import webscrappers.Jsoup.auchan.AuchanGroup;
 import webscrappers.Jsoup.auchan.GA_ProduktScrapped;
 
 public class AuchanGroupConnectingTest {
-	static ArrayList<GA_ProduktScrapped> searchFor;
+	static ArrayList<Produkt> searchFor;
 
 
 	
@@ -25,7 +27,7 @@ public class AuchanGroupConnectingTest {
 	
 	@Test
 	public void testNotNull() {
-		for(GA_ProduktScrapped p:searchFor){
+		for(Produkt p:searchFor){
 			System.out.println("1"+p.getUrl());
 			
 			assertNotNull(p.getUrl());

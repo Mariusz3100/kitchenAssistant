@@ -50,14 +50,22 @@ public class ProduktDAOImpl implements ProduktDAO {
 
 	@Override
 	@Transactional
-	public List<Produkt> getProduktsByURL(String url) {
+	public Produkt getProduktsByURL(String url) {
 		@SuppressWarnings("unchecked")
-		List<Produkt> produkt =  sessionFactory.getCurrentSession()
+		List<Produkt> produkts =  sessionFactory.getCurrentSession()
 				.createCriteria(Produkt.class)
 				.add(Restrictions.eq("url", url))
 				.list();
 		
-		return produkt;
+		if(produkts.size()>1)
+			throw new  DataIntegrityViolationException(
+					"In the table Produkt there is more than one produkt for url: "+url);
+
+		
+		if(produkts==null || produkts.size()==0)
+			return null;
+		else
+			return produkts.get(0);		
 	}
 	
 	@Override

@@ -9,7 +9,7 @@ import mariusz.ambroziak.kassistant.model.User;
 public interface ProduktDAO {
 	public List<Produkt> list();
 	public Produkt getById(Long id);
-	public List<Produkt> getProduktsByURL(String url);
+	public Produkt getProduktsByURL(String url);
 	public List<Produkt> getProduktsBySpacedName(String name);
 	public void addProdukt(Produkt produkt);
 	public List<Produkt> getProduktsBySpacedVariantName(String name);

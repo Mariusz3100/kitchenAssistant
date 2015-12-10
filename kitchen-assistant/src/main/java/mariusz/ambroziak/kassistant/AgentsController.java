@@ -22,28 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class AgentsController {
 
-	
-//	@RequestMapping(value="/agents")
-//	@ResponseBody
-//	public String users() {
-//		String html="<html>\r\n" + 
-//				"    <head>\r\n" + 
-//				"        <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\r\n" + 
-//				"        <title>Home</title>\r\n" + 
-//				"    </head>\r\n" + 
-//				"    <body>";
-//		
-//		html+="hello World!";
-//		
-//		
-//		
-//		
-//		
-//		html+="    </body>\r\n" + 
-//				"</html>";
-//		
-//		return html;
-//	}
+
 	
 	
 	@RequestMapping(value="/agents/start")
@@ -53,11 +32,7 @@ public class AgentsController {
 	}
 	
 	
-//	@RequestMapping(value="/agents/clock")
-//	@ResponseBody
-//	public String checkClock() {
-//		return "time is :"+ClockAgent.getTimePassed();
-//	}
+
 	
 	
 	@RequestMapping(value="/agents/all")

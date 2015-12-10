@@ -13,12 +13,14 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import mariusz.ambroziak.kassistant.QuantityExtractor.AuchanQExtract;
+import mariusz.ambroziak.kassistant.QuantityExtractor.PrzepisyPLQExtract;
 import mariusz.ambroziak.kassistant.dao.Base_WordDAOImpl;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
+import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.jsp.QuantityProdukt;
 import mariusz.ambroziak.kassistant.utils.Converter;
 import mariusz.ambroziak.kassistant.utils.ProblemLogger;
-import mariusz.ambroziak.kassistant.utils.PrzepisyPLQExtract;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -31,6 +33,10 @@ public class AuchanParticular extends AuchanAbstractScrapper{
 
 	private static final String OPIS_PRODUKTU_LABEL = "Opis produktu";
 
+		
+		
+
+	
 	public static ProduktDetails getProduktDetails(String detailsUrl) throws Page404Exception{
 		String page="";
 		ProduktDetails retValue=new ProduktDetails();
@@ -85,7 +91,7 @@ public class AuchanParticular extends AuchanAbstractScrapper{
 		
 		String quantityText=getOwnTextOrEmpty(doc.select(".prod-info"));
 		
-		QuantityProdukt quantity = PrzepisyPLQExtract.extractQuantity(quantityText);
+		QuantityProdukt quantity = AuchanQExtract.extractQuantity(quantityText);
 		
 		retValue.setAmount(quantity);
 		

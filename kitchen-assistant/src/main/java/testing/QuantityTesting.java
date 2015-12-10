@@ -9,12 +9,12 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
+import mariusz.ambroziak.kassistant.QuantityExtractor.PrzepisyPLQExtract;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.Recipe;
 import mariusz.ambroziak.kassistant.model.Recipe_Ingredient;
 import mariusz.ambroziak.kassistant.model.jsp.QuantityProdukt;
 import mariusz.ambroziak.kassistant.model.jsp.SearchResult;
-import mariusz.ambroziak.kassistant.utils.PrzepisyPLQExtract;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

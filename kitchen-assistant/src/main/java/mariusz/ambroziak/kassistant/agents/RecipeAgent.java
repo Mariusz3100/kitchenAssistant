@@ -38,6 +38,8 @@ import madkit.kernel.Agent;
 import madkit.kernel.AgentAddress;
 import madkit.kernel.Message;
 import madkit.message.StringMessage;
+import mariusz.ambroziak.kassistant.QuantityExtractor.AuchanQExtract;
+import mariusz.ambroziak.kassistant.QuantityExtractor.PrzepisyPLQExtract;
 import mariusz.ambroziak.kassistant.dao.Base_WordDAOImpl;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
 import mariusz.ambroziak.kassistant.dao.ProduktDAO;
@@ -50,10 +52,8 @@ import mariusz.ambroziak.kassistant.model.Variant_Word;
 import mariusz.ambroziak.kassistant.model.jsp.QuantityProdukt;
 import mariusz.ambroziak.kassistant.model.jsp.SearchResult;
 import mariusz.ambroziak.kassistant.utils.Converter;
-import mariusz.ambroziak.kassistant.utils.MessageCounter;
 import mariusz.ambroziak.kassistant.utils.MessageTypes;
 import mariusz.ambroziak.kassistant.utils.ParameterHolder;
-import mariusz.ambroziak.kassistant.utils.PrzepisyPLQExtract;
 import mariusz.ambroziak.kassistant.utils.StringHolder;
 
 public class RecipeAgent extends BaseAgent{
@@ -109,7 +109,7 @@ public class RecipeAgent extends BaseAgent{
 			createGroup(AGENT_COMMUNITY,AGENT_GROUP);
 		}
 		
-		requestRole(AGENT_COMMUNITY, AGENT_GROUP, AGENT_ROLE);
+		requestRole(AGENT_COMMUNITY, AGENT_GROUP, PARSER_NAME);
 //		requestRole(AGENT_COMMUNITY, ShopsListAgent.GUIDANCE_GROUP, AGENT_ROLE);
 		
 		//		interfac=DatabaseInterface.getDBInterface();
@@ -169,17 +169,17 @@ public class RecipeAgent extends BaseAgent{
 	private ArrayList<SearchResult> getFromDbOrParseProdukt(String produktUrl) {
 		
 		
-		List<Produkt> produkts = getProduktFromDbByUrl(produktUrl);
+		Produkt produkts = getProduktFromDbByUrl(produktUrl);
 		
 		
-		if(produkts==null||produkts.size()<1){
+		if(produkts==null){
 			if(ParameterHolder.isCheckShops()){
 				JSONObject json = new JSONObject();
 				
 				json.put(StringHolder.PRODUKT_URL_NAME, produktUrl);
 				json.put(StringHolder.MESSAGE_CREATOR_NAME, PARSER_NAME);
 				json.put(StringHolder.MESSAGE_TYPE_NAME, MessageTypes.GetProduktData);
-				json.put(StringHolder.MESSAGE_ID_NAME, MessageCounter.getCount());
+//				json.put(StringHolder.MESSAGE_ID_NAME, MessageCounter.getCount());
 				
 				AgentAddress x=getAgentWithRole(StringHolder.AGENT_COMMUNITY, AGENT_GROUP, ShopsListAgent.SHOP_LIST_NAME);
 		
@@ -197,7 +197,7 @@ public class RecipeAgent extends BaseAgent{
 	}
 
 
-	public List<Produkt> getProduktFromDbByUrl(String produktUrl) {
+	public Produkt getProduktFromDbByUrl(String produktUrl) {
 		return produktDao.getProduktsByURL(produktUrl);
 	}
 
@@ -344,7 +344,7 @@ public class RecipeAgent extends BaseAgent{
 //		
 //		
 		
-		retValue=PrzepisyPLQExtract.retrieveProduktAmountData(e);
+		retValue=AuchanQExtract.retrieveProduktAmountData(e);
 		return retValue;
 	}
 

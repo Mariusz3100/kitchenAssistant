@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import madkit.kernel.Madkit;
 import mariusz.ambroziak.kassistant.agents.ClockAgent;
+import mariusz.ambroziak.kassistant.agents.ProduktAgent;
 import mariusz.ambroziak.kassistant.agents.RecipeAgent;
 import mariusz.ambroziak.kassistant.agents.config.AgentsSystem;
 import mariusz.ambroziak.kassistant.dao.ProduktDAO;
@@ -42,5 +43,32 @@ public class ProduktController {
 		model.addObject("produktList", listProdukts);
 		return model;
 	}
+	
+	@RequestMapping(value="/produktUrl")
+	public ModelAndView produktUrl(HttpServletRequest request) {
+		
+		
+
+		String url=request.getParameter("produktUrl");
+		
+		if(url==null||url.equals(""))
+			return new ModelAndView("produktForm");
+		else
+		{
+			Produkt produkt = ProduktAgent.getOrScrapProdukt(url);
+			
+			List<Produkt> listProdukts =new ArrayList<Produkt>();
+			listProdukts.add(produkt);
+			
+			ModelAndView model = new ModelAndView("produktsList");
+			model.addObject("produktList", listProdukts);
+			
+			return model;
+		}
+		
+	}
+	
+	
+	
 	
 }
