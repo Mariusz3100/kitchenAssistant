@@ -16,7 +16,7 @@ import webscrappers.Jsoup.auchan.AuchanGroup;
 import webscrappers.Jsoup.auchan.GA_ProduktScrapped;
 
 public class AuchanGroupConnectingTest {
-	static ArrayList<Produkt> searchFor;
+	static ArrayList<GA_ProduktScrapped> searchFor;
 
 
 	
@@ -27,7 +27,7 @@ public class AuchanGroupConnectingTest {
 	
 	@Test
 	public void testNotNull() {
-		for(Produkt p:searchFor){
+		for(GA_ProduktScrapped p:searchFor){
 			System.out.println("1"+p.getUrl());
 			
 			assertNotNull(p.getUrl());

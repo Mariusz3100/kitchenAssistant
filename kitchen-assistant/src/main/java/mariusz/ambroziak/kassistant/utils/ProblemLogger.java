@@ -39,6 +39,24 @@ public class ProblemLogger {
 	}
 	
 	
+	
+	public static void logStackTrace( StackTraceElement[] stackTrace){
+		if(stackTrace.length==0||stackTrace==null){
+			Problem p=new Problem(0l,"Empty StackTrace recorded",false);
+			DaoProvider.getInstance().getProblemDao().addProblem(p);
+		}else{
+			Long nextId=0l;
+			for(int i=0;i<stackTrace.length;i++){
+				
+
+				Problem p=new Problem(nextId,"<p style=\"text-indent:"+i*10+"\">"+stackTrace[i].toString()+"</p>",false);
+				DaoProvider.getInstance().getProblemDao().addProblem(p);
+				nextId=p.getP_id();
+			}
+		}
+	}
+	
+	
 	public static void main(String[] args){
 		ProblemLogger.logProblem("test problem....."
 				+ "................................ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd................................................................................................................................................................");

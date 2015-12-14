@@ -34,7 +34,6 @@ public class AuchanGroup extends AuchanAbstractScrapper{
 	String filename="\\classes\\auchanEntries.txt";
 	public static final String noResults="Przykro nam ale nie znaleziono wyników dla podanego zapytania"; 
 	public static final String validLinkPart="/sklep/artykuly/wyszukiwarka/";
-	private static ArrayList<GA_ProduktScrapped> produktsToScrap;
 	
 	
 	
@@ -43,11 +42,7 @@ public class AuchanGroup extends AuchanAbstractScrapper{
 		ArrayList<GA_ProduktScrapped> retValue=new ArrayList<GA_ProduktScrapped>();
 		
 		String search4=Converter.auchanConvertion(searchPhrase);
-//		String tempSearch4=search4.replaceAll("\\\\$","\\\\\\\\$");
 		
-	//	Pattern.quote(lookFor);
-		
-		String[] searchWords=splitSearchPhrase(searchPhrase);
 		String search4withSpaces=search4.replaceAll("\\$", " ");
 				
 		
@@ -77,29 +72,21 @@ public class AuchanGroup extends AuchanAbstractScrapper{
 						if(link.attr("href").indexOf(validLinkPart)>-1){
 							String l=link.absUrl("href");
 							String nazwa=link.ownText();
-							
-							boolean found=true;
-							for(String lookForWord:searchWords){
-
-								if(!nazwa.toLowerCase().contains(lookForWord.toLowerCase()))
-									found=false;
-							}
-							
 							GA_ProduktScrapped gap=new GA_ProduktScrapped(nazwa, l);
 
-							if(found){
-								
-								
-								retValue.add(gap);
-								
-							}else
-								addProduktsToScrap(gap);
+							retValue.add(gap);
+							
 								
 						}
 						
 					}
 					
 				}
+				
+				
+				
+				
+				
 
 			}
 			
@@ -119,13 +106,13 @@ public class AuchanGroup extends AuchanAbstractScrapper{
 
 	
 	
-	private static void addProduktsToScrap(GA_ProduktScrapped produkt){
-		if(produktsToScrap==null)
-			produktsToScrap=new ArrayList<GA_ProduktScrapped>();
-			
-			produktsToScrap.add(produkt);
-			
-	}
+//	private static void addProduktsToScrap(GA_ProduktScrapped produkt){
+//		if(produktsToScrap==null)
+//			produktsToScrap=new ArrayList<GA_ProduktScrapped>();
+//			
+//			produktsToScrap.add(produkt);
+//			
+//	}
 //	private static Produkt getAndSaveDetailsIfNew(String detailsUrl) {
 //		Produkt existingDetails = checkForExistingDetails(detailsUrl);
 //		if(existingDetails!=null)
@@ -135,9 +122,7 @@ public class AuchanGroup extends AuchanAbstractScrapper{
 //		
 //	}
 	
-	public static String[] splitSearchPhrase(String searchPhrase) {
-		return searchPhrase.split(" ");
-	}
+
 
 //	protected static Produkt checkForExistingDetails(String detailsURL) {
 //		

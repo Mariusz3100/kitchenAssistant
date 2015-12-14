@@ -52,7 +52,7 @@ public class ProduktController {
 		String url=request.getParameter("produktUrl");
 		
 		if(url==null||url.equals(""))
-			return new ModelAndView("produktForm");
+			return new ModelAndView("produktUrlForm");
 		else
 		{
 			Produkt produkt = ProduktAgent.getOrScrapProdukt(url);
@@ -68,7 +68,26 @@ public class ProduktController {
 		
 	}
 	
-	
+	@RequestMapping(value="/searchForProdukt")
+	public ModelAndView searchForProdukt(HttpServletRequest request) {
+		
+		
+
+		String url=request.getParameter("searchFor");
+		
+		if(url==null||url.equals(""))
+			return new ModelAndView("produktSearchForForm");
+		else
+		{
+			List<Produkt> produkts =  ProduktAgent.searchForProdukt(url);
+			
+			ModelAndView model = new ModelAndView("produktsList");
+			model.addObject("produktList", produkts);
+			
+			return model;
+		}
+		
+	}
 	
 	
 }
