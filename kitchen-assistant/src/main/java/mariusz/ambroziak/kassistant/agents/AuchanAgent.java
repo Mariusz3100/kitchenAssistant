@@ -242,7 +242,7 @@ public class AuchanAgent extends BaseAgent {
 		return searchPhrase.split(" ");
 	}
 
-	public ArrayList<GA_ProduktScrapped> searchForCorrectRememberOthers(String searchForPhrase) {
+	public static ArrayList<GA_ProduktScrapped> searchForCorrectRememberOthers(String searchForPhrase) {
 		ArrayList<GA_ProduktScrapped> produktsFound = AuchanGroup.searchFor(searchForPhrase);
 		String[] searchWords=splitSearchPhrase(searchForPhrase);
 
@@ -269,7 +269,7 @@ public class AuchanAgent extends BaseAgent {
 		return retValue;
 	}
 
-	private void addProduktsToScrapLater(GA_ProduktScrapped produkt){
+	private static void addProduktsToScrapLater(GA_ProduktScrapped produkt){
 		if(produktsToScrap==null)
 			produktsToScrap=new ArrayList<GA_ProduktScrapped>();
 

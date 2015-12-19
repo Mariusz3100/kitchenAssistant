@@ -308,12 +308,7 @@ public class ProduktAgent extends BaseAgent{
 		if(results==null||results.size()<1){
 			results=checkShops(text);
 		}
-
-
-		
-		
 		return results;
-
 
 	}
 

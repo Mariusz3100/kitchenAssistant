@@ -13,16 +13,16 @@ import webscrappers.Jsoup.importio.AuchanWebScrapper;
 
 public class UrlShorteningTest {
 
-	@Test(expected=Page404Exception.class)
-	public void test() throws Page404Exception {
-		String url="http://www.auchandirect.pl/sklep/artykuly/1163_1213_1478/Dania-Gotowe/Pierogi-Pyzy-Kluski/Ravioli-Tortiglioni";
-		
-		String shortUrl=AuchanAbstractScrapper.getAuchanShortestWorkingUrl(url);
-		
-		assertNotNull(shortUrl);
-		assertNotEquals(shortUrl,"");
-		
-	}
+//	@Test(expected=Page404Exception.class)
+//	public void test() throws Page404Exception {
+//		String url="http://www.auchandirect.pl/sklep/artykuly/1163_1213_147";
+//		
+//		String shortUrl=AuchanAbstractScrapper.getAuchanShortestWorkingUrl(url);
+//		
+//		assertNotNull(shortUrl);
+//		assertNotEquals(shortUrl,"");
+//		
+//	}
 
 
 	
