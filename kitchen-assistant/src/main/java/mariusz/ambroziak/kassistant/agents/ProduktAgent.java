@@ -9,7 +9,6 @@ import madkit.kernel.AgentAddress;
 import madkit.kernel.Message;
 import madkit.message.StringMessage;
 import mariusz.ambroziak.kassistant.QuantityExtractor.AuchanQExtract;
-import mariusz.ambroziak.kassistant.QuantityExtractor.PrzepisyPLQExtract;
 import mariusz.ambroziak.kassistant.dao.Base_WordDAOImpl;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
 import mariusz.ambroziak.kassistant.dao.ProduktDAO;
@@ -25,9 +24,14 @@ import org.json.JSONObject;
 import org.jsoup.nodes.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import webscrappers.Jsoup.SJPWebScrapper;
 //import com.codesnippets4all.json.parsers.JsonParserFactory;
-import webscrappers.Jsoup.auchan.AuchanAbstractScrapper;
+
+
+
+
+import webscrappers.SJPWebScrapper;
+import webscrappers.auchan.AuchanAbstractScrapper;
+import webscrappers.przepisy.PrzepisyPLQExtract;
 
 public class ProduktAgent extends BaseAgent{
 

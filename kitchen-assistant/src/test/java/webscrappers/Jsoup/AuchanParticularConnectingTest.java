@@ -5,10 +5,10 @@ import mariusz.ambroziak.kassistant.model.Produkt;
 
 import org.junit.Test;
 
-import webscrappers.Jsoup.auchan.AuchanParticular;
-import webscrappers.Jsoup.auchan.Page404Exception;
-import webscrappers.Jsoup.auchan.ProduktDetails;
 import webscrappers.Jsoup.importio.AuchanWebScrapper;
+import webscrappers.auchan.AuchanParticular;
+import webscrappers.auchan.Page404Exception;
+import webscrappers.auchan.ProduktDetails;
 
 public class AuchanParticularConnectingTest {
 

@@ -33,13 +33,13 @@ import org.jsoup.select.Elements;
 import org.postgresql.translation.messages_bg;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import webscrappers.Jsoup.SJPWebScrapper;
+import webscrappers.SJPWebScrapper;
+import webscrappers.przepisy.PrzepisyPLQExtract;
 import madkit.kernel.Agent;
 import madkit.kernel.AgentAddress;
 import madkit.kernel.Message;
 import madkit.message.StringMessage;
 import mariusz.ambroziak.kassistant.QuantityExtractor.AuchanQExtract;
-import mariusz.ambroziak.kassistant.QuantityExtractor.PrzepisyPLQExtract;
 import mariusz.ambroziak.kassistant.dao.Base_WordDAOImpl;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
 import mariusz.ambroziak.kassistant.dao.ProduktDAO;

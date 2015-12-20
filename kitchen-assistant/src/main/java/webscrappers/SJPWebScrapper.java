@@ -1,4 +1,4 @@
-package webscrappers.Jsoup;
+package webscrappers;
 
 import java.io.BufferedReader;
 import java.io.IOException;

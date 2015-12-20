@@ -33,12 +33,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 
 
-import webscrappers.Jsoup.auchan.AuchanAbstractScrapper;
-import webscrappers.Jsoup.auchan.AuchanGroup;
-import webscrappers.Jsoup.auchan.AuchanParticular;
-import webscrappers.Jsoup.auchan.GA_ProduktScrapped;
-import webscrappers.Jsoup.auchan.Page404Exception;
-import webscrappers.Jsoup.auchan.ProduktDetails;
+
+
+
+
+import webscrappers.auchan.AuchanAbstractScrapper;
+import webscrappers.auchan.AuchanGroup;
+import webscrappers.auchan.AuchanParticular;
+import webscrappers.auchan.GA_ProduktScrapped;
+import webscrappers.auchan.Page404Exception;
+import webscrappers.auchan.ProduktDetails;
 import madkit.kernel.Agent;
 import madkit.kernel.AgentAddress;
 import madkit.kernel.Message;

@@ -1,4 +1,4 @@
-package webscrappers.Jsoup.auchan;
+package webscrappers.auchan;
 
 public class GA_ProduktScrapped {
 	private String nazwa;

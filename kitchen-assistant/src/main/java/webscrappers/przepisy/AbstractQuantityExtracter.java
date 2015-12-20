@@ -1,4 +1,4 @@
-package mariusz.ambroziak.kassistant.QuantityExtractor;
+package webscrappers.przepisy;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,10 +46,12 @@ public class AbstractQuantityExtracter {
 		ommissions.add("ok.");
 		ommissions.add("oko³o");
 		
+		
+		
 	}
 	
 	
-	static class QuantityTranslation{
+	public static class QuantityTranslation{
 		private AmountTypes targetAmountType;
 		private float multiplier;
 		

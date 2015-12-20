@@ -1,4 +1,4 @@
-package mariusz.ambroziak.kassistant.QuantityExtractor;
+package webscrappers.przepisy;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,7 +7,8 @@ import java.util.regex.Pattern;
 
 import org.jsoup.nodes.Element;
 
-import webscrappers.Jsoup.SJPWebScrapper;
+import webscrappers.SJPWebScrapper;
+import webscrappers.przepisy.AbstractQuantityExtracter.QuantityTranslation;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
 import mariusz.ambroziak.kassistant.model.Base_Word;
 import mariusz.ambroziak.kassistant.model.Recipe_Ingredient;

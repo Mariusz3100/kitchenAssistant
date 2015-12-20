@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import webscrappers.przepisy.SkladnikiExtractor;
+
 
 
 //import database.holders.StringHolder;
@@ -40,6 +42,18 @@ public class TestsController {
 
 		ModelAndView mav=new ModelAndView("test/test");
 		
+		
+		return mav;
+
+
+	}
+	
+	@RequestMapping(value="/test3")
+	public ModelAndView test3
+	(HttpServletRequest request) {
+
+		ModelAndView mav=new ModelAndView("test/test");
+		SkladnikiExtractor.main(null);
 		
 		return mav;
 
