@@ -1,4 +1,4 @@
-package webscrappers.Jsoup.auchan;
+package webscrappers.auchan;
 
 import mariusz.ambroziak.kassistant.model.jsp.QuantityProdukt;
 

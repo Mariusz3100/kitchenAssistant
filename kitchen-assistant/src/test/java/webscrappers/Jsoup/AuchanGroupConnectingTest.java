@@ -11,9 +11,9 @@ import mariusz.ambroziak.kassistant.model.Produkt;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import webscrappers.Jsoup.auchan.AuchanAbstractScrapper;
-import webscrappers.Jsoup.auchan.AuchanGroup;
-import webscrappers.Jsoup.auchan.GA_ProduktScrapped;
+import webscrappers.auchan.AuchanAbstractScrapper;
+import webscrappers.auchan.AuchanGroup;
+import webscrappers.auchan.GA_ProduktScrapped;
 
 public class AuchanGroupConnectingTest {
 	static ArrayList<GA_ProduktScrapped> searchFor;

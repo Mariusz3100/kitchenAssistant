@@ -1,4 +1,4 @@
-package webscrappers.Jsoup.auchan;
+package webscrappers.auchan;
 
 public class Page404Exception extends Exception {
 	private String url="";

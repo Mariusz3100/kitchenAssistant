@@ -18,8 +18,8 @@ import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import webscrappers.Jsoup.auchan.AuchanGroup;
-import webscrappers.Jsoup.auchan.GA_ProduktScrapped;
+import webscrappers.auchan.AuchanGroup;
+import webscrappers.auchan.GA_ProduktScrapped;
 
 public class AuchanGroupTest {
 	static ArrayList<GA_ProduktScrapped> searchFor;

@@ -8,7 +8,8 @@ import java.util.regex.Pattern;
 
 import org.jsoup.nodes.Element;
 
-import webscrappers.Jsoup.SJPWebScrapper;
+import webscrappers.SJPWebScrapper;
+import webscrappers.przepisy.AbstractQuantityExtracter;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
 import mariusz.ambroziak.kassistant.model.Base_Word;
 import mariusz.ambroziak.kassistant.model.Recipe_Ingredient;
