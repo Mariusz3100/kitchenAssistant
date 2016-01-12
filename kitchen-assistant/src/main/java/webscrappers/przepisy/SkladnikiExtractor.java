@@ -40,7 +40,7 @@ public class SkladnikiExtractor extends AbstractQuantityExtracter {
 				
 				QuantityProdukt extract = extract(elems[0], elems[1]);
 				
-				String extractDesc=extract==null?"null!!!":(extract.getProduktName()+" : "
+				String extractDesc=extract==null?"null!!!":(extract.getProduktPhrase()+" : "
 						+extract.getAmount()+" "+extract.getAmountType());
 				
 				System.out.println(line.replaceAll("\t", " ")+" -> "+extractDesc);
@@ -76,7 +76,7 @@ public class SkladnikiExtractor extends AbstractQuantityExtracter {
 				retValue=new QuantityProdukt();
 				retValue.setAmountType(extractedQuantity.getType());
 				retValue.setAmount(extractedQuantity.getAmount());
-				retValue.setProduktName(searchPhrase);
+				retValue.setProduktPhrase(searchPhrase);
 				
 				
 				ingredient=ingredient.replaceAll(Pattern.quote(attemptedQ), "")
@@ -91,6 +91,12 @@ public class SkladnikiExtractor extends AbstractQuantityExtracter {
 			
 		}
 		
+		if(quantityPhrase==null||quantityPhrase.equals("")){
+			retValue=new QuantityProdukt();
+			retValue.setAmount(1);
+			retValue.setAmountType(AmountTypes.szt);
+			retValue.setProduktPhrase(searchPhrase);
+		}
 		
 		if(retValue==null){
 			Quantity extractedQuantity = extractQuantity(quantityPhrase);
@@ -98,13 +104,14 @@ public class SkladnikiExtractor extends AbstractQuantityExtracter {
 			retValue=new QuantityProdukt();
 			retValue.setAmountType(extractedQuantity.getType());
 			retValue.setAmount(extractedQuantity.getAmount());
-			retValue.setProduktName(searchPhrase);
+			retValue.setProduktPhrase(searchPhrase);
 			
 		}
 		
 		return retValue;
 	}
 	
+
 	
 	public static Quantity extractQuantity(String text){
 		Quantity retValue=new Quantity();

@@ -22,7 +22,7 @@ import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 public abstract class AuchanAbstractScrapper{
 
 	public static final String singleCharAtTheEndOfEveryUrl="A";
-	public static final String UrlPattern = "\\Qhttp://www.auchandirect.pl/sklep/artykuly/\\E(\\Qwyszukiwarka/\\E|[0-9_]+\\/)[LV]*[0-9]+\\/";
+	public static final String UrlPattern = "\\Qhttp://www.auchandirect.pl/sklep/artykuly/\\E(\\Qwyszukiwarka\\E|[0-9_]+|home-promocje)/[LV]*[0-9]+\\/";
 //	public static final String workingUrlPattern = "http://www.auchandirect.pl/sklep/artykuly/[[wyszukiwarka/]|[[0-9_]+/]][LV]?[0-9]+/[a-zA-Z_0-9-]+?";
 //	public static final String shortestPattern = "http://www.auchandirect.pl/sklep/artykuly/[[wyszukiwarka/]|[[0-9_]+/]][LV]?[0-9]+/";
 	public static final String baseURL = "http://www.auchandirect.pl";
@@ -95,7 +95,9 @@ public abstract class AuchanAbstractScrapper{
 	
 	public static String getAuchanShortestWorkingUrl(String url) {
 		
-		boolean z = Pattern.matches(UrlPattern,url);
+		if(!url.startsWith("http://"))
+			url="http://"+url;
+		
 	    Pattern p = Pattern.compile(UrlPattern);
 	
 	    

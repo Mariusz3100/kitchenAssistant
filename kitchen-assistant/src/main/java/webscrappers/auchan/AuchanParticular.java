@@ -16,6 +16,7 @@ import java.util.regex.Pattern;
 import mariusz.ambroziak.kassistant.QuantityExtractor.AuchanQExtract;
 import mariusz.ambroziak.kassistant.dao.Base_WordDAOImpl;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
+import mariusz.ambroziak.kassistant.exceptions.Page404Exception;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.jsp.QuantityProdukt;
 import mariusz.ambroziak.kassistant.utils.Converter;
@@ -108,10 +109,10 @@ public class AuchanParticular extends AuchanAbstractScrapper{
 		int zl=Integer.parseInt(cenaZl);
 		int gr=Integer.parseInt(cenaGr);
 			
-		float result =zl;
+		float result =zl*100;
 		
-		result=result+gr/100f;
-		
+		result=result+gr;
+		result=result/100f;
 		return result;
 	}
 

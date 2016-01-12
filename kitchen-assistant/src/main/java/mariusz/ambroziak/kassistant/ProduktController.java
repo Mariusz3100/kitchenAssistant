@@ -14,6 +14,8 @@ import mariusz.ambroziak.kassistant.agents.ProduktAgent;
 import mariusz.ambroziak.kassistant.agents.RecipeAgent;
 import mariusz.ambroziak.kassistant.agents.config.AgentsSystem;
 import mariusz.ambroziak.kassistant.dao.ProduktDAO;
+import mariusz.ambroziak.kassistant.exceptions.AgentSystemNotStartedException;
+import mariusz.ambroziak.kassistant.exceptions.ShopNotFoundException;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.User;
 import mariusz.ambroziak.kassistant.model.jsp.SearchResult;
@@ -55,7 +57,19 @@ public class ProduktController {
 			return new ModelAndView("produktUrlForm");
 		else
 		{
-			Produkt produkt = ProduktAgent.getOrScrapProdukt(url);
+			Produkt produkt=null;
+			try {
+				produkt = ProduktAgent.getOrScrapProdukt(url);
+			} catch (ShopNotFoundException e) {
+				ArrayList<String> a=new ArrayList<String>();
+				a.add("URL "+e.getUrl()+" nie nale¿y do ¿adnego ze znanych sklepów");
+				
+				ModelAndView mav=new ModelAndView("List");
+				mav.addObject("list", a);
+				return mav;
+			} catch (AgentSystemNotStartedException e) {
+				return new ModelAndView("agentSystemNotStarted");
+			}
 			
 			List<Produkt> listProdukts =new ArrayList<Produkt>();
 			listProdukts.add(produkt);
@@ -79,7 +93,12 @@ public class ProduktController {
 			return new ModelAndView("produktSearchForForm");
 		else
 		{
-			List<Produkt> produkts =  ProduktAgent.searchForProdukt(url);
+			List<Produkt> produkts = null;
+			try {
+				produkts = ProduktAgent.searchForProdukt(url);
+			} catch (AgentSystemNotStartedException e) {
+				return new ModelAndView("agentSystemNotStarted");
+			}
 			
 			ModelAndView model = new ModelAndView("produktsList");
 			model.addObject("produktList", produkts);

@@ -1,6 +1,10 @@
-package webscrappers.auchan;
+package mariusz.ambroziak.kassistant.exceptions;
 
 public class Page404Exception extends Exception {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String url="";
 	
 	

@@ -3,7 +3,9 @@ package mariusz.ambroziak.kassistant.agents;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Level;
+import java.util.regex.Pattern;
 
 import org.json.JSONObject;
 
@@ -11,6 +13,8 @@ import madkit.kernel.Agent;
 import madkit.kernel.AgentAddress;
 import madkit.kernel.Message;
 import madkit.message.StringMessage;
+import mariusz.ambroziak.kassistant.shops.ShopRecognizer;
+import mariusz.ambroziak.kassistant.shops.Shops;
 import mariusz.ambroziak.kassistant.utils.MessageTypes;
 import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 import mariusz.ambroziak.kassistant.utils.StringHolder;
@@ -27,7 +31,7 @@ public class ShopsListAgent extends BaseAgent {
 
 	ArrayList<AgentAddress> adresses;
 
-	//	private static Map<String,AgentAddress> shopUrlMap;
+		private static Map<Shops,AgentAddress> shopUrlMap;
 
 
 	public ShopsListAgent() {
@@ -87,11 +91,22 @@ public class ShopsListAgent extends BaseAgent {
 
 
 			}else if(json.get(StringHolder.MESSAGE_TYPE_NAME).equals(MessageTypes.GetProduktData.toString())){
-				AgentAddress x=getAgentWithRole(AGENT_COMMUNITY, StringHolder.SCRAPPERS_GROUP, AuchanAgent.AUCHAN_WEB_SCRAPPER_NAME);
-				StringMessage newM=new StringMessage(((StringMessage)m).getContent());
-				addMessagesRelation((StringMessage) m,newM);
+				
+				String url = json.getString(StringHolder.PRODUKT_URL_NAME);
+				AgentAddress x=getProperAgentAdress(url);
+				
+				//AgentAddress x=getAgentWithRole(AGENT_COMMUNITY, StringHolder.SCRAPPERS_GROUP, AuchanAgent.AUCHAN_WEB_SCRAPPER_NAME);
+				
+				if(x==null){
+					JSONObject response=new JSONObject();
+					response.put(StringHolder.NO_RESULT_INFO_NAME, StringHolder.NO_RESULT_UNKNOWN_SHOP);
+					sendReply(m,new StringMessage(response.toString()));
+				}else{
+					StringMessage newM=new StringMessage(((StringMessage)m).getContent());
+					addMessagesRelation((StringMessage) m,newM);
 
-				sendMessageWithRoleKA(x, newM,ShopsListAgent.SHOP_LIST_NAME);
+					sendMessageWithRoleKA(x, newM,ShopsListAgent.SHOP_LIST_NAME);
+				}
 			}else if(json.get(StringHolder.MESSAGE_TYPE_NAME).equals(MessageTypes.GetProduktDataResponse.toString())){
 				//				AgentAddress x=getAgentWithRole(AGENT_COMMUNITY, StringHolder.SCRAPPERS_GROUP, AuchanAgent.AUCHAN_WEB_SCRAPPER_NAME);
 				StringMessage originalOne=getOriginalMessage(m.getConversationID());
@@ -105,6 +120,20 @@ public class ShopsListAgent extends BaseAgent {
 
 		}
 
+	}
+
+	private AgentAddress getProperAgentAdress(String url) {
+		if(shopUrlMap==null)
+			setUpUrlMap();
+			
+
+		Shops shop=ShopRecognizer.recognizeShop(url);
+		
+		if(shop!=null&&shop!=Shops.UnknownShop)
+			return shopUrlMap.get(shop);
+			
+			
+		return null;
 	}
 
 	public void processDamnManagerMessage(Message m) {
@@ -140,27 +169,23 @@ public class ShopsListAgent extends BaseAgent {
 		//				getAgentWithRole(StringHolder.AGENT_COMMUNITY, StringHolder.SCRAPPERS_GROUP, "auchanWebScrapper"));
 
 
-		//	setUpData();
 
 
 
 
 	}
 
-	//	private void setUpData() {
-	//		setUpUrlMap();
-	//
-	//	}
 
-	//	public void setUpUrlMap() {
-	//		if(shopUrlMap==null){
-	//			shopUrlMap=new HashMap<String, AgentAddress>();
-	//		}
-	//		
-	//		AgentAddress x=getAgentWithRole(AGENT_COMMUNITY, StringHolder.SCRAPPERS_GROUP, AuchanAgent.AUCHAN_WEB_SCRAPPER_NAME);
-	//
-	//		shopUrlMap.put(AuchanAgent.acceptedURL,x);
-	//	}
+
+		public void setUpUrlMap() {
+			if(shopUrlMap==null){
+				shopUrlMap=new HashMap<Shops, AgentAddress>();
+			}
+			
+			AgentAddress x=getAgentWithRole(AGENT_COMMUNITY, StringHolder.SCRAPPERS_GROUP, AuchanAgent.AUCHAN_WEB_SCRAPPER_NAME);
+	
+			shopUrlMap.put(Shops.Auchan,x);
+		}
 
 	@Override
 	protected void end() {
@@ -169,6 +194,17 @@ public class ShopsListAgent extends BaseAgent {
 	}
 
 
+	
+	public static void main(String[] arg){
+		String x="http://www.auchandirect.pl/sklep/artykuly/1160_1181_1292/93000281/A";
+		String y="(http://)?www.auchandirect.pl/sklep/.+";
+		
+		boolean b=Pattern.matches(y, x);
+		
+		System.out.println(b);
+		
+		
+	}
 	//	public static void main(String[] arg){
 	//		AgentAddress x=getAgentWithRole(StringHolder.AGENT_COMMUNITY, StringHolder.SCRAPPERS_GROUP, AuchanAgent.AUCHAN_WEB_SCRAPPER_NAME);
 	//		StringMessage newM=new StringMessage(((StringMessage)m).getContent());

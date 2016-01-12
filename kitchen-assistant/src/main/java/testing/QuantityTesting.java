@@ -21,6 +21,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import webscrappers.przepisy.PrzepisyPLQExtract;
+import webscrappers.przepisy.SkladnikiExtractor;
 
 public class QuantityTesting {
 	
@@ -52,34 +53,35 @@ public class QuantityTesting {
 //					ArrayList<Produkt> znalezioneProdukty=new ArrayList<Produkt>()
 					
 					String ingredient = e.text();
-					QuantityProdukt quantityRetrieved =null;
+					String quantity= extractQuantity(e);
 					
-					if(ingredient.indexOf('(')>0&&ingredient.indexOf(')')>0){
-						String attemptedQ=
-								ingredient.substring(ingredient.indexOf('(')+1,ingredient.indexOf(')'));
-							
-						try{
-							quantityRetrieved=retrieveQuantity(attemptedQ);
-						}catch(IllegalArgumentException ex){
-							quantityRetrieved=null;
-						}
-						
-						ingredient=ingredient.replaceAll(attemptedQ, "")
-								.replaceAll("\\(", "")
-								.replaceAll("\\)", "").trim();
-						
-					}
-					
-					if(quantityRetrieved==null){
-						String quantity=extractQuantity(e);
-						quantityRetrieved = retrieveQuantity(quantity);
-					}
-						
+					QuantityProdukt results = SkladnikiExtractor.extract(ingredient, quantity);
+//					if(ingredient.indexOf('(')>0&&ingredient.indexOf(')')>0){
+//						String attemptedQ=
+//								ingredient.substring(ingredient.indexOf('(')+1,ingredient.indexOf(')'));
+//							
+//						try{
+//							quantityRetrieved=retrieveQuantity(attemptedQ);
+//						}catch(IllegalArgumentException ex){
+//							quantityRetrieved=null;
+//						}
+//						
+//						ingredient=ingredient.replaceAll(attemptedQ, "")
+//								.replaceAll("\\(", "")
+//								.replaceAll("\\)", "").trim();
+//						
+//					}
+//					
+//					if(quantityRetrieved==null){
+//						String quantity=extractQuantity(e);
+//						quantityRetrieved = retrieveQuantity(quantity);
+//					}
+//						
 					
 					 
 					 
-					retValue.add(e.parent()+" -> "+
-					quantityRetrieved.getAmount()+":"+quantityRetrieved.getAmountType());
+					retValue.add(ingredient+":"+quantity+" -> "+
+							results.getProduktPhrase()+":"+results.getAmount()+":"+results.getAmountType()+"<BR><BR>");
 					
 
 

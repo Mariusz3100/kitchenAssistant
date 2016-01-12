@@ -3,15 +3,15 @@ package mariusz.ambroziak.kassistant.model.jsp;
 import mariusz.ambroziak.kassistant.utils.AmountTypes;
 
 public class QuantityProdukt {
-	private String produktName;
+	private String produktPhrase;
 	private AmountTypes amountType;
 	private float amount;
 
-	public String getProduktName() {
-		return produktName;
+	public String getProduktPhrase() {
+		return produktPhrase;
 	}
-	public void setProduktName(String produktName) {
-		this.produktName = produktName;
+	public void setProduktPhrase(String produktName) {
+		this.produktPhrase = produktName;
 	}
 	public AmountTypes getAmountType() {
 		return amountType;

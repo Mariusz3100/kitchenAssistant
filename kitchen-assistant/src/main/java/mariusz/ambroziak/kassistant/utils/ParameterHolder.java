@@ -4,6 +4,8 @@ public class ParameterHolder {
 	private static boolean checkShops=true;
 	private static boolean agentsOn=true;
 	
+	
+	
 	public static boolean isCheckShops() {
 		return checkShops;
 	}

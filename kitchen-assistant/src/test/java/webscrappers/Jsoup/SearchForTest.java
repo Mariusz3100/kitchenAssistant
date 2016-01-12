@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 
 import mariusz.ambroziak.kassistant.agents.AuchanAgent;
+import mariusz.ambroziak.kassistant.exceptions.Page404Exception;
 import mariusz.ambroziak.kassistant.model.Produkt;
 
 import org.junit.Test;
@@ -14,7 +15,6 @@ import webscrappers.auchan.AuchanAbstractScrapper;
 import webscrappers.auchan.AuchanGroup;
 import webscrappers.auchan.AuchanParticular;
 import webscrappers.auchan.GA_ProduktScrapped;
-import webscrappers.auchan.Page404Exception;
 import webscrappers.auchan.ProduktDetails;
 
 public class SearchForTest {

@@ -35,6 +35,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import webscrappers.SJPWebScrapper;
 import webscrappers.przepisy.PrzepisyPLQExtract;
+import webscrappers.przepisy.SkladnikiExtractor;
 import madkit.kernel.Agent;
 import madkit.kernel.AgentAddress;
 import madkit.kernel.Message;
@@ -142,27 +143,43 @@ public class RecipeAgent extends BaseAgent{
 
 	public static ArrayList<SearchResult> parse(String url){
 		RecipeAgent freeOne = getFreeAgent();
-		freeOne.busy=true;
-		ArrayList<SearchResult> result= freeOne.getFromDbOrParseRecipe(url);
-		freeOne.busy=false;
-		return result;
+		
+		if(freeOne!=null)
+		{
+			freeOne.busy=true;
+			ArrayList<SearchResult> result= freeOne.getFromDbOrParseRecipe(url);
+			freeOne.busy=false;
+			return result;
+		}else
+			return null;
+		
+	
 	}
 
 	public static List<Produkt> parseProdukt(String searchPhrase){
 		RecipeAgent freeOne = getFreeAgent();
-		freeOne.busy=true;
-		List<Produkt> result= freeOne.retrieveSkladnik(searchPhrase);
-		freeOne.busy=false;
-		return result;
+		if(freeOne!=null)
+		{
+			freeOne.busy=true;
+			List<Produkt> result= freeOne.retrieveSkladnik(searchPhrase);
+			freeOne.busy=false;
+			return result;
+		}else
+			return null;
 	}
 	
 	
 	public static ArrayList<SearchResult> getProdukt(String produktUrl){
 		RecipeAgent freeOne = getFreeAgent();
-		freeOne.busy=true;
-		ArrayList<SearchResult> result= freeOne.getFromDbOrParseProdukt(produktUrl);
-		freeOne.busy=false;
-		return result;
+		if(freeOne!=null)
+		{
+			freeOne.busy=true;
+			ArrayList<SearchResult> result= freeOne.getFromDbOrParseProdukt(produktUrl);
+			freeOne.busy=false;
+			return result;
+		}else 
+			return null;
+		
 	}
 	
 	
@@ -286,10 +303,10 @@ public class RecipeAgent extends BaseAgent{
 				QuantityProdukt produktAndAmount=retrieveProduktAmountData(e);
 				
 				 
-				List<Produkt> potencjalneSkladniki = retrieveSkladnik(ingredient);
+				List<Produkt> potencjalneSkladniki = retrieveSkladnik(produktAndAmount.getProduktPhrase());
 				
 				
-				retValue.add(new SearchResult(ingredient,produktAndAmount.getAmountType()+"_"+produktAndAmount.getAmount(),
+				retValue.add(new SearchResult(ingredient,produktAndAmount.getProduktPhrase(),produktAndAmount.getAmountType()+"_"+produktAndAmount.getAmount(),
 						potencjalneSkladniki));
 				
 				htmlLog("\n"+ingredient+"->\n");
@@ -319,32 +336,10 @@ public class RecipeAgent extends BaseAgent{
 	private QuantityProdukt retrieveProduktAmountData(Element e) {
 		// TODO Auto-generated method stub
 		String ingredient = e.text();
-		QuantityProdukt retValue =null;
+		String quan =extractQuantity(e);
 		
-//		if(ingredient.indexOf('(')>0&&ingredient.indexOf(')')>0){
-//			String attemptedQ=
-//					ingredient.substring(ingredient.indexOf('(')+1,ingredient.indexOf(')'));
-//				
-//			try{
-//				retValue=retrieveQuantity(attemptedQ);
-//			}catch(IllegalArgumentException ex){
-//				retValue=null;
-//			}
-//			
-//			ingredient=ingredient.replaceAll(attemptedQ, "")
-//					.replaceAll("\\(", "")
-//					.replaceAll("\\)", "").trim();
-//			
-//		}
-//		
-//		if(retValue==null){
-//			String quantity=extractQuantity(e);
-//			retValue = retrieveQuantity(quantity);
-//		}
-//		
-//		
-		
-		retValue=AuchanQExtract.retrieveProduktAmountData(e);
+
+		QuantityProdukt retValue = SkladnikiExtractor.extract(ingredient, quan);
 		return retValue;
 	}
 
@@ -533,7 +528,7 @@ public class RecipeAgent extends BaseAgent{
 	//			Map y= factory.newJsonParser().parseJson(response.getContent());
 				ProduktDAO produktDao = DaoProvider.getInstance().getProduktDao();
 				
-				String ids=jsonObject.getString("ids");
+				String ids=jsonObject.getString(StringHolder.PRODUKT_IDS_NAME);
 				
 				ArrayList<Produkt> retValue=new ArrayList<Produkt>();
 				

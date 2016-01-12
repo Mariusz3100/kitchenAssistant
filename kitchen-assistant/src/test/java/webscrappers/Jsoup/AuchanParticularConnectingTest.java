@@ -1,13 +1,13 @@
 package webscrappers.Jsoup;
 
 import static org.junit.Assert.*;
+import mariusz.ambroziak.kassistant.exceptions.Page404Exception;
 import mariusz.ambroziak.kassistant.model.Produkt;
 
 import org.junit.Test;
 
 import webscrappers.Jsoup.importio.AuchanWebScrapper;
 import webscrappers.auchan.AuchanParticular;
-import webscrappers.auchan.Page404Exception;
 import webscrappers.auchan.ProduktDetails;
 
 public class AuchanParticularConnectingTest {

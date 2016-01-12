@@ -37,17 +37,18 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 
 
+
 import webscrappers.auchan.AuchanAbstractScrapper;
 import webscrappers.auchan.AuchanGroup;
 import webscrappers.auchan.AuchanParticular;
 import webscrappers.auchan.GA_ProduktScrapped;
-import webscrappers.auchan.Page404Exception;
 import webscrappers.auchan.ProduktDetails;
 import madkit.kernel.Agent;
 import madkit.kernel.AgentAddress;
 import madkit.kernel.Message;
 import madkit.message.StringMessage;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
+import mariusz.ambroziak.kassistant.exceptions.Page404Exception;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.utils.MessageTypes;
 import mariusz.ambroziak.kassistant.utils.ParameterHolder;
@@ -58,8 +59,8 @@ import mariusz.ambroziak.kassistant.utils.SystemEnv;
 public class AuchanAgent extends BaseAgent {
 	public static final String AUCHAN_WEB_SCRAPPER_NAME = "auchanWebScrapper";
 
-	public static final String acceptedURL="http://www.auchandirect.pl/sklep/artykuly/wyszukiwarka/[0-9]+/.+";
-	private static final String auchanSearchUrl="http://www.auchandirect.pl/sklep/wyszukiwarka/__search__";
+	public static final String acceptedURL="(http://)?www.auchandirect.pl/sklep/.+";
+	public static final String baseUrl="www.auchandirect.pl/sklep/";
 
 
 	public static boolean agentOn=true;
@@ -193,7 +194,7 @@ public class AuchanAgent extends BaseAgent {
 
 		JSONObject result=new JSONObject();
 
-		result.put("ids", ids);
+		result.put(StringHolder.PRODUKT_IDS_NAME, ids);
 		result.put(StringHolder.MESSAGE_TYPE_NAME, MessageTypes.SearchForResponse);
 
 		StringMessage messageToSend = new StringMessage(result.toString());
@@ -292,7 +293,7 @@ public class AuchanAgent extends BaseAgent {
 
 		JSONObject result=new JSONObject();
 
-		result.put("id", id);
+		result.put(StringHolder.SINGLE_PRODUKT_ID_NAME, id);
 		result.put(StringHolder.MESSAGE_TYPE_NAME, MessageTypes.GetProduktDataResponse);
 
 		StringMessage messageToSend = new StringMessage(result.toString());

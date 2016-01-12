@@ -12,9 +12,12 @@ import mariusz.ambroziak.kassistant.QuantityExtractor.AuchanQExtract;
 import mariusz.ambroziak.kassistant.dao.Base_WordDAOImpl;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
 import mariusz.ambroziak.kassistant.dao.ProduktDAO;
+import mariusz.ambroziak.kassistant.exceptions.AgentSystemNotStartedException;
+import mariusz.ambroziak.kassistant.exceptions.ShopNotFoundException;
 import mariusz.ambroziak.kassistant.model.Base_Word;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.jsp.QuantityProdukt;
+import mariusz.ambroziak.kassistant.shops.ShopRecognizer;
 import mariusz.ambroziak.kassistant.utils.MessageTypes;
 import mariusz.ambroziak.kassistant.utils.ParameterHolder;
 import mariusz.ambroziak.kassistant.utils.ProblemLogger;
@@ -25,6 +28,9 @@ import org.jsoup.nodes.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 
 //import com.codesnippets4all.json.parsers.JsonParserFactory;
+
+
+
 
 
 
@@ -137,37 +143,44 @@ public class ProduktAgent extends BaseAgent{
 	}
 
 
-	public static List<Produkt> searchForProdukt(String searchPhrase){
+	public static List<Produkt> searchForProdukt(String searchPhrase) throws AgentSystemNotStartedException{
 		ProduktAgent freeOne = getFreeAgent();
 		if(freeOne==null){
 			return null;
 		}else{
-			freeOne.busy=true;
-			List<Produkt> result= freeOne.retrieveSkladnik(searchPhrase);
-			freeOne.busy=false;
+			freeOne.setBusy(true);
+			List<Produkt> result;
+			try{
+				result= freeOne.retrieveSkladnik(searchPhrase);
+			}finally{
+				freeOne.setBusy(false);
+			}
 			return result;
 		}
 	}
 	
 	
-	public static Produkt getOrScrapProdukt(String produktUrl){
+	public static Produkt getOrScrapProdukt(String produktUrl) throws ShopNotFoundException, AgentSystemNotStartedException{
 		ProduktAgent freeOne = getFreeAgent();
 		if(freeOne==null){
 			return null;
 		}else{
-			freeOne.busy=true;
-			Produkt result= freeOne.getFromDbOrScrapProdukt(produktUrl);
-			freeOne.busy=false;
+			freeOne.setBusy(true);
+			Produkt result;
+			try{
+			result= freeOne.getFromDbOrScrapProdukt(produktUrl);
+			}finally{
+				freeOne.setBusy(false);
+			}
 			return result;
 		}
 	}
 	
 	
-	private Produkt getFromDbOrScrapProdukt(String produktUrl) {
+	private Produkt getFromDbOrScrapProdukt(String produktUrl) throws ShopNotFoundException {
 		
 		
-		String shortUrl=
-				AuchanAbstractScrapper.getAuchanShortestWorkingUrl(produktUrl);
+		String shortUrl=ShopRecognizer.getShortestWorkingUrl(produktUrl);
 		
 		Produkt produkt = getProduktFromDbByUrl(shortUrl);
 
@@ -192,7 +205,25 @@ public class ProduktAgent extends BaseAgent{
 				
 				JSONObject jsonResponse = new JSONObject(reply.getContent());
 				
-				String stringId=(String) jsonResponse.get("id");
+				
+				if(jsonResponse.has(StringHolder.NO_RESULT_INFO_NAME))
+				{
+					if(StringHolder.NO_RESULT_UNKNOWN_SHOP.toString().equals(
+							jsonResponse.get(StringHolder.NO_RESULT_INFO_NAME))){
+						throw new ShopNotFoundException("\""+produktUrl+"\"->\""+shortUrl+"\"");
+					}
+				}else if(jsonResponse.has(StringHolder.SINGLE_PRODUKT_ID_NAME))
+				{
+					
+					
+					
+				}else{
+					ProblemLogger.logProblem("some weird message: "+jsonResponse);
+				}
+				
+				
+				
+				String stringId=(String) jsonResponse.get(StringHolder.SINGLE_PRODUKT_ID_NAME);
 				
 				if(stringId==null||stringId.equals(""))
 				{
@@ -222,11 +253,12 @@ public class ProduktAgent extends BaseAgent{
 	}
 
 
-	private static ProduktAgent getFreeAgent() {
+	private static ProduktAgent getFreeAgent() throws AgentSystemNotStartedException {
 		ProduktAgent freeOne=null;
 		
 		if(agents==null){
 			System.out.println("Agent system not started");
+			throw new AgentSystemNotStartedException();
 		}
 		else{
 			while(freeOne==null){
@@ -421,7 +453,7 @@ public class ProduktAgent extends BaseAgent{
 	//			Map y= factory.newJsonParser().parseJson(response.getContent());
 				ProduktDAO produktDao = DaoProvider.getInstance().getProduktDao();
 				
-				String ids=jsonObject.getString("ids");
+				String ids=jsonObject.getString(StringHolder.PRODUKT_IDS_NAME);
 				
 				ArrayList<Produkt> retValue=new ArrayList<Produkt>();
 				

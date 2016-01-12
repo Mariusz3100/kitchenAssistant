@@ -9,8 +9,8 @@
         <title>Home</title>
     </head>
     <body>
-        <div align="center">
-	        <h1>Produkt List</h1>
+        <div align="left">
+	        
  
  				<c:forEach var="line" items="${list}" varStatus="status">
  				${line }

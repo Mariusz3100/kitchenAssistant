@@ -8,20 +8,42 @@ import mariusz.ambroziak.kassistant.model.Produkt;
 
 public class SearchResult {
 	private String searchPhrase;
+	private String produktPhrase;
 	private String quantity;
 	private ArrayList<Produkt> produkts;
 	
-	public SearchResult(String searchPhrase, String quantity,List<Produkt> produkts) {
-		super();
-		this.searchPhrase = searchPhrase;
-		this.quantity=quantity;
-		this.produkts =new ArrayList<Produkt>();
-		if(produkts!=null)
-			this.produkts.addAll(produkts);
+	public String getProduktPhrase() {
+		return produktPhrase;
 	}
+
+	public void setProduktPhrase(String produktPhrase) {
+		this.produktPhrase = produktPhrase;
+	}
+
+	
+//	public SearchResult(String searchPhrase, String quantity,List<Produkt> produkts) {
+//		super();
+//		this.searchPhrase = searchPhrase;
+//		this.quantity=quantity;
+//		this.produkts =new ArrayList<Produkt>();
+//		if(produkts!=null)
+//			this.produkts.addAll(produkts);
+//	}
 	public String getQuantity() {
 		return quantity;
 	}
+	
+	public SearchResult(String searchPhrase, String produktPhrase,
+			String quantity, List<Produkt> produkts) {
+		super();
+		this.searchPhrase = searchPhrase;
+		this.produktPhrase = produktPhrase;
+		this.quantity = quantity;
+		this.produkts =new ArrayList<Produkt>();
+		if(produkts!=null)
+			this.produkts.addAll(produkts);	
+	}
+	
 	public void setQuantity(String quantity) {
 		this.quantity = quantity;
 	}

@@ -10,12 +10,14 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import mariusz.ambroziak.kassistant.utils.ProblemLogger;
+
 
 
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = "url"))
 public class Produkt {
-
+	private static final int opis_length=2600;
 	   @Id
 	   @GeneratedValue(strategy = GenerationType.IDENTITY)
 	   private Long p_id;
@@ -38,7 +40,7 @@ public class Produkt {
 	   
 	   
 	   @NotNull
-	   @Size(min = 1, max = 2000)
+	   @Size(min = 1, max = opis_length)
 	   private String opis;
 	   
 	   @NotNull
@@ -112,6 +114,13 @@ public class Produkt {
 		}
 
 		public void setOpis(String opis) {
+			if(opis!=null){
+				if(opis.length()>opis_length){
+					ProblemLogger.logProblem("opis produktu \""
+							+opis+"\" jest za d³ugi. Maksymalna d³ugoœæ to "+opis_length);
+					opis=opis.substring(0,opis_length);
+				}
+			}
 			this.opis = opis;
 		}
 

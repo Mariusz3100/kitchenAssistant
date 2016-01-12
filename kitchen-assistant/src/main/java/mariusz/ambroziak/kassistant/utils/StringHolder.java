@@ -6,6 +6,13 @@ public class StringHolder {
 	public static String auchanFilename="auchanEntries.txt";
 	public static final String SEARCH4_NAME = "search4";
 	public static final String PRODUKT_URL_NAME = "produktUrl";
+	public static final String PRODUKT_IDS_NAME = "ids";
+	public static final String SINGLE_PRODUKT_ID_NAME ="id";
+	
+	public static final String SEARCH_PHRASE_BORDERS="_";
+	
+	public static final String NO_RESULT_INFO_NAME = "errorMessage";
+	public static final String NO_RESULT_UNKNOWN_SHOP = "UnknownShop";
 
 	
 	

@@ -1,14 +1,28 @@
 package mariusz.ambroziak.kassistant.shops;
 
+import webscrappers.auchan.AuchanAbstractScrapper;
+
 public class ShopRecognizer {
 
-	public static Shop recognizeShop(String url){
+	public static Shops recognizeShop(String url){
 		
-		for(Shop s:Shop.values()){
+		for(Shops s:Shops.values()){
 			if(url.indexOf(s.getBaseUrl())>-1)
 				return s;
 		}
 		
-		return null;
+		return Shops.UnknownShop;
 	}
+	
+	public static String getShortestWorkingUrl(String baseUrl){
+		Shops shop=recognizeShop(baseUrl);
+		
+		if(shop==Shops.Auchan)
+		{
+			return AuchanAbstractScrapper.getAuchanShortestWorkingUrl(baseUrl);
+		}
+		
+		return "";
+	}
+	
 }

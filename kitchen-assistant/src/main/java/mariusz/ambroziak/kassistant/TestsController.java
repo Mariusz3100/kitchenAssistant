@@ -17,6 +17,7 @@ import mariusz.ambroziak.kassistant.model.Problem;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.User;
 import mariusz.ambroziak.kassistant.model.jsp.SearchResult;
+import mariusz.ambroziak.kassistant.utils.JspStringHolder;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import testing.QuantityTesting;
 import webscrappers.przepisy.SkladnikiExtractor;
 
 
@@ -110,5 +112,30 @@ public class TestsController {
 
 	}	
 
+	@RequestMapping(value="/quantitiesTest")
+	public ModelAndView testQuantities(HttpServletRequest request) {
+		String url=request.getParameter("recipeurl");
+
+		if(!url.startsWith("-")){
+			ArrayList<SearchResult> result=RecipeAgent.parse(url);
 	
+			ModelAndView mav=new ModelAndView("chooseProducts");
+	
+			mav.addObject("url",url);
+			mav.addObject("results",result);
+	
+			return mav;
+		}else{
+			List<String> result=QuantityTesting.testQuantity(url.substring(1));
+			
+
+			ModelAndView mav=new ModelAndView("quantitiesTested");
+			
+			mav.addObject("results",result);
+			
+			return mav;
+		}
+		
+
+	}
 }
