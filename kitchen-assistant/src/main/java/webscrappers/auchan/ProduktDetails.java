@@ -1,6 +1,6 @@
 package webscrappers.auchan;
 
-import mariusz.ambroziak.kassistant.model.jsp.QuantityProdukt;
+import mariusz.ambroziak.kassistant.model.utils.QuantityProdukt;
 
 public class ProduktDetails {
 	private String url;

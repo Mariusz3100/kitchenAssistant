@@ -30,36 +30,71 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class ProblemsController {
 	public static String problems="";
-	
 
-	
 
-	@RequestMapping(value="/problems")
-	public ModelAndView recipeParsed(HttpServletRequest request) {
+
+
+	@RequestMapping(value="/oldproblems")
+	public ModelAndView problems1(HttpServletRequest request) {
 		List<Problem> problems=DaoProvider.getInstance().getProblemDao().list();
 
 		ModelAndView mav=new ModelAndView("List");
 		ArrayList<String> list=new ArrayList<String>();
-		
+
 		list.add("Problems to solve:");
-		
+
 		for(Problem p:problems)
 		{
 			String message = p.getMessage();
-			if(p.getNext_p_id()>0)
+			if(p.getNext_p_id()!=null&&p.getNext_p_id()>0)
 				message+=" -->"+p.getNext_p_id();
-				
+
 			list.add(message);
 		}
-		
+
 		mav.addObject("list",list);
-		
+
 		return mav;
 
 
 	}
-	
-	
 
-	
+	@RequestMapping(value="/problems")
+	public ModelAndView problems2(HttpServletRequest request) {
+		List<Problem> problems=DaoProvider.getInstance().getProblemDao().list(true,false);
+
+		ModelAndView mav=new ModelAndView("List");
+		ArrayList<String> list=new ArrayList<String>();
+
+		list.add("Problems to solve:");
+
+		for(Problem p:problems)
+		{
+			String message = p.getMessage();
+			Long nextP_id=p.getNext_p_id();
+			while(nextP_id!=null&&nextP_id>0){
+				Problem p2=DaoProvider.getInstance().getProblemDao().getById(nextP_id);
+
+				if(p2!=null)
+				{
+					message+=p2.getMessage();
+					nextP_id=p2.getNext_p_id();
+				}else{
+					nextP_id=null;
+				}
+
+			}
+
+
+			list.add(message);
+		}
+
+		mav.addObject("list",list);
+
+		return mav;
+
+
+	}
+
+
 }

@@ -60,7 +60,7 @@ public class AuchanAgent extends BaseAgent {
 	public static final String AUCHAN_WEB_SCRAPPER_NAME = "auchanWebScrapper";
 
 	public static final String acceptedURL="(http://)?www.auchandirect.pl/sklep/.+";
-	public static final String baseUrl="www.auchandirect.pl/sklep/";
+	public static final String baseUrl="www.auchandirect.pl/";
 
 
 	public static boolean agentOn=true;
@@ -330,7 +330,7 @@ public class AuchanAgent extends BaseAgent {
 
 				} catch (Page404Exception e) {
 					ProblemLogger.logProblem("404 page at "+url);
-					e.printStackTrace();
+					ProblemLogger.logStackTrace(e.getStackTrace());
 				}
 
 				if(produktDetails!=null){

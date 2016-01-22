@@ -1,6 +1,9 @@
 package webscrappers.Jsoup;
 
 import static org.junit.Assert.*;
+
+import java.net.MalformedURLException;
+
 import mariusz.ambroziak.kassistant.exceptions.Page404Exception;
 import mariusz.ambroziak.kassistant.model.Produkt;
 
@@ -24,6 +27,42 @@ public class UrlShorteningTest {
 //		
 //	}
 
-
+//	@Test
+//	public void test() {
+//		String url="http://www.auchandirect.pl/auchan-warszawa/pl/profi-pasztet-z-drobiu-wielkopolski-z-pieczarkami/p-96900406?fromCategory=true";
+//		
+//		String shortUrl=AuchanAbstractScrapper.getAuchanShortestWorkingUrl(url);
+//		
+//		assertNotNull(shortUrl);
+//		assertNotEquals(shortUrl,"");
+//		
+//	}
+//	
+//	@Test
+//	public void test1() {
+//		String url="http://www.auchandirect.pl/auchan-warszawa/pl/profi-pasztet-z-drobiu-wielkopolski-z-pieczarkami/p-96900406";
+//		
+//		String shortUrl=AuchanAbstractScrapper.getAuchanShortestWorkingUrl(url);
+//		
+//		assertNotNull(shortUrl);
+//		assertNotEquals(shortUrl,"");
+//		
+//	}
+	
+	@Test
+	public void test2() {
+		String url="http://www.auchandirect.pl/p-96900406";
+		
+		String shortUrl;
+		try {
+			shortUrl = AuchanAbstractScrapper.getPage(url);
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		
+	}
 	
 }

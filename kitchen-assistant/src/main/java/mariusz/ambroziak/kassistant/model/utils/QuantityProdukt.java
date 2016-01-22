@@ -1,4 +1,4 @@
-package mariusz.ambroziak.kassistant.model.jsp;
+package mariusz.ambroziak.kassistant.model.utils;
 
 import mariusz.ambroziak.kassistant.utils.AmountTypes;
 

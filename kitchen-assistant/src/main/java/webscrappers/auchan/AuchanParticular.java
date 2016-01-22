@@ -18,7 +18,7 @@ import mariusz.ambroziak.kassistant.dao.Base_WordDAOImpl;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
 import mariusz.ambroziak.kassistant.exceptions.Page404Exception;
 import mariusz.ambroziak.kassistant.model.Produkt;
-import mariusz.ambroziak.kassistant.model.jsp.QuantityProdukt;
+import mariusz.ambroziak.kassistant.model.utils.QuantityProdukt;
 import mariusz.ambroziak.kassistant.utils.Converter;
 import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 
@@ -59,14 +59,14 @@ public class AuchanParticular extends AuchanAbstractScrapper{
 			throw new Page404Exception( detailsUrl);
 		
 		
-		Elements header = doc.select("h1");
+		Elements header = doc.select(".label");
 		
 		retValue.setNazwa(getOwnTextOrEmpty(header));
 		
 		
 		String opisProduktu="";
 		
-		Elements opisElement = doc.select("#product-description-section");
+		Elements opisElement = doc.select("#product-desc-0");
 		
 		String opisProduktuText=getAllTextOrEmpty(opisElement);
 		
@@ -81,8 +81,8 @@ public class AuchanParticular extends AuchanAbstractScrapper{
 		
 		
 		
-		String cenaZl=getOwnTextOrEmpty(doc.select(".price-zl"));
-		String cenaGr=getOwnTextOrEmpty(doc.select(".price-gr"));
+		String cenaZl=getOwnTextOrEmpty(doc.select(".p-nb"));
+		String cenaGr=getOwnTextOrEmpty(doc.select(".p-cents"));
 		
 		float cena=combineCena(cenaZl,cenaGr);
 		
@@ -91,7 +91,7 @@ public class AuchanParticular extends AuchanAbstractScrapper{
 		retValue.setUrl(detailsUrl);
 		
 		
-		String quantityText=getOwnTextOrEmpty(doc.select(".prod-info"));
+		String quantityText=getOwnTextOrEmpty(doc.select(".packaging>strong"));
 		
 		QuantityProdukt quantity = AuchanQExtract.extractQuantity(quantityText);
 		

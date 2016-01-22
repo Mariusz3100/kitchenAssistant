@@ -14,26 +14,47 @@ public class Problem {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long p_id;
-
-
+	
 	private Long next_p_id;
+	private boolean first_message;
+	
 	@NotNull
 	private String  message;
-	
-	
 	private boolean solved;
-
-
-	public Problem(){}
 	
-	public Problem(Long nextId, String message, boolean solved) {
+	
+	
+
+	
+
+
+
+
+	public Problem(Long next_p_id, boolean firstMessage, String message,
+			boolean solved) {
 		super();
-		this.next_p_id = nextId;
+		this.next_p_id = next_p_id;
+		this.first_message = firstMessage;
 		this.message = message;
 		this.solved = solved;
 	}
 
 
+
+	public boolean isFirstMessage() {
+		return first_message;
+	}
+
+
+
+	public void setFirstMessage(boolean firstMessage) {
+		this.first_message = firstMessage;
+	}
+
+
+
+	public Problem(){}
+	
 
 
 	public Long getP_id() {

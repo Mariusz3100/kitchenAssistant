@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.CookieHandler;
+import java.net.CookieManager;
+import java.net.CookiePolicy;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -27,10 +30,12 @@ public abstract class AuchanAbstractScrapper{
 //	public static final String shortestPattern = "http://www.auchandirect.pl/sklep/artykuly/[[wyszukiwarka/]|[[0-9_]+/]][LV]?[0-9]+/";
 	public static final String baseURL = "http://www.auchandirect.pl";
 	
-	static final String emptyContentString = "404";
+	static final String emptyContentString = "Przepraszamy , strona o tym adresie nie istnieje";
 
 	public static String getPage(String finalUrl) throws MalformedURLException
 			 {
+					initCookieHandler();
+		
 					URLConnection connection;
 					InputStream detResponse = null;
 					boolean successfull=false;
@@ -38,10 +43,13 @@ public abstract class AuchanAbstractScrapper{
 					InputStreamReader inputStreamReader = null;
 					while(!successfull){
 						try {
-							connection = new URL(finalUrl).openConnection();
+							URL url = new URL(finalUrl);
+							connection = url.openConnection();
+							
 							connection.setConnectTimeout(timeOut);
 							connection.setRequestProperty("Accept-Charset", java.nio.charset.StandardCharsets.UTF_8.toString());
-							
+							//argh
+							connection.connect();
 							detResponse = connection.getInputStream();
 							
 							successfull=true;
@@ -73,6 +81,11 @@ public abstract class AuchanAbstractScrapper{
 					return response.toString();
 				}
 
+	public static void initCookieHandler() {
+		if(CookieHandler.getDefault()==null)
+			CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
+	}
+
 //	public static String getAuchanUrlPattern(String url) {
 //			
 //	//		boolean z = Pattern.matches(b,a);
@@ -94,24 +107,26 @@ public abstract class AuchanAbstractScrapper{
 
 	
 	public static String getAuchanShortestWorkingUrl(String url) {
-		
+//		http://www.auchandirect.pl/auchan-warszawa/pl/profi-pasztet-z-drobiu-wielkopolski-z-pieczarkami/p-96900406?fromCategory=true
 		if(!url.startsWith("http://"))
 			url="http://"+url;
 		
-	    Pattern p = Pattern.compile(UrlPattern);
-	
-	    
-	    
-		Matcher m=p.matcher(url);
-		
-		if(m.find()){
-			
-			
-			String shortUrl=m.group();
-			return shortUrl+singleCharAtTheEndOfEveryUrl;
-	    }
-		ProblemLogger.logProblem("Short url not found");
-		return "";
+//	    Pattern p = Pattern.compile(UrlPattern);
+//	
+//	    if()
+//	    
+//		Matcher m=p.matcher(url);
+//		
+//		if(m.find()){
+//			
+//			
+//			String shorterUrl=m.group();
+//			
+//			
+//			
+//	    }
+//		ProblemLogger.logProblem("Short url not found");
+		return url;
 	}
 
 	public static boolean checkIf404Page(String pageContent) {
@@ -126,20 +141,20 @@ public abstract class AuchanAbstractScrapper{
 	}
 	
 	public static boolean checkIf404Page(Document doc) {
-		Elements content=doc.select("#content");
+		Elements pageError=doc.select(".page.error");//.get(0).;
 		
 		//pusta strona raczej te¿ jest 404
-		if(content==null
-				||content.size()==0
-				||content.get(0)==null)
-			return true;
+//		if(content==null
+//				||content.size()==0
+//				||content.get(0)==null)
+//			return true;
 		
-		Element element = content.get(0);
 	
-		
-		if(element.ownText()==null
-				||element.getAllElements().size()<1
-				||element.ownText().equals(emptyContentString))
+		if(pageError!=null
+				&&pageError.size()>0
+				&&pageError.get(0)!=null
+				&&pageError.get(0)
+				.getElementsContainingOwnText(emptyContentString).size()>0)
 			return true;
 		
 		return false;

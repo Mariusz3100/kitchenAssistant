@@ -45,6 +45,36 @@ public class ProblemDAOImpl implements ProblemDAO {
 		this.sessionFactory.getCurrentSession().save(p);
 		
 	}
+
+	@Transactional
+	@Override
+	public List<Problem> list(boolean firstMessage, boolean solved) {
+		@SuppressWarnings("unchecked")
+		List<Problem> problems =  sessionFactory.getCurrentSession()
+				.createCriteria(Problem.class)
+				.add(Restrictions.eq("first_message", firstMessage))
+				.add(Restrictions.eq("solved", solved))
+				.list();
+		
+		
+		return problems;
+	}
+
+	@Transactional
+	@Override
+	public Problem getById(Long id) {
+		@SuppressWarnings("unchecked")
+		List<Problem> problems =  sessionFactory.getCurrentSession()
+				.createCriteria(Problem.class)
+				.add(Restrictions.idEq(id))
+				.list();
+		if(problems.size()<1)
+			return null;
+		else
+			return problems.get(0);
+		
+		
+	}
 	
 	
 	

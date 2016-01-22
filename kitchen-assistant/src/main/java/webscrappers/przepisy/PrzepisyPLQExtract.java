@@ -12,7 +12,7 @@ import webscrappers.przepisy.AbstractQuantityExtracter.QuantityTranslation;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
 import mariusz.ambroziak.kassistant.model.Base_Word;
 import mariusz.ambroziak.kassistant.model.Recipe_Ingredient;
-import mariusz.ambroziak.kassistant.model.jsp.QuantityProdukt;
+import mariusz.ambroziak.kassistant.model.utils.QuantityProdukt;
 import mariusz.ambroziak.kassistant.utils.AmountTypes;
 import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 

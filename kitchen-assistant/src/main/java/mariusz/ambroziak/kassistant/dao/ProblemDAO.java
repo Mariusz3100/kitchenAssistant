@@ -13,7 +13,9 @@ import mariusz.ambroziak.kassistant.model.Variant_Word;
 
 public interface ProblemDAO {
 	public List<Problem> list();
+	public List<Problem> list(boolean firstMessage,boolean solved);
 	public void addProblem(Problem p);
+	public Problem getById(Long id);
 
 	
 
