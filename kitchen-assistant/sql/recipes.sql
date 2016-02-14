@@ -4,7 +4,7 @@
 
   CONSTRAINT recipe_pk PRIMARY KEY (rec_id)
 
-)
+);
 
 
 CREATE TABLE recipe_ingredient (
@@ -17,7 +17,7 @@ CREATE TABLE recipe_ingredient (
    CONSTRAINT recipe_ing_pk PRIMARY KEY (rec_ing_id)
 
 
-)
+);
 
 
 

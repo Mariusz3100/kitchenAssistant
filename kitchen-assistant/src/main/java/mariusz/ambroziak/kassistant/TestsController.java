@@ -13,6 +13,7 @@ import mariusz.ambroziak.kassistant.agents.ClockAgent;
 import mariusz.ambroziak.kassistant.agents.RecipeAgent;
 import mariusz.ambroziak.kassistant.agents.config.AgentsSystem;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
+import mariusz.ambroziak.kassistant.exceptions.AgentSystemNotStartedException;
 import mariusz.ambroziak.kassistant.model.Problem;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.User;
@@ -94,7 +95,13 @@ public class TestsController {
 		{
 			mav=new ModelAndView("test/form");
 		}else{
-			List<Produkt> parseProdukt = RecipeAgent.parseProdukt(name);
+			List<Produkt> parseProdukt = null;
+			try {
+				parseProdukt = RecipeAgent.parseProdukt(name);
+			} catch (AgentSystemNotStartedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
 			ArrayList<String> result=new ArrayList<String>();
 			
@@ -117,7 +124,13 @@ public class TestsController {
 		String url=request.getParameter("recipeurl");
 
 		if(!url.startsWith("-")){
-			ArrayList<SearchResult> result=RecipeAgent.parse(url);
+			ArrayList<SearchResult> result = null;
+			try {
+				result = RecipeAgent.parse(url);
+			} catch (AgentSystemNotStartedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	
 			ModelAndView mav=new ModelAndView("chooseProducts");
 	

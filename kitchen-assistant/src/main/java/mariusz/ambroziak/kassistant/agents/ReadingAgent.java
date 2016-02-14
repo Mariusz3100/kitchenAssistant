@@ -16,7 +16,7 @@ import mariusz.ambroziak.kassistant.exceptions.AgentSystemNotStartedException;
 import mariusz.ambroziak.kassistant.exceptions.ShopNotFoundException;
 import mariusz.ambroziak.kassistant.model.Base_Word;
 import mariusz.ambroziak.kassistant.model.Produkt;
-import mariusz.ambroziak.kassistant.model.utils.FoodIngredientQuantity;
+import mariusz.ambroziak.kassistant.model.utils.ProduktIngredientQuantity;
 import mariusz.ambroziak.kassistant.model.utils.QuantityProdukt;
 import mariusz.ambroziak.kassistant.shops.ShopRecognizer;
 import mariusz.ambroziak.kassistant.utils.MessageTypes;
@@ -144,14 +144,14 @@ public class ReadingAgent extends BaseAgent{
 	}
 
 
-	public static List<FoodIngredientQuantity> searchForProdukt(String produktUrl)
+	public static List<ProduktIngredientQuantity> parseProdukt(String produktUrl)
 			throws AgentSystemNotStartedException, ShopNotFoundException{
 		ReadingAgent freeOne = getFreeAgent();
 		if(freeOne==null){
 			return null;
 		}else{
 			freeOne.setBusy(true);
-			List<FoodIngredientQuantity> result;
+			List<ProduktIngredientQuantity> result;
 			try{
 				result= freeOne.getOrParseFoodIngredients(produktUrl);
 			}finally{
@@ -165,14 +165,14 @@ public class ReadingAgent extends BaseAgent{
 
 
 
-	private List<FoodIngredientQuantity> getOrParseFoodIngredients(
+	private List<ProduktIngredientQuantity> getOrParseFoodIngredients(
 			String produktUrl) throws ShopNotFoundException, AgentSystemNotStartedException {
 		
 		Produkt produkt = DaoProvider.getInstance().getProduktDao().getProduktsByURL(produktUrl);
 		
 		if(produkt==null){
 			produkt=scrapProdukt(produktUrl);
-			//a mo¿e get produkt i od razu parse?
+			
 		}
 		
 		if(produkt.isPrzetworzony()){
@@ -217,7 +217,7 @@ public class ReadingAgent extends BaseAgent{
 					}
 				}
 			}
-	}
+		}
 		return freeOne;
 	}
 

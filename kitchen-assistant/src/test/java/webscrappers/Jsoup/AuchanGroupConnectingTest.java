@@ -38,16 +38,19 @@ public class AuchanGroupConnectingTest {
 
 //			assertNotNull(AuchanGroup.getAuchanUrlPattern(p.getUrl()));
 		}
-		
-		
-		
-		
-		
-		
-		
-		
-	}
 
+	}
+	
+	
+	@Test
+	public  void testNowyAuchan() throws MalformedURLException {
+		String page= AuchanGroup.getPage("http://www.auchandirect.pl/auchan-warszawa/pl/search?text=mro¿one+owoce");
+		
+		System.out.println(page);
+	
+	}
+	
+	
 //	@Test
 //	public void test2() {
 //		for(GA_ProduktScrapped p:searchFor){

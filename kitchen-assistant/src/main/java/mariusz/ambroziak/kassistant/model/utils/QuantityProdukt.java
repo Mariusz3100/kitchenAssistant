@@ -25,4 +25,9 @@ public class QuantityProdukt {
 	public void setAmount(float amount) {
 		this.amount = amount;
 	}
+	
+	public String getQuantityPhrase() {
+		return getAmountType()+"_"+getAmount();
+	}
+	
 }

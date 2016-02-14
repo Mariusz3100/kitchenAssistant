@@ -4,6 +4,7 @@ public enum MessageTypes {
 	SearchFor,
 	SearchForResponse,
 	
+	
 	GetProduktData,
 	GetProduktDataResponse
 	

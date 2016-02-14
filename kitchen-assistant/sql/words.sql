@@ -32,4 +32,4 @@ CREATE UNIQUE INDEX Variant_Word_index
  ( v_word );
 
 
-insert into base_word (base_word_id,b_word) VALUES (-1,'invalid');
+insert into base_word (id,b_word) VALUES (-1,'invalid');

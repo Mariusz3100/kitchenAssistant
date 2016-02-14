@@ -10,22 +10,22 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = "nazwa"))
-public class Food_Ingredient {
+public class Produkt_Ingredient {
 
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long fi_id;
+	private Long pi_id;
 
 	@NotNull
 	private String nazwa;
 
-	public Long getFi_id() {
-		return fi_id;
+	public Long getPi_id() {
+		return pi_id;
 	}
 
-	public void setFi_id(Long fi_id) {
-		this.fi_id = fi_id;
+	public void setPi_id(Long pi_id) {
+		this.pi_id = pi_id;
 	}
 
 	public String getNazwa() {

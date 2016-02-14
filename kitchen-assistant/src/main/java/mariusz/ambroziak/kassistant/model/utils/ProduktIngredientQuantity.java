@@ -1,34 +1,34 @@
 package mariusz.ambroziak.kassistant.model.utils;
 
-import mariusz.ambroziak.kassistant.model.Food_Ingredient;
+import mariusz.ambroziak.kassistant.model.Produkt_Ingredient;
 import mariusz.ambroziak.kassistant.utils.AmountTypes;
 
-public class FoodIngredientQuantity {
-	private Food_Ingredient fi;
+public class ProduktIngredientQuantity {
+	private Produkt_Ingredient pi;
 	private float amount;
 	private AmountTypes at;
 
 	
-	public FoodIngredientQuantity(Food_Ingredient fi, float amount,
+	public ProduktIngredientQuantity(Produkt_Ingredient fi, float amount,
 			AmountTypes at) {
 		super();
-		this.fi = fi;
+		this.pi = fi;
 		this.amount = amount;
 		this.at = at;
 	}
 	
-	public FoodIngredientQuantity(Food_Ingredient fi, float amount) {
+	public ProduktIngredientQuantity(Produkt_Ingredient fi, float amount) {
 		super();
-		this.fi = fi;
+		this.pi = fi;
 		this.amount = amount;
 		this.at = AmountTypes.mg;
 	}
 	
-	public Food_Ingredient getFi() {
-		return fi;
+	public Produkt_Ingredient getFi() {
+		return pi;
 	}
-	public void setFi(Food_Ingredient fi) {
-		this.fi = fi;
+	public void setFi(Produkt_Ingredient fi) {
+		this.pi = fi;
 	}
 	public float getAmount() {
 		return amount;

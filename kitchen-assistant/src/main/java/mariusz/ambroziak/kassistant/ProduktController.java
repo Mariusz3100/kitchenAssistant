@@ -5,6 +5,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -15,10 +16,15 @@ import mariusz.ambroziak.kassistant.agents.RecipeAgent;
 import mariusz.ambroziak.kassistant.agents.config.AgentsSystem;
 import mariusz.ambroziak.kassistant.dao.ProduktDAO;
 import mariusz.ambroziak.kassistant.exceptions.AgentSystemNotStartedException;
+import mariusz.ambroziak.kassistant.exceptions.Page404Exception;
 import mariusz.ambroziak.kassistant.exceptions.ShopNotFoundException;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.User;
 import mariusz.ambroziak.kassistant.model.jsp.SearchResult;
+import mariusz.ambroziak.kassistant.model.utils.NutritionalValueQuantity;
+import mariusz.ambroziak.kassistant.model.utils.NutritionalValueType;
+import mariusz.ambroziak.kassistant.model.utils.ProduktIngredientQuantity;
+import mariusz.ambroziak.kassistant.model.utils.ProduktWithIngredients;
 import mariusz.ambroziak.kassistant.utils.JspStringHolder;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +34,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import testing.QuantityTesting;
+import webscrappers.auchan.AuchanRecipeParser;
 
 
 
@@ -82,31 +89,94 @@ public class ProduktController {
 		
 	}
 	
-	@RequestMapping(value="/searchForProdukt")
-	public ModelAndView searchForProdukt(HttpServletRequest request) {
-		
-		
+	@RequestMapping(value="/produktValues")
+	public ModelAndView parseProdukt(HttpServletRequest request) {
+		String url=request.getParameter("url");
+		String type=request.getParameter("type");
 
-		String url=request.getParameter("searchFor");
-		
-		if(url==null||url.equals(""))
-			return new ModelAndView("produktSearchForForm");
+		if(url==null||url.equals("")||type==null||type.equals(""))
+			return new ModelAndView("produktParseForm");
 		else
 		{
-			List<Produkt> produkts = null;
-			try {
-				produkts = ProduktAgent.searchForProdukt(url);
-			} catch (AgentSystemNotStartedException e) {
-				return new ModelAndView("agentSystemNotStarted");
+			if(type.equals("NV")){
+				try {
+					ProduktWithIngredients basics = AuchanRecipeParser.getBasics(url);
+					
+					ArrayList<String> list=new ArrayList<String>();
+					list.add(basics.getProdukt().getNazwa()+" - "+basics.getProdukt().getUrl());
+					
+					for(NutritionalValueQuantity piq:basics.getBasicsFor100g())
+					{
+						String opis=piq.getType().getName()+": "+piq.getAmount();
+						
+						if(piq.getType().equals(NutritionalValueType.Energia))
+							opis+=" kalorii";
+						else
+							opis+=" g";
+							
+						list.add(opis);
+					}
+					
+					ModelAndView mav=new ModelAndView("List");
+					
+					mav.addObject("list", list);
+					
+					return mav;
+					
+				} catch (Page404Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}else if(type.equals("Full")){
+				try {
+					ProduktWithIngredients ingredients = AuchanRecipeParser.getAllIngredients(url);
+					
+					ArrayList<String> list=new ArrayList<String>();
+					list.add(ingredients.getProdukt().getNazwa()+" - "+ingredients.getProdukt().getUrl());
+					
+					for(NutritionalValueQuantity piq:ingredients.getBasicsFor100g())
+					{
+						String opis=piq.getType().getName()+": "+piq.getAmount();
+						
+						if(piq.getType().equals(NutritionalValueType.Energia))
+							opis+=" kalorii";
+						else
+							opis+=" g";
+							
+						list.add(opis);
+					}
+
+					
+					for(Entry<ProduktIngredientQuantity, ArrayList<ProduktIngredientQuantity>> piq
+							:ingredients.getParsedIngredients().entrySet())
+					{
+						
+						String opis=piq.getType().getName()+": "+piq.getAmount();
+						
+						if(piq.getType().equals(NutritionalValueType.Energia))
+							opis+=" kalorii";
+						else
+							opis+=" g";
+							
+						list.add(opis);
+					}
+					
+					
+					ModelAndView mav=new ModelAndView("List");
+					
+					mav.addObject("list", list);
+					
+					return mav;
+					
+				} catch (Page404Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			
-			ModelAndView model = new ModelAndView("produktsList");
-			model.addObject("produktList", produkts);
-			
-			return model;
+			return null;
 		}
 		
 	}
-	
 	
 }

@@ -21,11 +21,15 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import mariusz.ambroziak.kassistant.utils.ProblemLogger;
+import mariusz.ambroziak.kassistant.utils.StringHolder;
 
 public abstract class AuchanAbstractScrapper{
 
-	public static final String singleCharAtTheEndOfEveryUrl="A";
-	public static final String UrlPattern = "\\Qhttp://www.auchandirect.pl/sklep/artykuly/\\E(\\Qwyszukiwarka\\E|[0-9_]+|home-promocje)/[LV]*[0-9]+\\/";
+//	public static final String singleCharAtTheEndOfEveryUrl="A";
+	public static final String UrlPattern = "\\Qhttp://www.auchandirect.pl\\E.*\\/p-[0-9]+";
+	public static final String UrlPatternP_codePattern = "/p-[0-9]+";
+	public static final String urlStart = "http://www.auchandirect.pl";
+
 //	public static final String workingUrlPattern = "http://www.auchandirect.pl/sklep/artykuly/[[wyszukiwarka/]|[[0-9_]+/]][LV]?[0-9]+/[a-zA-Z_0-9-]+?";
 //	public static final String shortestPattern = "http://www.auchandirect.pl/sklep/artykuly/[[wyszukiwarka/]|[[0-9_]+/]][LV]?[0-9]+/";
 	public static final String baseURL = "http://www.auchandirect.pl";
@@ -46,8 +50,8 @@ public abstract class AuchanAbstractScrapper{
 							URL url = new URL(finalUrl);
 							connection = url.openConnection();
 							
-							connection.setConnectTimeout(timeOut);
-							connection.setRequestProperty("Accept-Charset", java.nio.charset.StandardCharsets.UTF_8.toString());
+							connection.setConnectTimeout(1000000);
+							connection.setRequestProperty("Accept-Charset", "UTF-8");
 							//argh
 							connection.connect();
 							detResponse = connection.getInputStream();
@@ -110,21 +114,21 @@ public abstract class AuchanAbstractScrapper{
 //		http://www.auchandirect.pl/auchan-warszawa/pl/profi-pasztet-z-drobiu-wielkopolski-z-pieczarkami/p-96900406?fromCategory=true
 		if(!url.startsWith("http://"))
 			url="http://"+url;
+		if(Pattern.matches(UrlPattern,url)){
+		    Pattern p = Pattern.compile(UrlPatternP_codePattern);
 		
-//	    Pattern p = Pattern.compile(UrlPattern);
-//	
-//	    if()
-//	    
-//		Matcher m=p.matcher(url);
-//		
-//		if(m.find()){
-//			
-//			
-//			String shorterUrl=m.group();
-//			
-//			
-//			
-//	    }
+		    String p_code=null;
+		    
+			Matcher m=p.matcher(url);
+			
+			while(m.find()){
+				
+				p_code=m.group();
+
+		    }
+			
+			return baseURL+p_code;
+		}
 //		ProblemLogger.logProblem("Short url not found");
 		return url;
 	}
@@ -160,4 +164,12 @@ public abstract class AuchanAbstractScrapper{
 		return false;
 	}
 
+	
+	
+	public static void main(String[] args){
+		String x="http://www.auchandirect.pl/auchan-warszawa/pl/hipp-obiadek-dynia-i-ziemniaki-bio/p-93900005";
+		
+		String shortUrl=getAuchanShortestWorkingUrl(x);
+		
+	}
 }

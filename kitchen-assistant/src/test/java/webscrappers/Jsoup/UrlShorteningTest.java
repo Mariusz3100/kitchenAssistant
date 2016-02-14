@@ -49,20 +49,61 @@ public class UrlShorteningTest {
 //		
 //	}
 	
-	@Test
-	public void test2() {
+	
+	public void testPage() {
 		String url="http://www.auchandirect.pl/p-96900406";
-		
-		String shortUrl;
+		//http://www.auchandirect.pl/p-97500398
+		String content = null;
 		try {
-			shortUrl = AuchanAbstractScrapper.getPage(url);
+			content = AuchanAbstractScrapper.getPage(url);
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			fail();
 		}
 		
+		assertNotNull(content);
+		
+	}
+	
+	
+	@Test
+	public void testNewShortening() {
+		String url="http://www.auchandirect.pl/p-96900406";
+		//http://www.auchandirect.pl/p-97500398
+		String shortUrl = AuchanAbstractScrapper.getAuchanShortestWorkingUrl(url);
+	
+		assertEquals(shortUrl,url);
+
 		
 		
 	}
 	
+	
+	@Test
+	public void testNewShortening2() {
+		String fullUrl="http://www.auchandirect.pl/auchan-warszawa/pl/profi-pasztet-z-drobiu-wielkopolski-z-pieczarkami/p-96900406";
+		String shortUrl="http://www.auchandirect.pl/p-96900406";
+		//http://www.auchandirect.pl/p-97500398
+		String shortenedUrl = AuchanAbstractScrapper.getAuchanShortestWorkingUrl(fullUrl);
+	
+		assertEquals(shortUrl,shortenedUrl);
+
+		
+		
+	}
+	
+	
+	@Test
+	public void testNewShorteningTricky() {
+		String fullUrl="http://www.auchandirect.pl/auchan-warszawa/pl/profi-pasztet-z-drobiu-wielkopolski-z-pieczarkami/p-96900406/p-97500398";
+		String shortUrl="http://www.auchandirect.pl/p-97500398";
+		//http://www.auchandirect.pl/p-97500398
+		String shortenedUrl = AuchanAbstractScrapper.getAuchanShortestWorkingUrl(fullUrl);
+	
+		assertEquals(shortUrl,shortenedUrl);
+
+		
+		
+	}
 }

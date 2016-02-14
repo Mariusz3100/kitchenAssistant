@@ -12,7 +12,7 @@
   
 
  CONSTRAINT produkt_pk PRIMARY KEY (p_id)
-)
+);
 
 
 CREATE INDEX produkt_url_index

@@ -48,6 +48,13 @@ public class HomeController {
 	@Autowired
 	private Amount_TypeDAO amountTypeDao;
 
+	@ResponseBody
+	@RequestMapping(value="/")
+	public String welcome() {
+		return "Welcome to kitchen assistant!";
+	}
+	
+	
 	@RequestMapping(value="/users")
 	public ModelAndView users() {
 		List<User> listUsers = userDao.list();

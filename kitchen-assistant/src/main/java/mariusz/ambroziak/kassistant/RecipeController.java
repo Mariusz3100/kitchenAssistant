@@ -2,6 +2,8 @@ package mariusz.ambroziak.kassistant;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,8 +25,10 @@ import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.User;
 import mariusz.ambroziak.kassistant.model.jsp.InvalidSearchResult;
 import mariusz.ambroziak.kassistant.model.jsp.SearchResult;
+import mariusz.ambroziak.kassistant.utils.Converter;
 import mariusz.ambroziak.kassistant.utils.JspStringHolder;
 import mariusz.ambroziak.kassistant.utils.ProblemLogger;
+import mariusz.ambroziak.kassistant.utils.StringHolder;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -70,7 +74,32 @@ public class RecipeController {
 
 
 
+	@RequestMapping(value="/searchForProdukt")
+	public ModelAndView searchForProdukt(HttpServletRequest request) throws UnsupportedEncodingException {
+		
+		request.setCharacterEncoding(java.nio.charset.StandardCharsets.UTF_8.toString());
+		String url=request.getParameter("searchFor");
+		String quantity=request.getParameter("quantity");
+		
 
+		if(url==null||url.equals("")||quantity==null||quantity.equals(""))
+			return new ModelAndView("produktSearchForForm");
+		else
+		{
+			List<Produkt> produkts = null;
+			try {
+				produkts = RecipeAgent.searchForProdukt(url,quantity);
+			} catch (AgentSystemNotStartedException e) {
+				return new ModelAndView("agentSystemNotStarted");
+			}
+			
+			ModelAndView model = new ModelAndView("produktsList");
+			model.addObject("produktList", produkts);
+			
+			return model;
+		}
+	}
+	
 
 
 	@RequestMapping(value="/chooseProdukts")
@@ -78,7 +107,12 @@ public class RecipeController {
 		String url=request.getParameter("recipeurl");
 
 		if(!url.startsWith("-")){
-			ArrayList<SearchResult> result=RecipeAgent.parse(url);
+			ArrayList<SearchResult> result;
+			try {
+				result = RecipeAgent.parse(url);
+			} catch (AgentSystemNotStartedException e) {
+				return new ModelAndView("agentSystemNotStarted");
+			}
 			if(result==null){
 
 				return new ModelAndView("agentSystemNotStarted");

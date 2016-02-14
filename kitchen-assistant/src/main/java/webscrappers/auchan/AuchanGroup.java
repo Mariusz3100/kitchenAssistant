@@ -30,10 +30,12 @@ import org.springframework.dao.DataIntegrityViolationException;
 
 
 public class AuchanGroup extends AuchanAbstractScrapper{
-	private static final String auchanSearchUrl="http://www.auchandirect.pl/sklep/wyszukiwarka/__search__";
+	//private static final String auchanSearchUrl="http://www.auchandirect.pl/sklep/wyszukiwarka/__search__";
+	
+	private static final String auchanSearchUrl="http://www.auchandirect.pl/auchan-warszawa/pl/search?text=__search__";
 	String filename="\\classes\\auchanEntries.txt";
 	public static final String noResults="Przykro nam ale nie znaleziono wyników dla podanego zapytania"; 
-	public static final String validLinkPart="/sklep/artykuly/wyszukiwarka/";
+	public static final String validLinkPart="/auchan-warszawa/pl";
 	
 	
 	
@@ -41,14 +43,23 @@ public class AuchanGroup extends AuchanAbstractScrapper{
 	public static ArrayList<GA_ProduktScrapped> searchFor(String searchPhrase){
 		ArrayList<GA_ProduktScrapped> retValue=new ArrayList<GA_ProduktScrapped>();
 		
-		String search4=Converter.auchanConvertion(searchPhrase);
+//		String search4=searchPhrase.trim().replaceAll(" ", "+");
 		
-		String search4withSpaces=search4.replaceAll("\\$", " ");
+//		String search4withSpaces=search4.replaceAll("\\$", " ");
 				
 		
-		String urlWithSpaces=auchanSearchUrl.replaceAll("__search__",search4withSpaces);
+//		String urlWithSpaces=auchanSearchUrl.replaceAll("__search__",search4withSpaces);
 		
-		String finalUrl=urlWithSpaces.replaceAll(" ","\\$");
+		if(searchPhrase==null||searchPhrase.equals(""))
+			return retValue;
+		
+		
+		String searchForConverted = Converter.auchanConvertion(searchPhrase.trim());
+		String finalUrl=auchanSearchUrl.replace("__search__", 
+				searchForConverted);
+				
+				
+//				urlWithSpaces.replaceAll(" ","\\$");
 		
 		try {
 			String response = getPage(finalUrl);
@@ -63,15 +74,15 @@ public class AuchanGroup extends AuchanAbstractScrapper{
 				
 				doc.setBaseUri(baseURL);
 				
-				Elements produkts=doc.select(".single-prod-box");
+				Elements produkts=doc.select(".product");
 						
 				for(Element produkt: produkts){
-					Elements links = produkt.select(".prod-box-text").get(0).getElementsByTag("a");
+					Elements links = produkt.select(".about").get(0).getElementsByTag("a");
 					
 					for(Element link: links){
 						if(link.attr("href").indexOf(validLinkPart)>-1){
 							String l=link.absUrl("href");
-							String nazwa=link.ownText();
+							String nazwa=link.attr("title");
 							GA_ProduktScrapped gap=new GA_ProduktScrapped(nazwa, l);
 
 							retValue.add(gap);

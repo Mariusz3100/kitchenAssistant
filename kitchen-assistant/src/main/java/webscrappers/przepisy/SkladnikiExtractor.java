@@ -71,18 +71,20 @@ public class SkladnikiExtractor extends AbstractQuantityExtracter {
 					ingredient.substring(ingredient.indexOf('(')+1,ingredient.indexOf(')'));
 				
 			try{
-				Quantity extractedQuantity = extractQuantity(quantityPhrase);
+				Quantity extractedQuantity = extractQuantity(attemptedQ);
 				
-				retValue=new QuantityProdukt();
-				retValue.setAmountType(extractedQuantity.getType());
-				retValue.setAmount(extractedQuantity.getAmount());
-				retValue.setProduktPhrase(searchPhrase);
+				if(extractedQuantity!=null||
+						(retValue.getAmount()==-1&&AmountTypes.szt.equals(retValue.getAmountType()))){
+					retValue=new QuantityProdukt();
+					retValue.setAmountType(extractedQuantity.getType());
+					retValue.setAmount(extractedQuantity.getAmount());
+					retValue.setProduktPhrase(searchPhrase);
 				
 				
-				ingredient=ingredient.replaceAll(Pattern.quote(attemptedQ), "")
+					ingredient=ingredient.replaceAll(Pattern.quote(attemptedQ), "")
 						.replaceAll("\\(", "")
 						.replaceAll("\\)", "").trim();
-				
+				}
 			}catch(IllegalArgumentException ex){
 				retValue=null;
 			}
@@ -91,21 +93,24 @@ public class SkladnikiExtractor extends AbstractQuantityExtracter {
 			
 		}
 		
-		if(quantityPhrase==null||quantityPhrase.equals("")){
-			retValue=new QuantityProdukt();
-			retValue.setAmount(1);
-			retValue.setAmountType(AmountTypes.szt);
-			retValue.setProduktPhrase(searchPhrase);
-		}
 		
 		if(retValue==null){
 			Quantity extractedQuantity = extractQuantity(quantityPhrase);
 			
 			retValue=new QuantityProdukt();
+			
+			
 			retValue.setAmountType(extractedQuantity.getType());
 			retValue.setAmount(extractedQuantity.getAmount());
+			
 			retValue.setProduktPhrase(searchPhrase);
 			
+		}
+		
+		if(retValue.getAmount()==-1&&AmountTypes.szt.equals(retValue.getAmountType())){
+			ProblemLogger.logProblem("Nie uda³o siê wyekstrachowaæ miary z "+searchPhrase+"|"+quantityPhrase);
+			retValue.setAmount(1);
+			//TODO zostawiæ -1, by obs³uzyæ gdzie indziej?
 		}
 		
 		return retValue;
@@ -118,9 +123,9 @@ public class SkladnikiExtractor extends AbstractQuantityExtracter {
 		
 		if(text==null||text.equals(""))
 		{
-//			retValue.setAmount(-1);
-//			retValue.setAmountType(AmountTypes.szt);
-			return null;
+			retValue.setAmount(-1);
+			retValue.setType(AmountTypes.szt);
+			return retValue;
 		}
 		
 		for(String x:ommissions)

@@ -1,5 +1,7 @@
 package mariusz.ambroziak.kassistant.utils;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
@@ -18,35 +20,54 @@ public class Converter {
 		" -\\$0020",
 		"ú-\\$015B",
 		"%-\\$0025",
+	 
 		
 		};
-
+	
 	private static String[] ommissions=
 		{
 		")",
 		"(",
 		"+",
 		};
+	private static String[] encodingConverts={
+	 "•-&#260;",
+	 "∆-&#262;",
+	 " -&#280;",
+	 "£-&#321;",
+	 "—-&#323;",
+	 "”-&#211;",
+	 "å-&#346;",
+	 "è-&#377;",
+	 "Ø-&#379;",
+	 "π-&#261;",
+	 "Ê-&#263;",
+	 "Í-&#281;",
+	 "≥-&#322;",
+	 "Ò-&#324;",
+	 "Û-&#243;",
+	 "ú-&#347;",
+	 "ü-&#378;",
+	 "ø-&#380;",
+		};
+	
+	
 
 	public static String auchanConvertion(String input){
 		String result=input;
 		
-		for(String change:converts){
-			String[] split=change.split("-");
-
-			result=result.replaceAll(split[0], split[1]);
-
-		}
-
-		for(String change:ommissions){
-
-			result=result.replaceAll(Pattern.quote(change), "");
-
-		}
 		
-		return result;
 
-	}
+			try {
+				result=URLEncoder.encode(input, StringHolder.ENCODING);
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			return result;
+		}
+
 
 	public static String getOnlyLetters(String text){
 		return text.replaceAll("[^A-Za-zπÊÍ≥ÒÛúüø• £—”åèØ]", "");
@@ -73,5 +94,24 @@ public class Converter {
 			return null;
 		}
 		return str.replaceAll( "'", "''");
+	}
+	
+	
+	
+	public static String temporaryConvertEncoding(String in){
+		if(in==null)
+			return null;
+		
+		String out=in;
+		
+		for(String change:encodingConverts){
+			String[] split=change.split("-");
+
+			out=out.replaceAll(split[1], split[0]);
+
+		}
+		return out;
+		
+		
 	}
 }

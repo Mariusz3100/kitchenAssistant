@@ -110,7 +110,7 @@ public class AuchanWebScrapper extends ImportIoWebScrapper {
 	
 	public  ArrayList<Produkt> lookup(String lookFor) throws UnsupportedEncodingException,
 	IOException, MalformedURLException {
-		String search4=Converter.auchanConvertion(lookFor);
+		String search4=lookFor.replace(" ", "+");
 //		String tempSearch4=search4.replaceAll("\\\\$","\\\\\\\\$");
 		
 	//	Pattern.quote(lookFor);

@@ -45,6 +45,7 @@ import mariusz.ambroziak.kassistant.dao.Base_WordDAOImpl;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
 import mariusz.ambroziak.kassistant.dao.ProduktDAO;
 import mariusz.ambroziak.kassistant.dao.Variant_WordDAOImpl;
+import mariusz.ambroziak.kassistant.exceptions.AgentSystemNotStartedException;
 import mariusz.ambroziak.kassistant.model.Base_Word;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.Recipe;
@@ -73,6 +74,10 @@ public class RecipeAgent extends BaseAgent{
 
 //	DatabaseInterface interfac;
 
+	public void setBusy(boolean busy) {
+		this.busy = busy;
+	}
+	
 	public boolean isBusy() {
 		return busy;
 	}
@@ -141,7 +146,7 @@ public class RecipeAgent extends BaseAgent{
 		super.end();
 	}
 
-	public static ArrayList<SearchResult> parse(String url){
+	public static ArrayList<SearchResult> parse(String url) throws AgentSystemNotStartedException{
 		RecipeAgent freeOne = getFreeAgent();
 		
 		if(freeOne!=null)
@@ -156,12 +161,12 @@ public class RecipeAgent extends BaseAgent{
 	
 	}
 
-	public static List<Produkt> parseProdukt(String searchPhrase){
+	public static List<Produkt> parseProdukt(String searchPhrase) throws AgentSystemNotStartedException{
 		RecipeAgent freeOne = getFreeAgent();
 		if(freeOne!=null)
 		{
 			freeOne.busy=true;
-			List<Produkt> result= freeOne.retrieveSkladnik(searchPhrase);
+			List<Produkt> result= freeOne.findSkladnik(searchPhrase);
 			freeOne.busy=false;
 			return result;
 		}else
@@ -169,7 +174,7 @@ public class RecipeAgent extends BaseAgent{
 	}
 	
 	
-	public static ArrayList<SearchResult> getProdukt(String produktUrl){
+	public static ArrayList<SearchResult> getProdukt(String produktUrl) throws AgentSystemNotStartedException{
 		RecipeAgent freeOne = getFreeAgent();
 		if(freeOne!=null)
 		{
@@ -182,6 +187,21 @@ public class RecipeAgent extends BaseAgent{
 		
 	}
 	
+	public static List<Produkt> searchForProdukt(String searchPhrase,String quantityPhrase) throws AgentSystemNotStartedException{
+		RecipeAgent freeOne = getFreeAgent();
+		if(freeOne==null){
+			return null;
+		}else{
+			freeOne.setBusy(true);
+			List<Produkt> result;
+			try{
+				result= freeOne.parseSkladnik(searchPhrase, quantityPhrase).getProdukts();
+			}finally{
+				freeOne.setBusy(false);
+			}
+			return result;
+		}
+	}
 	
 	private ArrayList<SearchResult> getFromDbOrParseProdukt(String produktUrl) {
 		
@@ -219,11 +239,13 @@ public class RecipeAgent extends BaseAgent{
 	}
 
 
-	private static RecipeAgent getFreeAgent() {
+	private static RecipeAgent getFreeAgent() throws AgentSystemNotStartedException {
 		RecipeAgent freeOne=null;
 		
 		if(agents==null){
 			System.out.println("Agent system not started");
+			throw new AgentSystemNotStartedException();
+
 		}
 		else{
 			while(freeOne==null){
@@ -290,7 +312,7 @@ public class RecipeAgent extends BaseAgent{
 			Document doc = Jsoup.parse(html);
 
 
-			Elements ings=doc.select("[itemprop=\"ingredients\"]");
+			Elements ings=doc.select("[itemprop=\"recipeIngredient\"]");
 
 
 			for(Element e:ings){
@@ -301,18 +323,18 @@ public class RecipeAgent extends BaseAgent{
 				
 				
 				QuantityProdukt produktAndAmount=retrieveProduktAmountData(e);
+//				
+//				 
+//				List<Produkt> potencjalneSkladniki = findSkladnik(produktAndAmount.getProduktPhrase());
 				
-				 
-				List<Produkt> potencjalneSkladniki = retrieveSkladnik(produktAndAmount.getProduktPhrase());
 				
-				
-				retValue.add(new SearchResult(ingredient,produktAndAmount.getProduktPhrase(),produktAndAmount.getAmountType()+"_"+produktAndAmount.getAmount(),
-						potencjalneSkladniki));
+				SearchResult sr = parseSkladnik(produktAndAmount.getProduktPhrase(), produktAndAmount);
+				retValue.add(sr);
 				
 				htmlLog("\n"+ingredient+"->\n");
 				
-				if(potencjalneSkladniki!=null&&potencjalneSkladniki.size()>0)
-					for(Produkt p:potencjalneSkladniki){
+				if(sr.getProdukts()!=null&&sr.getProdukts().size()>0)
+					for(Produkt p:sr.getProdukts()){
 						htmlLog(p.getUrl()+"\n");
 					}
 				else
@@ -332,18 +354,66 @@ public class RecipeAgent extends BaseAgent{
 		return retValue;
 	}
 
+	@Deprecated
+	public SearchResult parseSkladnik(String extendedSearchPhrase){
+		
+		if(extendedSearchPhrase==null||extendedSearchPhrase.equals("")){
+			return null;
+		}else{
+			if(extendedSearchPhrase.contains(StringHolder.SQPhrasesDivider+StringHolder.SQPhrasesDivider))
+				extendedSearchPhrase=extendedSearchPhrase.replaceAll(StringHolder.SQPhrasesDivider+StringHolder.SQPhrasesDivider,
+						StringHolder.SQPhrasesDivider);
+			
+			
+			String searchPhrase=null,quanPhrase=null;
+			
+			
+			String[] splitted=extendedSearchPhrase.split(StringHolder.SQPhrasesDivider);
+				
+			searchPhrase=splitted[0];
+			if(splitted.length>1){
+				quanPhrase=splitted[1];
+			}
+			
+			
+			QuantityProdukt qp=retrieveProduktAmountData(searchPhrase,quanPhrase);
+			
+			
+			return parseSkladnik(extendedSearchPhrase, qp);
+		}
+		
 
+		
+		
+	}
+
+	public SearchResult parseSkladnik(String searchPhrase, String  quanPhrase) {
+		QuantityProdukt qp=retrieveProduktAmountData(searchPhrase,quanPhrase);
+
+		List<Produkt> potencjalneSkladniki = findSkladnik(qp.getProduktPhrase());
+		return new SearchResult(searchPhrase,qp.getProduktPhrase(),qp.getQuantityPhrase(),potencjalneSkladniki);
+	}
+	
+	public SearchResult parseSkladnik(String searchPhrase, QuantityProdukt qp) {
+		List<Produkt> potencjalneSkladniki = findSkladnik(qp.getProduktPhrase());
+		return new SearchResult(searchPhrase,qp.getProduktPhrase(),qp.getQuantityPhrase(),potencjalneSkladniki);
+	}
+	
+	
 	private QuantityProdukt retrieveProduktAmountData(Element e) {
-		// TODO Auto-generated method stub
 		String ingredient = e.text();
 		String quan =extractQuantity(e);
-		
 
 		QuantityProdukt retValue = SkladnikiExtractor.extract(ingredient, quan);
 		return retValue;
 	}
 
+	private QuantityProdukt retrieveProduktAmountData(String ingredientPhrase, String quantityPhrase) {
 
+		QuantityProdukt retValue = SkladnikiExtractor.extract(ingredientPhrase, quantityPhrase);
+		return retValue;
+	}
+	
 	private String extractQuantity(Element e) {
 		
 		String quantity=e.parent().select(".quantity").text();
@@ -362,7 +432,7 @@ public class RecipeAgent extends BaseAgent{
 	}
 
 
-	private List<Produkt> retrieveSkladnik(String text) {
+	private List<Produkt> findSkladnik(String text) {
 		List<Produkt> results;
 		ArrayList<String> baseWords = null;
 		
