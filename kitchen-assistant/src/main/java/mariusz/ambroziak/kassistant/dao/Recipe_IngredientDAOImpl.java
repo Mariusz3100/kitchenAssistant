@@ -64,28 +64,6 @@ public class Recipe_IngredientDAOImpl implements Recipe_IngredientDAO {
 		
 	}
 
-//	@Override
-//	public void addIngredientAndAmount(Recipe_Ingredient ri, String amountType) {
-//		@SuppressWarnings("unused")
-//		List<Amount_Type> amounts = (List<Amount_Type>) sessionFactory.getCurrentSession()
-//				.createCriteria(Amount_Type.class)
-//				.add(Restrictions.eq("nazwa", amountType))
-//				.list();
-//		
-//		if(amounts.size()==0||amounts.size()>1)
-//			throw new  DataIntegrityViolationException(
-//					"In the table Amount_Type there is more than one recipe for name: "+amountType);
-//		else{
-//			
-//		}
-//	}
 
-
-	
-	
-
-
-
-	
 
 }

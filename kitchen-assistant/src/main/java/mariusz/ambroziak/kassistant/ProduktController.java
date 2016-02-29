@@ -21,10 +21,11 @@ import mariusz.ambroziak.kassistant.exceptions.ShopNotFoundException;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.User;
 import mariusz.ambroziak.kassistant.model.jsp.SearchResult;
-import mariusz.ambroziak.kassistant.model.utils.NutritionalValueQuantity;
-import mariusz.ambroziak.kassistant.model.utils.NutritionalValueType;
+import mariusz.ambroziak.kassistant.model.utils.BasicIngredientQuantity;
+import mariusz.ambroziak.kassistant.model.utils.CompoundIngredientQuantity;
 import mariusz.ambroziak.kassistant.model.utils.ProduktIngredientQuantity;
-import mariusz.ambroziak.kassistant.model.utils.ProduktWithIngredients;
+import mariusz.ambroziak.kassistant.model.utils.ProduktWithAllIngredients;
+import mariusz.ambroziak.kassistant.model.utils.ProduktWithBasicIngredients;
 import mariusz.ambroziak.kassistant.utils.JspStringHolder;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,19 +101,16 @@ public class ProduktController {
 		{
 			if(type.equals("NV")){
 				try {
-					ProduktWithIngredients basics = AuchanRecipeParser.getBasics(url);
+					ProduktWithBasicIngredients basics = AuchanRecipeParser.getBasics(url);
 					
 					ArrayList<String> list=new ArrayList<String>();
 					list.add(basics.getProdukt().getNazwa()+" - "+basics.getProdukt().getUrl());
 					
-					for(NutritionalValueQuantity piq:basics.getBasicsFor100g())
+					for(BasicIngredientQuantity bpi:basics.getBasicsFor100g())
 					{
-						String opis=piq.getType().getName()+": "+piq.getAmount();
+						String opis=bpi.getName()+": "+bpi.getAmount()+" "+bpi.getAmountType();
 						
-						if(piq.getType().equals(NutritionalValueType.Energia))
-							opis+=" kalorii";
-						else
-							opis+=" g";
+
 							
 						list.add(opis);
 					}
@@ -129,38 +127,22 @@ public class ProduktController {
 				}
 			}else if(type.equals("Full")){
 				try {
-					ProduktWithIngredients ingredients = AuchanRecipeParser.getAllIngredients(url);
+					ProduktWithAllIngredients ingredients = AuchanRecipeParser.getAllIngredients(url);
 					
 					ArrayList<String> list=new ArrayList<String>();
 					list.add(ingredients.getProdukt().getNazwa()+" - "+ingredients.getProdukt().getUrl());
 					
-					for(NutritionalValueQuantity piq:ingredients.getBasicsFor100g())
+					for(BasicIngredientQuantity piq:ingredients.getBasicsFor100g())
 					{
-						String opis=piq.getType().getName()+": "+piq.getAmount();
-						
-						if(piq.getType().equals(NutritionalValueType.Energia))
-							opis+=" kalorii";
-						else
-							opis+=" g";
-							
+						String opis=piq.getAmountType().getType()+": "+piq.getAmount();
 						list.add(opis);
 					}
 
 					
-					for(Entry<ProduktIngredientQuantity, ArrayList<ProduktIngredientQuantity>> piq
-							:ingredients.getParsedIngredients().entrySet())
-					{
-						
-						String opis=piq.getType().getName()+": "+piq.getAmount();
-						
-						if(piq.getType().equals(NutritionalValueType.Energia))
-							opis+=" kalorii";
-						else
-							opis+=" g";
-							
-						list.add(opis);
-					}
 					
+					String allIngredients=ingredients.getProduktAsIngredient()==null?"BRAK INFORMACJI":ingredients.getProduktAsIngredient().toString();
+					
+					list.add("All ingredients:<br>"+allIngredients);
 					
 					ModelAndView mav=new ModelAndView("List");
 					
@@ -178,5 +160,11 @@ public class ProduktController {
 		}
 		
 	}
+
+
+		
+		
+		
+	
 	
 }

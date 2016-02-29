@@ -3,7 +3,7 @@ package mariusz.ambroziak.kassistant;
 import java.util.ArrayList;
 import java.util.List;
 
-import mariusz.ambroziak.kassistant.dao.Amount_TypeDAO;
+import mariusz.ambroziak.kassistant.QuantityExtractor.AmountTypes;
 import mariusz.ambroziak.kassistant.dao.Base_WordDAO;
 import mariusz.ambroziak.kassistant.dao.ProduktDAO;
 import mariusz.ambroziak.kassistant.dao.RecipeDAO;
@@ -15,7 +15,6 @@ import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.Recipe;
 import mariusz.ambroziak.kassistant.model.User;
 import mariusz.ambroziak.kassistant.model.Variant_Word;
-import mariusz.ambroziak.kassistant.utils.AmountTypes;
 
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,8 +44,6 @@ public class HomeController {
 	@Autowired
 	private Base_WordDAO base_wordDao;
 
-	@Autowired
-	private Amount_TypeDAO amountTypeDao;
 
 	@ResponseBody
 	@RequestMapping(value="/")
@@ -140,34 +137,34 @@ public class HomeController {
 		return model;
 	}
 
-	@ResponseBody
-	@RequestMapping(value="/integrity")
-	public String databaseIntegrity(){
-		String response="<h3>System amount types:</h3><BR>";
-
-		AmountTypes[] values = AmountTypes.values();
-		if(values==null||values.length==0)
-		{
-			response+="nothing found";
-		}else{
-			for(AmountTypes at:values){
-				response+=at+" ";
-			}
-		}
-		response+="<BR><h3>Database amount types:</h3><BR>";
-
-		List<Amount_Type> listTypes = amountTypeDao.list();
-		if(listTypes==null||listTypes.size()==0)
-		{
-			response+="nothing found";
-		}else{
-			for(Amount_Type at:listTypes){
-				response+=at.getNazwa()+" ";
-			}
-		}
-
-		return response;
-	}
+//	@ResponseBody
+//	@RequestMapping(value="/integrity")
+//	public String databaseIntegrity(){
+//		String response="<h3>System amount types:</h3><BR>";
+//
+//		AmountTypes[] values = AmountTypes.values();
+//		if(values==null||values.length==0)
+//		{
+//			response+="nothing found";
+//		}else{
+//			for(AmountTypes at:values){
+//				response+=at+" ";
+//			}
+//		}
+//		response+="<BR><h3>Database amount types:</h3><BR>";
+//
+//		List<Amount_Type> listTypes = amountTypeDao.list();
+//		if(listTypes==null||listTypes.size()==0)
+//		{
+//			response+="nothing found";
+//		}else{
+//			for(Amount_Type at:listTypes){
+//				response+=at.getNazwa()+" ";
+//			}
+//		}
+//
+//		return response;
+//	}
 
 
 	//	@RequestMapping(value="/produkts1")

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import mariusz.ambroziak.kassistant.utils.AmountTypes;
+import mariusz.ambroziak.kassistant.QuantityExtractor.AmountTypes;
 
 public class AbstractQuantityExtracter {
 	

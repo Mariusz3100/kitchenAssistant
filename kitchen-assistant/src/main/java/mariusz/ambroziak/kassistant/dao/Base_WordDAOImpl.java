@@ -79,11 +79,7 @@ public class Base_WordDAOImpl implements Base_WordDAO {
 		
 	}
 
-	@Override
-	@Transactional
-	public void initializeVariantWords(Base_Word bw) {
-		Hibernate.initialize(bw.getVariantWords());		
-	}
+
 
 
 }

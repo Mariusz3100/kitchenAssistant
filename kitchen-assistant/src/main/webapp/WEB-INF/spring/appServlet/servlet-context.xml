@@ -51,13 +51,26 @@
 
 	</bean>
 
-	<bean id="amountTypeDao" class="mariusz.ambroziak.kassistant.dao.Amount_TypeDAOImpl">
+	<bean id="Basic_Ingredient_NameDAO" class="mariusz.ambroziak.kassistant.dao.Basic_Ingredient_NameDAOImpl">
 		<constructor-arg>
 			<ref bean="sessionFactory" />
 		</constructor-arg>
 
 	</bean>
+	
+	<bean id="basic_ingredientDAO" class="mariusz.ambroziak.kassistant.dao.Basic_IngredientDAOImpl">
+		<constructor-arg>
+			<ref bean="sessionFactory" />
+		</constructor-arg>
 
+	</bean>
+	
+	<bean id="basic_ingredientNameDAO" class="mariusz.ambroziak.kassistant.dao.Basic_Ingredient_NameDAOImpl">
+		<constructor-arg>
+			<ref bean="sessionFactory" />
+		</constructor-arg>
+
+	</bean>
 
 	<bean id="variant_wordDao" class="mariusz.ambroziak.kassistant.dao.Variant_WordDAOImpl">
 		<constructor-arg>
@@ -103,6 +116,14 @@
 
 		<constructor-arg>
 			<ref bean="recipeDao" />
+		</constructor-arg>
+		
+		<constructor-arg>
+			<ref bean="basic_ingredientDAO" />
+		</constructor-arg>
+		
+		<constructor-arg>
+			<ref bean="basic_ingredientNameDAO" />
 		</constructor-arg>
 
 	</bean>

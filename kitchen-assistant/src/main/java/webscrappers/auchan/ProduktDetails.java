@@ -1,5 +1,6 @@
 package webscrappers.auchan;
 
+import mariusz.ambroziak.kassistant.model.utils.PreciseQuantity;
 import mariusz.ambroziak.kassistant.model.utils.QuantityProdukt;
 
 public class ProduktDetails {
@@ -9,13 +10,13 @@ public class ProduktDetails {
 
 	private String opis;
 	
-	private QuantityProdukt amount;
+	private PreciseQuantity amount;
 	
 	
-	public QuantityProdukt getAmount() {
+	public PreciseQuantity getAmount() {
 		return amount;
 	}
-	public void setAmount(QuantityProdukt amount) {
+	public void setAmount(PreciseQuantity amount) {
 		this.amount = amount;
 	}
 	public String getUrl() {

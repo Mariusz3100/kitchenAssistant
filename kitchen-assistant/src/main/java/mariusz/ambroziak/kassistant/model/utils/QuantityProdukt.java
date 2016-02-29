@@ -1,11 +1,10 @@
 package mariusz.ambroziak.kassistant.model.utils;
 
-import mariusz.ambroziak.kassistant.utils.AmountTypes;
+import mariusz.ambroziak.kassistant.QuantityExtractor.AmountTypes;
 
 public class QuantityProdukt {
 	private String produktPhrase;
-	private AmountTypes amountType;
-	private float amount;
+	private PreciseQuantity quan;
 
 	public String getProduktPhrase() {
 		return produktPhrase;
@@ -14,16 +13,20 @@ public class QuantityProdukt {
 		this.produktPhrase = produktName;
 	}
 	public AmountTypes getAmountType() {
-		return amountType;
+		return quan.type;
 	}
 	public void setAmountType(AmountTypes amountType) {
-		this.amountType = amountType;
+		if(quan==null)
+			quan=new PreciseQuantity();
+		this.quan.type = amountType;
 	}
 	public float getAmount() {
-		return amount;
+		return quan.getAmount();
 	}
 	public void setAmount(float amount) {
-		this.amount = amount;
+		if(quan==null)
+			quan=new PreciseQuantity();
+		this.quan.setAmount(amount);
 	}
 	
 	public String getQuantityPhrase() {

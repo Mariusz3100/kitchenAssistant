@@ -14,5 +14,9 @@
 		<mapping class="mariusz.ambroziak.kassistant.model.Recipe_Ingredient" />
 		<mapping class="mariusz.ambroziak.kassistant.model.Recipe" />
 		<mapping class="mariusz.ambroziak.kassistant.model.Problem" />
+		<mapping class="mariusz.ambroziak.kassistant.model.Basic_Ingredient" />
+		<mapping class="mariusz.ambroziak.kassistant.model.Basic_Ingredient_Name" />
+	
+		
 	</session-factory>
 </hibernate-configuration>

@@ -9,32 +9,33 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = "nazwa"))
-public class Produkt_Ingredient {
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = "name"))
+public class Basic_Ingredient {
 
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long pi_id;
+	private Long bi_id;
 
 	@NotNull
-	private String nazwa;
+	private String name;
 
-	public Long getPi_id() {
-		return pi_id;
+	public String getName() {
+		return name;
 	}
 
-	public void setPi_id(Long pi_id) {
-		this.pi_id = pi_id;
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	public String getNazwa() {
-		return nazwa;
+	public Long getBi_id() {
+		return bi_id;
 	}
 
-	public void setNazwa(String nazwa) {
-		this.nazwa = nazwa;
+	public void setBi_id(Long pi_id) {
+		this.bi_id = pi_id;
 	}
-	
+
+
 	
 }

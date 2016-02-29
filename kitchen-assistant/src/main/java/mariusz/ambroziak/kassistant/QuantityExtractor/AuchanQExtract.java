@@ -13,8 +13,9 @@ import webscrappers.przepisy.AbstractQuantityExtracter;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
 import mariusz.ambroziak.kassistant.model.Base_Word;
 import mariusz.ambroziak.kassistant.model.Recipe_Ingredient;
+import mariusz.ambroziak.kassistant.model.utils.AbstractQuantity;
+import mariusz.ambroziak.kassistant.model.utils.PreciseQuantity;
 import mariusz.ambroziak.kassistant.model.utils.QuantityProdukt;
-import mariusz.ambroziak.kassistant.utils.AmountTypes;
 import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 
 public class AuchanQExtract extends AbstractQuantityExtracter{
@@ -22,13 +23,13 @@ public class AuchanQExtract extends AbstractQuantityExtracter{
 	
 
 	
-	public static QuantityProdukt extractQuantity(String text){
-		QuantityProdukt retValue=new QuantityProdukt();
+	public static PreciseQuantity extractQuantity(String text){
+		PreciseQuantity retValue=new PreciseQuantity();
 		
 		if(text==null||text.equals(""))
 		{
 			retValue.setAmount(-1);
-			retValue.setAmountType(AmountTypes.szt);
+			retValue.setType(AmountTypes.szt);
 			return retValue;
 		}
 		
@@ -40,7 +41,7 @@ public class AuchanQExtract extends AbstractQuantityExtracter{
 			String[] elems=text.split("x");
 			
 			Float multiplier=getFloat(elems);
-			QuantityProdukt extractedQuantity = extractQuantity(elems[1]);
+			PreciseQuantity extractedQuantity = extractQuantity(elems[1]);
 			extractedQuantity.setAmount(extractedQuantity.getAmount()*multiplier);
 			
 			return extractedQuantity;
@@ -69,11 +70,11 @@ public class AuchanQExtract extends AbstractQuantityExtracter{
 			retValue.setAmount(parsedFloat);
 			for(AmountTypes at:AmountTypes.values()){
 				if(at.getType().equals(elems[1])){
-					retValue.setAmountType(at);
+					retValue.setType(at);
 				}
 			}
 			
-			if(retValue.getAmountType()==null){
+			if(retValue.getType()==null){
 				QuantityTranslation quantityTranslation = translations.get(elems[1].toLowerCase());
 				
 				if(quantityTranslation==null){
@@ -101,12 +102,12 @@ public class AuchanQExtract extends AbstractQuantityExtracter{
 				if(quantityTranslation==null)
 				{
 					retValue.setAmount(-1);
-					retValue.setAmountType(AmountTypes.szt);
+					retValue.setType(AmountTypes.szt);
 					
 					ProblemLogger.logProblem("Nieznana miara "+elems[1]);
 					return retValue;
 				}else{
-					retValue.setAmountType(quantityTranslation.getTargetAmountType());
+					retValue.setType(quantityTranslation.getTargetAmountType());
 					retValue.setAmount(retValue.getAmount()*quantityTranslation.getMultiplier());
 				}
 			}
@@ -141,10 +142,10 @@ public class AuchanQExtract extends AbstractQuantityExtracter{
 
 	
 	
-	public static QuantityProdukt retrieveProduktAmountData(Element e) {
+	public static AbstractQuantity retrieveProduktAmountData(Element e) {
 		// TODO Auto-generated method stub
 		String ingredient = e.text();
-		QuantityProdukt retValue =null;
+		AbstractQuantity retValue =null;
 		
 		if(ingredient.indexOf('(')>0&&ingredient.indexOf(')')>0){
 			String attemptedQ=

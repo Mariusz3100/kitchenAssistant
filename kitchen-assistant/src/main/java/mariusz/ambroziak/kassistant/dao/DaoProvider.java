@@ -15,7 +15,14 @@ public class DaoProvider {
 
 	private ProblemDAO problemDao;
 
-	
+	private Basic_IngredientDAO basicIngredientDao;
+
+	private Basic_Ingredient_NameDAO basicIngredientNameDao;
+
+	public Basic_IngredientDAO getBasicIngredientDao() {
+		return basicIngredientDao;
+	}
+
 	public Base_WordDAO getBaseWordDao() {
 		return baseWordDao;
 	}
@@ -32,7 +39,10 @@ public class DaoProvider {
 		return produktDao;
 	}
 
-	public DaoProvider(Base_WordDAO baseWordDao,UserDAO userDao, ProduktDAO produktDao,Variant_WordDAO variantWordDao,RecipeDAO recipeDao,ProblemDAO problemDao) {
+	public DaoProvider(Base_WordDAO baseWordDao,UserDAO userDao, ProduktDAO produktDao,
+			Variant_WordDAO variantWordDao,RecipeDAO recipeDao,ProblemDAO problemDao,
+			Basic_IngredientDAO basicIngredientDao, Basic_Ingredient_NameDAO basicIngredientNameDao)
+	{
 		super();
 		this.problemDao=problemDao;
 		this.userDao = userDao;
@@ -40,8 +50,9 @@ public class DaoProvider {
 		this.variantWordDao=variantWordDao;
 		this.baseWordDao=baseWordDao;
 		this.recipeDao=recipeDao;
-		
-		
+		this.basicIngredientDao=basicIngredientDao;
+		this.basicIngredientNameDao=basicIngredientNameDao;
+
 		if(singleton==null)
 			singleton=this;
 		else
@@ -56,6 +67,10 @@ public class DaoProvider {
 		return singleton;
 	}
 	
+	public Basic_Ingredient_NameDAO getBasicIngredientNameDao() {
+		return basicIngredientNameDao;
+	}
+
 	public ProblemDAO getProblemDao() {
 		return problemDao;
 	}
