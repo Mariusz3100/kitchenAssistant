@@ -13,7 +13,7 @@ CREATE TABLE Basic_Ingredient_Health_Relevance
   bi_id integer not null,
   coeficient real,
   
-  CONSTRAINT Basic_Ingredient_Health_Relevance PRIMARY KEY (bihr_id)
+  CONSTRAINT Basic_Ingredient_Health_Relevance_pk PRIMARY KEY (bihr_id)
 );
 
 ALTER TABLE Basic_Ingredient_Health_Relevance ADD CONSTRAINT Basic_Ingredient_Health_Relevance_hr

@@ -27,11 +27,11 @@ insert into Health_Relevant_Ingredient (hr_id,name) VALUES (7,'błonnik');
 insert into Health_Relevant_Ingredient (hr_id,name) VALUES (8,'sód');
 
 
-insert into Health_Relevant_Ingredient (bihr_id,hr_id,bi_id) VALUES (1,1,1);
-insert into Health_Relevant_Ingredient (bihr_id,hr_id,bi_id) VALUES (2,2,2);
-insert into Health_Relevant_Ingredient (bihr_id,hr_id,bi_id) VALUES (3,3,3);
-insert into Health_Relevant_Ingredient (bihr_id,hr_id,bi_id) VALUES (4,4,4);
-insert into Health_Relevant_Ingredient (bihr_id,hr_id,bi_id) VALUES (5,5,5);
-insert into Health_Relevant_Ingredient (bihr_id,hr_id,bi_id) VALUES (6,6,6);
-insert into Health_Relevant_Ingredient (bihr_id,hr_id,bi_id) VALUES (7,7,7);
-insert into Health_Relevant_Ingredient (bihr_id,hr_id,bi_id) VALUES (8,8,8);
+insert into Basic_Ingredient_Health_Relevance (bihr_id,hr_id,bi_id) VALUES (1,1,1);
+insert into Basic_Ingredient_Health_Relevance (bihr_id,hr_id,bi_id) VALUES (2,2,2);
+insert into Basic_Ingredient_Health_Relevance (bihr_id,hr_id,bi_id) VALUES (3,3,3);
+insert into Basic_Ingredient_Health_Relevance (bihr_id,hr_id,bi_id) VALUES (4,4,4);
+insert into Basic_Ingredient_Health_Relevance (bihr_id,hr_id,bi_id) VALUES (5,5,5);
+insert into Basic_Ingredient_Health_Relevance (bihr_id,hr_id,bi_id) VALUES (6,6,6);
+insert into Basic_Ingredient_Health_Relevance (bihr_id,hr_id,bi_id) VALUES (7,7,7);
+insert into Basic_Ingredient_Health_Relevance (bihr_id,hr_id,bi_id) VALUES (8,8,8);
