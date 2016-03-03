@@ -20,4 +20,9 @@ public class NotPreciseQuantity extends AbstractQuantity {
 		this.maximalAmount = maximalAmount;
 	}
 	
+	
+	public String toString(){
+		return minimalAmount+" - "+maximalAmount+" "+type;
+	}
+	
 }

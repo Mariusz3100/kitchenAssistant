@@ -13,10 +13,12 @@ import mariusz.ambroziak.kassistant.dao.Base_WordDAOImpl;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
 import mariusz.ambroziak.kassistant.dao.ProduktDAO;
 import mariusz.ambroziak.kassistant.exceptions.AgentSystemNotStartedException;
+import mariusz.ambroziak.kassistant.exceptions.Page404Exception;
 import mariusz.ambroziak.kassistant.exceptions.ShopNotFoundException;
 import mariusz.ambroziak.kassistant.model.Base_Word;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.utils.ProduktIngredientQuantity;
+import mariusz.ambroziak.kassistant.model.utils.ProduktWithAllIngredients;
 import mariusz.ambroziak.kassistant.model.utils.QuantityProdukt;
 import mariusz.ambroziak.kassistant.shops.ShopRecognizer;
 import mariusz.ambroziak.kassistant.utils.MessageTypes;
@@ -41,8 +43,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 
 
+
+
+
 import webscrappers.SJPWebScrapper;
 import webscrappers.auchan.AuchanAbstractScrapper;
+import webscrappers.auchan.AuchanRecipeParser;
 import webscrappers.przepisy.PrzepisyPLQExtract;
 
 public class ReadingAgent extends BaseAgent{
@@ -144,14 +150,14 @@ public class ReadingAgent extends BaseAgent{
 	}
 
 
-	public static List<ProduktIngredientQuantity> parseProdukt(String produktUrl)
-			throws AgentSystemNotStartedException, ShopNotFoundException{
+	public static ProduktWithAllIngredients parseSklad(String produktUrl)
+			throws AgentSystemNotStartedException, ShopNotFoundException, Page404Exception{
 		ReadingAgent freeOne = getFreeAgent();
 		if(freeOne==null){
 			return null;
 		}else{
 			freeOne.setBusy(true);
-			List<ProduktIngredientQuantity> result;
+			ProduktWithAllIngredients result;
 			try{
 				result= freeOne.getOrParseFoodIngredients(produktUrl);
 			}finally{
@@ -165,24 +171,26 @@ public class ReadingAgent extends BaseAgent{
 
 
 
-	private List<ProduktIngredientQuantity> getOrParseFoodIngredients(
-			String produktUrl) throws ShopNotFoundException, AgentSystemNotStartedException {
+	private ProduktWithAllIngredients getOrParseFoodIngredients(
+			String produktUrl) throws ShopNotFoundException, AgentSystemNotStartedException, Page404Exception {
 		
 		Produkt produkt = DaoProvider.getInstance().getProduktDao().getProduktsByURL(produktUrl);
 		
 		if(produkt==null){
-			produkt=scrapProdukt(produktUrl);
+			
 			
 		}
 		
-		if(produkt.isPrzetworzony()){
-			//TODO retrieve from DB 
-		}else{
-			
-		}
+		ProduktWithAllIngredients produktWithIngredinets = AuchanRecipeParser.getAllIngredients(produktUrl);
+		
+//		if(produkt.isPrzetworzony()){
+//			//TODO retrieve from DB 
+//		}else{
+//			
+//		}
 		
 		
-		return null;
+		return produktWithIngredinets;
 	}
 
 	private Produkt scrapProdukt(String produktUrl) {

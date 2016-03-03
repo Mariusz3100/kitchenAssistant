@@ -19,4 +19,9 @@ public class PreciseQuantity extends AbstractQuantity {
 	public void setAmount(float amount) {
 		this.amount = amount;
 	}
+	
+	
+	public String toString(){
+		return amount+" "+type;
+	}
 }

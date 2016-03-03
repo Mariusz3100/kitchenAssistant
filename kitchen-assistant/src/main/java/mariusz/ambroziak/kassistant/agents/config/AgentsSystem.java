@@ -22,8 +22,8 @@ public class AgentsSystem {
 				"mariusz.ambroziak.kassistant.agents.ClockAgent,false,1;",
 //				"agents.TestAgent,true,1;",
 				"mariusz.ambroziak.kassistant.agents.ShopsListAgent,false,1;",
-				"mariusz.ambroziak.kassistant.agents.ProduktAgent,false,1;"
-				
+				"mariusz.ambroziak.kassistant.agents.ProduktAgent,false,1;",
+				"mariusz.ambroziak.kassistant.agents.ReadingAgent,false,1;"
 				);
 		
 		

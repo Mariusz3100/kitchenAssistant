@@ -8,6 +8,11 @@ public class BasicIngredientQuantity implements ProduktIngredientQuantity{
 	private AbstractQuantity quan;
 	
 	
+	public BasicIngredientQuantity(Basic_Ingredient bi, AbstractQuantity quan) {
+		super();
+		this.bi = bi;
+		this.quan = quan;
+	}
 	public BasicIngredientQuantity(Basic_Ingredient bi, float amount,
 			AmountTypes amountType) {
 		super();

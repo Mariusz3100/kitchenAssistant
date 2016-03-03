@@ -7,12 +7,14 @@ import mariusz.ambroziak.kassistant.QuantityExtractor.AmountTypes;
 public class CompoundIngredientQuantity implements ProduktIngredientQuantity{
 
 	private String name;
-	private PreciseQuantity quan;
+	private AbstractQuantity quan;
+	
+	
 	public AbstractQuantity getQuan() {
 		return quan;
 	}
 
-	public void setQuan(PreciseQuantity quan) {
+	public void setQuan(AbstractQuantity quan) {
 		this.quan = quan;
 	}
 
@@ -34,7 +36,7 @@ public class CompoundIngredientQuantity implements ProduktIngredientQuantity{
 		return basicIngredients;
 	}
 
-	public CompoundIngredientQuantity(String name, PreciseQuantity quan,
+	public CompoundIngredientQuantity(String name, AbstractQuantity quan,
 			ArrayList<CompoundIngredientQuantity> compoundIngredients,
 			ArrayList<BasicIngredientQuantity> basicIngredients) {
 		super();
@@ -57,10 +59,10 @@ public class CompoundIngredientQuantity implements ProduktIngredientQuantity{
 
 	@Override
 	public String toString(){
-		String retValue=getName()+" : "+getAmount()+getAmountType()+"->[";
+		String retValue=getName()+" : "+getAmount()+"->[";
 		
 		for(BasicIngredientQuantity biq:basicIngredients){
-			retValue+="<"+biq.getName()+" : "+biq.getAmount()+biq.getAmountType()+">, ";
+			retValue+="{"+biq.getName()+" : "+biq.getAmount()+"}, ";
 		}
 		retValue+="]";
 		

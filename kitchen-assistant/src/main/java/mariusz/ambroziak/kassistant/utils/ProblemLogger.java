@@ -7,7 +7,7 @@ public class ProblemLogger {
 	public static final int singleMessageLength = 90;
 	
 	public static void logProblem(String message){
-		
+		System.err.println(message);
 		if(message.length()<singleMessageLength){
 			Problem p=new Problem(0l,true, message,false);
 			DaoProvider.getInstance().getProblemDao().addProblem(p);

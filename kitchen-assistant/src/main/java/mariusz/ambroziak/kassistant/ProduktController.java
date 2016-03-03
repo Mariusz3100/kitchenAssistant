@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import madkit.kernel.Madkit;
 import mariusz.ambroziak.kassistant.agents.ClockAgent;
 import mariusz.ambroziak.kassistant.agents.ProduktAgent;
+import mariusz.ambroziak.kassistant.agents.ReadingAgent;
 import mariusz.ambroziak.kassistant.agents.RecipeAgent;
 import mariusz.ambroziak.kassistant.agents.config.AgentsSystem;
 import mariusz.ambroziak.kassistant.dao.ProduktDAO;
@@ -108,7 +109,7 @@ public class ProduktController {
 					
 					for(BasicIngredientQuantity bpi:basics.getBasicsFor100g())
 					{
-						String opis=bpi.getName()+": "+bpi.getAmount()+" "+bpi.getAmountType();
+						String opis=bpi.getName()+": "+bpi.getAmount();
 						
 
 							
@@ -127,7 +128,7 @@ public class ProduktController {
 				}
 			}else if(type.equals("Full")){
 				try {
-					ProduktWithAllIngredients ingredients = AuchanRecipeParser.getAllIngredients(url);
+					ProduktWithAllIngredients ingredients = ReadingAgent.parseSklad(url);
 					
 					ArrayList<String> list=new ArrayList<String>();
 					list.add(ingredients.getProdukt().getNazwa()+" - "+ingredients.getProdukt().getUrl());
@@ -153,6 +154,16 @@ public class ProduktController {
 				} catch (Page404Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+				} catch (AgentSystemNotStartedException e) {
+					return new ModelAndView("agentSystemNotStarted");
+				} catch (ShopNotFoundException e) {
+					ModelAndView mav=new ModelAndView("List");
+					ArrayList<String> list=new ArrayList<String>();
+					
+					list.add("Url "+url+" nie zosta³ dopasowany do ¿adnego ze sklepów");
+					mav.addObject("list", list);
+					
+					return mav;
 				}
 			}
 			
