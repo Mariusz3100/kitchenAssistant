@@ -26,7 +26,7 @@ import mariusz.ambroziak.kassistant.utils.StringHolder;
 public abstract class AuchanAbstractScrapper{
 
 //	public static final String singleCharAtTheEndOfEveryUrl="A";
-	public static final String UrlPattern = "\\Qhttp://www.auchandirect.pl\\E.*\\/p-[0-9]+";
+	public static final String UrlPattern = "\\Qhttp://www.auchandirect.pl\\E.*\\/p-[0-9]+(\\?.*)?";
 	public static final String UrlPatternP_codePattern = "/p-[0-9]+";
 	public static final String urlStart = "http://www.auchandirect.pl";
 
