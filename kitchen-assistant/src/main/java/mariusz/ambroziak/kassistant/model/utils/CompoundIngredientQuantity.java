@@ -8,8 +8,17 @@ public class CompoundIngredientQuantity implements ProduktIngredientQuantity{
 
 	private String name;
 	private AbstractQuantity quan;
+	private ArrayList<CompoundIngredientQuantity> compoundIngredients;
+	
+	private ArrayList<BasicIngredientQuantity> basicIngredients;
+	
+	private ArrayList<BasicIngredientQuantity> allBasicIngredients;
 	
 	
+	public ArrayList<BasicIngredientQuantity> getAllBasicIngredients() {
+		return allBasicIngredients;
+	}
+
 	public AbstractQuantity getQuan() {
 		return quan;
 	}
@@ -18,9 +27,7 @@ public class CompoundIngredientQuantity implements ProduktIngredientQuantity{
 		this.quan = quan;
 	}
 
-	private ArrayList<CompoundIngredientQuantity> compoundIngredients;
-	
-	private ArrayList<BasicIngredientQuantity> basicIngredients;
+
 
 
 
@@ -44,6 +51,14 @@ public class CompoundIngredientQuantity implements ProduktIngredientQuantity{
 		this.quan = quan;
 		this.compoundIngredients = compoundIngredients;
 		this.basicIngredients = basicIngredients;
+		
+		this.allBasicIngredients=new ArrayList<BasicIngredientQuantity>();
+		
+		allBasicIngredients.addAll(basicIngredients);
+		
+		for(CompoundIngredientQuantity ciq:compoundIngredients){
+			allBasicIngredients.addAll(ciq.getAllBasicIngredients());
+		}
 	}
 
 	@Override

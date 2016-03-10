@@ -133,17 +133,28 @@ public class ProduktController {
 					ArrayList<String> list=new ArrayList<String>();
 					list.add(ingredients.getProdukt().getNazwa()+" - "+ingredients.getProdukt().getUrl());
 					
-					for(BasicIngredientQuantity piq:ingredients.getBasicsFor100g())
-					{
-						String opis=piq.getAmountType().getType()+": "+piq.getAmount();
-						list.add(opis);
-					}
-
-					
-					
 					String allIngredients=ingredients.getProduktAsIngredient()==null?"BRAK INFORMACJI":ingredients.getProduktAsIngredient().toString();
 					
 					list.add("All ingredients:<br>"+allIngredients);
+					
+					list.add("Label simple ingredients:");
+
+					for(BasicIngredientQuantity piq:ingredients.getBasicsFor100g())
+					{
+						String opis=piq.getName()+": "+piq.getAmount();
+						list.add(opis);
+					}
+
+					list.add("<br>All simple ingredients:");
+
+					for(BasicIngredientQuantity piq:ingredients.getProduktAsIngredient().getAllBasicIngredients())
+					{
+						String opis=piq.getName()+": "+piq.getAmount();
+						list.add(opis);
+					}
+					
+					
+					
 					
 					ModelAndView mav=new ModelAndView("List");
 					

@@ -18,9 +18,7 @@
 	        	<th>skład</th>
 	        	<th>opis</th>
 	        	<th>cena</th>
-	        	<th>przetworzony</th>
-	        	<th>częściowo przetworzony</th>
-	        	<th>stuff?</th>
+	        	
 				<c:forEach var="produkt" items="${produktList}" varStatus="status">
 	        	<tr>
 	        		<td>${produkt.p_id}</td>
@@ -29,9 +27,8 @@
 					<td>${produkt.sklad}</td>
 					<td>${produkt.opis}</td>
 					<td>${produkt.cena}</td>
-					<td>${produkt.przetworzony}</td>	
-					<td>${produkt.wstepnie_przetworzony}</td>		
-					<td>${produkt.thing}</td>	
+						
+					
 	        	</tr>
 				</c:forEach>	        	
         	</table>

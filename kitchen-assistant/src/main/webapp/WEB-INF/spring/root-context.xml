@@ -12,9 +12,9 @@
 <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="org.postgresql.Driver"/>
         
-        <property name="url" value="jdbc:postgresql://localhost:5432/postgres1"/>
+        <property name="url" value="jdbc:postgresql://localhost:5434/hibernate5"/>
         <property name="username" value="postgres"/>
-        <property name="password" value="postgres"/>
+        <property name="password" value="password"/>
     </bean>	
  	
  	 

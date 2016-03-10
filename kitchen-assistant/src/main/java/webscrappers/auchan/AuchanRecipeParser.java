@@ -36,6 +36,7 @@ import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 import mariusz.ambroziak.kassistant.utils.SkladnikiFinder;
 
 public class AuchanRecipeParser extends AuchanParticular {
+	private static final float absoluteMinimal = 0.0001f;
 	public static final String singleIngredientPattern = "([^()]*?, )|(.*?\\(.*?\\).*?, )";
 	public static final String compoundSkladnikPattern = "(.*?\\(.*?\\).*?)";
 	public static final String simpleSkladnikPattern = "([^()]*?)";
@@ -287,7 +288,10 @@ public class AuchanRecipeParser extends AuchanParticular {
 		if(sklad==null)
 			return null;
 		
+		sklad=sklad.trim();
 		
+		if(sklad.endsWith("."))
+			sklad=sklad.substring(0, sklad.length()-1);
 		
 		if(!sklad.endsWith(", "))
 			sklad=sklad+=", ";
@@ -321,21 +325,25 @@ public class AuchanRecipeParser extends AuchanParticular {
 
 		float maxAmount=-1;
 
-		if(upperLevelquan instanceof PreciseQuantity)
-			maxAmount=((PreciseQuantity) upperLevelquan).getAmount();
-		else if(upperLevelquan instanceof NotPreciseQuantity)
+//		if(upperLevelquan instanceof PreciseQuantity)
+//			maxAmount=((PreciseQuantity) upperLevelquan).getAmount();
+//		else
+			if(upperLevelquan instanceof NotPreciseQuantity)
 			maxAmount=((NotPreciseQuantity) upperLevelquan).getMaximalAmount();
-
+		//maxAmount to iloœæ ca³ego produktu/sk³adnika z³o¿onego podana do metody
+		//odejmujemy po kolei minimalne iloœci kolejnych sk³adników
+		
 		float currentminimalAmountSkladnik=0f;
 		for(int i=orderedListOfQuans.size()-1;i>0;i--){
 			QuantityPhraseClone quantityPhraseClone = orderedListOfQuans.get(i);
 			AbstractQuantity iterateQuan = quantityPhraseClone.getQuan();
 			if(iterateQuan!=null)
 			{
-				if(iterateQuan instanceof PreciseQuantity)
-				{
-					currentminimalAmountSkladnik=((PreciseQuantity) iterateQuan).getAmount();
-				}else if(iterateQuan instanceof NotPreciseQuantity)
+//				if(iterateQuan instanceof PreciseQuantity)
+//				{
+//					currentminimalAmountSkladnik=((PreciseQuantity) iterateQuan).getAmount();
+//				}else
+					if(iterateQuan instanceof NotPreciseQuantity)
 				{
 					currentminimalAmountSkladnik=((NotPreciseQuantity) iterateQuan).getMinimalAmount();
 				}
@@ -351,46 +359,57 @@ public class AuchanRecipeParser extends AuchanParticular {
 		ArrayList<QuantityPhraseClone> unknownMinimal=new ArrayList<QuantityPhraseClone>();
 
 		
-		if(upperLevelquan instanceof PreciseQuantity)
-		{
-			float currentMax=maxAmount;
+//		if(upperLevelquan instanceof PreciseQuantity)
+//		{
+//			float currentMax=maxAmount;
+//			
+//			for(QuantityPhraseClone qpc:orderedListOfQuans){
+//				AbstractQuantity quan = qpc.getQuan();
+//				if(quan==null){
+//					NotPreciseQuantity newQuan=new NotPreciseQuantity();
+//					qpc.setQuan(newQuan);
+//					newQuan.setType(upperLevelquan.getType());
+//					
+//					newQuan.setMaximalAmount(currentMax);
+//	
+//					unknownMinimal.add(qpc);
+//				}else{
+//					if(quan instanceof PreciseQuantity){
+//						currentMax=((PreciseQuantity) quan).getAmount();
+//						
+//						for(QuantityPhraseClone qpc1:unknownMinimal){
+//							((NotPreciseQuantity)(qpc1.getQuan())).setMinimalAmount(
+//									((PreciseQuantity) quan).getAmount());
+//			
+//						}
+//						unknownMinimal.clear();
+//						
+//					}
+//				}
+//				
+//				
+//			}
+//		}else 
+			if(upperLevelquan instanceof NotPreciseQuantity){
 			
-			for(QuantityPhraseClone qpc:orderedListOfQuans){
+			float currentMax=(1-absoluteMinimal)*maxAmount;
+			
+			
+			
+			for(int i=0;i<orderedListOfQuans.size();i++){
+				QuantityPhraseClone qpc=orderedListOfQuans.get(i);
+				
+				float emptyListMax=((NotPreciseQuantity)upperLevelquan).getMaximalAmount()/(float)(i+1);
+				
+				if(emptyListMax<currentMax)
+					currentMax=emptyListMax;
+				
 				AbstractQuantity quan = qpc.getQuan();
 				if(quan==null){
 					NotPreciseQuantity newQuan=new NotPreciseQuantity();
 					qpc.setQuan(newQuan);
 					newQuan.setType(upperLevelquan.getType());
 					
-					newQuan.setMaximalAmount(currentMax);
-	
-					unknownMinimal.add(qpc);
-				}else{
-					if(quan instanceof PreciseQuantity){
-						currentMax=((PreciseQuantity) quan).getAmount();
-						
-						for(QuantityPhraseClone qpc1:unknownMinimal){
-							((NotPreciseQuantity)(qpc1.getQuan())).setMinimalAmount(
-									((PreciseQuantity) quan).getAmount());
-			
-						}
-						unknownMinimal.clear();
-						
-					}
-				}
-				
-				
-			}
-		}else if(upperLevelquan instanceof NotPreciseQuantity){
-			
-			float currentMax=0.999f*((NotPreciseQuantity)upperLevelquan).getMaximalAmount();
-			
-			for(QuantityPhraseClone qpc:orderedListOfQuans){
-				AbstractQuantity quan = qpc.getQuan();
-				if(quan==null){
-					NotPreciseQuantity newQuan=new NotPreciseQuantity();
-					qpc.setQuan(newQuan);
-					newQuan.setType(upperLevelquan.getType());
 					
 					newQuan.setMaximalAmount(currentMax);
 	
@@ -415,18 +434,32 @@ public class AuchanRecipeParser extends AuchanParticular {
 			
 		}
 		
-		for(QuantityPhraseClone qpc1:unknownMinimal){
+		if(unknownMinimal.size()>0){
+			float rest=((NotPreciseQuantity)upperLevelquan).getMinimalAmount();
 			
-			if(upperLevelquan instanceof PreciseQuantity){
-				((NotPreciseQuantity)(qpc1.getQuan())).setMinimalAmount(0.01f*((PreciseQuantity)upperLevelquan).getAmount());
-			}else if(upperLevelquan instanceof NotPreciseQuantity){
-				((NotPreciseQuantity)(qpc1.getQuan())).setMinimalAmount(0.01f*((NotPreciseQuantity)upperLevelquan).getMinimalAmount());
-
+			
+			for(int i=0;i<orderedListOfQuans.size();i++){
+				rest-=((NotPreciseQuantity)orderedListOfQuans.get(i).getQuan()).getMinimalAmount();
+				
 			}
-			
 
+			QuantityPhraseClone firstElement = unknownMinimal.get(0);
+
+			((NotPreciseQuantity)firstElement.getQuan()).setMinimalAmount((rest/(float)unknownMinimal.size()));
+			unknownMinimal.remove(firstElement);
+			
+			for(QuantityPhraseClone qpc1:unknownMinimal){
+				if(upperLevelquan instanceof NotPreciseQuantity){
+					((NotPreciseQuantity)(qpc1.getQuan())).setMinimalAmount((float)Math.floor(absoluteMinimal*((NotPreciseQuantity)upperLevelquan).getMinimalAmount()));
+
+				}
+			}
+			unknownMinimal.clear();
 		}
-		unknownMinimal.clear();
+			
+			
+			
+		
 		
 		
 		
@@ -634,9 +667,24 @@ public class AuchanRecipeParser extends AuchanParticular {
 
 	
 	
-	public static void main(String[] args){
+	public static void main2(String[] args){
 
 		String sklad="rodzynki, owoce kandyzowane 12% (papaja, ananas ¿ó³ty), p³atki kokosowe (kokos, cukier), chipsy bananowe 8% (banany, t³uszcz roœlinny, cukier, miód, aromat),";
+		
+		LinkedHashMap<String, QuantityPhraseClone> relativeAmountsFromSklad = getRelativeAmountsFromSklad(sklad,new PreciseQuantity(1000,AmountTypes.mg));
+		
+		System.out.println();
+		
+		
+		ArrayList<ProduktIngredientQuantity> parsedSkladniki = parseSkladniki(relativeAmountsFromSklad,new PreciseQuantity(1000,AmountTypes.mg));
+		
+		System.out.println();
+	
+	}
+	
+	public static void main(String[] args){
+
+		String sklad="m¹ka PSZENNA, sól, dro¿d¿e, margaryna, woda, polepszacz, cukier";
 		
 		LinkedHashMap<String, QuantityPhraseClone> relativeAmountsFromSklad = getRelativeAmountsFromSklad(sklad,new PreciseQuantity(1000,AmountTypes.mg));
 		
