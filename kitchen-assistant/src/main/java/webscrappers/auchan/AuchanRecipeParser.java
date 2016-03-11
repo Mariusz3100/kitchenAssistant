@@ -171,7 +171,7 @@ public class AuchanRecipeParser extends AuchanParticular {
 
 	public static void checkifHeadIsOk(Elements thead) {
 		if(thead!=null&&thead.size()>0){
-			Elements rows = thead.select("th");
+			Elements rows = thead.select("tr");
 
 			if(rows!=null&&rows.size()>0){
 				Element element = rows.get(0);

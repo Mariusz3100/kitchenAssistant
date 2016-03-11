@@ -87,6 +87,13 @@
 		</constructor-arg>
 	</bean>
 
+	<bean id="health_relevant_ingredientsDao" class="mariusz.ambroziak.kassistant.dao.Health_Relevant_IngredientDAOImpl">
+		<constructor-arg>
+			<ref bean="sessionFactory" />
+		</constructor-arg>
+	</bean>
+
+
 	<bean id="problemDao" class="mariusz.ambroziak.kassistant.dao.ProblemDAOImpl">
 		<constructor-arg>
 			<ref bean="sessionFactory" />
@@ -125,6 +132,11 @@
 		<constructor-arg>
 			<ref bean="basic_ingredientNameDAO" />
 		</constructor-arg>
+
+		<constructor-arg>
+			<ref bean="health_relevant_ingredientsDao" />
+		</constructor-arg>
+
 
 	</bean>
 

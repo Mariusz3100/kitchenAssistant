@@ -19,6 +19,7 @@ import mariusz.ambroziak.kassistant.model.Base_Word;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.utils.ProduktIngredientQuantity;
 import mariusz.ambroziak.kassistant.model.utils.ProduktWithAllIngredients;
+import mariusz.ambroziak.kassistant.model.utils.QuantityPhraseClone;
 import mariusz.ambroziak.kassistant.model.utils.QuantityProdukt;
 import mariusz.ambroziak.kassistant.shops.ShopRecognizer;
 import mariusz.ambroziak.kassistant.utils.MessageTypes;
@@ -51,14 +52,11 @@ import webscrappers.auchan.AuchanAbstractScrapper;
 import webscrappers.auchan.AuchanRecipeParser;
 import webscrappers.przepisy.PrzepisyPLQExtract;
 
-public class ProduktIngredientAgent extends BaseAgent{
+public class FoodIngredientAgent extends BaseAgent{
 
-	static ArrayList<ProduktIngredientAgent> agents;
+	static ArrayList<FoodIngredientAgent> agents;
 	private boolean busy=false;
 
-
-//	@Autowired
-//	private ProduktDAO produktDao;
 	
 	
 	public static final String PARSER_NAME = "foodIngredientParser";
@@ -91,23 +89,6 @@ public class ProduktIngredientAgent extends BaseAgent{
 
 	private void processMessage(StringMessage m) {
 		setBusy(true);
-				
-		
-		
-		
-		
-//		Message messageSentEarlier = getMessageSentEarlier(m.getConversationID());
-//		
-//		if(messageSentEarlier==null){
-//			//TODO message from recipe parser
-//
-//		}else{
-//			//message from shoplist with some results
-//			JSONObject message=new JSONObject(m.getContent());
-//			
-//			
-//			
-//		}
 		
 		setBusy(false);
 	}
@@ -128,7 +109,7 @@ public class ProduktIngredientAgent extends BaseAgent{
 		requestRole(AGENT_COMMUNITY, AGENT_GROUP, PARSER_NAME);
 		
 
-		if(agents==null)agents=new ArrayList<ProduktIngredientAgent>();
+		if(agents==null)agents=new ArrayList<FoodIngredientAgent>();
 		agents.add(this);
 
 
@@ -137,7 +118,7 @@ public class ProduktIngredientAgent extends BaseAgent{
 		super.activate();
 	}
 
-	public ProduktIngredientAgent() {
+	public FoodIngredientAgent() {
 		super();
 		AGENT_COMMUNITY=StringHolder.AGENT_COMMUNITY;
 	
@@ -150,14 +131,14 @@ public class ProduktIngredientAgent extends BaseAgent{
 	}
 
 
-	public static ProduktWithAllIngredients parseFoodIngredient(String name)
+	public static List<QuantityPhraseClone> parseFoodIngredient(String name)
 			throws AgentSystemNotStartedException, ShopNotFoundException, Page404Exception{
-		ProduktIngredientAgent freeOne = getFreeAgent();
+		FoodIngredientAgent freeOne = getFreeAgent();
 		if(freeOne==null){
 			return null;
 		}else{
 			freeOne.setBusy(true);
-			ProduktWithAllIngredients result;
+			List<QuantityPhraseClone> result;
 			try{
 				result= freeOne.getOrParseFoodIngredient(name);
 			}finally{
@@ -166,20 +147,14 @@ public class ProduktIngredientAgent extends BaseAgent{
 			return result;
 		}
 	}
-	
-	
 
-
-
-
-
-	private ProduktWithAllIngredients getOrParseFoodIngredient(String name) {
-		// TODO Auto-generated method stub
+	private List<QuantityPhraseClone> getOrParseFoodIngredient(String name) {
+		
 		return null;
 	}
 
-	private static ProduktIngredientAgent getFreeAgent() throws AgentSystemNotStartedException {
-		ProduktIngredientAgent freeOne=null;
+	private static FoodIngredientAgent getFreeAgent() throws AgentSystemNotStartedException {
+		FoodIngredientAgent freeOne=null;
 		
 		if(agents==null){
 			System.out.println("Agent system not started");
@@ -187,7 +162,7 @@ public class ProduktIngredientAgent extends BaseAgent{
 		}
 		else{
 			while(freeOne==null){
-				for(ProduktIngredientAgent ra:agents){
+				for(FoodIngredientAgent ra:agents){
 					if(!ra.isBusy()){
 						freeOne=ra;
 	

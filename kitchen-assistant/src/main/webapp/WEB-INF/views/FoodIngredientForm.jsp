@@ -7,9 +7,9 @@
 </head>
 <body>
 
-	<form action="chooseProdukts">
-		Paste url:<br> 
-		<input type="text" name="recipeurl">
+	<form>
+		Type in food ingredient phrase:<br> 
+		<input type="text" name="ingredient_phrase">
 	</form>
 	
 </body>
