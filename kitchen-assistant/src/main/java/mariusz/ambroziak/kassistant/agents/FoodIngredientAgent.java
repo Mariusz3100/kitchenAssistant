@@ -2,6 +2,7 @@ package mariusz.ambroziak.kassistant.agents;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -16,7 +17,9 @@ import mariusz.ambroziak.kassistant.exceptions.AgentSystemNotStartedException;
 import mariusz.ambroziak.kassistant.exceptions.Page404Exception;
 import mariusz.ambroziak.kassistant.exceptions.ShopNotFoundException;
 import mariusz.ambroziak.kassistant.model.Base_Word;
+import mariusz.ambroziak.kassistant.model.Health_Relevant_Ingredient;
 import mariusz.ambroziak.kassistant.model.Produkt;
+import mariusz.ambroziak.kassistant.model.utils.PreciseQuantity;
 import mariusz.ambroziak.kassistant.model.utils.ProduktIngredientQuantity;
 import mariusz.ambroziak.kassistant.model.utils.ProduktWithAllIngredients;
 import mariusz.ambroziak.kassistant.model.utils.QuantityPhraseClone;
@@ -30,6 +33,8 @@ import mariusz.ambroziak.kassistant.utils.StringHolder;
 import org.json.JSONObject;
 import org.jsoup.nodes.Element;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import webscrappers.JedzDobrzeScrapper;
 
 //import com.codesnippets4all.json.parsers.JsonParserFactory;
 
@@ -131,14 +136,14 @@ public class FoodIngredientAgent extends BaseAgent{
 	}
 
 
-	public static List<QuantityPhraseClone> parseFoodIngredient(String name)
-			throws AgentSystemNotStartedException, ShopNotFoundException, Page404Exception{
+	public static HashMap<Health_Relevant_Ingredient, PreciseQuantity> parseFoodIngredient(String name)
+			throws AgentSystemNotStartedException{
 		FoodIngredientAgent freeOne = getFreeAgent();
 		if(freeOne==null){
 			return null;
 		}else{
 			freeOne.setBusy(true);
-			List<QuantityPhraseClone> result;
+			HashMap<Health_Relevant_Ingredient, PreciseQuantity> result;
 			try{
 				result= freeOne.getOrParseFoodIngredient(name);
 			}finally{
@@ -148,9 +153,9 @@ public class FoodIngredientAgent extends BaseAgent{
 		}
 	}
 
-	private List<QuantityPhraseClone> getOrParseFoodIngredient(String name) {
+	private HashMap<Health_Relevant_Ingredient, PreciseQuantity> getOrParseFoodIngredient(String phrase) {
 		
-		return null;
+		return JedzDobrzeScrapper.scrapSkladnik(phrase);
 	}
 
 	private static FoodIngredientAgent getFreeAgent() throws AgentSystemNotStartedException {
@@ -165,7 +170,6 @@ public class FoodIngredientAgent extends BaseAgent{
 				for(FoodIngredientAgent ra:agents){
 					if(!ra.isBusy()){
 						freeOne=ra;
-	
 					}
 				}
 				if(freeOne==null){

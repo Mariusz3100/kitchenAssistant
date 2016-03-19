@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import madkit.kernel.Madkit;
 import mariusz.ambroziak.kassistant.QuantityExtractor.JedzDobrzeExtractor;
 import mariusz.ambroziak.kassistant.agents.ClockAgent;
+import mariusz.ambroziak.kassistant.agents.FoodIngredientAgent;
 import mariusz.ambroziak.kassistant.agents.ProduktAgent;
 import mariusz.ambroziak.kassistant.agents.ReadingAgent;
 import mariusz.ambroziak.kassistant.agents.RecipeAgent;
@@ -59,22 +60,31 @@ public class FoodIngredientController {
 		
 		if(phrase==null||phrase.equals(""))
 		{
-			return new ModelAndView("");
+			return new ModelAndView("foodIngredientForm");
 		}else{
 			
 			ModelAndView mav=new ModelAndView("List");
-			
-			DaoProvider.getInstance().getHealthRelevantIngredientsDao().list();
-			HashMap<Health_Relevant_Ingredient, PreciseQuantity> scrapSkladnik = JedzDobrzeScrapper.scrapSkladnik(phrase);
-			
 			ArrayList<String> lista=new ArrayList<String>();
 			
-			lista.add("Dla skladnika zywnoœciowego: "+phrase+" znaleziono nastêpuj¹ce wartosci od¿ywcze:");
-			
-			for(Health_Relevant_Ingredient key:scrapSkladnik.keySet()){
-				lista.add(key.getName()+" - "+scrapSkladnik.get(key));
-				
+			DaoProvider.getInstance().getHealthRelevantIngredientsDao().list();
+			HashMap<Health_Relevant_Ingredient, PreciseQuantity> scrapSkladnik = null;
+			try {
+				scrapSkladnik = FoodIngredientAgent.parseFoodIngredient(phrase);
+			} catch (AgentSystemNotStartedException e) {
+				return new ModelAndView("agentSystemNotStarted");
 			}
+			
+			
+			
+			lista.add("Dla skladnika zywnoœciowego: "+phrase+" znaleziono nastêpuj¹ce wartosci od¿ywcze:<br>");
+			
+			if(scrapSkladnik!=null)
+			{
+				for(Health_Relevant_Ingredient key:scrapSkladnik.keySet()){
+					lista.add(key.getName()+" - "+scrapSkladnik.get(key));
+				}				
+			}
+			
 			
 			mav.addObject("list",lista);
 	
