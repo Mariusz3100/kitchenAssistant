@@ -49,13 +49,11 @@ public class Produkt {
 	   @NotNull
 	   private boolean przetworzony=false;
 	   
-	   @NotNull
-	   private boolean wstepnie_przetworzony=false;
 	   
 	   
 	   
 	public Produkt(String nazwa2, String detailsUrl) {
-		this(detailsUrl,nazwa2,"","",-1,false,false);
+		this(detailsUrl,nazwa2,"","",-1,false);
 	}
 
 	public Produkt() {
@@ -63,7 +61,7 @@ public class Produkt {
 	}
 
 	public Produkt(String url, String nazwa, String sklad, String opis,
-			float cena, boolean przetworzony, boolean wstepnie_przetworzony) {
+			float cena, boolean przetworzony) {
 		super();
 		this.url = url;
 		this.nazwa = nazwa;
@@ -71,7 +69,7 @@ public class Produkt {
 		this.opis = opis;
 		this.cena = cena;
 		this.przetworzony = przetworzony;
-		this.wstepnie_przetworzony = wstepnie_przetworzony;
+
 	}
 
 	
@@ -140,20 +138,13 @@ public class Produkt {
 			this.przetworzony = przetworzony;
 		}
 
-		public boolean isWstepnie_przetworzony() {
-			return wstepnie_przetworzony;
-		}
 
-		public void setWstepnie_przetworzony(boolean wstepnie_przetworzony) {
-			this.wstepnie_przetworzony = wstepnie_przetworzony;
-		}
 
 		@Override
 		public String toString() {
 			return "Produkt [id=" + p_id + ", url=" + url + ", nazwa=" + nazwa
 					+ ", sklad=" + sklad + ", opis=" + opis + ", cena=" + cena
-					+ ", przetworzony=" + przetworzony
-					+ ", wstepnie_przetworzony=" + wstepnie_przetworzony + "]";
+					+ ", przetworzony=" + przetworzony+"]";
 		}
 		
 		public void setThing(String thing) {

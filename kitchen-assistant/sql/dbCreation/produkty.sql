@@ -7,9 +7,7 @@
   opis varchar(2000),
   cena real,
   przetworzony boolean not null default false,
-  wstepnie_przetworzony boolean not null default false,
-
-  
+    
 
  CONSTRAINT produkt_pk PRIMARY KEY (p_id)
 );

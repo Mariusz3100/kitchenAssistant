@@ -575,10 +575,10 @@ public class RecipeAgent extends BaseAgent{
 
 
 	private ArrayList<Produkt> checkShops(String text) {
-		if(checkShops){
+		if(checkShops&&text!=null){
 			JSONObject json = new JSONObject();
 			
-			json.put(StringHolder.SEARCH4_NAME, text);
+			json.put(StringHolder.SEARCH4_NAME, text.trim());
 			json.put(StringHolder.MESSAGE_CREATOR_NAME, PARSER_NAME);
 			json.put(StringHolder.MESSAGE_TYPE_NAME, MessageTypes.SearchFor);
 			

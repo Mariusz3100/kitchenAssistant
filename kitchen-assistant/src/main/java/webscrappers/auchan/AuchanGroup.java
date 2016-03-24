@@ -32,7 +32,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 public class AuchanGroup extends AuchanAbstractScrapper{
 	//private static final String auchanSearchUrl="http://www.auchandirect.pl/sklep/wyszukiwarka/__search__";
 	
-	private static final String auchanSearchUrl="http://www.auchandirect.pl/auchan-warszawa/pl/search?text=__search__";
+	private static final String auchanSearchUrl="http://www.auchandirect.pl/auchan-warszawa/pl/search?text=__search__%3Arelevance%3Aadult%3Afalse";
 	String filename="\\classes\\auchanEntries.txt";
 	public static final String noResults="Przykro nam ale nie znaleziono wyników dla podanego zapytania"; 
 	public static final String validLinkPart="/auchan-warszawa/pl";

@@ -25,13 +25,13 @@ ON DELETE NO ACTION
 ON UPDATE NO ACTION
 NOT DEFERRABLE;
 
-CREATE UNIQUE INDEX Basic_Ingredient_Name
+CREATE UNIQUE INDEX Basic_Ingredient_Name_name_index
  ON Basic_Ingredient_Name
- ( name );
-
-
-CREATE UNIQUE INDEX Basic_Ingredient
- ON Basic_Ingredient
  ( possible_name );
+
+
+CREATE UNIQUE INDEX Basic_Ingredient_name_index
+ ON Basic_Ingredient
+ ( name );
 
 
