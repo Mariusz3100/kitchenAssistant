@@ -51,21 +51,17 @@
 
 	</bean>
 
-	<bean id="Basic_Ingredient_NameDAO" class="mariusz.ambroziak.kassistant.dao.Basic_Ingredient_NameDAOImpl">
+
+	<bean id="basic_ingredientDAO"
+		class="mariusz.ambroziak.kassistant.dao.Basic_IngredientDAOImpl">
 		<constructor-arg>
 			<ref bean="sessionFactory" />
 		</constructor-arg>
 
 	</bean>
-	
-	<bean id="basic_ingredientDAO" class="mariusz.ambroziak.kassistant.dao.Basic_IngredientDAOImpl">
-		<constructor-arg>
-			<ref bean="sessionFactory" />
-		</constructor-arg>
 
-	</bean>
-	
-	<bean id="basic_ingredientNameDAO" class="mariusz.ambroziak.kassistant.dao.Basic_Ingredient_NameDAOImpl">
+	<bean id="basic_ingredientNameDAO"
+		class="mariusz.ambroziak.kassistant.dao.Basic_Ingredient_NameDAOImpl">
 		<constructor-arg>
 			<ref bean="sessionFactory" />
 		</constructor-arg>
@@ -87,10 +83,14 @@
 		</constructor-arg>
 	</bean>
 
-	<bean id="health_relevant_ingredientsDao" class="mariusz.ambroziak.kassistant.dao.Health_Relevant_IngredientDAOImpl">
+	<bean id="nutrientDao" class="mariusz.ambroziak.kassistant.dao.NutrientDAOImpl">
 		<constructor-arg>
 			<ref bean="sessionFactory" />
 		</constructor-arg>
+		<constructor-arg>
+			<ref bean="basic_ingredientNameDAO" />
+		</constructor-arg>
+
 	</bean>
 
 
@@ -99,7 +99,7 @@
 			<ref bean="sessionFactory" />
 		</constructor-arg>
 	</bean>
-	
+
 	<bean id="daoProvider" class="mariusz.ambroziak.kassistant.dao.DaoProvider">
 		<constructor-arg>
 			<ref bean="userDao" />
@@ -112,7 +112,7 @@
 		<constructor-arg>
 			<ref bean="problemDao" />
 		</constructor-arg>
-		
+
 		<constructor-arg>
 			<ref bean="variant_wordDao" />
 		</constructor-arg>
@@ -124,23 +124,23 @@
 		<constructor-arg>
 			<ref bean="recipeDao" />
 		</constructor-arg>
-		
+
 		<constructor-arg>
 			<ref bean="basic_ingredientDAO" />
 		</constructor-arg>
-		
+
 		<constructor-arg>
 			<ref bean="basic_ingredientNameDAO" />
 		</constructor-arg>
 
 		<constructor-arg>
-			<ref bean="health_relevant_ingredientsDao" />
+			<ref bean="nutrientsDao" />
 		</constructor-arg>
 
 
 	</bean>
 
 
-	<bean id="jspConstants" class="mariusz.ambroziak.kassistant.utils.JspStringHolder"/>
+	<bean id="jspConstants" class="mariusz.ambroziak.kassistant.utils.JspStringHolder" />
 
 </beans>

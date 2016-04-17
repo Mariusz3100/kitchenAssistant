@@ -225,7 +225,7 @@ public class AuchanAgent extends BaseAgent {
 						produkt.setPrzetworzony(false);
 						produkt.setUrl(shortUrl);
 	
-						DaoProvider.getInstance().getProduktDao().addProdukt(produkt);
+						DaoProvider.getInstance().getProduktDao().saveProdukt(produkt);
 	
 						htmlLog("Na podstawie url "+shortUrl
 								+" sparsowano i zapisano w bd produkt o id ["+produkt.getP_id()+"]\n");
@@ -341,7 +341,7 @@ public class AuchanAgent extends BaseAgent {
 					foundProdukt.setPrzetworzony(false);
 					foundProdukt.setUrl(shorturl);
 
-					DaoProvider.getInstance().getProduktDao().addProdukt(foundProdukt);
+					DaoProvider.getInstance().getProduktDao().saveProdukt(foundProdukt);
 
 					htmlLog("Na podstawie url "+shorturl
 							+" sparsowano i zapisano w bd produkt o id ["+foundProdukt.getP_id()+"]\n");

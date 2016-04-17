@@ -14,7 +14,7 @@ import org.jsoup.select.Elements;
 import mariusz.ambroziak.kassistant.QuantityExtractor.JedzDobrzeExtractor;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
 import mariusz.ambroziak.kassistant.dao.Health_Relevant_IngredientDAOImpl;
-import mariusz.ambroziak.kassistant.model.Health_Relevant_Ingredient;
+import mariusz.ambroziak.kassistant.model.Nutrient;
 import mariusz.ambroziak.kassistant.model.utils.PreciseQuantity;
 import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 import mariusz.ambroziak.kassistant.utils.StringHolder;
@@ -23,12 +23,13 @@ public class JedzDobrzeScrapper extends AbstractScrapper {
 	private static final String BASE_URI = "http://www.jedzdobrze.pl";
 	public static final String urlTemplate="http://www.jedzdobrze.pl/tabele/szukaj/?primary_id=0&secondary_id=0&producer_id=0&seller_id=0&phrase=__search_phrase__";
 	
-	public static HashMap<Health_Relevant_Ingredient,PreciseQuantity> scrapSkladnik(String fraza){
-		HashMap<Health_Relevant_Ingredient,PreciseQuantity> retValue=new HashMap<Health_Relevant_Ingredient,PreciseQuantity>();
+	public static HashMap<Nutrient,PreciseQuantity> scrapSkladnik(String fraza){
+		HashMap<Nutrient,PreciseQuantity> retValue=new HashMap<Nutrient,PreciseQuantity>();
 		
-		List<Health_Relevant_Ingredient> relevantIngredientsList = DaoProvider.getInstance().getHealthRelevantIngredientsDao().list();
+		List<Nutrient> relevantIngredientsList = DaoProvider.getInstance().getHealthRelevantIngredientsDao().list();
 		String url=getFoodIngredientUrl(fraza);
 		
+		if(url!=null&&url.length()>0){
 		try {
 			String page=getPage(url);
 			
@@ -45,7 +46,7 @@ public class JedzDobrzeScrapper extends AbstractScrapper {
 					for(Element row:rows){
 						Elements tds = row.select("td");
 						if(tds!=null&&tds.size()>1){
-							for(Health_Relevant_Ingredient hri:relevantIngredientsList){
+							for(Nutrient hri:relevantIngredientsList){
 								if(hri.getName().toLowerCase().equals(tds.get(0).text().toLowerCase())){
 									String quantity=tds.get(1).text();
 									
@@ -71,7 +72,7 @@ public class JedzDobrzeScrapper extends AbstractScrapper {
 			e.printStackTrace();
 		}
 
-		
+		}
 		
 		return  retValue;
 	}

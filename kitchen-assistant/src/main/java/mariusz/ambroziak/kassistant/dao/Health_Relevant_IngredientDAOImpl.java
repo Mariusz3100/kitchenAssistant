@@ -5,7 +5,7 @@ import java.util.List;
 import mariusz.ambroziak.kassistant.model.Base_Word;
 import mariusz.ambroziak.kassistant.model.Basic_Ingredient;
 import mariusz.ambroziak.kassistant.model.Basic_Ingredient_Name;
-import mariusz.ambroziak.kassistant.model.Health_Relevant_Ingredient;
+import mariusz.ambroziak.kassistant.model.Nutrient;
 import mariusz.ambroziak.kassistant.model.Problem;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.Recipe_Ingredient;
@@ -38,10 +38,10 @@ public class Health_Relevant_IngredientDAOImpl implements Health_Relevant_Ingred
 
 		@Override
 		@Transactional
-		public List<Health_Relevant_Ingredient> list() {
+		public List<Nutrient> list() {
 			@SuppressWarnings("unchecked")
-			List<Health_Relevant_Ingredient> listUser = (List<Health_Relevant_Ingredient>) sessionFactory.getCurrentSession()
-					.createCriteria(Health_Relevant_Ingredient.class)
+			List<Nutrient> listUser = (List<Nutrient>) sessionFactory.getCurrentSession()
+					.createCriteria(Nutrient.class)
 					.list();
 
 			return listUser;
@@ -49,11 +49,11 @@ public class Health_Relevant_IngredientDAOImpl implements Health_Relevant_Ingred
 
 
 	@Override
-	public List<Health_Relevant_Ingredient> listForSkladnik(int skladnikId) {
+	public List<Nutrient> listForSkladnik(int skladnikId) {
 		@SuppressWarnings("unchecked")
-		List<Health_Relevant_Ingredient> listProdukt = (List<Health_Relevant_Ingredient>) sessionFactory.getCurrentSession()
+		List<Nutrient> listProdukt = (List<Nutrient>) sessionFactory.getCurrentSession()
 				.createSQLQuery(selectBasicIngredientsQuery.replaceAll("__basic_ingredient_id__", Integer.toString(skladnikId)))
-				.addEntity(Health_Relevant_Ingredient.class)
+				.addEntity(Nutrient.class)
 				.list();
 
 		return listProdukt;

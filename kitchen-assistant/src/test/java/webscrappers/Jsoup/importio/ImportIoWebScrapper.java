@@ -329,7 +329,7 @@ public abstract class ImportIoWebScrapper {
 			scrapperLog.append("No data found at: "+produktDetails);
 		}else{
 			scrapperLog.append("Saving data from \""+detailsURL+"\": "+produktDetails);
-			DaoProvider.getInstance().getProduktDao().addProdukt(produktDetails);
+			DaoProvider.getInstance().getProduktDao().saveProdukt(produktDetails);
 		}
 		return produktDetails;
 		

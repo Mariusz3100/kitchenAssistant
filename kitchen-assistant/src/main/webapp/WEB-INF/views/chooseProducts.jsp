@@ -15,11 +15,16 @@
 
 	<div>
 		<h1>
-			Dla url <i>"${url}"</i> znaleziono następujące składniki:
+
+			<br>Dla url <i>
+			"<%= pageContext.getRequest().getParameter(mariusz.ambroziak.kassistant.utils.JspStringHolder.recipeUrl_name) %>"
+			</i> znaleziono następujące składniki:
+
 		</h1>
 
-		<form action="confirmProdukts">
+		<form action="correctProdukts">
 			<input type="hidden" name="${liczbaSkladnikow}" value="${fn:length(results)}">
+			<input type="hidden" name="${recipeUrl_name}" value="${url}">
 			
 			<c:forEach var="result" items="${results}" varStatus="skladnikCount">
 

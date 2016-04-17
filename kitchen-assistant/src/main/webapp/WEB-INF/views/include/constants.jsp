@@ -1,6 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
-    
+   
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
     
 
@@ -16,6 +14,5 @@
 <c:set var="skladnikRadioName" value="<%= mariusz.ambroziak.kassistant.utils.JspStringHolder.skladnikRadio_name %>" scope="session"/>
 <c:set var="liczbaSkladnikow" value="<%= mariusz.ambroziak.kassistant.utils.JspStringHolder.liczbaSkladnikow %>" scope="session"/>
 <c:set var="radioValuePrefix" value="<%= mariusz.ambroziak.kassistant.utils.JspStringHolder.radioValuePrefix %>" scope="session"/>
-
 
 <br>

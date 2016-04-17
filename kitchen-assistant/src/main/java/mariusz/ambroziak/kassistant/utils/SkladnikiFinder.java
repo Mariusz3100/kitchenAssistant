@@ -6,7 +6,7 @@ import mariusz.ambroziak.kassistant.model.Basic_Ingredient;
 public class SkladnikiFinder {
 	
 	
-	public static Basic_Ingredient findIngredient(String name){
+	public static Basic_Ingredient findBasicIngredientInDb(String name){
 		Basic_Ingredient ingredientByAnyName = DaoProvider.getInstance().getBasicIngredientDao().getIngredientByAnyName(name);
 		
 		return ingredientByAnyName;

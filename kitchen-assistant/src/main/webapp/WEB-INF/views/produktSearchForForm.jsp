@@ -9,7 +9,7 @@
 <body>
 
 	<form>
-		Wprowadź frazę wyszukiwania: duże jajka<br> 
+		Wprowadź frazę wyszukiwania:<br> 
 		<input type="text" name="searchFor">
 		<br>
 		and quantity phrase:<br> 

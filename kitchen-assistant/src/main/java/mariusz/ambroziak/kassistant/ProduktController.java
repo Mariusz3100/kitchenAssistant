@@ -28,6 +28,7 @@ import mariusz.ambroziak.kassistant.model.utils.ProduktIngredientQuantity;
 import mariusz.ambroziak.kassistant.model.utils.ProduktWithAllIngredients;
 import mariusz.ambroziak.kassistant.model.utils.ProduktWithBasicIngredients;
 import mariusz.ambroziak.kassistant.utils.JspStringHolder;
+import mariusz.ambroziak.kassistant.utils.StringHolder;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -55,9 +56,42 @@ public class ProduktController {
 		return model;
 	}
 	
+
+	@RequestMapping(value="/searchForProdukt")
+	public ModelAndView searchForProdukt(HttpServletRequest request) throws UnsupportedEncodingException {
+		
+		request.setCharacterEncoding(StringHolder.ENCODING);
+		String url=request.getParameter("searchFor");
+		String quantity=request.getParameter("quantity");
+		
+
+		if(url==null||url.equals("")||quantity==null||quantity.equals(""))
+			return new ModelAndView("produktSearchForForm");
+		else
+		{
+			List<Produkt> produkts = null;
+			try {
+				produkts = RecipeAgent.searchForProdukt(url,quantity);
+			} catch (AgentSystemNotStartedException e) {
+				return new ModelAndView("agentSystemNotStarted");
+			}
+			
+			ModelAndView model = new ModelAndView("produktsList");
+			model.addObject("produktList", produkts);
+			
+			return model;
+		}
+	}
+	
+	
 	@RequestMapping(value="/produktUrl")
 	public ModelAndView produktUrl(HttpServletRequest request) {
-		
+		try {
+			request.setCharacterEncoding(StringHolder.ENCODING);
+		} catch (UnsupportedEncodingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}		
 		
 
 		String url=request.getParameter("produktUrl");
@@ -93,6 +127,13 @@ public class ProduktController {
 	
 	@RequestMapping(value="/produktValues")
 	public ModelAndView parseProdukt(HttpServletRequest request) {
+		try {
+			request.setCharacterEncoding(StringHolder.ENCODING);
+		} catch (UnsupportedEncodingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
 		String url=request.getParameter("url");
 		String type=request.getParameter("type");
 

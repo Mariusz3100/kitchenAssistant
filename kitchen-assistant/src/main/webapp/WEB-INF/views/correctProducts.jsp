@@ -15,7 +15,9 @@
 
 	<div>
 		<h1>
-			Dla url <i>"${url}"</i> znaleziono następujące składniki:
+			Dla url <i>"
+			<%= pageContext.getRequest().getParameter(mariusz.ambroziak.kassistant.utils.JspStringHolder.recipeUrl_name) %>
+			"</i> znaleziono następujące składniki:
 		</h1>
 
 		<form action="chooseQuantities">

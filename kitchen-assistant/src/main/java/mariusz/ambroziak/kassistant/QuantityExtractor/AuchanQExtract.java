@@ -20,167 +20,243 @@ import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 
 public class AuchanQExtract extends AbstractQuantityExtracter{
 
-	
 
-	
+
+
+	@SuppressWarnings("unused")
 	public static PreciseQuantity extractQuantity(String text){
-		PreciseQuantity retValue=new PreciseQuantity();
-		
-		if(text==null||text.equals(""))
-		{
-			retValue.setAmount(-1);
-			retValue.setType(AmountTypes.szt);
-			return retValue;
-		}
-		
+		PreciseQuantity retValue=null;
 
-			
+		if(text==null||text.equals("")){
+			return createInvalidPreciseQuantity();
+		}
+
 		text=text.trim();
-		
 		if(text.contains("x")){
-			String[] elems=text.split("x");
-			
-			Float multiplier=getFloat(elems);
-			PreciseQuantity extractedQuantity = extractQuantity(elems[1]);
-			extractedQuantity.setAmount(extractedQuantity.getAmount()*multiplier);
-			
-			return extractedQuantity;
-		}else{
-			String[] elems=text.split(" ");
-			
-			if(elems.length<2){
-				elems=new String[2];
-				
-				Pattern p = Pattern.compile("[0-9.,]+");
-				
-				Matcher m=p.matcher(text);
-				
-				if(m.find()){
-					
-					
-					elems[0]=m.group();
-					elems[1]=text.replaceFirst(elems[0], "");
-					
-					
-			    }
-			}
-			
-			float parsedFloat = getFloat(elems);
-			
-			retValue.setAmount(parsedFloat);
-			for(AmountTypes at:AmountTypes.values()){
-				if(at.getType().equals(elems[1])){
-					retValue.setType(at);
-				}
-			}
-			
-			if(retValue.getType()==null){
-				QuantityTranslation quantityTranslation = translations.get(elems[1].toLowerCase());
-				
-				if(quantityTranslation==null){
-					Base_Word base_Name = 
-						DaoProvider.getInstance().getVariantWordDao().getBase_Name(elems[1]==null?"":elems[1].toLowerCase());
-					
-					String new_word=null;
-					
-					
-					
-					if(base_Name!=null)
-						new_word = 	base_Name.getB_word();		
-					
-					if(new_word==null)
-						new_word=SJPWebScrapper.getAndSaveNewRelation(elems[1].toLowerCase());
-						
-					if(new_word!=null)
-						quantityTranslation = translations.get(new_word);
-					
-				}
-				
-				
-	
-				
-				if(quantityTranslation==null)
-				{
-					retValue.setAmount(-1);
-					retValue.setType(AmountTypes.szt);
-					
-					ProblemLogger.logProblem("Nieznana miara "+elems[1]);
-					return retValue;
-				}else{
-					retValue.setType(quantityTranslation.getTargetAmountType());
-					retValue.setAmount(retValue.getAmount()*quantityTranslation.getMultiplier());
-				}
+			return extractRecursively(text);
+		}
+		
+		String[] elems=text.split(" ");
+		if(elems.length<2){
+			elems = extractAmountArrayFromSpacelessText(text);
+		}
+
+		retValue=tryGettingAmountFromTwoElements(elems);
+
+		if(retValue.getType()==null){
+			QuantityTranslation quantityTranslation = tryGettingTranslationToActualQuantityType(elems);
+			if(quantityTranslation==null)
+			{
+				ProblemLogger.logProblem("Nieznana miara "+elems[1]);
+				return createInvalidPreciseQuantity();
+			}else{
+				retValue.setType(quantityTranslation.getTargetAmountType());
+				retValue.setAmount(retValue.getAmount()*quantityTranslation.getMultiplier());
 			}
 		}
+
 		return retValue;
-		
-		
+
+
 	}
 
 
 
 
 
-	public static float getFloat(String[] elems) {
-		String argument=elems[0].replaceAll(",", ".").trim();
+
+
+
+
+
+
+	private static PreciseQuantity createInvalidPreciseQuantity() {
+		return new PreciseQuantity(-1,AmountTypes.szt);
+	}
+
+
+
+
+
+
+
+
+
+
+
+	private static QuantityTranslation tryGettingTranslationToActualQuantityType(String[] elems) {
+		QuantityTranslation quantityTranslation = translations.get(elems[1].toLowerCase());
+
+		if(quantityTranslation==null){
+			Base_Word base_Name = 
+					DaoProvider.getInstance().getVariantWordDao().getBase_Name(elems[1]==null?"":elems[1].toLowerCase());
+
+			String new_word=null;
+
+
+
+			if(base_Name!=null)
+				new_word = 	base_Name.getB_word();		
+
+			if(new_word==null)
+				new_word=SJPWebScrapper.getAndSaveNewRelation(elems[1].toLowerCase());
+
+			if(new_word!=null)
+				quantityTranslation = translations.get(new_word);
+
+		}
+		return quantityTranslation;
+	}
+
+
+
+
+
+
+
+
+
+
+
+	private static PreciseQuantity tryGettingAmountFromTwoElements(String[] elems) {
+		if(elems==null||elems.length<2)
+			return null;
+
+		PreciseQuantity retValue=new PreciseQuantity();
+		String probablyFloat=elems[0].replaceAll(",", ".").trim();
+		String probablyQuantityTypePhrase=elems[1];
+		float parsedFloat = -1;
+
+		try{
+			parsedFloat=Float.parseFloat(probablyFloat);
+		}catch(NumberFormatException e){
+			ProblemLogger.logProblem("Unparsable quantity found: "+elems[0]+" "+elems[1]);
+		}
+		
+		retValue.setAmount(parsedFloat);
+		for(AmountTypes at:AmountTypes.values()){
+			if(at.getType().equals(probablyQuantityTypePhrase)){
+				retValue.setType(at);
+			}
+		}
+		
+		return retValue;
+	}
+
+	private static String[] extractAmountArrayFromSpacelessText(String text) {
+		String[] elems;
+		elems=new String[2];
+
+		Pattern p = Pattern.compile("[0-9.,]+");
+
+		Matcher m=p.matcher(text);
+
+		if(m.find()){
+			elems[0]=m.group();
+			elems[1]=text.replaceFirst(elems[0], "");
+		}
+		return elems;
+	}
+
+
+
+
+
+
+
+
+
+
+
+	private static PreciseQuantity extractRecursively(String text) {
+		if(text==null||text.isEmpty()||text.indexOf("x")<0)
+			return createInvalidPreciseQuantity();
+		
+		String[] elems=text.split("x");
+		String attemptedMultiplier=elems[0];
+		String attemptedBase=elems[1];
+		
+		
+		Float multiplier=null;
 		
 		try{
-			
-			return Float.parseFloat(argument); 
-			
-		}catch(NullPointerException e){
-			ProblemLogger.logProblem("Empty quantity found: "+elems[0]+" : "+elems[1]);
+			multiplier=Float.parseFloat(attemptedMultiplier);
 		}catch(NumberFormatException e){
-			ProblemLogger.logProblem("Unpareable quantity found: "+elems[0]+" : "+elems[1]);
+			attemptedMultiplier=elems[1];
+			attemptedBase=elems[0];
+			multiplier=Float.parseFloat(attemptedMultiplier);
 		}
 		
-		return 1f;
-
+		
+		PreciseQuantity extractedQuantity = extractQuantity(attemptedBase);
+		extractedQuantity.setAmount(extractedQuantity.getAmount()*multiplier);
+		return extractedQuantity;
 	}
-	
-	
 
-	
-	
+
+
+
+
+//	public static float getFloat(String[] elems) {
+//		String argument=elems[0].replaceAll(",", ".").trim();
+//
+//		try{
+//
+//			return Float.parseFloat(argument); 
+//
+//		}catch(NullPointerException e){
+//			ProblemLogger.logProblem("Empty quantity found: "+elems[0]+" : "+elems[1]);
+//		}catch(NumberFormatException e){
+//			ProblemLogger.logProblem("Unparsable quantity found: "+elems[0]+" : "+elems[1]);
+//		}
+//
+//		return 1f;
+//
+//	}
+
+
+
+
+
 	public static AbstractQuantity retrieveProduktAmountData(Element e) {
 		// TODO Auto-generated method stub
 		String ingredient = e.text();
 		AbstractQuantity retValue =null;
-		
+
 		if(ingredient.indexOf('(')>0&&ingredient.indexOf(')')>0){
 			String attemptedQ=
 					ingredient.substring(ingredient.indexOf('(')+1,ingredient.indexOf(')'));
-				
+
 			try{
 				retValue=extractQuantity(attemptedQ);
 			}catch(IllegalArgumentException ex){
 				retValue=null;
 			}
-			
+
 			ingredient=ingredient.replaceAll(Pattern.quote(attemptedQ), "")
 					.replaceAll("\\(", "")
 					.replaceAll("\\)", "").trim();
-			
+
 		}
-		
+
 		if(retValue==null){
 			String quantity=extractQuantityString(e);
 			retValue = extractQuantity(quantity);
 		}
-		
-		
+
+
 		return retValue;
 	}
 
-	
+
 	private static String extractQuantityString(Element e) {
-		
+
 		String quantity=e.parent().select(".quantity").text();
-		
-		
+
+
 		if(quantity==null||quantity.equals(""))
 			quantity=e.parent().parent().select(".quantity").text();
 		return quantity;
 	}
-	
+
 }

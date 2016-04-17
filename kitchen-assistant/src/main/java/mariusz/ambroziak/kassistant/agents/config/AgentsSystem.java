@@ -23,7 +23,8 @@ public class AgentsSystem {
 //				"agents.TestAgent,true,1;",
 				"mariusz.ambroziak.kassistant.agents.ShopsListAgent,false,1;",
 				"mariusz.ambroziak.kassistant.agents.ProduktAgent,false,1;",
-				"mariusz.ambroziak.kassistant.agents.ReadingAgent,false,1;"
+				"mariusz.ambroziak.kassistant.agents.ReadingAgent,false,1;",
+				"mariusz.ambroziak.kassistant.agents.FoodIngredientAgent,false,1;"
 				);
 		
 		

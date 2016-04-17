@@ -8,6 +8,7 @@ import java.util.List;
 import mariusz.ambroziak.kassistant.model.Base_Word;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.User;
+import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
@@ -94,8 +95,15 @@ public class ProduktDAOImpl implements ProduktDAO {
 	
 	@Override
 	@Transactional
-	public void addProdukt(Produkt produkt) {
-		this.sessionFactory.getCurrentSession().save(produkt);
+	public void saveProdukt(Produkt produkt) {
+		if(produkt!=null&&(produkt.getOpis()==null||produkt.getOpis().length()<Produkt.opis_length)){
+			this.sessionFactory.getCurrentSession().save(produkt);
+		}else{
+			if(produkt.getOpis()!=null&&produkt.getOpis().length()>Produkt.opis_length)
+				ProblemLogger.logProblem("Opis produktu"+produkt.getUrl()+" by³ za d³ugi, by go zapisaæ");
+		}
+		
+		
 	}
 
 	@Transactional

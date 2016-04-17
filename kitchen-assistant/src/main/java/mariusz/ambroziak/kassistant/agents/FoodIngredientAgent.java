@@ -17,7 +17,7 @@ import mariusz.ambroziak.kassistant.exceptions.AgentSystemNotStartedException;
 import mariusz.ambroziak.kassistant.exceptions.Page404Exception;
 import mariusz.ambroziak.kassistant.exceptions.ShopNotFoundException;
 import mariusz.ambroziak.kassistant.model.Base_Word;
-import mariusz.ambroziak.kassistant.model.Health_Relevant_Ingredient;
+import mariusz.ambroziak.kassistant.model.Nutrient;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.utils.PreciseQuantity;
 import mariusz.ambroziak.kassistant.model.utils.ProduktIngredientQuantity;
@@ -101,7 +101,7 @@ public class FoodIngredientAgent extends BaseAgent{
 
 	@Override
 	protected void pause(int milliSeconds) {
-		// TODO Auto-generated method stub
+		
 		super.pause(milliSeconds);
 	}
 
@@ -136,16 +136,16 @@ public class FoodIngredientAgent extends BaseAgent{
 	}
 
 
-	public static HashMap<Health_Relevant_Ingredient, PreciseQuantity> parseFoodIngredient(String name)
+	public static HashMap<Nutrient, PreciseQuantity> parseFoodIngredient(String name)
 			throws AgentSystemNotStartedException{
 		FoodIngredientAgent freeOne = getFreeAgent();
 		if(freeOne==null){
 			return null;
 		}else{
 			freeOne.setBusy(true);
-			HashMap<Health_Relevant_Ingredient, PreciseQuantity> result;
+			HashMap<Nutrient, PreciseQuantity> result;
 			try{
-				result= freeOne.getOrParseFoodIngredient(name);
+				result= freeOne.retrieveFromDbOrParseNutrientsOf(name);
 			}finally{
 				freeOne.setBusy(false);
 			}
@@ -153,9 +153,11 @@ public class FoodIngredientAgent extends BaseAgent{
 		}
 	}
 
-	private HashMap<Health_Relevant_Ingredient, PreciseQuantity> getOrParseFoodIngredient(String phrase) {
+	private HashMap<Nutrient, PreciseQuantity> retrieveFromDbOrParseNutrientsOf(String ingredientPhrase) {
+		//TODO dodaæ opcjê wyci¹gania z bazy
 		
-		return JedzDobrzeScrapper.scrapSkladnik(phrase);
+		
+		return JedzDobrzeScrapper.scrapSkladnik(ingredientPhrase);
 	}
 
 	private static FoodIngredientAgent getFreeAgent() throws AgentSystemNotStartedException {

@@ -5,6 +5,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -36,33 +37,84 @@ import webscrappers.przepisy.SkladnikiExtractor;
 @Controller
 public class TestsController {
 	public static String problems="";
-	
 
-	
+
+
+
+	@RequestMapping(value="/java8test")
+	@ResponseBody
+	public String test8(HttpServletRequest request) {
+		String retValue = "";
+
+		Optional<Integer> a = Optional.ofNullable(null);
+
+		//Optional.of - throws NullPointerException if passed parameter is null
+		Optional<Integer> b = Optional.ofNullable(null);
+
+		retValue+="First parameter is present: " + a.isPresent()+"\n";
+		retValue+="Second parameter is present: " + b.isPresent()+"\n";
+
+		//Optional.orElse - returns the value if present otherwise returns
+		//the default value passed.
+		Integer value1 = a.orElse(new Integer(0));
+
+		//Optional.get - gets the value, value should be present
+		Integer value2 = b.orElse(new Integer(1));
+		retValue+=(value1 + value2);
+		return retValue;
+
+
+
+	}
+
+	@RequestMapping(value="/test/produktsTest")
+	public ModelAndView chooseProdukts(HttpServletRequest request) {
+		String url=request.getParameter("recipeurl");
+
+		List<String> result=QuantityTesting.testQuantity(url.substring(1));
+
+		if(result==null){
+
+			return new ModelAndView("agentSystemNotStarted");
+
+		}else{
+			ModelAndView mav=new ModelAndView("quantitiesTested");
+
+			mav.addObject("url",url);
+			mav.addObject("results",result);
+
+			return mav;
+		}
+
+
+
+	}
+
+
 
 	@RequestMapping(value="/test1")
 	public ModelAndView test1(HttpServletRequest request) {
 
 		ModelAndView mav=new ModelAndView("test/test");
-		
-		
+
+
 		return mav;
 
 
 	}
-	
+
 	@RequestMapping(value="/test3")
 	public ModelAndView test3
 	(HttpServletRequest request) {
 
 		ModelAndView mav=new ModelAndView("test/test");
 		SkladnikiExtractor.main(null);
-		
+
 		return mav;
 
 
 	}
-	
+
 
 	@RequestMapping(value="/test2")
 	public ModelAndView test2(HttpServletRequest request) {
@@ -79,7 +131,7 @@ public class TestsController {
 
 
 	}
-	
+
 	@RequestMapping(value="/test/getSkladnik")
 	public ModelAndView getSkladknik(HttpServletRequest request) {
 		try {
@@ -102,18 +154,18 @@ public class TestsController {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+
 			ArrayList<String> result=new ArrayList<String>();
-			
+
 			for(Produkt p:parseProdukt)
 				result.add(p.getNazwa()+" : "+p.getUrl());
-			
+
 			mav=new ModelAndView("List");
 			mav.addObject("list", result);
 
 		}
-		
-		
+
+
 		return mav;
 
 
@@ -131,24 +183,24 @@ public class TestsController {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-	
+
 			ModelAndView mav=new ModelAndView("chooseProducts");
-	
+
 			mav.addObject("url",url);
 			mav.addObject("results",result);
-	
+
 			return mav;
 		}else{
 			List<String> result=QuantityTesting.testQuantity(url.substring(1));
-			
+
 
 			ModelAndView mav=new ModelAndView("quantitiesTested");
-			
+
 			mav.addObject("results",result);
-			
+
 			return mav;
 		}
-		
+
 
 	}
 }

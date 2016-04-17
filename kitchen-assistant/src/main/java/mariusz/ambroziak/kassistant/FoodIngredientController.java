@@ -23,7 +23,7 @@ import mariusz.ambroziak.kassistant.dao.ProduktDAO;
 import mariusz.ambroziak.kassistant.exceptions.AgentSystemNotStartedException;
 import mariusz.ambroziak.kassistant.exceptions.Page404Exception;
 import mariusz.ambroziak.kassistant.exceptions.ShopNotFoundException;
-import mariusz.ambroziak.kassistant.model.Health_Relevant_Ingredient;
+import mariusz.ambroziak.kassistant.model.Nutrient;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.User;
 import mariusz.ambroziak.kassistant.model.jsp.SearchResult;
@@ -34,6 +34,7 @@ import mariusz.ambroziak.kassistant.model.utils.ProduktIngredientQuantity;
 import mariusz.ambroziak.kassistant.model.utils.ProduktWithAllIngredients;
 import mariusz.ambroziak.kassistant.model.utils.ProduktWithBasicIngredients;
 import mariusz.ambroziak.kassistant.utils.JspStringHolder;
+import mariusz.ambroziak.kassistant.utils.StringHolder;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -51,11 +52,16 @@ import webscrappers.auchan.AuchanRecipeParser;
 
 @Controller
 public class FoodIngredientController {
-	@Autowired
-	private ProduktDAO produktDao;
-	
+
 	@RequestMapping(value="/get_food_ingredient_data")
 	public ModelAndView produkts(HttpServletRequest request) {
+		try {
+			request.setCharacterEncoding(StringHolder.ENCODING);
+		} catch (UnsupportedEncodingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
 		String phrase=request.getParameter("ingredient_phrase");
 		
 		if(phrase==null||phrase.equals(""))
@@ -66,8 +72,8 @@ public class FoodIngredientController {
 			ModelAndView mav=new ModelAndView("List");
 			ArrayList<String> lista=new ArrayList<String>();
 			
-			DaoProvider.getInstance().getHealthRelevantIngredientsDao().list();
-			HashMap<Health_Relevant_Ingredient, PreciseQuantity> scrapSkladnik = null;
+			
+			HashMap<Nutrient, PreciseQuantity> scrapSkladnik = null;
 			try {
 				scrapSkladnik = FoodIngredientAgent.parseFoodIngredient(phrase);
 			} catch (AgentSystemNotStartedException e) {
@@ -76,13 +82,17 @@ public class FoodIngredientController {
 			
 			
 			
-			lista.add("Dla skladnika zywnoœciowego: "+phrase+" znaleziono nastêpuj¹ce wartosci od¿ywcze:<br>");
+
 			
-			if(scrapSkladnik!=null)
+			if(scrapSkladnik!=null&&scrapSkladnik.size()>0)
 			{
-				for(Health_Relevant_Ingredient key:scrapSkladnik.keySet()){
+				lista.add("Dla skladnika zywnoœciowego: "+phrase+" znaleziono nastêpuj¹ce wartosci od¿ywcze:<br>");
+				
+				for(Nutrient key:scrapSkladnik.keySet()){
 					lista.add(key.getName()+" - "+scrapSkladnik.get(key));
 				}				
+			}else{
+				lista.add("Skladnika zywnoœciowego: "+phrase+" nie odnaleziono.<br>");
 			}
 			
 			
@@ -104,13 +114,13 @@ public class FoodIngredientController {
 		ModelAndView mav=new ModelAndView("List");
 		
 		DaoProvider.getInstance().getHealthRelevantIngredientsDao().list();
-		HashMap<Health_Relevant_Ingredient, PreciseQuantity> scrapSkladnik = JedzDobrzeScrapper.scrapSkladnik("banan");
+		HashMap<Nutrient, PreciseQuantity> scrapSkladnik = JedzDobrzeScrapper.scrapSkladnik("banan");
 		
 		ArrayList<String> lista=new ArrayList<String>();
 		
 		lista.add("Dla skladnika zywnoœciowego: banan znaleziono nastêpuj¹ce wartosci od¿ywcze:");
 		
-		for(Health_Relevant_Ingredient key:scrapSkladnik.keySet()){
+		for(Nutrient key:scrapSkladnik.keySet()){
 			lista.add(key.getName()+" - "+scrapSkladnik.get(key));
 			
 		}

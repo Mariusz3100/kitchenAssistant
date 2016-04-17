@@ -10,15 +10,23 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = "name"))
-public class Health_Relevant_Ingredient {
+public class Nutrient {
 
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long hr_id;
+	private Long nu_id;
 
 	@NotNull
 	private String name;
+
+	public Long getNu_id() {
+		return nu_id;
+	}
+
+	public void setNu_id(Long nu_id) {
+		this.nu_id = nu_id;
+	}
 
 	public String getName() {
 		return name;
@@ -26,14 +34,6 @@ public class Health_Relevant_Ingredient {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public Long getHr_id() {
-		return hr_id;
-	}
-
-	public void setHr_id(Long hr_id) {
-		this.hr_id = hr_id;
 	}
 
 	

@@ -82,7 +82,7 @@ public class AuchanGroup extends AuchanAbstractScrapper{
 					for(Element link: links){
 						if(link.attr("href").indexOf(validLinkPart)>-1){
 							String l=link.absUrl("href");
-							String nazwa=link.attr("title");
+							String nazwa=link.text();
 							GA_ProduktScrapped gap=new GA_ProduktScrapped(nazwa, l);
 
 							retValue.add(gap);
