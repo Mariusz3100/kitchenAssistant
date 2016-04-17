@@ -1,31 +1,31 @@
-﻿CREATE TABLE Health_Relevant_Ingredient
+CREATE TABLE Nutrient
 (
-  hr_id serial not null,
-  name varchar(25),
+  nu_id serial not null,
+  name varchar(30),
 
-  CONSTRAINT Health_Relevant_Ingredient_pk PRIMARY KEY (hr_id)
+  CONSTRAINT Health_Relevant_Ingredient_pk PRIMARY KEY (nu_id)
 );
 
-CREATE TABLE Basic_Ingredient_Health_Relevance_Amount
+CREATE TABLE Basic_Ingredient_Nutrient_amount
 (
-  bihr_id serial not null,
-  hr_id integer not null,
+  binu_id serial not null,
+  nu_id integer not null,
   bi_id integer not null,
   coeficient real,
   
-  CONSTRAINT Basic_Ingredient_Health_Relevance_Amount_pk PRIMARY KEY (bihr_id)
+  CONSTRAINT Basic_Ingredient_Nutrient_amount_pk PRIMARY KEY (binu_id)
 );
 
-ALTER TABLE Basic_Ingredient_Health_Relevance_Amount ADD CONSTRAINT Basic_Ingredient_Health_Relevance_Amount_hr
-FOREIGN KEY (hr_id)
-REFERENCES Health_Relevant_Ingredient (hr_id)
-ON DELETE NO ACTION
+ALTER TABLE Basic_Ingredient_Nutrient_amount ADD CONSTRAINT Basic_Ingredient_Nutrient_amount_nu_fk
+FOREIGN KEY (nu_id)
+REFERENCES Nutrient (nu_id)
+ON DELETE cascade
 ON UPDATE NO ACTION
 NOT DEFERRABLE;
 
-ALTER TABLE Basic_Ingredient_Health_Relevance_Amount ADD CONSTRAINT Basic_Ingredient_Health_Relevance_Amount_bi
+ALTER TABLE Basic_Ingredient_Nutrient_amount ADD CONSTRAINT Basic_Ingredient_Health_Relevance_bi
 FOREIGN KEY (bi_id)
 REFERENCES Basic_Ingredient (bi_id)
-ON DELETE NO ACTION
+ON DELETE cascade
 ON UPDATE NO ACTION
 NOT DEFERRABLE;
