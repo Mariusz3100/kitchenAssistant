@@ -73,7 +73,7 @@ public class FoodIngredientController {
 			ArrayList<String> lista=new ArrayList<String>();
 			
 			
-			HashMap<Nutrient, PreciseQuantity> scrapSkladnik = null;
+			Map<Nutrient, PreciseQuantity> scrapSkladnik = null;
 			try {
 				scrapSkladnik = FoodIngredientAgent.parseFoodIngredient(phrase);
 			} catch (AgentSystemNotStartedException e) {
@@ -113,7 +113,6 @@ public class FoodIngredientController {
 
 		ModelAndView mav=new ModelAndView("List");
 		
-		DaoProvider.getInstance().getHealthRelevantIngredientsDao().list();
 		HashMap<Nutrient, PreciseQuantity> scrapSkladnik = JedzDobrzeScrapper.scrapSkladnik("banan");
 		
 		ArrayList<String> lista=new ArrayList<String>();
@@ -129,7 +128,7 @@ public class FoodIngredientController {
 
 		
 		return mav;
-	}		
+	}
 		
 	
 	

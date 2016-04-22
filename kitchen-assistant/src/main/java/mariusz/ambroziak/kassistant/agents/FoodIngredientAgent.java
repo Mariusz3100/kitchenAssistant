@@ -4,11 +4,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 
 import madkit.kernel.AgentAddress;
 import madkit.kernel.Message;
 import madkit.message.StringMessage;
+import mariusz.ambroziak.kassistant.QuantityExtractor.AmountTypes;
 import mariusz.ambroziak.kassistant.QuantityExtractor.AuchanQExtract;
 import mariusz.ambroziak.kassistant.dao.Base_WordDAOImpl;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
@@ -17,6 +20,7 @@ import mariusz.ambroziak.kassistant.exceptions.AgentSystemNotStartedException;
 import mariusz.ambroziak.kassistant.exceptions.Page404Exception;
 import mariusz.ambroziak.kassistant.exceptions.ShopNotFoundException;
 import mariusz.ambroziak.kassistant.model.Base_Word;
+import mariusz.ambroziak.kassistant.model.Basic_Ingredient;
 import mariusz.ambroziak.kassistant.model.Nutrient;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.utils.PreciseQuantity;
@@ -28,6 +32,7 @@ import mariusz.ambroziak.kassistant.shops.ShopRecognizer;
 import mariusz.ambroziak.kassistant.utils.MessageTypes;
 import mariusz.ambroziak.kassistant.utils.ParameterHolder;
 import mariusz.ambroziak.kassistant.utils.ProblemLogger;
+import mariusz.ambroziak.kassistant.utils.SkladnikiFinder;
 import mariusz.ambroziak.kassistant.utils.StringHolder;
 
 import org.json.JSONObject;
@@ -136,14 +141,14 @@ public class FoodIngredientAgent extends BaseAgent{
 	}
 
 
-	public static HashMap<Nutrient, PreciseQuantity> parseFoodIngredient(String name)
+	public static Map<Nutrient, PreciseQuantity> parseFoodIngredient(String name)
 			throws AgentSystemNotStartedException{
 		FoodIngredientAgent freeOne = getFreeAgent();
 		if(freeOne==null){
 			return null;
 		}else{
 			freeOne.setBusy(true);
-			HashMap<Nutrient, PreciseQuantity> result;
+			Map<Nutrient, PreciseQuantity> result;
 			try{
 				result= freeOne.retrieveFromDbOrParseNutrientsOf(name);
 			}finally{
@@ -153,11 +158,85 @@ public class FoodIngredientAgent extends BaseAgent{
 		}
 	}
 
-	private HashMap<Nutrient, PreciseQuantity> retrieveFromDbOrParseNutrientsOf(String ingredientPhrase) {
-		//TODO dodaæ opcjê wyci¹gania z bazy
+	private Map<Nutrient, PreciseQuantity> retrieveFromDbOrParseNutrientsOf(String ingredientPhrase) {
+		String name=SkladnikiFinder.getBaseName(ingredientPhrase);
+		Basic_Ingredient basicIngredientFromDb = SkladnikiFinder.findBasicIngredientInDbByBaseName(name);
+		boolean nutrientsSurelyNotInDb=false;
+		if(basicIngredientFromDb==null){
+			nutrientsSurelyNotInDb=true;
+			basicIngredientFromDb=new Basic_Ingredient();
+			basicIngredientFromDb.setName(name);
+			DaoProvider.getInstance().getBasicIngredientDao().saveBasicIngredient(basicIngredientFromDb);
+		}
+		if(!nutrientsSurelyNotInDb){
+			nutrientsSurelyNotInDb=!DaoProvider.getInstance().getNutrientDao()
+					.areNutrientsForBasicIngredient(basicIngredientFromDb.getBi_id());
+		}
+		
+		Map<Nutrient, PreciseQuantity> retValue=null;
+		if(nutrientsSurelyNotInDb){
+			HashMap<Nutrient, PreciseQuantity> scrapedNutritientData = JedzDobrzeScrapper.scrapSkladnik(basicIngredientFromDb.getName());
+			saveInDb(basicIngredientFromDb,scrapedNutritientData);
+			retValue=scrapedNutritientData;
+		}else{
+			retValue=retrieveFromDbNutrientDataFor(basicIngredientFromDb);
+		}
+		
+		return retValue;
+	}
+
+	private Map<Nutrient, PreciseQuantity> retrieveFromDbNutrientDataFor(Basic_Ingredient basicIngredientFromDb) {
+		Map<Nutrient, Float> nutrientsOfBasicIngredientFromDb = DaoProvider.getInstance().getNutrientDao().getNutrientsOfBasicIngredient(basicIngredientFromDb.getBi_id());
+		Map<Nutrient, PreciseQuantity> retValue=new HashMap<Nutrient, PreciseQuantity>();
+		
+		if(nutrientsOfBasicIngredientFromDb==null||nutrientsOfBasicIngredientFromDb.isEmpty())
+			return retValue;
+		
+		for(Entry<Nutrient, Float>  e:nutrientsOfBasicIngredientFromDb.entrySet())
+		{
+			Float value = e.getValue();
+			PreciseQuantity amountPer100g=new PreciseQuantity(Math.round(value*100*1000), AmountTypes.mg);
+			
+			
+			retValue.put(e.getKey(), amountPer100g);
+		}
 		
 		
-		return JedzDobrzeScrapper.scrapSkladnik(ingredientPhrase);
+		return retValue;
+	}
+
+	private void saveInDb(Basic_Ingredient basicIngredientFromDb, HashMap<Nutrient, PreciseQuantity> scrapedNutritientData) {
+		HashMap<Nutrient, Float> percentageAmounts=getRelativeAmountsFromPreciseQuantityFor100g(scrapedNutritientData);
+		
+		DaoProvider.getInstance().getNutrientDao().saveNutrientData(basicIngredientFromDb, percentageAmounts);
+		
+	}
+
+	private HashMap<Nutrient, Float> getRelativeAmountsFromPreciseQuantityFor100g(
+			HashMap<Nutrient, PreciseQuantity> scrapedNutritientData) {
+		HashMap<Nutrient, Float> retValue=new HashMap<Nutrient, Float>();
+		
+		if(scrapedNutritientData==null||scrapedNutritientData.isEmpty())
+			return retValue;
+		
+		for(Entry<Nutrient, PreciseQuantity>  e:scrapedNutritientData.entrySet())
+		{
+			PreciseQuantity value = e.getValue();
+			
+			if(!AmountTypes.mg.equals(value.getType())&&!AmountTypes.kalorie.equals(value.getType())){
+				ProblemLogger.logProblem(
+						"Próba zapisywania w bazie innego typu iloœci sk³adnika od¿ywczego ni¿ mg.");
+			}else{
+				
+				
+				float coefficient=value.getAmount()/(100*1000);
+				
+				retValue.put(e.getKey(), coefficient);
+			}
+			
+		}
+		
+		return retValue;
 	}
 
 	private static FoodIngredientAgent getFreeAgent() throws AgentSystemNotStartedException {

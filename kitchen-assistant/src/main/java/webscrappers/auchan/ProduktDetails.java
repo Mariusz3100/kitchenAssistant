@@ -1,5 +1,6 @@
 package webscrappers.auchan;
 
+import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.utils.PreciseQuantity;
 import mariusz.ambroziak.kassistant.model.utils.QuantityProdukt;
 
@@ -54,5 +55,15 @@ public class ProduktDetails {
 		this.cena = cena;
 		this.opis = opis;
 	}
+
 	
+	public Produkt extractProduktWithoutUrl(){
+		Produkt produkt=new Produkt();
+		produkt.setCena(getCena());
+		produkt.setNazwa(getNazwa());
+		produkt.setOpis(getOpis());
+		produkt.setPrzetworzony(false);
+		
+		return produkt;
+	}
 }

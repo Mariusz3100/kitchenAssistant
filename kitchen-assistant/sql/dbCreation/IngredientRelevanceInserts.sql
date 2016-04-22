@@ -7,6 +7,8 @@ insert into Basic_Ingredient (bi_id,name) VALUES (6,'cukry');
 insert into Basic_Ingredient (bi_id,name) VALUES (7,'błonnik');
 insert into Basic_Ingredient (bi_id,name) VALUES (8,'sód');
 
+select setval('basic_ingredient_bi_id_seq',10)
+
 insert into Basic_Ingredient_Name (bin_id,bi_id,possible_name) VALUES (1,1,'energia');
 insert into Basic_Ingredient_Name (bin_id,bi_id,possible_name) VALUES (2,2,'białko');
 insert into Basic_Ingredient_Name (bin_id,bi_id,possible_name) VALUES (3,3,'tłuszcz');
@@ -16,6 +18,8 @@ insert into Basic_Ingredient_Name (bin_id,bi_id,possible_name) VALUES (6,6,'cukr
 insert into Basic_Ingredient_Name (bin_id,bi_id,possible_name) VALUES (7,7,'błonnik');
 insert into Basic_Ingredient_Name (bin_id,bi_id,possible_name) VALUES (8,8,'sód');
 insert into Basic_Ingredient_Name (bin_id,bi_id,possible_name) VALUES (10,1,'wartość energetyczna');
+
+select setval('basic_ingredient_name_bin_id_seq',10)
 
 insert into Nutrient (nu_id,name) VALUES (1,'energia');
 insert into Nutrient (nu_id,name) VALUES (2,'białko');
@@ -36,6 +40,7 @@ insert into Basic_Ingredient_Nutrient_amount (binu_id,nu_id,bi_id) VALUES (6,6,6
 insert into Basic_Ingredient_Nutrient_amount (binu_id,nu_id,bi_id) VALUES (7,7,7);
 insert into Basic_Ingredient_Nutrient_amount (binu_id,nu_id,bi_id) VALUES (8,8,8);
 
+select setval('basic_ingredient_nutrient_amount_binu_id_seq',10)
 
 insert into Nutrient (nu_id,name) VALUES (9,'Woda');
 insert into Nutrient (nu_id,name) VALUES (10,'Błonnik');
@@ -68,3 +73,5 @@ insert into Nutrient (nu_id,name) VALUES (36,'Kw. tł. nasycone');
 insert into Nutrient (nu_id,name) VALUES (37,'Kw. tł. jednonienasycone');
 insert into Nutrient (nu_id,name) VALUES (38,'Kwas Foliowy');
 insert into Nutrient (nu_id,name) VALUES (39,'Witamina A (RAE)');
+
+select setval('nutrient_nu_id_seq',40)

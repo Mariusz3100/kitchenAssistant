@@ -12,6 +12,6 @@ import mariusz.ambroziak.kassistant.model.Variant_Word;
 public interface Basic_IngredientDAO {
 	public List<Basic_Ingredient> list();
 	public Basic_Ingredient getIngredientByName(String name);
-	Basic_Ingredient getIngredientByAnyName(String name);
-
+	public Basic_Ingredient getIngredientByAnyName(String name);
+	public void saveBasicIngredient(Basic_Ingredient ingredient); 
 }

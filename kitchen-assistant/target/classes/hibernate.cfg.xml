@@ -16,7 +16,8 @@
 		<mapping class="mariusz.ambroziak.kassistant.model.Problem" />
 		<mapping class="mariusz.ambroziak.kassistant.model.Basic_Ingredient" />
 		<mapping class="mariusz.ambroziak.kassistant.model.Basic_Ingredient_Name" />
-		<mapping class="mariusz.ambroziak.kassistant.model.Health_Relevant_Ingredient" />
+		<mapping class="mariusz.ambroziak.kassistant.model.Nutrient" />
+		<mapping class="mariusz.ambroziak.kassistant.model.Basic_Ingredient_Nutrient_amount" />
 		
 	</session-factory>
 </hibernate-configuration>

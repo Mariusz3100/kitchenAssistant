@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class Basic_IngredientDAOImpl implements Basic_IngredientDAO {
 	private SessionFactory sessionFactory;
 	
-	private static final String selectBase="select basic_ingredient.* from basic_ingredient_name inner join basic_ingredient on basic_ingredient_name.bi_id=basic_ingredient.bi_id\r\n" + 
+	private static final String selectBase="select basic_ingredient.* from basic_ingredient_name right join basic_ingredient on basic_ingredient_name.bi_id=basic_ingredient.bi_id\r\n" + 
 			" where possible_name  ='__name__' or name='__name__' limit 1";
 
 	public Basic_IngredientDAOImpl(SessionFactory sessionFactory) {
@@ -67,6 +67,13 @@ public class Basic_IngredientDAOImpl implements Basic_IngredientDAO {
 			return null;
 		else
 			return ingredients.get(0);
+	}
+
+	@Override
+	@Transactional
+	public void saveBasicIngredient(Basic_Ingredient ingredient) {
+		sessionFactory.getCurrentSession().save(ingredient);
+		
 	}
 
 }

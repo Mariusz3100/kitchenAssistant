@@ -1,11 +1,13 @@
 package mariusz.ambroziak.kassistant.dao;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import mariusz.ambroziak.kassistant.model.Base_Word;
 import mariusz.ambroziak.kassistant.model.Basic_Ingredient;
+import mariusz.ambroziak.kassistant.model.Basic_Ingredient_Nutrient_amount;
 import mariusz.ambroziak.kassistant.model.Nutrient;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.User;
@@ -16,6 +18,7 @@ import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -23,10 +26,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 public class NutrientDAOImpl implements NutrientDAO {
 	private SessionFactory sessionFactory;
-	private Basic_Ingredient basicIngredient;
+	private Basic_IngredientDAO basicIngredient;
 	
 	
-	public NutrientDAOImpl(SessionFactory sessionFactory, Basic_Ingredient basicIngredient) {
+	public NutrientDAOImpl(SessionFactory sessionFactory, Basic_IngredientDAO basicIngredient) {
 		this.sessionFactory = sessionFactory;
 		this.basicIngredient=basicIngredient;
 	}
@@ -82,37 +85,40 @@ public class NutrientDAOImpl implements NutrientDAO {
 	
 	@Override
 	@Transactional
-	public Map<Nutrient,PreciseQuantity> getNutrientsOfBasicIngredient(Long basicIngredientId) {
-//		@SuppressWarnings("unchecked")
-//		List<Basic_Ingredient> ingredients = (List<Basic_Ingredient>) sessionFactory.getCurrentSession()
-//				.createSQLQuery(selectBase.replaceAll("__name__", name))
-//				.addEntity(Basic_Ingredient.class)
-//				.list();
-//
-//		
-//		
-//		
-//		
-//		if(ingredients==null||ingredients.size()<1)
-//			return null;
-//		else
-//			return ingredients.get(0);
-		return null;
+	public Map<Nutrient,Float> getNutrientsOfBasicIngredient(Long basicIngredientId) {
+		@SuppressWarnings("unchecked")
+		List<Basic_Ingredient_Nutrient_amount> amounts = (List<Basic_Ingredient_Nutrient_amount>) sessionFactory.getCurrentSession()
+				.createCriteria(Basic_Ingredient_Nutrient_amount.class)
+		        .add(Restrictions.eq("basicIngredient.id", basicIngredientId)).list();
+
+		Map<Nutrient,Float> retValue=new HashMap<Nutrient, Float>();
+		
+		for(Basic_Ingredient_Nutrient_amount nutrient_amount:amounts){
+			retValue.put(nutrient_amount.getNutritient(), nutrient_amount.getCoefficient());
+		}
+		
+		return retValue;
 	}
 
 	
 	
 	@Override
-	public void saveNutrientData(Long basicIngredientId, Map<Nutrient, PreciseQuantity> nutrientsAmounts) {
-		for(Entry<Nutrient, PreciseQuantity> e:nutrientsAmounts.entrySet()){
+	@Transactional
+	public void saveNutrientData(Basic_Ingredient basicIngredient, Map<Nutrient, Float> nutrientsAmounts) {
+		for(Entry<Nutrient, Float> e:nutrientsAmounts.entrySet()){
 			Nutrient nutrient = e.getKey();
 			if(nutrient!=null){
-				boolean nutrientIsInDb = isNutritientInDb(nutrient);
+				boolean nutrientIsInDbAndHasId = isNutritientInDb(nutrient);
 				
-				if(!nutrientIsInDb){
+				if(!nutrientIsInDbAndHasId){
 					ProblemLogger.logProblem("Nutritient was not found in database: "+nutrient.getName());
 				}else{
+					Basic_Ingredient_Nutrient_amount basicIngredientNutritientAmount=new Basic_Ingredient_Nutrient_amount();
+					basicIngredientNutritientAmount.setBasicIngredient(basicIngredient);
+					basicIngredientNutritientAmount.setNutritient(nutrient);
+					basicIngredientNutritientAmount.setCoefficient(e.getValue());
 					
+					this.sessionFactory.getCurrentSession().save(basicIngredientNutritientAmount);
 				}
 			}
 		}
@@ -133,6 +139,22 @@ public class NutrientDAOImpl implements NutrientDAO {
 			
 		}
 		return nutrientIsInDb;
+	}
+
+
+
+
+	@Override
+	@Transactional
+	public boolean areNutrientsForBasicIngredient(Long basicIngredientId) {
+		return sessionFactory.getCurrentSession()
+		.createCriteria(Basic_Ingredient_Nutrient_amount.class)
+        .add(Restrictions.eq("basicIngredient.id", basicIngredientId))
+        .setProjection(Projections.property("basicIngredient.id"))
+        .setFirstResult(0).setMaxResults(1)
+        .uniqueResult() != null;
+		
+		
 	}
 
 }

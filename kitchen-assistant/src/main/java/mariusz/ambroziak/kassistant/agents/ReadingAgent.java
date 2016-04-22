@@ -19,6 +19,7 @@ import mariusz.ambroziak.kassistant.model.Base_Word;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.utils.ProduktIngredientQuantity;
 import mariusz.ambroziak.kassistant.model.utils.ProduktWithAllIngredients;
+import mariusz.ambroziak.kassistant.model.utils.ProduktWithBasicIngredients;
 import mariusz.ambroziak.kassistant.model.utils.QuantityProdukt;
 import mariusz.ambroziak.kassistant.shops.ShopRecognizer;
 import mariusz.ambroziak.kassistant.utils.MessageTypes;
@@ -150,7 +151,7 @@ public class ReadingAgent extends BaseAgent{
 	}
 
 
-	public static ProduktWithAllIngredients parseSklad(String produktUrl)
+	public static ProduktWithAllIngredients parseFullSklad(String shortUrl)
 			throws AgentSystemNotStartedException, ShopNotFoundException, Page404Exception{
 		ReadingAgent freeOne = getFreeAgent();
 		if(freeOne==null){
@@ -159,7 +160,7 @@ public class ReadingAgent extends BaseAgent{
 			freeOne.setBusy(true);
 			ProduktWithAllIngredients result;
 			try{
-				result= freeOne.getOrParseFoodIngredients(produktUrl);
+				result= freeOne.getOrParseAllFoodIngredients(shortUrl);
 			}finally{
 				freeOne.setBusy(false);
 			}
@@ -171,17 +172,17 @@ public class ReadingAgent extends BaseAgent{
 
 
 
-	private ProduktWithAllIngredients getOrParseFoodIngredients(
-			String produktUrl) throws ShopNotFoundException, AgentSystemNotStartedException, Page404Exception {
+	private ProduktWithAllIngredients getOrParseAllFoodIngredients(String shortUrl)
+			throws ShopNotFoundException, AgentSystemNotStartedException, Page404Exception {
 		
-		Produkt produkt = DaoProvider.getInstance().getProduktDao().getProduktsByURL(produktUrl);
-		
-		if(produkt==null){
-			
-			
-		}
-		
-		ProduktWithAllIngredients produktWithIngredinets = AuchanRecipeParser.getAllIngredients(produktUrl);
+//		Produkt produkt = DaoProvider.getInstance().getProduktDao().getProduktsByURL(shortUrl);
+//		
+//		if(produkt==null){
+//			
+//			
+//		}
+		//TODO retrieve from DB!!!!!
+		ProduktWithAllIngredients produktWithIngredinets = AuchanRecipeParser.getAllIngredients(shortUrl);
 		
 //		if(produkt.isPrzetworzony()){
 //			//TODO retrieve from DB 
@@ -227,6 +228,28 @@ public class ReadingAgent extends BaseAgent{
 			}
 		}
 		return freeOne;
+	}
+
+	public static ProduktWithBasicIngredients parseBasicSklad(String shortUrl)
+			throws AgentSystemNotStartedException, ShopNotFoundException, Page404Exception {
+		ReadingAgent freeOne = getFreeAgent();
+		if(freeOne==null){
+			return null;
+		}else{
+			freeOne.setBusy(true);
+			ProduktWithBasicIngredients result;
+			try{
+				result= freeOne.getOrParseBasicFoodIngredients(shortUrl);
+			}finally{
+				freeOne.setBusy(false);
+			}
+			return result;
+		}
+	}
+
+	private ProduktWithBasicIngredients getOrParseBasicFoodIngredients(String shortUrl) throws Page404Exception {
+
+		return  AuchanRecipeParser.getBasics(shortUrl);
 	}
 
 	

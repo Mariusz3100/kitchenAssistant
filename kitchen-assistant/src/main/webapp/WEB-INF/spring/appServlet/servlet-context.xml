@@ -88,7 +88,7 @@
 			<ref bean="sessionFactory" />
 		</constructor-arg>
 		<constructor-arg>
-			<ref bean="basic_ingredientNameDAO" />
+			<ref bean="basic_ingredientDAO" />
 		</constructor-arg>
 
 	</bean>
@@ -134,7 +134,7 @@
 		</constructor-arg>
 
 		<constructor-arg>
-			<ref bean="nutrientsDao" />
+			<ref bean="nutrientDao" />
 		</constructor-arg>
 
 
