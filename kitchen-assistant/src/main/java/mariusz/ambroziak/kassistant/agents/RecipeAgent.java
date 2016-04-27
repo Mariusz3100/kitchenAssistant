@@ -72,8 +72,6 @@ public class RecipeAgent extends BaseAgent{
 	private static final long serialVersionUID = 1L;
 	public  static final boolean checkShops = true;
 
-//	DatabaseInterface interfac;
-
 	public void setBusy(boolean busy) {
 		this.busy = busy;
 	}
@@ -86,20 +84,9 @@ public class RecipeAgent extends BaseAgent{
 	@Override
 	protected void live() {
 		
-		StringMessage m=(StringMessage) waitNextMessageKA();
-		
-		processMessage(m);
-		
 		while(true){
-			pause(1000);
+			pause(10000);
 		}
-	}
-
-	private void processMessage(StringMessage m) {
-		Message messageSentEarlier = getMessageSentEarlier(m.getConversationID());
-		
-		
-		
 	}
 
 
@@ -116,16 +103,9 @@ public class RecipeAgent extends BaseAgent{
 		}
 		
 		requestRole(AGENT_COMMUNITY, AGENT_GROUP, PARSER_NAME);
-//		requestRole(AGENT_COMMUNITY, ShopsListAgent.GUIDANCE_GROUP, AGENT_ROLE);
-		
-		//		interfac=DatabaseInterface.getDBInterface();
 
 		if(agents==null)agents=new ArrayList<RecipeAgent>();
 		agents.add(this);
-//		AgentAddress x=getAgentWithRole(AGENT_COMMUNITY, AGENT_GROUP, "manager");
-
-//		pause(500);
-
 		
 		setLogLevel(Level.FINEST);
 		super.activate();
@@ -134,7 +114,6 @@ public class RecipeAgent extends BaseAgent{
 	public RecipeAgent() {
 		super();
 		AGENT_COMMUNITY=StringHolder.AGENT_COMMUNITY;
-//		AGENT_GROUP = StringHolder.SERVLETS_GROUP;
 		AGENT_ROLE=PARSER_NAME;
 		
 	}
@@ -173,20 +152,6 @@ public class RecipeAgent extends BaseAgent{
 			return null;
 	}
 	
-	
-	public static ArrayList<SearchResult> getProdukt(String produktUrl) throws AgentSystemNotStartedException{
-		RecipeAgent freeOne = getFreeAgent();
-		if(freeOne!=null)
-		{
-			freeOne.busy=true;
-			ArrayList<SearchResult> result= freeOne.getFromDbOrParseProdukt(produktUrl);
-			freeOne.busy=false;
-			return result;
-		}else 
-			return null;
-		
-	}
-	
 	public static List<Produkt> searchForProdukt(String searchPhrase,String quantityPhrase) throws AgentSystemNotStartedException{
 		RecipeAgent freeOne = getFreeAgent();
 		if(freeOne==null){
@@ -202,42 +167,11 @@ public class RecipeAgent extends BaseAgent{
 			return result;
 		}
 	}
-	
-	private ArrayList<SearchResult> getFromDbOrParseProdukt(String produktUrl) {
-		
-		
-		Produkt produkts = getProduktFromDbByUrl(produktUrl);
-		
-		
-		if(produkts==null){
-			if(ParameterHolder.isCheckShops()){
-				JSONObject json = new JSONObject();
-				
-				json.put(StringHolder.PRODUKT_URL_NAME, produktUrl);
-				json.put(StringHolder.MESSAGE_CREATOR_NAME, PARSER_NAME);
-				json.put(StringHolder.MESSAGE_TYPE_NAME, MessageTypes.GetProduktData);
-//				json.put(StringHolder.MESSAGE_ID_NAME, MessageCounter.getCount());
-				
-				AgentAddress x=getAgentWithRole(StringHolder.AGENT_COMMUNITY, AGENT_GROUP, ShopsListAgent.SHOP_LIST_NAME);
-		
-				StringMessage messageToSend = new StringMessage(json.toString());
-				StringMessage response=(StringMessage) 
-						sendMessageWithRoleAndWaitForReplyKA(x, messageToSend,PARSER_NAME);
-				
-				//TODO resume work
-	
-				
-				
-			}
-		}
-		return null;
-	}
 
 
 	public Produkt getProduktFromDbByUrl(String produktUrl) {
 		return produktDao.getProduktsByURL(produktUrl);
 	}
-
 
 	private static RecipeAgent getFreeAgent() throws AgentSystemNotStartedException {
 		RecipeAgent freeOne=null;
@@ -268,9 +202,6 @@ public class RecipeAgent extends BaseAgent{
 	}
 		return freeOne;
 	}
-
-	
-
 
 	private ArrayList<SearchResult> getFromDbOrParseRecipe(String url) {
 		
@@ -311,23 +242,11 @@ public class RecipeAgent extends BaseAgent{
 
 			Document doc = Jsoup.parse(html);
 
-
 			Elements ings=doc.select("[itemprop=\"recipeIngredient\"]");
 
-
 			for(Element e:ings){
-//				ArrayList<Produkt> znalezioneProdukty=new ArrayList<Produkt>()
-				
 				String ingredient = e.text();
-//				Recipe_Ingredient quantityRetrieved =null;
-				
-				
 				QuantityProdukt produktAndAmount=retrieveProduktAmountData(e);
-//				
-//				 
-//				List<Produkt> potencjalneSkladniki = findSkladnik(produktAndAmount.getProduktPhrase());
-				
-				
 				SearchResult sr = parseSkladnik(produktAndAmount.getProduktPhrase(), produktAndAmount);
 				retValue.add(sr);
 				
@@ -343,49 +262,12 @@ public class RecipeAgent extends BaseAgent{
 
 			}
 
-
-
 		}catch( IOException e){
 			e.printStackTrace();
 		}
-
-
-
 		return retValue;
 	}
 
-	@Deprecated
-	public SearchResult parseSkladnik(String extendedSearchPhrase){
-		
-		if(extendedSearchPhrase==null||extendedSearchPhrase.equals("")){
-			return null;
-		}else{
-			if(extendedSearchPhrase.contains(StringHolder.SQPhrasesDivider+StringHolder.SQPhrasesDivider))
-				extendedSearchPhrase=extendedSearchPhrase.replaceAll(StringHolder.SQPhrasesDivider+StringHolder.SQPhrasesDivider,
-						StringHolder.SQPhrasesDivider);
-			
-			
-			String searchPhrase=null,quanPhrase=null;
-			
-			
-			String[] splitted=extendedSearchPhrase.split(StringHolder.SQPhrasesDivider);
-				
-			searchPhrase=splitted[0];
-			if(splitted.length>1){
-				quanPhrase=splitted[1];
-			}
-			
-			
-			QuantityProdukt qp=retrieveProduktAmountData(searchPhrase,quanPhrase);
-			
-			
-			return parseSkladnik(extendedSearchPhrase, qp);
-		}
-		
-
-		
-		
-	}
 
 	public SearchResult parseSkladnik(String searchPhrase, String  quanPhrase) {
 		QuantityProdukt qp=retrieveProduktAmountData(searchPhrase,quanPhrase);
@@ -424,20 +306,17 @@ public class RecipeAgent extends BaseAgent{
 		return quantity;
 	}
 
-	private static QuantityProdukt retrieveQuantity(String quantity) {
-		return PrzepisyPLQExtract.extractQuantity(quantity);
-		
-		
-		
-	}
+//	private static QuantityProdukt retrieveQuantity(String quantity) {
+//		return PrzepisyPLQExtract.extractQuantity(quantity);
+//		
+//		
+//		
+//	}
 
 
 	private List<Produkt> findSkladnik(String text) {
 		List<Produkt> results;
 		ArrayList<String> baseWords = null;
-		
-		
-		
 		results=checkInDb(text);
 
 		if(results==null||results.size()<1){
@@ -464,13 +343,7 @@ public class RecipeAgent extends BaseAgent{
 		if(results==null||results.size()<1){
 			results=checkShops(text);
 		}
-
-
-		
-		
 		return results;
-
-
 	}
 
 
@@ -534,8 +407,6 @@ public class RecipeAgent extends BaseAgent{
 				.getProduktDao()
 				.getProduktsBySpacedName(text));
 
-
-
 		return retValue;
 	}
 
@@ -547,31 +418,8 @@ public class RecipeAgent extends BaseAgent{
 				.getProduktDao()
 				.getProduktsByNames(texts));
 
-
-
 		return retValue;
 	}
-
-//	private List<Produkt> adjustForBaseWordForm(String text) {
-//		String[] words=text.split(" ");
-//		ArrayList<String> wordsList=new ArrayList<String>();
-//		
-//		for(String x : words)
-//			wordsList.add(x);
-//		
-//		ProduktDAO produktDao = DaoProvider.getInstance().getProduktDao();
-//		
-//		return produktDao.getProduktsByVariantNames(wordsList);
-//		
-//	}
-
-//
-//	private Produkt checkShops(String text) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-
-//	 JsonParserFactory factory=JsonParserFactory.getInstance();
 
 
 	private ArrayList<Produkt> checkShops(String text) {
@@ -613,40 +461,4 @@ public class RecipeAgent extends BaseAgent{
 			return null;
 		}
 	}
-//
-//	private ArrayList<Produkt> adjustForBaseWordForm(String text) {
-//		String query=selectProductThroughBaseWord.replaceAll("__v_word__", text);
-//		ArrayList<Produkt> results=new ArrayList<Produkt>();
-//		ResultSet rs = interfac.runQuery(query);
-//
-//		try {
-//			if(rs.next()){
-//				results.add(new Produkt(rs.getString("nazwa"),rs.getString("url")));
-//			}
-//		} catch (SQLException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//
-//		return results;
-//
-//	}
-//
-//	private ArrayList<Produkt> checkInDb(String text) {
-//		String query=selectSkladnikQ.replaceAll("__nazwa_skladnika__", "%"+text+"%");
-//		ArrayList<Produkt> results=new ArrayList<Produkt>();
-//		ResultSet rs = interfac.runQuery(query);
-//
-//		try {
-//			while(rs.next()){
-//				results.add(new Produkt(rs.getString("nazwa"),rs.getString("url")));
-//			}
-//		} catch (SQLException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//
-//		return results;
-//	}
-
 }

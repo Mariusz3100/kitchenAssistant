@@ -57,11 +57,6 @@ public class ReadingAgent extends BaseAgent{
 	static ArrayList<ReadingAgent> agents;
 	private boolean busy=false;
 
-
-//	@Autowired
-//	private ProduktDAO produktDao;
-	
-	
 	public static final String PARSER_NAME = "labelParser";
 
 	private static final long serialVersionUID = 1L;
@@ -79,39 +74,12 @@ public class ReadingAgent extends BaseAgent{
 
 	@Override
 	protected void live() {
-		
-		StringMessage m=(StringMessage) waitNextMessageKA();
-		
-		
-		processMessage(m);
-		
+				
 		while(true){
 			pause(1000);
 		}
 	}
 
-	private void processMessage(StringMessage m) {
-		setBusy(true);
-				
-		
-		
-		
-		
-//		Message messageSentEarlier = getMessageSentEarlier(m.getConversationID());
-//		
-//		if(messageSentEarlier==null){
-//			//TODO message from recipe parser
-//
-//		}else{
-//			//message from shoplist with some results
-//			JSONObject message=new JSONObject(m.getContent());
-//			
-//			
-//			
-//		}
-		
-		setBusy(false);
-	}
 
 
 	@Override
@@ -131,8 +99,6 @@ public class ReadingAgent extends BaseAgent{
 
 		if(agents==null)agents=new ArrayList<ReadingAgent>();
 		agents.add(this);
-
-
 		
 		setLogLevel(Level.FINEST);
 		super.activate();
@@ -167,40 +133,15 @@ public class ReadingAgent extends BaseAgent{
 			return result;
 		}
 	}
-	
-	
-
-
 
 	private ProduktWithAllIngredients getOrParseAllFoodIngredients(String shortUrl)
 			throws ShopNotFoundException, AgentSystemNotStartedException, Page404Exception {
 		
-//		Produkt produkt = DaoProvider.getInstance().getProduktDao().getProduktsByURL(shortUrl);
-//		
-//		if(produkt==null){
-//			
-//			
-//		}
-		//TODO retrieve from DB!!!!!
 		ProduktWithAllIngredients produktWithIngredinets = AuchanRecipeParser.getAllIngredients(shortUrl);
-		
-//		if(produkt.isPrzetworzony()){
-//			//TODO retrieve from DB 
-//		}else{
-//			
-//		}
-		
-		
+				
 		return produktWithIngredinets;
 	}
 
-	private Produkt scrapProdukt(String produktUrl) {
-		String shortUrl=ShopRecognizer.getShortestWorkingUrl(produktUrl);
-		
-		
-		
-		return null;
-	}
 
 	private static ReadingAgent getFreeAgent() throws AgentSystemNotStartedException {
 		ReadingAgent freeOne=null;
@@ -214,7 +155,6 @@ public class ReadingAgent extends BaseAgent{
 				for(ReadingAgent ra:agents){
 					if(!ra.isBusy()){
 						freeOne=ra;
-	
 					}
 				}
 				if(freeOne==null){

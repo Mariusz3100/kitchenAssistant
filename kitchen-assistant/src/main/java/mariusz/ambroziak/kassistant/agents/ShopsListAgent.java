@@ -74,10 +74,6 @@ public class ShopsListAgent extends BaseAgent {
 				addMessagesRelation((StringMessage) m,newM);
 				sendMessageWithRole(x, newM,ShopsListAgent.SHOP_LIST_NAME);
 
-
-
-
-
 			}else if(json.get(StringHolder.MESSAGE_TYPE_NAME).equals(MessageTypes.SearchForResponse.toString())){
 				if(!m.getSender().getRole().equals(AuchanAgent.AUCHAN_WEB_SCRAPPER_NAME)){
 					ProblemLogger.logProblem("Received searchForResponse Message not from shop agent");
@@ -85,7 +81,6 @@ public class ShopsListAgent extends BaseAgent {
 				}
 				StringMessage newM=new StringMessage(((StringMessage)m).getContent());
 				StringMessage originalOne=getOriginalMessage(m.getConversationID());
-
 				
 				sendReply(originalOne, newM);//(x, newM,ShopsListAgent.SHOP_LIST_NAME);
 
@@ -94,8 +89,6 @@ public class ShopsListAgent extends BaseAgent {
 				
 				String url = json.getString(StringHolder.PRODUKT_URL_NAME);
 				AgentAddress x=getProperAgentAdress(url);
-				
-				//AgentAddress x=getAgentWithRole(AGENT_COMMUNITY, StringHolder.SCRAPPERS_GROUP, AuchanAgent.AUCHAN_WEB_SCRAPPER_NAME);
 				
 				if(x==null){
 					JSONObject response=new JSONObject();
@@ -108,13 +101,10 @@ public class ShopsListAgent extends BaseAgent {
 					sendMessageWithRoleKA(x, newM,ShopsListAgent.SHOP_LIST_NAME);
 				}
 			}else if(json.get(StringHolder.MESSAGE_TYPE_NAME).equals(MessageTypes.GetProduktDataResponse.toString())){
-				//				AgentAddress x=getAgentWithRole(AGENT_COMMUNITY, StringHolder.SCRAPPERS_GROUP, AuchanAgent.AUCHAN_WEB_SCRAPPER_NAME);
 				StringMessage originalOne=getOriginalMessage(m.getConversationID());
 				StringMessage newM=new StringMessage(((StringMessage)m).getContent());
 				sendReply(originalOne, newM);//(x, newM,ShopsListAgent.SHOP_LIST_NAME);
 
-				//				StringMessage newM=new StringMessage(((StringMessage)m).getContent());
-				//				sendMessageWithRole(x, newM,ShopsListAgent.SHOP_LIST_NAME);
 			}
 
 
@@ -163,16 +153,8 @@ public class ShopsListAgent extends BaseAgent {
 		setLogLevel(Level.FINEST);
 
 
-		if(instance==null)instance=this;
-		//		adresses=new ArrayList<AgentAddress>();
-		//		adresses.add(
-		//				getAgentWithRole(StringHolder.AGENT_COMMUNITY, StringHolder.SCRAPPERS_GROUP, "auchanWebScrapper"));
-
-
-
-
-
-
+		if(instance==null)
+			instance=this;
 	}
 
 
@@ -205,9 +187,5 @@ public class ShopsListAgent extends BaseAgent {
 		
 		
 	}
-	//	public static void main(String[] arg){
-	//		AgentAddress x=getAgentWithRole(StringHolder.AGENT_COMMUNITY, StringHolder.SCRAPPERS_GROUP, AuchanAgent.AUCHAN_WEB_SCRAPPER_NAME);
-	//		StringMessage newM=new StringMessage(((StringMessage)m).getContent());
-	//		sendMessage(x, newM);
-	//	}
+
 }

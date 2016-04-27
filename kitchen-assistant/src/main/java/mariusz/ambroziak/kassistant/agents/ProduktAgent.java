@@ -41,20 +41,12 @@ import webscrappers.auchan.AuchanAbstractScrapper;
 import webscrappers.przepisy.PrzepisyPLQExtract;
 
 public class ProduktAgent extends BaseAgent{
-
+	public static final String PARSER_NAME = "produktParser";
+	private static final long serialVersionUID = 1L;
+	
 	static ArrayList<ProduktAgent> agents;
 	private boolean busy=false;
-
-
-//	@Autowired
-//	private ProduktDAO produktDao;
-	
-	
-	public static final String PARSER_NAME = "produktParser";
-
-	private static final long serialVersionUID = 1L;
 	public  static final boolean checkShops = true;
-
 
 	public void setBusy(boolean busy) {
 		this.busy = busy;
@@ -67,39 +59,12 @@ public class ProduktAgent extends BaseAgent{
 
 	@Override
 	protected void live() {
-		
-		StringMessage m=(StringMessage) waitNextMessageKA();
-		
-		
-		processMessage(m);
-		
 		while(true){
-			pause(1000);
+			pause(10000);
 		}
 	}
 
-	private void processMessage(StringMessage m) {
-		setBusy(true);
-				
-		
-		
-		
-		
-//		Message messageSentEarlier = getMessageSentEarlier(m.getConversationID());
-//		
-//		if(messageSentEarlier==null){
-//			//TODO message from recipe parser
-//
-//		}else{
-//			//message from shoplist with some results
-//			JSONObject message=new JSONObject(m.getContent());
-//			
-//			
-//			
-//		}
-		
-		setBusy(false);
-	}
+
 
 
 	@Override
@@ -179,34 +144,18 @@ public class ProduktAgent extends BaseAgent{
 	
 	
 	private Produkt getFromDbOrScrapProdukt(String produktUrl) throws ShopNotFoundException {
-		
-		
 		String shortUrl=ShopRecognizer.getShortestWorkingUrl(produktUrl);
-		
 		Produkt produkt = getProduktFromDbByUrl(shortUrl);
 
 		if(produkt==null){
 			if(ParameterHolder.isCheckShops()){
-				JSONObject json = new JSONObject();
-				
-				json.put(StringHolder.PRODUKT_URL_NAME, shortUrl);
-				json.put(StringHolder.MESSAGE_CREATOR_NAME, PARSER_NAME);
-				json.put(StringHolder.MESSAGE_TYPE_NAME, MessageTypes.GetProduktData);
-//				json.put(StringHolder.MESSAGE_ID_NAME, MessageCounter.getCount());
+				StringMessage messageToSend = createGetProduktByUrlMessage(shortUrl);
 				
 				AgentAddress x=getAgentWithRole(StringHolder.AGENT_COMMUNITY, AGENT_GROUP, ShopsListAgent.SHOP_LIST_NAME);
-		
-				StringMessage messageToSend = new StringMessage(json.toString());
-				
-				
-				
-				
+
 				StringMessage reply = (StringMessage) sendMessageWithRoleAndWaitForReplyKA(x, messageToSend,PARSER_NAME);
-				
-				
 				JSONObject jsonResponse = new JSONObject(reply.getContent());
-				
-				
+
 				if(jsonResponse.has(StringHolder.NO_RESULT_INFO_NAME))
 				{
 					if(StringHolder.NO_RESULT_UNKNOWN_SHOP.toString().equals(
@@ -215,39 +164,46 @@ public class ProduktAgent extends BaseAgent{
 					}
 				}else if(jsonResponse.has(StringHolder.SINGLE_PRODUKT_ID_NAME))
 				{
-					
-					
-					
+				//TODO co tu powinno byæ w ogóle?	
+					produkt=processSingleIdStringMessage(jsonResponse, produktUrl,shortUrl);
 				}else{
-					ProblemLogger.logProblem("some weird message: "+jsonResponse);
+					ProblemLogger.logProblem("some weird message: "+jsonResponse+" in produktAgent");
 				}
-				
-				
-				
-				String stringId=(String) jsonResponse.get(StringHolder.SINGLE_PRODUKT_ID_NAME);
-				
-				if(stringId==null||stringId.equals(""))
-				{
-					ProblemLogger.logProblem("For url "+produktUrl+"->"+shortUrl
-							+" no produkt was found");
-					return null;
-				}
-				try{
-					Long id=Long.parseLong(stringId);
-					produkt=DaoProvider.getInstance().getProduktDao().getById(id);
-
-				}catch(NumberFormatException e){
-					ProblemLogger.logProblem("For url "+produktUrl+"->"+shortUrl
-							+" found ids are '"+stringId+"'");
-				}
-				
-				
 				
 			}
 		}
 		return produkt;
 	}
 
+	private StringMessage createGetProduktByUrlMessage(String shortUrl) {
+		JSONObject json = new JSONObject();
+		json.put(StringHolder.PRODUKT_URL_NAME, shortUrl);
+		json.put(StringHolder.MESSAGE_CREATOR_NAME, PARSER_NAME);
+		json.put(StringHolder.MESSAGE_TYPE_NAME, MessageTypes.GetProduktData);
+		StringMessage messageToSend = new StringMessage(json.toString());
+		return messageToSend;
+	}
+
+
+	private Produkt processSingleIdStringMessage(JSONObject jsonResponse, String produktUrl,String shortUrl) {
+		String stringId=(String) jsonResponse.get(StringHolder.SINGLE_PRODUKT_ID_NAME);
+		Produkt retValue=null;
+		if(stringId==null||stringId.equals(""))
+		{
+			ProblemLogger.logProblem("For url "+produktUrl+"->"+shortUrl
+					+" no produkt was found");
+			return null;
+		}
+		try{
+			Long id=Long.parseLong(stringId);
+			retValue=DaoProvider.getInstance().getProduktDao().getById(id);
+
+		}catch(NumberFormatException e){
+			ProblemLogger.logProblem("For url "+produktUrl+"->"+shortUrl
+					+" found id is invalid numbers:'"+stringId+"'");
+		}
+		return retValue;
+	}
 
 	public Produkt getProduktFromDbByUrl(String produktUrl) {
 		return DaoProvider.getInstance().getProduktDao().getProduktsByURL(produktUrl);
@@ -281,19 +237,6 @@ public class ProduktAgent extends BaseAgent{
 	}
 		return freeOne;
 	}
-
-	
-//	private QuantityProdukt retrieveProduktAmountData(Element e) {
-//		// TODO Auto-generated method stub
-//		String ingredient = e.text();
-//		QuantityProdukt retValue =null;
-//		
-//
-//		
-//		retValue=AuchanQExtract.retrieveProduktAmountData(e);
-//		return retValue;
-//	}
-
 
 	private String extractQuantity(Element e) {
 		
@@ -369,11 +312,8 @@ public class ProduktAgent extends BaseAgent{
 	private List<Produkt> checkShops(ArrayList<String> baseWords) {
 		
 		String baseWordsString="";
-		
-		
 		for(String x:baseWords){
-			if(!Base_WordDAOImpl.niepoprawneSlowoBazowe.equals(baseWordsString))
-				baseWordsString+=x+" ";
+			baseWordsString+=x+" ";
 		}
 		
 		
@@ -469,6 +409,4 @@ public class ProduktAgent extends BaseAgent{
 			return null;
 		}
 	}
-
-
 }

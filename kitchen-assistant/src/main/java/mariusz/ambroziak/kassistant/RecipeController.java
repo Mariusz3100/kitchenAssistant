@@ -217,7 +217,7 @@ public class RecipeController {
 
 		
 		if(usersBadChoice.isEmpty()){
-			ModelAndView mav=new ModelAndView("productsData");
+			ModelAndView mav=new ModelAndView("correctQuanities");
 			
 			return mav;
 		}else{

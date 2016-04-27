@@ -64,8 +64,6 @@ public class AuchanAgent extends BaseAgent {
 
 
 	public static boolean agentOn=true;
-	//	AuchanWebScrapper webScrapper;
-
 	private static ArrayList<GA_ProduktScrapped> produktsToScrap;
 
 	public AuchanAgent() {
@@ -79,12 +77,9 @@ public class AuchanAgent extends BaseAgent {
 	@Override
 	protected void live() {
 		super.live();
-
-
 		StringMessage m;
 
 		while(true){
-
 
 			m = nextMessageKA();
 			if(m!=null)
@@ -92,13 +87,6 @@ public class AuchanAgent extends BaseAgent {
 			else
 				enjoyYourOwn();
 		}
-
-
-
-
-		//	BufferedReader br=null;
-
-
 	}
 
 	public void enjoyYourOwn() {
@@ -128,9 +116,6 @@ public class AuchanAgent extends BaseAgent {
 
 			}
 		}
-		//		try {
-		//			ArrayList<Produkt> x=null;//webScrapper.lookup(message.getString(StringHolder.SEARCH4_NAME));
-		//			AgentAddress other=getAgentWithRole(AGENT_COMMUNITY, AGENT_GROUP, ShopsListAgent.SHOP_LIST_NAME);
 		//			
 		//			
 		//			JSONObject result=new JSONObject();
@@ -182,16 +167,17 @@ public class AuchanAgent extends BaseAgent {
 		String searchForPhrase=(String) json.get(StringHolder.SEARCH4_NAME);
 
 		ArrayList<GA_ProduktScrapped> produkts = searchForCorrectRememberOthers(searchForPhrase);
-
-		ArrayList<Produkt> savedDetails = getAndSaveDetails(produkts);
-
 		String ids="";
-		
-		for(Produkt p:savedDetails){
-			ids+=p.getP_id()+" ";
-		}
-		ids=ids.trim();
+		if(produkts.isEmpty()){
+			htmlLog("Nie uda³o siê znaleŸæ ¿adnego produktu dla "+searchForPhrase+" w sklepie auchan.\n");
+		}else{
+			ArrayList<Produkt> savedDetails = getAndSaveDetails(produkts);
 
+			for(Produkt p:savedDetails){
+				ids+=p.getP_id()+" ";
+			}
+			ids=ids.trim();
+		}
 		JSONObject result=new JSONObject();
 
 		result.put(StringHolder.PRODUKT_IDS_NAME, ids);
@@ -371,10 +357,6 @@ public class AuchanAgent extends BaseAgent {
 		}
 
 		requestRole(AGENT_COMMUNITY,AGENT_GROUP, AGENT_ROLE);
-		//		requestRole(AGENT_COMMUNITY, ShopsListAgent.GUIDANCE_GROUP, AGENT_ROLE);
-
-
-		//		webScrapper=AuchanWebScrapper.getAuchanWebScrapper();
 		super.activate();
 	}
 
