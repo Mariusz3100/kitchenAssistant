@@ -10,9 +10,9 @@ import java.util.regex.Pattern;
 
 import webscrappers.SJPWebScrapper;
 import webscrappers.przepisy.AbstractQuantityExtracter.QuantityTranslation;
-import mariusz.ambroziak.kassistant.QuantityExtractor.AmountTypes;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
 import mariusz.ambroziak.kassistant.model.Base_Word;
+import mariusz.ambroziak.kassistant.model.quantity.AmountTypes;
 import mariusz.ambroziak.kassistant.model.utils.QuantityProdukt;
 import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 

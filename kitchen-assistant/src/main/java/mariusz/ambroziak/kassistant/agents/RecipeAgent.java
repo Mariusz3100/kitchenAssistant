@@ -85,14 +85,13 @@ public class RecipeAgent extends BaseAgent{
 	protected void live() {
 		
 		while(true){
-			pause(10000);
+			pause(100000);
 		}
 	}
 
 
 	@Override
 	protected void pause(int milliSeconds) {
-		// TODO Auto-generated method stub
 		super.pause(milliSeconds);
 	}
 
@@ -121,7 +120,6 @@ public class RecipeAgent extends BaseAgent{
 
 	@Override
 	protected void end() {
-		// TODO Auto-generated method stub
 		super.end();
 	}
 
@@ -194,7 +192,6 @@ public class RecipeAgent extends BaseAgent{
 						System.out.println("Free RecipeParser Not Found");
 						Thread.sleep(2000);
 					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -204,7 +201,9 @@ public class RecipeAgent extends BaseAgent{
 	}
 
 	private ArrayList<SearchResult> getFromDbOrParseRecipe(String url) {
-		
+		//TODO actual db saving and retrieving.
+		//For now I decided to leave it as it is, every time parse, 
+		//because I need to make sure if recipes remain the same 
 		Recipe recipeByURL = DaoProvider.getInstance().getRecipeDao().getRecipeByURL(url);
 		
 		if(recipeByURL==null)

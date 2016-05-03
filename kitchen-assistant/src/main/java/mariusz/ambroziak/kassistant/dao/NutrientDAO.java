@@ -5,7 +5,7 @@ import java.util.Map;
 
 import mariusz.ambroziak.kassistant.model.Basic_Ingredient;
 import mariusz.ambroziak.kassistant.model.Nutrient;
-import mariusz.ambroziak.kassistant.model.utils.PreciseQuantity;
+import mariusz.ambroziak.kassistant.model.quantity.PreciseQuantity;
 
 public interface NutrientDAO {
 	public List<Nutrient> list();

@@ -1,6 +1,8 @@
 package mariusz.ambroziak.kassistant.model.utils;
 
-import mariusz.ambroziak.kassistant.QuantityExtractor.AmountTypes;
+import mariusz.ambroziak.kassistant.model.quantity.AmountTypes;
+import mariusz.ambroziak.kassistant.model.quantity.PreciseQuantity;
+import mariusz.ambroziak.kassistant.utils.StringHolder;
 
 public class QuantityProdukt {
 	private String produktPhrase;
@@ -30,7 +32,7 @@ public class QuantityProdukt {
 	}
 	
 	public String getQuantityPhrase() {
-		return getAmountType()+"_"+getAmount();
+		return getAmountType()+StringHolder.QUANTITY_PHRASE_BORDER+getAmount();
 	}
 	
 }

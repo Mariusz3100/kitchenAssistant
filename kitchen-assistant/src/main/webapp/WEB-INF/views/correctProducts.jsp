@@ -20,7 +20,9 @@
 			"</i> znaleziono następujące składniki:
 		</h1>
 
-		<form action="chooseQuantities">
+		<form action="correctProdukts">
+			<input type="hidden" name="${liczbaSkladnikow}" value="${fn:length(skippedResults)+fn:length(correctResults)+fn:length(badResults)}">
+			<input type="hidden" name="${recipeUrl_name}" value="${url}">
 			<c:set var="skladnikiCount" value="1" scope="page" />
 			
 			<c:forEach var="result" items="${correctResults}">
@@ -43,7 +45,7 @@
 						<br>
 					<input type="radio"
 						name="${skladnikName}${skladnikiOuterCount}_${skladnikRadioName}"
-						checked="checked" value="${produkt.url}">
+						checked="checked" value="${radioValuePrefix}${produkt.url}">
 				</c:forEach>
 
 

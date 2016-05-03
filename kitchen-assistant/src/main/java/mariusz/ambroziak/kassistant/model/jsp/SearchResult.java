@@ -5,11 +5,14 @@ import java.util.Base64;
 import java.util.List;
 
 import mariusz.ambroziak.kassistant.model.Produkt;
+import mariusz.ambroziak.kassistant.model.quantity.AmountTypes;
+import mariusz.ambroziak.kassistant.model.quantity.PreciseQuantity;
 
 public class SearchResult {
 	private String searchPhrase;
 	private String produktPhrase;
 	private String quantity;
+
 	private ArrayList<Produkt> produkts;
 	
 	public String getProduktPhrase() {

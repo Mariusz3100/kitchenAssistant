@@ -1,7 +1,7 @@
 package webscrappers.auchan;
 
 import mariusz.ambroziak.kassistant.model.Produkt;
-import mariusz.ambroziak.kassistant.model.utils.PreciseQuantity;
+import mariusz.ambroziak.kassistant.model.quantity.PreciseQuantity;
 import mariusz.ambroziak.kassistant.model.utils.QuantityProdukt;
 
 public class ProduktDetails {

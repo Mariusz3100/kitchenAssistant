@@ -60,7 +60,7 @@ public class ProduktAgent extends BaseAgent{
 	@Override
 	protected void live() {
 		while(true){
-			pause(10000);
+			pause(1000000);
 		}
 	}
 

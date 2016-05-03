@@ -2,7 +2,7 @@ package mariusz.ambroziak.kassistant.model.utils;
 
 import java.util.ArrayList;
 
-import mariusz.ambroziak.kassistant.QuantityExtractor.AmountTypes;
+import mariusz.ambroziak.kassistant.model.quantity.AmountTypes;
 
 public class CompoundIngredientQuantity implements ProduktIngredientQuantity{
 

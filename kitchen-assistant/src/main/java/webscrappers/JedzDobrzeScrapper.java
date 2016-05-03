@@ -11,11 +11,11 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import mariusz.ambroziak.kassistant.QuantityExtractor.AmountTypes;
 import mariusz.ambroziak.kassistant.QuantityExtractor.JedzDobrzeExtractor;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
 import mariusz.ambroziak.kassistant.model.Nutrient;
-import mariusz.ambroziak.kassistant.model.utils.PreciseQuantity;
+import mariusz.ambroziak.kassistant.model.quantity.AmountTypes;
+import mariusz.ambroziak.kassistant.model.quantity.PreciseQuantity;
 import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 import mariusz.ambroziak.kassistant.utils.StringHolder;
 
