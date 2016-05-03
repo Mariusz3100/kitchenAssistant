@@ -1,5 +1,6 @@
-package mariusz.ambroziak.kassistant.model.utils;
+package mariusz.ambroziak.kassistant.model.quantity;
 
+import mariusz.ambroziak.kassistant.model.utils.AbstractQuantity;
 
 public class NotPreciseQuantity extends AbstractQuantity {
 

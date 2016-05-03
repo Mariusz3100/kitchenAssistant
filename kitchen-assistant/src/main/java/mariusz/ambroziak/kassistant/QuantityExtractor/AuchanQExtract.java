@@ -13,8 +13,9 @@ import webscrappers.przepisy.AbstractQuantityExtracter;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
 import mariusz.ambroziak.kassistant.model.Base_Word;
 import mariusz.ambroziak.kassistant.model.Recipe_Ingredient;
+import mariusz.ambroziak.kassistant.model.quantity.AmountTypes;
+import mariusz.ambroziak.kassistant.model.quantity.PreciseQuantity;
 import mariusz.ambroziak.kassistant.model.utils.AbstractQuantity;
-import mariusz.ambroziak.kassistant.model.utils.PreciseQuantity;
 import mariusz.ambroziak.kassistant.model.utils.QuantityProdukt;
 import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 

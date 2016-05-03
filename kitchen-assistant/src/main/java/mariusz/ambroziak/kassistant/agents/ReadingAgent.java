@@ -76,7 +76,7 @@ public class ReadingAgent extends BaseAgent{
 	protected void live() {
 				
 		while(true){
-			pause(1000);
+			pause(1000000);
 		}
 	}
 

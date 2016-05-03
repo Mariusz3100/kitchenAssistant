@@ -1,7 +1,8 @@
 package mariusz.ambroziak.kassistant.model.utils;
 
-import mariusz.ambroziak.kassistant.QuantityExtractor.AmountTypes;
 import mariusz.ambroziak.kassistant.model.Basic_Ingredient;
+import mariusz.ambroziak.kassistant.model.quantity.AmountTypes;
+import mariusz.ambroziak.kassistant.model.quantity.PreciseQuantity;
 
 public class BasicIngredientQuantity implements ProduktIngredientQuantity{
 	private Basic_Ingredient bi;

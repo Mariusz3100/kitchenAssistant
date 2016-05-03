@@ -3,7 +3,6 @@ package mariusz.ambroziak.kassistant;
 import java.util.ArrayList;
 import java.util.List;
 
-import mariusz.ambroziak.kassistant.QuantityExtractor.AmountTypes;
 import mariusz.ambroziak.kassistant.dao.Base_WordDAO;
 import mariusz.ambroziak.kassistant.dao.ProduktDAO;
 import mariusz.ambroziak.kassistant.dao.RecipeDAO;
@@ -15,6 +14,7 @@ import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.Recipe;
 import mariusz.ambroziak.kassistant.model.User;
 import mariusz.ambroziak.kassistant.model.Variant_Word;
+import mariusz.ambroziak.kassistant.model.quantity.AmountTypes;
 
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;

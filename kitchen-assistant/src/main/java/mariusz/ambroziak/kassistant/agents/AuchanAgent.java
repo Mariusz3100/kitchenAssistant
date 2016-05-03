@@ -76,7 +76,7 @@ public class AuchanAgent extends BaseAgent {
 
 	@Override
 	protected void live() {
-		super.live();
+//		super.live();
 		StringMessage m;
 
 		while(true){

@@ -15,130 +15,54 @@
 
 	<div>
 		<h1>
-			Oto składniki znalezione w przepisie pod url <i>"
-			<%= pageContext.getRequest().getParameter(mariusz.ambroziak.kassistant.utils.JspStringHolder.recipeUrl_name) %>
-			"</i> wraz z ich wielkościami. Jeśli uważasz, że  któraś z wielkości została podana błędnie, możesz ją poprawić:
+			Oto składniki znalezione w przepisie pod url <i>" <%=pageContext.getRequest()
+					.getParameter(mariusz.ambroziak.kassistant.utils.JspStringHolder.recipeUrl_name)%>
+				"
+			</i> wraz z ich wielkościami. Jeśli uważasz, że któraś z wielkości
+			została podana błędnie, możesz ją poprawić:
 		</h1>
 
 		<form action="quantitiesCorrected">
-			<c:set var="skladnikiOuterCount" value="1" scope="page" />
-			
-			<c:forEach var="skladnik" items="${skladniki}">
-				<c:set var="skladnikiOuterCount" value="${skladnikiOuterCount + 1}" scope="page"/>
-
+			<c:forEach begin="0" end="${fn:length(results)-1}" varStatus="loop">
+    
 				<br>
 
 				<input type="hidden"
-					name="${skladnikName}${skladnikiOuterCount}_${quantityName}"
-					value="${result.quantity}">
-				<input type="hidden"
-					name="${skladnikName}${skladnikiOuterCount}_${searchPhraseName}"
-					value="${result.searchPhrase}">
+					name="${skladnikName}${loop.index}_${searchPhraseName}"
+					value="${results[loop.index].searchPhrase}">
 
 
-				<c:forEach var="produkt" items="${result.produkts}"
+				<c:forEach var="produkt" items="${results[loop.index].produkts}"
 					varStatus="opcjaCount">
 					<!-- Powinien być zawsze tylko jeden element -->
-					<b>${result.searchPhrase } -> </b> [${produkt.cena} zł] ${produkt.nazwa} ${produkt.url}	
-						<br>
-					<input type="radio"
-						name="${skladnikName}${skladnikiOuterCount}_${skladnikRadioName}"
-						checked="checked" value="${produkt.url}">
+					<b>${results[loop.index].searchPhrase } -> </b> [${produkt.cena} zł] ${produkt.nazwa} ${produkt.url}	<br>
+					<input type="hidden"
+					name="${skladnikName}${loop.index}_${produktUrl_name}"
+					value="${produkt.url}">
 				</c:forEach>
-
-
-
+				
+				${quantities[loop.index]} -->
+				<input type="text" name="${skladnikName}${loop.index}_${quantityAmountName}"
+				 value="${quantities[loop.index].amount}">
+				<select name="${skladnikName}${loop.index}_${quantityTypeName}">
+				 	<c:forEach var="typ" items="${amountTypesWithoutCalories}">
+				 		<option value="${typ}"  ${typ == quantities[loop.index].type ? 'selected="selected"' : ''}>
+				 			${typ}
+				 		</option>
+				 	</c:forEach>
+				 	
+				 </select>
+				
+				<input type="hidden"
+					name="${skladnikName}${loop.index}_${produktPhraseName}"
+					value="${results[loop.index].produktPhrase}">
+				<input type="hidden"
+					name="${skladnikName}${loop.index}_${searchPhraseName}"
+					value="${results[loop.index].searchPhrase}">
 				<br />
 			</c:forEach>
 
 
-			<c:choose>
-				<c:when test="${fn:length(skippedResults) gt 0}">
-					<c:forEach var="result" items="${skippedResults}">
-						<c:set var="skladnikiOuterCount" value="${skladnikiOuterCount + 1}" scope="page"/>
-
-						<br>
-						<br>
-						<input type="hidden"
-							name="${skladnikName}${skladnikiOuterCount}_${quantityName}"
-							value="Składnik oznaczony do pominięcia">
-						<input type="hidden"
-							name="${skladnikName}${skladnikiOuterCount}_${searchPhraseName}"
-							value="${result}">
-						<input type="radio"
-							name="${skladnikName}${skladnikiOuterCount}_${skladnikRadioName}"
-							checked="checked" value="${pominOpcjaName}">
-						<b>Składnik ${result} oznaczono jako pomijalny</b>
-					</c:forEach>
-
-				</c:when>
-				<c:otherwise>
-
-				</c:otherwise>
-
-
-			</c:choose>
-			<br>
-			<br>
-			 <b>Niestety, podane przez ciebie produkty dla
-				następujących składników nie mogły zostać przetworzone. Proszę,
-				podaj jakieś poprawne propozycje:</b>
-
-			<br>
-			<br>
-			<c:forEach var="result" items="${badResults}">
-				<c:set var="skladnikiOuterCount" value="${skladnikiOuterCount + 1}" scope="page"/>
-
-				<br>
-
-				<input type="hidden"
-					name="${skladnikName}${skladnikiOuterCount}_${quantityName}"
-					value="${result.quantity}">
-				<input type="hidden"
-					name="${skladnikName}${skladnikiOuterCount}_${searchPhraseName}"
-					value="${result.searchPhrase}">
-				<b>Składnik ${result.searchPhrase } nie został poprawnie
-					wybrany: ${result.invalidityReason} </b>
-				<c:choose>
-					<c:when test="${fn:length(result.produkts) gt 0}">
-						<b>Dla składnika ${result.searchPhrase } znaleziono
-							następujące produkty:</b>
-						<br>
-						<c:forEach var="produkt" items="${result.produkts}"
-							varStatus="skladnikCount">
-							<input type="radio"
-								name="${skladnikName}${skladnikiOuterCount}_${skladnikRadioName}"
-								value="${radioValuePrefix}${produkt.url}">	
-								- [${produkt.cena} zł] ${produkt.nazwa} ${produkt.url}
-						<br />
-						</c:forEach>
-
-					</c:when>
-					<c:otherwise>
-						<b>Dla składnika ${result.searchPhrase } nie znaleziono
-							żadnych produktów.</b>
-
-						<br />
-					</c:otherwise>
-
-
-				</c:choose>
-
-
-				<input type="radio"
-					name="${skladnikName}${skladnikiOuterCount}_${skladnikRadioName}"
-					value="${innaOpcjaName}">
-					Propozycja własna:
-				<input type="text"
-					name="${skladnikName}${skladnikiOuterCount}_${innyUrlName}">
-				
-				<br>
-					<input type="radio" name="${skladnikName}${skladnikiOuterCount}_${skladnikRadioName}"
-					value="${pominOpcjaName}">
-					Pomin ten skladnik (na własne ryzyko):
-				
-				<br />
-			</c:forEach>
 
 			<input type="submit" value="Submit">
 		</form>

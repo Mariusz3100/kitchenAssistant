@@ -4,7 +4,7 @@ import java.net.MalformedURLException;
 
 import mariusz.ambroziak.kassistant.QuantityExtractor.AuchanQExtract;
 import mariusz.ambroziak.kassistant.exceptions.Page404Exception;
-import mariusz.ambroziak.kassistant.model.utils.PreciseQuantity;
+import mariusz.ambroziak.kassistant.model.quantity.PreciseQuantity;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

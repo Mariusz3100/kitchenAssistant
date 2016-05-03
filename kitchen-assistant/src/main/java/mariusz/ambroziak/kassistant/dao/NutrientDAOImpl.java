@@ -12,7 +12,7 @@ import mariusz.ambroziak.kassistant.model.Nutrient;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.User;
 import mariusz.ambroziak.kassistant.model.Variant_Word;
-import mariusz.ambroziak.kassistant.model.utils.PreciseQuantity;
+import mariusz.ambroziak.kassistant.model.quantity.PreciseQuantity;
 import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 
 import org.hibernate.Criteria;

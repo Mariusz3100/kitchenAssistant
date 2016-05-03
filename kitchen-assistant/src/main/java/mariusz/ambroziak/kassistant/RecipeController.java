@@ -1,5 +1,6 @@
 package mariusz.ambroziak.kassistant;
 
+import java.awt.Window.Type;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -25,6 +26,8 @@ import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.User;
 import mariusz.ambroziak.kassistant.model.jsp.InvalidSearchResult;
 import mariusz.ambroziak.kassistant.model.jsp.SearchResult;
+import mariusz.ambroziak.kassistant.model.quantity.AmountTypes;
+import mariusz.ambroziak.kassistant.model.quantity.PreciseQuantity;
 import mariusz.ambroziak.kassistant.utils.Converter;
 import mariusz.ambroziak.kassistant.utils.JspStringHolder;
 import mariusz.ambroziak.kassistant.utils.ProblemLogger;
@@ -84,7 +87,7 @@ public class RecipeController {
 		if(url==null){
 			return new ModelAndView("recipeForm");
 		}
-		
+
 		ArrayList<SearchResult> result;
 		try {
 			result = RecipeAgent.parse(url);
@@ -110,18 +113,18 @@ public class RecipeController {
 
 	@RequestMapping(value="/correctProdukts")
 	public ModelAndView correctProdukts(HttpServletRequest request) {
-//		try {
-//			request.setCharacterEncoding(StringHolder.ENCODING);
-//		} catch (UnsupportedEncodingException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		//		try {
+		//			request.setCharacterEncoding(StringHolder.ENCODING);
+		//		} catch (UnsupportedEncodingException e) {
+		//			// TODO Auto-generated catch block
+		//			e.printStackTrace();
+		//		}
 
-		
+
 		//request.setCharacterEncoding(java.nio.charset.StandardCharsets.UTF_8.toString());
 		String url=request.getParameter("recipeurl");
 		request.getParameter("skladnik1_innyUrl");
-		
+
 		ArrayList<SearchResult> goodResults= new ArrayList<SearchResult>();
 		ArrayList<InvalidSearchResult> usersBadChoice= new ArrayList<InvalidSearchResult>();
 		ArrayList<String> skippedResults= new ArrayList<String>();
@@ -215,20 +218,23 @@ public class RecipeController {
 
 		}
 
-		
+
 		if(usersBadChoice.isEmpty()){
-			ModelAndView mav=new ModelAndView("correctQuanities");
-			
+			ModelAndView mav=new ModelAndView("correctQuantities");
+			mav.addObject("results",goodResults);
+			ArrayList<PreciseQuantity> quantities=extractQuantities(goodResults);
+			mav.addObject("quantities",quantities);
+
 			return mav;
 		}else{
 			ModelAndView mav=new ModelAndView("correctProducts");
-			
+
 			mav.addObject("badResults",usersBadChoice);
-	
+
 			mav.addObject("correctResults",goodResults);
-	
+
 			mav.addObject("skippedResults",skippedResults);
-	
+
 			return mav;
 
 		}
@@ -236,5 +242,45 @@ public class RecipeController {
 
 	}
 
+
+
+
+
+
+	private ArrayList<PreciseQuantity> extractQuantities(ArrayList<SearchResult> results) {
+		ArrayList<PreciseQuantity> retValue=new ArrayList<PreciseQuantity>();
+
+		for(int i=0;i<results.size();i++){
+			PreciseQuantity pq=new PreciseQuantity(-1, AmountTypes.szt);
+			String quanPhrase=results.get(i).getQuantity();
+			if(quanPhrase==null||quanPhrase.equals("")){
+				ProblemLogger.logProblem("Empty amount from hidden field");
+			}else{
+				String[] elems=quanPhrase.split(StringHolder.QUANTITY_PHRASE_BORDER);
+				if(elems.length<2){
+					ProblemLogger.logProblem("Empty quantity from hidden field");
+				}else{
+					float amount=Float.parseFloat(elems[1]);
+					AmountTypes at=AmountTypes.retrieveTypeByName(elems[0]);
+					pq=new PreciseQuantity(amount,at);
+				}
+			}
+
+			retValue.add(i,pq);
+		}
+
+
+		return retValue;
+	}
+
+	@RequestMapping(value="/quantitiesCorrected")
+	public ModelAndView quantitiesCorrected(HttpServletRequest request) {
+
+		
+		
+		
+		
+		return null;
+	}
 
 }

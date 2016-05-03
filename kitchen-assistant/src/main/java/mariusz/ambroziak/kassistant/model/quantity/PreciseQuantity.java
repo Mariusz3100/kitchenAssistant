@@ -1,6 +1,4 @@
-package mariusz.ambroziak.kassistant.model.utils;
-
-import mariusz.ambroziak.kassistant.QuantityExtractor.AmountTypes;
+package mariusz.ambroziak.kassistant.model.quantity;
 
 public class PreciseQuantity extends NotPreciseQuantity {
 	private float amount;
@@ -23,6 +21,8 @@ public class PreciseQuantity extends NotPreciseQuantity {
 	}
 	public PreciseQuantity() {
 		super();
+		amount=-1;
+		type=AmountTypes.szt;
 	}
 	public float getAmount() {
 		return amount;
