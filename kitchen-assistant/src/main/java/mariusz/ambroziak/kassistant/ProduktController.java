@@ -136,7 +136,7 @@ public class ProduktController {
 	}
 	
 	@RequestMapping(value="/produktValues")
-	public ModelAndView parseProdukt(HttpServletRequest request) {
+	public ModelAndView produktValues(HttpServletRequest request) {
 		try {
 			request.setCharacterEncoding(StringHolder.ENCODING);
 		} catch (UnsupportedEncodingException e1) {
@@ -201,36 +201,7 @@ public class ProduktController {
 				try {
 					ProduktWithAllIngredients ingredients = ReadingAgent.parseFullSklad(shortUrl);
 					
-					ArrayList<String> list=new ArrayList<String>();
-//					list.add(ingredients.getProdukt().getNazwa()+" - "+ingredients.getProdukt().getUrl());
-//					
-//					String allIngredients=ingredients.getProduktAsIngredient()==null?"BRAK INFORMACJI":ingredients.getProduktAsIngredient().toString();
-//					
-//					list.add("All ingredients:<br>"+allIngredients);
-//					
-//					list.add("Label simple ingredients:");
-//
-//					for(BasicIngredientQuantity piq:ingredients.getBasicsFor100g())
-//					{
-//						String opis=piq.getName()+": "+piq.getAmount();
-//						list.add(opis);
-//					}
-//
-//					list.add("<br>All simple ingredients:");
-//					String compundIngredientHierarchy="";
-//					for(BasicIngredientQuantity piq:ingredients.getProduktAsIngredient().getAllBasicIngredients())
-//					{
-//						String opis=piq.getName()+": "+piq.getAmount();
-//						compundIngredientHierarchy+=opis+"<br>";
-//					}
-//					
-//					
-//					
-					
 					ModelAndView mav=new ModelAndView("produktDetails");
-					
-					
-					
 					
 					Produkt produkt =DaoProvider.getInstance().getProduktDao().getProduktsByURL(shortUrl);
 					if(produkt==null)

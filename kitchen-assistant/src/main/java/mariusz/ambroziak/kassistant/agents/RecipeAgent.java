@@ -35,6 +35,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import webscrappers.SJPWebScrapper;
 import webscrappers.przepisy.PrzepisyPLQExtract;
+import webscrappers.przepisy.PrzepisyPlWebscrapper;
 import webscrappers.przepisy.SkladnikiExtractor;
 import madkit.kernel.Agent;
 import madkit.kernel.AgentAddress;
@@ -123,7 +124,7 @@ public class RecipeAgent extends BaseAgent{
 		super.end();
 	}
 
-	public static ArrayList<SearchResult> parse(String url) throws AgentSystemNotStartedException{
+	public static ArrayList<SearchResult> getQuantitiesAndProduktsFromRecipeUrl(String url) throws AgentSystemNotStartedException{
 		RecipeAgent freeOne = getFreeAgent();
 		
 		if(freeOne!=null)
@@ -138,12 +139,29 @@ public class RecipeAgent extends BaseAgent{
 	
 	}
 
-	public static List<Produkt> parseProdukt(String searchPhrase) throws AgentSystemNotStartedException{
+	public static ArrayList<SearchResult> getPhrasesAndQuantitiesFromRecipeUrl(String url) throws AgentSystemNotStartedException{
+		RecipeAgent freeOne = getFreeAgent();
+		
+		if(freeOne!=null)
+		{
+			freeOne.busy=true;
+			//TODO potem dodaæ opcjê wyci¹gania z bazy? Do rozwa¿enia
+			ArrayList<SearchResult> result= freeOne.parsePhrasesAndQuantitiesFromRecipeUrl(url);
+			freeOne.busy=false;
+			return result;
+		}else
+			return null;
+		
+	
+	}
+	
+	
+	public static List<Produkt> parseProdukt(String produktPhrase) throws AgentSystemNotStartedException{
 		RecipeAgent freeOne = getFreeAgent();
 		if(freeOne!=null)
 		{
 			freeOne.busy=true;
-			List<Produkt> result= freeOne.findSkladnik(searchPhrase);
+			List<Produkt> result= freeOne.findSkladnik(produktPhrase);
 			freeOne.busy=false;
 			return result;
 		}else
@@ -167,6 +185,24 @@ public class RecipeAgent extends BaseAgent{
 	}
 
 
+	
+//	public static List<Produkt> findProduktByProduktPhrase(String produktPhrase) throws AgentSystemNotStartedException{
+//		RecipeAgent freeOne = getFreeAgent();
+//		if(freeOne==null){
+//			return null;
+//		}else{
+//			freeOne.setBusy(true);
+//			List<Produkt> result;
+//			try{
+//				result= freeOne.findSkladnik(produktPhrase);
+//			}finally{
+//				freeOne.setBusy(false);
+//			}
+//			return result;
+//		}
+//	}
+
+	
 	public Produkt getProduktFromDbByUrl(String produktUrl) {
 		return produktDao.getProduktsByURL(produktUrl);
 	}
@@ -207,46 +243,29 @@ public class RecipeAgent extends BaseAgent{
 		Recipe recipeByURL = DaoProvider.getInstance().getRecipeDao().getRecipeByURL(url);
 		
 		if(recipeByURL==null)
-			return parseRecipe(url);
+			return parseProduktsPhrasesAndQuantitiesFromRecipeUrl(url);
 		else
 			return retrieveFromDb();
 	}
 
 
 	private ArrayList<SearchResult> retrieveFromDb() {
-		// TODO Auto-generated method stub
+		// TODO na razie nie robimy
 		return null;
 	}
 
 
-	public ArrayList<SearchResult> parseRecipe(String url){
-		Recipe recipe=new Recipe();
-		
-		recipe.setUrl(url);
-		
-		
+	
+	public ArrayList<SearchResult> parseProduktsPhrasesAndQuantitiesFromRecipeUrl(String url){
 		ArrayList<SearchResult> retValue=new ArrayList<SearchResult>();
-//		StringBuilder outPage=new StringBuilder();
 		try{
-			URLConnection connection = new URL(url).openConnection();//connection.getRequestProperties()
-			connection.setRequestProperty("Accept-Charset", java.nio.charset.StandardCharsets.UTF_8.toString());
-			InputStream detResponse = connection.getInputStream();
-			InputStreamReader inputStreamReader = new InputStreamReader(detResponse,java.nio.charset.StandardCharsets.UTF_8.toString());
-			BufferedReader detBR=new BufferedReader(inputStreamReader);
-			String respLine=null;
-			String html="";
-			while((respLine=detBR.readLine())!=null){
-				html+=respLine;
-			}
-
-			Document doc = Jsoup.parse(html);
-
-			Elements ings=doc.select("[itemprop=\"recipeIngredient\"]");
+			PrzepisyPlWebscrapper scrapperPrzepisu=new PrzepisyPlWebscrapper(url);
+			Elements ings=scrapperPrzepisu.extractIngredients();
 
 			for(Element e:ings){
 				String ingredient = e.text();
 				QuantityProdukt produktAndAmount=retrieveProduktAmountData(e);
-				SearchResult sr = parseSkladnik(produktAndAmount.getProduktPhrase(), produktAndAmount);
+				SearchResult sr = parseSkladnik(ingredient, produktAndAmount);
 				retValue.add(sr);
 				
 				htmlLog("\n"+ingredient+"->\n");
@@ -257,10 +276,36 @@ public class RecipeAgent extends BaseAgent{
 					}
 				else
 					htmlLog("Nothing Found\n");
-
-
 			}
+		}catch( IOException e){
+			e.printStackTrace();
+		}
+		return retValue;
+	}
 
+	
+	public ArrayList<SearchResult> parsePhrasesAndQuantitiesFromRecipeUrl(String url){
+		ArrayList<SearchResult> retValue=new ArrayList<SearchResult>();
+		try{
+			PrzepisyPlWebscrapper scrapperPrzepisu=new PrzepisyPlWebscrapper(url);
+			Elements ings=scrapperPrzepisu.extractIngredients();
+
+			for(Element e:ings){
+				String ingredient = e.text();
+				QuantityProdukt produktAndAmount=retrieveProduktAmountData(e);
+				SearchResult sr =new SearchResult(ingredient,produktAndAmount.getProduktPhrase(),
+						produktAndAmount.getQuantityPhrase(), null);
+				retValue.add(sr);
+				
+				htmlLog("\n"+ingredient+"->\n");
+				
+				if(sr.getProdukts()!=null&&sr.getProdukts().size()>0)
+					for(Produkt p:sr.getProdukts()){
+						htmlLog(p.getUrl()+"\n");
+					}
+				else
+					htmlLog("Nothing Found\n");
+			}
 		}catch( IOException e){
 			e.printStackTrace();
 		}
@@ -313,13 +358,13 @@ public class RecipeAgent extends BaseAgent{
 //	}
 
 
-	private List<Produkt> findSkladnik(String text) {
+	private List<Produkt> findSkladnik(String produktPhrase) {
 		List<Produkt> results;
 		ArrayList<String> baseWords = null;
-		results=checkInDb(text);
+		results=checkInDb(produktPhrase);
 
 		if(results==null||results.size()<1){
-			baseWords=getBaseWords(text);
+			baseWords=getBaseWords(produktPhrase);
 			
 			baseWords=removeNiepoprawne(baseWords);
 			
@@ -330,7 +375,7 @@ public class RecipeAgent extends BaseAgent{
 		if(results==null||results.size()<1){
 			
 			if(baseWords==null)
-				baseWords=getBaseWords(text);
+				baseWords=getBaseWords(produktPhrase);
 			
 			baseWords=removeNiepoprawne(baseWords);
 			
@@ -340,7 +385,7 @@ public class RecipeAgent extends BaseAgent{
 		
 		
 		if(results==null||results.size()<1){
-			results=checkShops(text);
+			results=checkShops(produktPhrase);
 		}
 		return results;
 	}

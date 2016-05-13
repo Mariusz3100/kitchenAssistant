@@ -178,7 +178,7 @@ public class TestsController {
 		if(!url.startsWith("-")){
 			ArrayList<SearchResult> result = null;
 			try {
-				result = RecipeAgent.parse(url);
+				result = RecipeAgent.getQuantitiesAndProduktsFromRecipeUrl(url);
 			} catch (AgentSystemNotStartedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

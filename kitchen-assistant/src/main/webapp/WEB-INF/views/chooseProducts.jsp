@@ -32,31 +32,31 @@
 				
 				<input type="hidden"
 							name="${skladnikName}${skladnikCount.count}_${quantityName}"
-							value="${result.quantity}">
+							value="${result.key.quantity}">
 				<input type="hidden"
 							name="${skladnikName}${skladnikCount.count}_${produktPhraseName}"
-							value="${result.produktPhrase}">
+							value="${result.key.produktPhrase}">
 				<input type="hidden"
 							name="${skladnikName}${skladnikCount.count}_${searchPhraseName}"
-							value="${result.searchPhrase}">
+							value="${result.key.searchPhrase}">
 											
 				<c:choose>
-					<c:when test="${fn:length(result.produkts) gt 0}">
-						<b>Dla składnika ${result.searchPhrase } znaleziono
+					<c:when test="${fn:length(result.key.produkts) gt 0}">
+						<b>Dla składnika ${result.key.searchPhrase } [${result.value}]znaleziono
 							następujące produkty:</b>
 						<br>
 						
 
-						<c:forEach var="produkt" items="${result.produkts}"
+						<c:forEach var="produkt" items="${result.key.produkts}"
 							varStatus="opcjaCount">
 							<input type="radio"
 								name="${skladnikName}${skladnikCount.count}_${skladnikRadioName}" value="${radioValuePrefix}${produkt.url}">	
-								- [${produkt.cena} zł] ${produkt.nazwa} ${produkt.url}
+								- [${produkt.cena} zł, ${produkt.recountedPrice}] ${produkt.nazwa} <u>${produkt.url}</u>
 						<br />
 						</c:forEach>
 					</c:when>
 					<c:otherwise>
-						<b>Dla składnika ${result.searchPhrase } nie znaleziono
+						<b>Dla składnika ${result.key.searchPhrase } nie znaleziono
 							żadnych produktów.</b>
 
 						<br />

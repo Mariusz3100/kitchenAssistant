@@ -16,18 +16,27 @@ import javax.servlet.http.HttpServletRequest;
 
 import madkit.kernel.Madkit;
 import mariusz.ambroziak.kassistant.agents.ClockAgent;
+import mariusz.ambroziak.kassistant.agents.FoodIngredientAgent;
 import mariusz.ambroziak.kassistant.agents.ProduktAgent;
+import mariusz.ambroziak.kassistant.agents.ReadingAgent;
 import mariusz.ambroziak.kassistant.agents.RecipeAgent;
 import mariusz.ambroziak.kassistant.agents.config.AgentsSystem;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
 import mariusz.ambroziak.kassistant.exceptions.AgentSystemNotStartedException;
+import mariusz.ambroziak.kassistant.exceptions.Page404Exception;
 import mariusz.ambroziak.kassistant.exceptions.ShopNotFoundException;
+import mariusz.ambroziak.kassistant.model.Nutrient;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.User;
 import mariusz.ambroziak.kassistant.model.jsp.InvalidSearchResult;
+import mariusz.ambroziak.kassistant.model.jsp.ProduktWithRecountedPrice;
 import mariusz.ambroziak.kassistant.model.jsp.SearchResult;
 import mariusz.ambroziak.kassistant.model.quantity.AmountTypes;
 import mariusz.ambroziak.kassistant.model.quantity.PreciseQuantity;
+import mariusz.ambroziak.kassistant.model.utils.AbstractQuantity;
+import mariusz.ambroziak.kassistant.model.utils.BasicIngredientQuantity;
+import mariusz.ambroziak.kassistant.model.utils.ProduktWithAllIngredients;
+import mariusz.ambroziak.kassistant.model.utils.ProduktWithBasicIngredients;
 import mariusz.ambroziak.kassistant.utils.Converter;
 import mariusz.ambroziak.kassistant.utils.JspStringHolder;
 import mariusz.ambroziak.kassistant.utils.ProblemLogger;
@@ -48,28 +57,9 @@ import testing.QuantityTesting;
 public class RecipeController {
 
 
-
-
-	//	@RequestMapping(value="/recipe/result")
-	//	@ResponseBody
-	//	public ModelAndView checkClock(HttpServletRequest request) {
-	//		System.out.println("xx");
-	//		
-	//		String url=request.getParameter("recipeurl");
-	//		
-	//		Map<String,ArrayList<Produkt>> result=RecipeAgent.parse(url);
-	//
-	//		ModelAndView mav=new ModelAndView("recipeParsed");
-	//		
-	//		mav.addObject("ingredients",result);
-	//		
-	//		return mav;
-	//	}
-
-
 	@RequestMapping(value="/recipeForm")
 
-	public ModelAndView recipeFrom(HttpServletRequest request) {
+	public ModelAndView recipeForm(HttpServletRequest request) {
 
 		return new ModelAndView("recipeForm");
 
@@ -88,13 +78,36 @@ public class RecipeController {
 			return new ModelAndView("recipeForm");
 		}
 
-		ArrayList<SearchResult> result;
-		try {
-			result = RecipeAgent.parse(url);
-		} catch (AgentSystemNotStartedException e) {
-			return new ModelAndView("agentSystemNotStarted");
+		int liczbaSkladnikow=
+				Integer.parseInt(request.getParameter(JspStringHolder.liczbaSkladnikow));
+
+		Map<SearchResult,PreciseQuantity> result = new HashMap<SearchResult,PreciseQuantity>();
+
+		for(int i=0;i<liczbaSkladnikow;i++){
+			String searchPhrase=request.getParameter(JspStringHolder.skladnik_name+i+"_"+JspStringHolder.searchPhrase_name);
+			String produktPhrase=request.getParameter(JspStringHolder.skladnik_name+i+"_"+JspStringHolder.produktPhrase_name);
+			String quantityAmount=request.getParameter(JspStringHolder.skladnik_name+i+"_"+JspStringHolder.quantity_amount);
+			String quantityType=request.getParameter(JspStringHolder.skladnik_name+i+"_"+JspStringHolder.quantity_type);
+
+			PreciseQuantity quantity=extractQuantity(quantityAmount, quantityType);
+			List<Produkt> possibleProdukts=null;
+			try {
+				possibleProdukts=getProduktsWithRecountedPrice(RecipeAgent.parseProdukt(produktPhrase),quantity);
+			} catch (AgentSystemNotStartedException e) {
+				return new ModelAndView("agentSystemNotStarted");
+			}
+
+			result.put(
+					new SearchResult(searchPhrase, produktPhrase, quantity.toJspString(), possibleProdukts)
+					,quantity);
 		}
-		if(result==null){
+
+		//		try {
+		//			result = RecipeAgent.getQuantitiesAndProduktsFromRecipeUrl(url);
+		//		} catch (AgentSystemNotStartedException e) {
+		//			return new ModelAndView("agentSystemNotStarted");
+		//		}
+		if(result==null||result.isEmpty()){
 
 			return new ModelAndView("agentSystemNotStarted");
 
@@ -111,19 +124,120 @@ public class RecipeController {
 	}
 
 
+
+
+
+
+	private List<Produkt> getProduktsWithRecountedPrice(List<Produkt> parseProdukt,
+			PreciseQuantity neededQuantity) {
+
+		List<Produkt> retValue=new ArrayList<Produkt>();
+		if(parseProdukt!=null){
+			for(Produkt p:parseProdukt){
+				ProduktWithRecountedPrice pRec=getProduktWithRecountedPrice(p,neededQuantity);
+				retValue.add(pRec);
+			}
+		}
+
+		return retValue;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+	private ProduktWithRecountedPrice getProduktWithRecountedPrice(Produkt p, PreciseQuantity neededQuantity) {
+		String recountedPrice="";
+		PreciseQuantity produktQuan=PreciseQuantity.parseFromJspString(p.getQuantityPhrase());
+		if(produktQuan.getType()!=neededQuantity.getType()){
+			ProblemLogger.logProblem("Wielkoœci skladnika w przepisie+"+neededQuantity+" i w sklepie "+produktQuan+"nie s¹ tego samego typu");
+		}else{
+			if(produktQuan.getAmount()>=neededQuantity.getAmount()){
+				recountedPrice=produktQuan+"->"+p.getCena()+" z³";
+			}else{
+				int multiplier=1;
+				while(produktQuan.getAmount()*multiplier<neededQuantity.getAmount()){
+					++multiplier;
+				}
+				recountedPrice=produktQuan+" x "+multiplier+" -> "
+						+p.getCena()+" x "+multiplier+" z³="+p.getCena()*multiplier+" z³";
+			}
+		}
+
+
+		ProduktWithRecountedPrice retValue=new ProduktWithRecountedPrice(p, recountedPrice);
+		return retValue;
+	}
+
+
+
+
+
+
+	private PreciseQuantity extractQuantity(String quantityAmount, String quantityType) {
+		AmountTypes at=AmountTypes.valueOf(quantityType);
+		try{
+			float f=Float.parseFloat(quantityAmount);
+
+			if(at!=null){
+				return new PreciseQuantity(f, at);
+			}
+
+		}catch(NumberFormatException nfe){
+			nfe.printStackTrace();
+		}
+
+		return null;
+	}
+
+
+	@RequestMapping(value="/correctQuantities")
+	public ModelAndView correctQuantities(HttpServletRequest request) {
+		String url=request.getParameter(JspStringHolder.recipeUrl_name);
+
+		if(url==null){
+			return new ModelAndView("recipeForm");
+		}
+
+		ArrayList<SearchResult> result;
+		try {
+			result = RecipeAgent.getPhrasesAndQuantitiesFromRecipeUrl(url);
+		} catch (AgentSystemNotStartedException e) {
+			return new ModelAndView("agentSystemNotStarted");
+		}
+		if(result==null){
+
+			return new ModelAndView("agentSystemNotStarted");
+
+		}else{
+			ModelAndView mav=new ModelAndView("correctQuantities");
+
+			mav.addObject(JspStringHolder.recipeUrl_name,url);
+			ArrayList<PreciseQuantity> quantities=extractQuantities(result);
+			mav.addObject("quantities",quantities);
+
+
+			mav.addObject("results",result);
+
+			return mav;
+		}
+
+
+	}
+
+
+
 	@RequestMapping(value="/correctProdukts")
 	public ModelAndView correctProdukts(HttpServletRequest request) {
-		//		try {
-		//			request.setCharacterEncoding(StringHolder.ENCODING);
-		//		} catch (UnsupportedEncodingException e) {
-		//			// TODO Auto-generated catch block
-		//			e.printStackTrace();
-		//		}
-
-
-		//request.setCharacterEncoding(java.nio.charset.StandardCharsets.UTF_8.toString());
-		String url=request.getParameter("recipeurl");
-		request.getParameter("skladnik1_innyUrl");
+		String url=request.getParameter(JspStringHolder.recipeUrl_name);
 
 		ArrayList<SearchResult> goodResults= new ArrayList<SearchResult>();
 		ArrayList<InvalidSearchResult> usersBadChoice= new ArrayList<InvalidSearchResult>();
@@ -220,12 +334,10 @@ public class RecipeController {
 
 
 		if(usersBadChoice.isEmpty()){
-			ModelAndView mav=new ModelAndView("correctQuantities");
-			mav.addObject("results",goodResults);
-			ArrayList<PreciseQuantity> quantities=extractQuantities(goodResults);
-			mav.addObject("quantities",quantities);
+			ModelAndView mav=new ModelAndView("displayNutrientValues");
 
-			return mav;
+			return extractBasicNutrientValues(goodResults);
+
 		}else{
 			ModelAndView mav=new ModelAndView("correctProducts");
 
@@ -247,6 +359,87 @@ public class RecipeController {
 
 
 
+	private ModelAndView extractBasicNutrientValues(ArrayList<SearchResult> goodResults) {
+		ModelAndView mav=new ModelAndView("List");
+		ArrayList<String> list=new ArrayList<String>();
+
+		for(SearchResult sr:goodResults){
+			if(sr.getProdukts().size()>1)
+				ProblemLogger.logProblem("wiêcej ni¿ jeden produkt...");
+			else{
+				ProduktWithBasicIngredients basics = null;
+				try {
+					basics = ReadingAgent.parseBasicSklad(sr.getProdukts().get(0).getUrl());
+					list.add(basics.getProdukt().getNazwa()+" - "+basics.getProdukt().getUrl());
+
+					for(BasicIngredientQuantity bpi:basics.getBasicsFor100g())
+					{
+						String opis=bpi.getName()+": "+bpi.getAmount();
+
+
+
+						list.add(opis);
+					}
+					list.add("<br>");
+
+				} catch (AgentSystemNotStartedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ShopNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (Page404Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+
+
+				//				String url=sr.getProdukts().get(0).getUrl();
+				//				ProduktWithBasicIngredients ingredients = ReadingAgent.parseBasicSklad(url);
+				//				
+				//				Map<String,String> currentAmountsMap=new HashMap<String,String>();
+				//				
+				//				ArrayList<BasicIngredientQuantity> allBasicIngredients = ingredients.getBasicsFor100g();
+				//				
+				//				
+				//				for(int i=0; i<allBasicIngredients.size();i++){
+				//					BasicIngredientQuantity biq=allBasicIngredients.get(i);
+				//					currentAmountsMap.put(biq.getName(), biq.getAmount().toString());
+				//				
+				//				}
+
+
+				//					for(BasicIngredientQuantity biq:allBasicIngredients){
+				//						
+				//						AbstractQuantity quantity = biq.getAmount();
+				//						
+				//						currentProduktAmounts.put(nutrient.getName(), quantity.toString());
+				//						
+				//						allNutriens.put(nutrient.getName(), nutrient.getName());
+				//						
+				//						
+				//					}
+
+
+			}
+
+
+
+
+
+		}
+		
+		mav.addObject("list", list);
+
+		return mav;
+	}
+
+
+
+
+
+
 	private ArrayList<PreciseQuantity> extractQuantities(ArrayList<SearchResult> results) {
 		ArrayList<PreciseQuantity> retValue=new ArrayList<PreciseQuantity>();
 
@@ -256,7 +449,7 @@ public class RecipeController {
 			if(quanPhrase==null||quanPhrase.equals("")){
 				ProblemLogger.logProblem("Empty amount from hidden field");
 			}else{
-				String[] elems=quanPhrase.split(StringHolder.QUANTITY_PHRASE_BORDER);
+				String[] elems=quanPhrase.split(JspStringHolder.QUANTITY_PHRASE_BORDER);
 				if(elems.length<2){
 					ProblemLogger.logProblem("Empty quantity from hidden field");
 				}else{
@@ -276,11 +469,12 @@ public class RecipeController {
 	@RequestMapping(value="/quantitiesCorrected")
 	public ModelAndView quantitiesCorrected(HttpServletRequest request) {
 
-		
-		
-		
-		
+
+
+
+
 		return null;
 	}
+
 
 }

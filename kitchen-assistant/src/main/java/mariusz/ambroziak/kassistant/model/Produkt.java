@@ -18,40 +18,43 @@ import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = "url"))
 public class Produkt {
 	public static final int opis_length=2700;
-	   @Id
-	   @GeneratedValue(strategy = GenerationType.IDENTITY)
-	   private Long p_id;
-	   
-	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long p_id;
+
+
 
 	@NotNull
-	   @Size(min = 1, max = 200)
-	   private String url;
-	   
-	   
-	   @NotNull
-	   @Size(min = 1, max = 200)
-	   private String nazwa;
-	   
-	   
-	   @NotNull
-	   @Size(min = 1, max = 2700)
-	   private String sklad;
-	   
-	   
-	   @NotNull
-	   @Size(min = 1, max = opis_length)
-	   private String opis;
-	   
-	   @NotNull
-	   private float cena;
-	   
-	   @NotNull
-	   private boolean przetworzony=false;
-	   
-	   
-	   
-	   
+	@Size(min = 1, max = 200)
+	private String url;
+
+	@Size(min = 1, max = 200)
+	private String quantity_phrase;
+
+
+	@NotNull
+	@Size(min = 1, max = 200)
+	private String nazwa;
+
+
+	@NotNull
+	@Size(min = 1, max = 2700)
+	private String sklad;
+
+
+	@NotNull
+	@Size(min = 1, max = opis_length)
+	private String opis;
+
+	@NotNull
+	private float cena;
+
+	@NotNull
+	private boolean przetworzony=false;
+
+
+
+
 	public Produkt(String nazwa2, String detailsUrl) {
 		this(detailsUrl,nazwa2,"","",-1,false);
 	}
@@ -72,7 +75,7 @@ public class Produkt {
 
 	}
 
-	
+
 
 
 	public Long getP_id() {
@@ -83,77 +86,77 @@ public class Produkt {
 		this.p_id = p_id;
 	}
 
-		public String getUrl() {
-			return url;
-		}
+	public String getUrl() {
+		return url;
+	}
 
-		public void setUrl(String url) {
-			this.url = url;
-		}
+	public void setUrl(String url) {
+		this.url = url;
+	}
 
-		public String getNazwa() {
-			return nazwa;
-		}
+	public String getNazwa() {
+		return nazwa;
+	}
 
-		public void setNazwa(String nazwa) {
-			this.nazwa = nazwa;
-		}
+	public void setNazwa(String nazwa) {
+		this.nazwa = nazwa;
+	}
 
-		public String getSklad() {
-			return sklad;
-		}
+	public String getSklad() {
+		return sklad;
+	}
 
-		public void setSklad(String sklad) {
-			this.sklad = sklad;
-		}
+	public void setSklad(String sklad) {
+		this.sklad = sklad;
+	}
 
-		public String getOpis() {
-			return opis;
-		}
+	public String getOpis() {
+		return opis;
+	}
 
-		public void setOpis(String opis) {
-			if(opis!=null){
-				if(opis.length()>opis_length){
-					ProblemLogger.logProblem("opis produktu \""
-							+opis+"\" jest za d³ugi. Maksymalna d³ugoœæ to "+opis_length);
-					opis=opis.substring(0,opis_length);
-				}
+	public void setOpis(String opis) {
+		if(opis!=null){
+			if(opis.length()>opis_length){
+				ProblemLogger.logProblem("opis produktu \""
+						+opis+"\" jest za d³ugi. Maksymalna d³ugoœæ to "+opis_length);
+				opis=opis.substring(0,opis_length);
 			}
-			this.opis = opis;
 		}
+		this.opis = opis;
+	}
 
-		public float getCena() {
-			return cena;
-		}
+	public float getCena() {
+		return cena;
+	}
 
-		public void setCena(float cena) {
-			this.cena = cena;
-		}
+	public void setCena(float cena) {
+		this.cena = cena;
+	}
 
-		public boolean isPrzetworzony() {
-			return przetworzony;
-		}
+	public boolean isPrzetworzony() {
+		return przetworzony;
+	}
 
-		public void setPrzetworzony(boolean przetworzony) {
-			this.przetworzony = przetworzony;
-		}
+	public void setPrzetworzony(boolean przetworzony) {
+		this.przetworzony = przetworzony;
+	}
 
 
+	public String getQuantityPhrase() {
+		return quantity_phrase;
+	}
 
-		@Override
-		public String toString() {
-			return "Produkt [id=" + p_id + ", url=" + url + ", nazwa=" + nazwa
-					+ ", sklad=" + sklad + ", opis=" + opis + ", cena=" + cena
-					+ ", przetworzony=" + przetworzony+"]";
-		}
-		
-		public void setThing(String thing) {
-			
-		}
+	public void setQuantityPhrase(String quantityPhrase) {
+		this.quantity_phrase = quantityPhrase;
+	}
 
-		public String getThing() {
-			return "stuff";
-		}
+
+	@Override
+	public String toString() {
+		return "Produkt [id=" + p_id + ", url=" + url + ", nazwa=" + nazwa
+				+ ", sklad=" + sklad + ", opis=" + opis + ", cena=" + cena
+				+ ", przetworzony=" + przetworzony+"]";
+	}
 }
 
 

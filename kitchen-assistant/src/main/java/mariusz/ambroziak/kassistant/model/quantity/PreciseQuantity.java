@@ -1,5 +1,8 @@
 package mariusz.ambroziak.kassistant.model.quantity;
 
+import mariusz.ambroziak.kassistant.utils.JspStringHolder;
+import mariusz.ambroziak.kassistant.utils.ProblemLogger;
+
 public class PreciseQuantity extends NotPreciseQuantity {
 	private float amount;
 
@@ -34,5 +37,24 @@ public class PreciseQuantity extends NotPreciseQuantity {
 	
 	public String toString(){
 		return amount+" "+type;
+	}
+	
+	public String toJspString(){
+		return type+JspStringHolder.QUANTITY_PHRASE_BORDER+amount;
+	}
+	
+	
+	public static  PreciseQuantity parseFromJspString(String quanPhrase){
+		PreciseQuantity pq = null;
+		String[] elems=quanPhrase.split(JspStringHolder.QUANTITY_PHRASE_BORDER);
+		if(elems.length<2){
+			ProblemLogger.logProblem("Empty quantity from hidden field");
+		}else{
+			float amount=Float.parseFloat(elems[1]);
+			AmountTypes at=AmountTypes.retrieveTypeByName(elems[0]);
+			pq=new PreciseQuantity(amount,at);
+		}
+		
+		return pq;
 	}
 }

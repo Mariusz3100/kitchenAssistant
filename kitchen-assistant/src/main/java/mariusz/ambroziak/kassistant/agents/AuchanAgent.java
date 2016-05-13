@@ -210,7 +210,9 @@ public class AuchanAgent extends BaseAgent {
 						produkt.setOpis(details.getOpis());
 						produkt.setPrzetworzony(false);
 						produkt.setUrl(shortUrl);
-	
+						produkt.setQuantityPhrase(details.getAmount()==null?
+								"":details.getAmount().toJspString());
+						
 						DaoProvider.getInstance().getProduktDao().saveProdukt(produkt);
 	
 						htmlLog("Na podstawie url "+shortUrl
@@ -326,7 +328,9 @@ public class AuchanAgent extends BaseAgent {
 					foundProdukt.setOpis(produktDetails.getOpis());
 					foundProdukt.setPrzetworzony(false);
 					foundProdukt.setUrl(shorturl);
-
+					foundProdukt.setQuantityPhrase(produktDetails.getAmount()==null?
+							"":produktDetails.getAmount().toJspString());
+					
 					DaoProvider.getInstance().getProduktDao().saveProdukt(foundProdukt);
 
 					htmlLog("Na podstawie url "+shorturl

@@ -13,6 +13,8 @@ public class SearchResult {
 	private String produktPhrase;
 	private String quantity;
 
+	
+	
 	private ArrayList<Produkt> produkts;
 	
 	public String getProduktPhrase() {

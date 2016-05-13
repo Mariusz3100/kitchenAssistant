@@ -2,6 +2,7 @@ package mariusz.ambroziak.kassistant.model.utils;
 
 import mariusz.ambroziak.kassistant.model.quantity.AmountTypes;
 import mariusz.ambroziak.kassistant.model.quantity.PreciseQuantity;
+import mariusz.ambroziak.kassistant.utils.JspStringHolder;
 import mariusz.ambroziak.kassistant.utils.StringHolder;
 
 public class QuantityProdukt {
@@ -32,7 +33,7 @@ public class QuantityProdukt {
 	}
 	
 	public String getQuantityPhrase() {
-		return getAmountType()+StringHolder.QUANTITY_PHRASE_BORDER+getAmount();
+		return getAmountType()+JspStringHolder.QUANTITY_PHRASE_BORDER+getAmount();
 	}
 	
 }

@@ -10,7 +10,6 @@ public class StringHolder {
 	public static final String SINGLE_PRODUKT_ID_NAME ="id";
 	
 	public static final String SEARCH_PHRASE_BORDERS="_";
-	public static final String QUANTITY_PHRASE_BORDER="_";
 	
 	public static final String NO_RESULT_INFO_NAME = "errorMessage";
 	public static final String NO_RESULT_UNKNOWN_SHOP = "UnknownShop";

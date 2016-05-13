@@ -123,7 +123,7 @@ public class AuchanQExtract extends AbstractQuantityExtracter{
 		if(elems==null||elems.length<2)
 			return null;
 
-		PreciseQuantity retValue=new PreciseQuantity();
+		PreciseQuantity retValue=new PreciseQuantity(-1,null);
 		String probablyFloat=elems[0].replaceAll(",", ".").trim();
 		String probablyQuantityTypePhrase=elems[1];
 		float parsedFloat = -1;
@@ -140,10 +140,15 @@ public class AuchanQExtract extends AbstractQuantityExtracter{
 				retValue.setType(at);
 			}
 		}
+		//TODO poprawiæ
+		
+		
 		
 		return retValue;
 	}
 
+	
+	
 	private static String[] extractAmountArrayFromSpacelessText(String text) {
 		String[] elems;
 		elems=new String[2];
