@@ -4,7 +4,7 @@ import java.util.List;
 
 import mariusz.ambroziak.kassistant.model.Produkt;
 
-public class InvalidSearchResult extends SearchResult {
+public class InvalidSearchResult extends MultiProdukt_SearchResult {
 
 	private String invalidityReason;
 	

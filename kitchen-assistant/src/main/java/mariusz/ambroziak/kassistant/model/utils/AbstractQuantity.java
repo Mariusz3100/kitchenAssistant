@@ -2,7 +2,7 @@ package mariusz.ambroziak.kassistant.model.utils;
 
 import mariusz.ambroziak.kassistant.model.quantity.AmountTypes;
 
-public class AbstractQuantity {
+public abstract class AbstractQuantity {
 
 	public AmountTypes type;
 

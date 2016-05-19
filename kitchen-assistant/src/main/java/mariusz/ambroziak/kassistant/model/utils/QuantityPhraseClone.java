@@ -1,9 +1,10 @@
 package mariusz.ambroziak.kassistant.model.utils;
 
+import mariusz.ambroziak.kassistant.model.quantity.NotPreciseQuantity;
 
 public class QuantityPhraseClone {
 	private String phrase;
-	private AbstractQuantity quan;
+	private NotPreciseQuantity quan;
 	
 	public String getPhrase() {
 		return phrase;
@@ -13,11 +14,11 @@ public class QuantityPhraseClone {
 		this.phrase = phrase;
 	}
 
-	public void setQuan(AbstractQuantity quan) {
+	public void setQuan(NotPreciseQuantity quan) {
 		this.quan = quan;
 	}
 
-	public QuantityPhraseClone(String phrase, AbstractQuantity quan) {
+	public QuantityPhraseClone(String phrase, NotPreciseQuantity quan) {
 		super();
 		this.phrase = phrase;
 		this.quan = quan;
@@ -25,9 +26,12 @@ public class QuantityPhraseClone {
 
 	
 	
-	public AbstractQuantity getQuan() {
+	public NotPreciseQuantity getQuan() {
 		return quan;
 	}
 
-	
+	@Override
+	public String toString() {
+		return "QuantityPhraseClone [phrase=" + phrase + ", quan=" + quan + "]";
+	}
 }

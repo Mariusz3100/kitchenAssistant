@@ -52,7 +52,7 @@ import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.Recipe;
 import mariusz.ambroziak.kassistant.model.Recipe_Ingredient;
 import mariusz.ambroziak.kassistant.model.Variant_Word;
-import mariusz.ambroziak.kassistant.model.jsp.SearchResult;
+import mariusz.ambroziak.kassistant.model.jsp.MultiProdukt_SearchResult;
 import mariusz.ambroziak.kassistant.model.utils.QuantityProdukt;
 import mariusz.ambroziak.kassistant.utils.Converter;
 import mariusz.ambroziak.kassistant.utils.MessageTypes;
@@ -124,13 +124,13 @@ public class RecipeAgent extends BaseAgent{
 		super.end();
 	}
 
-	public static ArrayList<SearchResult> getQuantitiesAndProduktsFromRecipeUrl(String url) throws AgentSystemNotStartedException{
+	public static ArrayList<MultiProdukt_SearchResult> getQuantitiesAndProduktsFromRecipeUrl(String url) throws AgentSystemNotStartedException{
 		RecipeAgent freeOne = getFreeAgent();
 		
 		if(freeOne!=null)
 		{
 			freeOne.busy=true;
-			ArrayList<SearchResult> result= freeOne.getFromDbOrParseRecipe(url);
+			ArrayList<MultiProdukt_SearchResult> result= freeOne.getFromDbOrParseRecipe(url);
 			freeOne.busy=false;
 			return result;
 		}else
@@ -139,14 +139,14 @@ public class RecipeAgent extends BaseAgent{
 	
 	}
 
-	public static ArrayList<SearchResult> getPhrasesAndQuantitiesFromRecipeUrl(String url) throws AgentSystemNotStartedException{
+	public static ArrayList<MultiProdukt_SearchResult> getPhrasesAndQuantitiesFromRecipeUrl(String url) throws AgentSystemNotStartedException{
 		RecipeAgent freeOne = getFreeAgent();
 		
 		if(freeOne!=null)
 		{
 			freeOne.busy=true;
 			//TODO potem dodaæ opcjê wyci¹gania z bazy? Do rozwa¿enia
-			ArrayList<SearchResult> result= freeOne.parsePhrasesAndQuantitiesFromRecipeUrl(url);
+			ArrayList<MultiProdukt_SearchResult> result= freeOne.parsePhrasesAndQuantitiesFromRecipeUrl(url);
 			freeOne.busy=false;
 			return result;
 		}else
@@ -236,7 +236,7 @@ public class RecipeAgent extends BaseAgent{
 		return freeOne;
 	}
 
-	private ArrayList<SearchResult> getFromDbOrParseRecipe(String url) {
+	private ArrayList<MultiProdukt_SearchResult> getFromDbOrParseRecipe(String url) {
 		//TODO actual db saving and retrieving.
 		//For now I decided to leave it as it is, every time parse, 
 		//because I need to make sure if recipes remain the same 
@@ -249,15 +249,15 @@ public class RecipeAgent extends BaseAgent{
 	}
 
 
-	private ArrayList<SearchResult> retrieveFromDb() {
+	private ArrayList<MultiProdukt_SearchResult> retrieveFromDb() {
 		// TODO na razie nie robimy
 		return null;
 	}
 
 
 	
-	public ArrayList<SearchResult> parseProduktsPhrasesAndQuantitiesFromRecipeUrl(String url){
-		ArrayList<SearchResult> retValue=new ArrayList<SearchResult>();
+	public ArrayList<MultiProdukt_SearchResult> parseProduktsPhrasesAndQuantitiesFromRecipeUrl(String url){
+		ArrayList<MultiProdukt_SearchResult> retValue=new ArrayList<MultiProdukt_SearchResult>();
 		try{
 			PrzepisyPlWebscrapper scrapperPrzepisu=new PrzepisyPlWebscrapper(url);
 			Elements ings=scrapperPrzepisu.extractIngredients();
@@ -265,7 +265,7 @@ public class RecipeAgent extends BaseAgent{
 			for(Element e:ings){
 				String ingredient = e.text();
 				QuantityProdukt produktAndAmount=retrieveProduktAmountData(e);
-				SearchResult sr = parseSkladnik(ingredient, produktAndAmount);
+				MultiProdukt_SearchResult sr = parseSkladnik(ingredient, produktAndAmount);
 				retValue.add(sr);
 				
 				htmlLog("\n"+ingredient+"->\n");
@@ -284,8 +284,8 @@ public class RecipeAgent extends BaseAgent{
 	}
 
 	
-	public ArrayList<SearchResult> parsePhrasesAndQuantitiesFromRecipeUrl(String url){
-		ArrayList<SearchResult> retValue=new ArrayList<SearchResult>();
+	public ArrayList<MultiProdukt_SearchResult> parsePhrasesAndQuantitiesFromRecipeUrl(String url){
+		ArrayList<MultiProdukt_SearchResult> retValue=new ArrayList<MultiProdukt_SearchResult>();
 		try{
 			PrzepisyPlWebscrapper scrapperPrzepisu=new PrzepisyPlWebscrapper(url);
 			Elements ings=scrapperPrzepisu.extractIngredients();
@@ -293,7 +293,7 @@ public class RecipeAgent extends BaseAgent{
 			for(Element e:ings){
 				String ingredient = e.text();
 				QuantityProdukt produktAndAmount=retrieveProduktAmountData(e);
-				SearchResult sr =new SearchResult(ingredient,produktAndAmount.getProduktPhrase(),
+				MultiProdukt_SearchResult sr =new MultiProdukt_SearchResult(ingredient,produktAndAmount.getProduktPhrase(),
 						produktAndAmount.getQuantityPhrase(), null);
 				retValue.add(sr);
 				
@@ -313,16 +313,16 @@ public class RecipeAgent extends BaseAgent{
 	}
 
 
-	public SearchResult parseSkladnik(String searchPhrase, String  quanPhrase) {
+	public MultiProdukt_SearchResult parseSkladnik(String searchPhrase, String  quanPhrase) {
 		QuantityProdukt qp=retrieveProduktAmountData(searchPhrase,quanPhrase);
 
 		List<Produkt> potencjalneSkladniki = findSkladnik(qp.getProduktPhrase());
-		return new SearchResult(searchPhrase,qp.getProduktPhrase(),qp.getQuantityPhrase(),potencjalneSkladniki);
+		return new MultiProdukt_SearchResult(searchPhrase,qp.getProduktPhrase(),qp.getQuantityPhrase(),potencjalneSkladniki);
 	}
 	
-	public SearchResult parseSkladnik(String searchPhrase, QuantityProdukt qp) {
+	public MultiProdukt_SearchResult parseSkladnik(String searchPhrase, QuantityProdukt qp) {
 		List<Produkt> potencjalneSkladniki = findSkladnik(qp.getProduktPhrase());
-		return new SearchResult(searchPhrase,qp.getProduktPhrase(),qp.getQuantityPhrase(),potencjalneSkladniki);
+		return new MultiProdukt_SearchResult(searchPhrase,qp.getProduktPhrase(),qp.getQuantityPhrase(),potencjalneSkladniki);
 	}
 	
 	

@@ -18,7 +18,7 @@ import mariusz.ambroziak.kassistant.exceptions.AgentSystemNotStartedException;
 import mariusz.ambroziak.kassistant.model.Problem;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.User;
-import mariusz.ambroziak.kassistant.model.jsp.SearchResult;
+import mariusz.ambroziak.kassistant.model.jsp.MultiProdukt_SearchResult;
 import mariusz.ambroziak.kassistant.utils.JspStringHolder;
 
 import org.springframework.stereotype.Controller;
@@ -176,7 +176,7 @@ public class TestsController {
 		String url=request.getParameter("recipeurl");
 
 		if(!url.startsWith("-")){
-			ArrayList<SearchResult> result = null;
+			ArrayList<MultiProdukt_SearchResult> result = null;
 			try {
 				result = RecipeAgent.getQuantitiesAndProduktsFromRecipeUrl(url);
 			} catch (AgentSystemNotStartedException e) {

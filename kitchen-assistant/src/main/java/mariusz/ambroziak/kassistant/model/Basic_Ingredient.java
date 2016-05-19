@@ -20,6 +20,7 @@ public class Basic_Ingredient {
 	@NotNull
 	private String name;
 
+
 	public String getName() {
 		return name;
 	}
@@ -36,6 +37,27 @@ public class Basic_Ingredient {
 		this.bi_id = pi_id;
 	}
 
+	@Override
+	public int hashCode() {
+		return bi_id.intValue();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Basic_Ingredient other = (Basic_Ingredient) obj;
+		if (bi_id == null) {
+			if (other.bi_id != null)
+				return false;
+		} else if (!bi_id.equals(other.bi_id))
+			return false;
+		return true;
+	}
 
 	
 }

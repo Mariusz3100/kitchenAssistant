@@ -11,7 +11,7 @@ public class ProduktWithBasicIngredients {
 	private ProduktDetails produkt;
 	
 
-	private ArrayList<BasicIngredientQuantity> basicsFromLabel;
+	private ArrayList<BasicIngredientQuantity> basicsFromLabelTable;
 	
 	
 
@@ -27,7 +27,7 @@ public class ProduktWithBasicIngredients {
 			ArrayList<BasicIngredientQuantity> basicsFor100g) {
 		super();
 		this.produkt = produkt;
-		this.basicsFromLabel = basicsFor100g;
+		this.basicsFromLabelTable = basicsFor100g;
 	}
 
 
@@ -35,8 +35,8 @@ public class ProduktWithBasicIngredients {
 
 
 
-	public ArrayList<BasicIngredientQuantity> getBasicsFor100g() {
-		return basicsFromLabel;
+	public ArrayList<BasicIngredientQuantity> getBasicsFromLabelTable() {
+		return basicsFromLabelTable;
 	}
 
 

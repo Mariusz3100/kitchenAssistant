@@ -13,6 +13,7 @@ import org.jsoup.select.Elements;
 
 import mariusz.ambroziak.kassistant.QuantityExtractor.JedzDobrzeExtractor;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
+import mariusz.ambroziak.kassistant.exceptions.Page404Exception;
 import mariusz.ambroziak.kassistant.model.Nutrient;
 import mariusz.ambroziak.kassistant.model.quantity.AmountTypes;
 import mariusz.ambroziak.kassistant.model.quantity.PreciseQuantity;
@@ -74,8 +75,11 @@ public class JedzDobrzeScrapper extends AbstractScrapper {
 					}
 				}
 			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				ProblemLogger.logProblem("Malformed url: "+url);
+				ProblemLogger.logStackTrace(e.getStackTrace());
+			} catch (Page404Exception e) {
+				ProblemLogger.logProblem("PageNotFound url: "+url);
+				ProblemLogger.logStackTrace(e.getStackTrace());
 			}
 
 		}
@@ -149,9 +153,11 @@ public class JedzDobrzeScrapper extends AbstractScrapper {
 
 
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
 			ProblemLogger.logProblem("Malformed url: "+finalUrl);
-			e.printStackTrace();
+			ProblemLogger.logStackTrace(e.getStackTrace());
+		} catch (Page404Exception e) {
+			ProblemLogger.logProblem("PageNotFound url: "+finalUrl);
+			ProblemLogger.logStackTrace(e.getStackTrace());
 		}
 
 		return retUrl;

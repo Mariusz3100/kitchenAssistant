@@ -6,6 +6,7 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
+import mariusz.ambroziak.kassistant.exceptions.Page404Exception;
 import mariusz.ambroziak.kassistant.model.Produkt;
 
 import org.junit.BeforeClass;
@@ -44,9 +45,16 @@ public class AuchanGroupConnectingTest {
 	
 	@Test
 	public  void testNowyAuchan() throws MalformedURLException {
-		String page= AuchanGroup.getPage("http://www.auchandirect.pl/auchan-warszawa/pl/search?text=mro¿one+owoce");
+		String page;
+		try {
+			page = AuchanGroup.getPage("http://www.auchandirect.pl/auchan-warszawa/pl/search?text=mro¿one+owoce");
+			System.out.println(page);
+
+		} catch (Page404Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
-		System.out.println(page);
 	
 	}
 	

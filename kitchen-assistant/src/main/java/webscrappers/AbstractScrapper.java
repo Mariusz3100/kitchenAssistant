@@ -1,6 +1,7 @@
 package webscrappers;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -11,11 +12,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
+import mariusz.ambroziak.kassistant.exceptions.Page404Exception;
 import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 
 public abstract class AbstractScrapper {
 
-	public static String getPage(String finalUrl) throws MalformedURLException {
+	public static String getPage(String finalUrl) throws MalformedURLException, Page404Exception {
 			initCookieHandler();
 	
 			URLConnection connection;
@@ -39,6 +41,9 @@ public abstract class AbstractScrapper {
 			
 					inputStreamReader = new InputStreamReader(detResponse,java.nio.charset.StandardCharsets.UTF_8.toString());
 				} catch (IOException e) {
+					if(e instanceof FileNotFoundException){
+						throw new Page404Exception(finalUrl);
+					}
 					ProblemLogger.logProblem(
 							"There was a problem with accessing url '"+finalUrl+"' exception: "+e.getMessage());
 					

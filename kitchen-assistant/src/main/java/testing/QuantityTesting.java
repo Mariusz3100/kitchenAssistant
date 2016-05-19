@@ -12,7 +12,7 @@ import java.util.List;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.Recipe;
 import mariusz.ambroziak.kassistant.model.Recipe_Ingredient;
-import mariusz.ambroziak.kassistant.model.jsp.SearchResult;
+import mariusz.ambroziak.kassistant.model.jsp.MultiProdukt_SearchResult;
 import mariusz.ambroziak.kassistant.model.utils.QuantityProdukt;
 
 import org.jsoup.Jsoup;

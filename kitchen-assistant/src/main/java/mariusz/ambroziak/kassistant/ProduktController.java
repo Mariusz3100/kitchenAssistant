@@ -26,7 +26,7 @@ import mariusz.ambroziak.kassistant.exceptions.ShopNotFoundException;
 import mariusz.ambroziak.kassistant.model.Nutrient;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.User;
-import mariusz.ambroziak.kassistant.model.jsp.SearchResult;
+import mariusz.ambroziak.kassistant.model.jsp.MultiProdukt_SearchResult;
 import mariusz.ambroziak.kassistant.model.quantity.AmountTypes;
 import mariusz.ambroziak.kassistant.model.quantity.NotPreciseQuantity;
 import mariusz.ambroziak.kassistant.model.quantity.PreciseQuantity;
@@ -162,7 +162,7 @@ public class ProduktController {
 					ArrayList<String> list=new ArrayList<String>();
 					list.add(basics.getProdukt().getNazwa()+" - "+basics.getProdukt().getUrl());
 					
-					for(BasicIngredientQuantity bpi:basics.getBasicsFor100g())
+					for(BasicIngredientQuantity bpi:basics.getBasicsFromLabelTable())
 					{
 						String opis=bpi.getName()+": "+bpi.getAmount();
 						

@@ -60,6 +60,9 @@ public class UrlShorteningTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			fail();
+		} catch (Page404Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 		assertNotNull(content);

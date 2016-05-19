@@ -2,14 +2,15 @@ package mariusz.ambroziak.kassistant.model.utils;
 
 import mariusz.ambroziak.kassistant.model.Basic_Ingredient;
 import mariusz.ambroziak.kassistant.model.quantity.AmountTypes;
+import mariusz.ambroziak.kassistant.model.quantity.NotPreciseQuantity;
 import mariusz.ambroziak.kassistant.model.quantity.PreciseQuantity;
 
 public class BasicIngredientQuantity implements ProduktIngredientQuantity{
 	private Basic_Ingredient bi;
-	private AbstractQuantity quan;
+	private NotPreciseQuantity quan;
 	
 	
-	public BasicIngredientQuantity(Basic_Ingredient bi, AbstractQuantity quan) {
+	public BasicIngredientQuantity(Basic_Ingredient bi, NotPreciseQuantity quan) {
 		super();
 		this.bi = bi;
 		this.quan = quan;
@@ -22,10 +23,10 @@ public class BasicIngredientQuantity implements ProduktIngredientQuantity{
 		((PreciseQuantity) this.quan).setAmount(amount);
 		this.quan.type = amountType;
 	}
-	public Basic_Ingredient getPi() {
+	public Basic_Ingredient getBi() {
 		return bi;
 	}
-	public AbstractQuantity getAmount() {
+	public NotPreciseQuantity getAmount() {
 		return quan;
 	}
 	public AmountTypes getAmountType() {
@@ -35,6 +36,9 @@ public class BasicIngredientQuantity implements ProduktIngredientQuantity{
 	@Override
 	public String getName() {
 		return bi!=null&&bi.getName()!=null?bi.getName():"brak nazwy";
+	}
+	public void setBi(Basic_Ingredient bi) {
+		this.bi = bi;
 	}
 
 	
