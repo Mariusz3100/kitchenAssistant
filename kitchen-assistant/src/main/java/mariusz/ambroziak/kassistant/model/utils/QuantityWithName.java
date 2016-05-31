@@ -2,7 +2,7 @@ package mariusz.ambroziak.kassistant.model.utils;
 
 import mariusz.ambroziak.kassistant.model.quantity.NotPreciseQuantity;
 
-public class QuantityPhraseClone {
+public class QuantityWithName {
 	private String phrase;
 	private NotPreciseQuantity quan;
 	
@@ -18,7 +18,7 @@ public class QuantityPhraseClone {
 		this.quan = quan;
 	}
 
-	public QuantityPhraseClone(String phrase, NotPreciseQuantity quan) {
+	public QuantityWithName(String phrase, NotPreciseQuantity quan) {
 		super();
 		this.phrase = phrase;
 		this.quan = quan;

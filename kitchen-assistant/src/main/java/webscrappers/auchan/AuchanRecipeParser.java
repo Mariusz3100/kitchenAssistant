@@ -5,6 +5,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
@@ -30,18 +31,20 @@ import mariusz.ambroziak.kassistant.model.utils.CompoundIngredientQuantity;
 import mariusz.ambroziak.kassistant.model.utils.ProduktIngredientQuantity;
 import mariusz.ambroziak.kassistant.model.utils.ProduktWithBasicIngredients;
 import mariusz.ambroziak.kassistant.model.utils.ProduktWithAllIngredients;
-import mariusz.ambroziak.kassistant.model.utils.QuantityPhraseClone;
-import mariusz.ambroziak.kassistant.model.utils.QuantityProdukt;
+import mariusz.ambroziak.kassistant.model.utils.QuantityWithName;
+import mariusz.ambroziak.kassistant.model.utils.QuantityProduktPhrase;
 import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 import mariusz.ambroziak.kassistant.utils.SkladnikiFinder;
 
 public class AuchanRecipeParser extends AuchanParticular {
-	private static final float absoluteMinimal = 0.0001f;
-	public static final String singleIngredientPattern ="([^()]*?, )|([^(]*?\\(([^()]*?|[^()]*?\\([^()]*?\\)[^()]*?)\\).*?, )";
-	public static final String compoundSkladnikPattern = "([^()]*?\\([^()]*?\\)[^()]*?)";
+	private static final float absoluteMinimalFraction = 0.0001f;
+	public static final String singleIngredientPattern ="([^()]*?, )|([^(]*?\\(([^()]*?"+
+									"|"+
+									"[^()]*?\\([^()]*?\\)[^()]*?)\\).*?, )";
+	public static final String compoundSkladnikPattern = "([^(]*?\\(([^()]*?|[^()]*?\\([^()]*?\\)[^()]*?)\\).*?)";
 	public static final String simpleSkladnikPattern = "([^()]*?)";
 
-	public static final String percentCheckPatternSimple =".*?[\\d,.]*%.*"; 
+	public static final String percentCheckPatternSimple =".*?[\\d,.]*%.*?"; 
 	public static final String percentFindPatternSimple =" [\\d,.]*%"; 
 	public static final String findInnerSkladPattern =" \\(.*?\\)"; 
 
@@ -169,7 +172,7 @@ public class AuchanRecipeParser extends AuchanParticular {
 	}
 
 
-	public static void checkifHeadIsOk(Elements thead) {
+	private static void checkifHeadIsOk(Elements thead) {
 		if(thead!=null&&thead.size()>0){
 			Elements rows = thead.select("tr");
 
@@ -230,21 +233,15 @@ public class AuchanRecipeParser extends AuchanParticular {
 
 
 	private static CompoundIngredientQuantity retrieveAllIngredients(Document doc, ProduktDetails produkt) {
-
 		if(doc==null){
 			return null;
 		}else{
-
 			Elements table = doc.select("#product-desc-1");
-
-
 			if(table!=null&&table.size()>0){
 				Elements paragraphs = table.get(0).select("p");
-
 				if(paragraphs!=null&&paragraphs.size()>0){
 					String sklad=paragraphs.get(0).ownText();
-
-					ArrayList<ProduktIngredientQuantity> parseSkladniki = parseSklad(produkt.getAmount(), sklad);
+					ArrayList<ProduktIngredientQuantity> parseSkladniki = parseSkladString(produkt.getAmount(), sklad);
 
 					ArrayList<BasicIngredientQuantity> prosteSkladniki=new ArrayList<BasicIngredientQuantity>();
 					ArrayList<CompoundIngredientQuantity> zlozoneSkladniki=new ArrayList<CompoundIngredientQuantity>();
@@ -257,144 +254,227 @@ public class AuchanRecipeParser extends AuchanParticular {
 							prosteSkladniki.add((BasicIngredientQuantity) piq);
 
 					}
-
 					CompoundIngredientQuantity ciq=new CompoundIngredientQuantity(produkt.getNazwa(),
 							produkt.getAmount(),zlozoneSkladniki,prosteSkladniki);
-
-
 					return ciq;
-
 				}
-
 			}
-
-
-
-
 			return null;
 		}
 	}
 
 
-	public static ArrayList<ProduktIngredientQuantity> parseSklad(AbstractQuantity quan, String sklad) {
-		if(sklad==null)
+	public static ArrayList<ProduktIngredientQuantity> parseSkladString(NotPreciseQuantity upperLevelQuan, String skladString) {
+		if(skladString==null)
 			return null;
-
-		SkladParser skladParser=new SkladParser(sklad, quan);
-
-		LinkedHashMap<String, QuantityPhraseClone> relativeAmountsFromSklad = skladParser.getRelativeAmountsFromSklad();
-
-		ArrayList<ProduktIngredientQuantity> skladnikiSparsowane = parseSkladniki(relativeAmountsFromSklad,quan);
-
+		SkladReader skladParser=new SkladReader(skladString, upperLevelQuan);
+		Collection<QuantityWithName> skladnikiPhrasesWithQuanties = skladParser.parseSkladnikiStringsWithProperlyCalulatedQuantities();
+		ArrayList<ProduktIngredientQuantity> skladnikiSparsowane;
+		if(skladnikiPhrasesWithQuanties.size()==1){
+			skladnikiSparsowane=new ArrayList<ProduktIngredientQuantity>();
+			skladnikiSparsowane.add(parseSkladnikiFromPartiallyParsedMapWhenThereIsOnlyOneElement(getOneEntryFrom(skladnikiPhrasesWithQuanties)));
+		}else{
+			skladnikiSparsowane = parseSkladnikiFromPartiallyParsedMap(skladnikiPhrasesWithQuanties,upperLevelQuan);
+		}
 		return skladnikiSparsowane;
 	}
 
 
-	private static class SkladParser{
+	private static QuantityWithName getOneEntryFrom(
+			Collection<QuantityWithName> skladnikiPhrasesWithQuanties) {
+		return skladnikiPhrasesWithQuanties.iterator().next();
+	}
+
+
+	private static ProduktIngredientQuantity parseSkladnikiFromPartiallyParsedMapWhenThereIsOnlyOneElement(
+			QuantityWithName quantityWithName) {
+		if(quantityWithName==null){
+			return null;
+		}else{
+				ProduktIngredientQuantity retValue=null;
+				if(Pattern.matches(simpleSkladnikPattern, quantityWithName.getPhrase())){
+					retValue= parseSimpleSkladnik(quantityWithName.getQuan(), quantityWithName.getPhrase());
+				}else if(Pattern.matches(compoundSkladnikPattern, quantityWithName.getPhrase())){
+					retValue= parseCompoundSkladnik(quantityWithName.getPhrase(), quantityWithName);
+				}else{
+					ProblemLogger.logProblem("Ani prosty, ani skomplikowany sk³adnik??? "+quantityWithName.getPhrase());
+				}
+			return retValue;
+		}
+	}
+
+
+	private static class SkladReader{
 		private String sklad;
-		private LinkedHashMap<String,QuantityPhraseClone> mapaSkladnikow;
-		private ArrayList<QuantityPhraseClone> orderedListOfQuans;
+		private LinkedHashMap<String,QuantityWithName> mapaSkladnikow;
+		private ArrayList<QuantityWithName> orderedListOfQuans;
 
-		private AbstractQuantity upperLevelquan;
+		private NotPreciseQuantity upperLevelquan;
 
-		public SkladParser(String sklad,AbstractQuantity upperLevelquan) {
+		public SkladReader(String sklad,NotPreciseQuantity upperLevelquan) {
 			super();
 			this.sklad = sklad;
 			eliminateDotAtEndOfSkladIfPresent();
 			addCommaAtEndOfSkladIfNotPresent();
 			this.upperLevelquan=upperLevelquan;
-			mapaSkladnikow=new LinkedHashMap<String, QuantityPhraseClone>();
-			orderedListOfQuans=new ArrayList<QuantityPhraseClone>();
+			mapaSkladnikow=new LinkedHashMap<String, QuantityWithName>();
+			orderedListOfQuans=new ArrayList<QuantityWithName>();
 		}
 
 
 
-		public LinkedHashMap<String,QuantityPhraseClone> getRelativeAmountsFromSklad(){
-			fillSkladnikMapAndOrderedQuanListWithInfoReadFromSklad();
+		public Collection<QuantityWithName> parseSkladnikiStringsWithProperlyCalulatedQuantities(){
+			fillSkladnikMapAndOrderedQuanListWithoutAnyRelationToEachOther();
+			adjustQuantitiesOfIngredientWithRespectToOtherIngredients();
+			return mapaSkladnikow.values();
+		}
 
+
+
+		private void adjustQuantitiesOfIngredientWithRespectToOtherIngredients() {
+			if(mapaSkladnikow.size()==1){
+				updateSingleUnknownMinimalByCopyingUpperLevelMinimal(mapaSkladnikow.entrySet().iterator().next().getValue());
+			}else{
 			
-			ArrayList<QuantityPhraseClone> unknownMinimal=new ArrayList<QuantityPhraseClone>();
-			adjustQuantitiesOfIngredientWithRespectToOtherIngredients(unknownMinimal);
-
-			if(unknownMinimal.size()>0){
-				float rest=((NotPreciseQuantity)upperLevelquan).getMinimalAmount();
-
-
-				for(int i=0;i<orderedListOfQuans.size();i++){
-					rest-=((NotPreciseQuantity)orderedListOfQuans.get(i).getQuan()).getMinimalAmount();
-				}
-
-				QuantityPhraseClone firstElement = unknownMinimal.get(0);
-
-				((NotPreciseQuantity)firstElement.getQuan()).setMinimalAmount((rest/(float)unknownMinimal.size()));
-				unknownMinimal.remove(firstElement);
-
-				for(QuantityPhraseClone qpc1:unknownMinimal){
-					if(upperLevelquan instanceof NotPreciseQuantity){
-						((NotPreciseQuantity)(qpc1.getQuan())).setMinimalAmount((float)Math.floor(absoluteMinimal*((NotPreciseQuantity)upperLevelquan).getMinimalAmount()));
-
-					}
-				}
-				unknownMinimal.clear();
+				ArrayList<QuantityWithName> unknownMinimal = 
+						adjustQuantitiesOfIngredientsWithRespectToEachOtherExceptForLastUnknownMinimls();
+				updateLastUnknownMinimals(unknownMinimal);
 			}
 
-			return mapaSkladnikow;
 		}
 
 
 
-		private void adjustQuantitiesOfIngredientWithRespectToOtherIngredients(
-				ArrayList<QuantityPhraseClone> unknownMinimal) {
-			float maxAmount = getMaxAmountMinusNecessaryMinimals(upperLevelquan, orderedListOfQuans);
-			float currentMax=(1-absoluteMinimal)*maxAmount;
+		private void updateLastUnknownMinimals(ArrayList<QuantityWithName> unknownMinimal) {
+			if(!unknownMinimal.isEmpty()){
+					float rest = calculateUpperMinimalMinusKnownMinimals();
+					removeFirstElementAndUpdateItWithRestOverNumberOfUnknowns(unknownMinimal, rest);
+					updateCollectionWithMinimalFractionOfUpperQuan(unknownMinimal);
+
+			}
+		}
+
+
+
+		private void updateSingleUnknownMinimalByCopyingUpperLevelMinimal(QuantityWithName quantityWithName) {
+			quantityWithName.setQuan(upperLevelquan.getClone());
+		}
+
+
+
+		private float calculateUpperMinimalMinusKnownMinimals() {
+			float rest=((NotPreciseQuantity)upperLevelquan).getMinimalAmount();
 			for(int i=0;i<orderedListOfQuans.size();i++){
-				QuantityPhraseClone qpc=orderedListOfQuans.get(i);
+				if(((NotPreciseQuantity)orderedListOfQuans.get(i).getQuan()).isMinimumValid())
+				rest-=((NotPreciseQuantity)orderedListOfQuans.get(i).getQuan()).getMinimalAmount();
+			}
+			return rest;
+		}
 
+
+
+		private void updateCollectionWithMinimalFractionOfUpperQuan(ArrayList<QuantityWithName> unknownMinimal) {
+			for(QuantityWithName qpc1:unknownMinimal){
+				if(upperLevelquan instanceof NotPreciseQuantity){
+					((NotPreciseQuantity)(qpc1.getQuan())).setMinimalAmount((float)Math.floor(absoluteMinimalFraction*((NotPreciseQuantity)upperLevelquan).getMinimalAmount()));
+				}
+			}
+			unknownMinimal.clear();
+		}
+
+
+
+		private void removeFirstElementAndUpdateItWithRestOverNumberOfUnknowns(ArrayList<QuantityWithName> unknownMinimal,
+				float rest) {
+			QuantityWithName firstElement = getFirstNotNullElementIfPossible(unknownMinimal);
+			((NotPreciseQuantity)firstElement.getQuan()).setMinimalAmount((rest/(float)unknownMinimal.size()));
+			unknownMinimal.remove(firstElement);
+		}
+
+
+
+		private QuantityWithName getFirstNotNullElementIfPossible(ArrayList<QuantityWithName> unknownMinimal) {
+			QuantityWithName firstElement = unknownMinimal.get(0);
+			for(int i=1;i<unknownMinimal.size()&&firstElement==null;i++){
+				firstElement=unknownMinimal.get(i);
+			}
+			return firstElement;
+		}
+
+
+
+		private ArrayList<QuantityWithName> adjustQuantitiesOfIngredientsWithRespectToEachOtherExceptForLastUnknownMinimls() {
+			float currentMax = calculateFirstElementMaxUsingConstantsAndUpperQuanAndMinimals();
+			return adjustQuantitiesOfIngredientsWithRespectToEachOtherExceptForLastUnknownMinimalsStartingWithCurrentMax(
+					currentMax);
+		}
+
+
+
+		private ArrayList<QuantityWithName> adjustQuantitiesOfIngredientsWithRespectToEachOtherExceptForLastUnknownMinimalsStartingWithCurrentMax(
+				float currentMax) {
+			ArrayList<QuantityWithName> unknownMinimal=new ArrayList<QuantityWithName>();
+			for(int i=0;i<orderedListOfQuans.size();i++){
+				QuantityWithName qpc=orderedListOfQuans.get(i);
 				currentMax = adjustMaxAmountInCaseCalculatingFromPositionIsPreciser(upperLevelquan, currentMax, i);
-
 				NotPreciseQuantity quan = qpc.getQuan();
-				if(quan==null){
+				if(quan!=null){
+					if(quan.isMaximumValid()){
+						currentMax=((PreciseQuantity) quan).getMaximalAmount();
+						setPreviousMinimalsFromCurrentMax(currentMax, unknownMinimal);
+					}
+				}else{
 					NotPreciseQuantity unknownMinimalQuan = createQuantityWithUnknownMinimal(upperLevelquan, currentMax);
 					qpc.setQuan(unknownMinimalQuan);
 					unknownMinimal.add(qpc);
-				}else{
-					if(quan.isMaximumValid()){
-						currentMax=((PreciseQuantity) quan).getMaximalAmount();//*((NotPreciseQuantity)upperLevelquan).getMaximalAmount();
-
-						for(QuantityPhraseClone qpc1:unknownMinimal){
-							((NotPreciseQuantity)(qpc1.getQuan())).setMinimalAmount(
-									((PreciseQuantity) quan).getMaximalAmount());
-
-						}
-						unknownMinimal.clear();
-
-					}else{
-						
-					}
 				}		
 			}
-
+			return unknownMinimal;
 		}
 
 
 
-		private ArrayList<QuantityPhraseClone> fillSkladnikMapAndOrderedQuanListWithInfoReadFromSklad() {
+		private float calculateFirstElementMaxUsingConstantsAndUpperQuanAndMinimals() {
+			float maxAmount = getMaxAmountMinusNecessaryMinimals(upperLevelquan, orderedListOfQuans);
+			float currentMax=getMaxMinusAbsoluteMinimalsForOtherSkladniki()*maxAmount;
+			return currentMax;
+		}
+
+
+
+		private float getMaxMinusAbsoluteMinimalsForOtherSkladniki() {
+			if(orderedListOfQuans.isEmpty()){
+				ProblemLogger.logProblem("Próba obliczenia iloœci maksymalnej dla pierwszego elementu pustej listy");
+				return 0;
+			}else{
+				return 1-(absoluteMinimalFraction*(orderedListOfQuans.size()-1));
+			}
+		}
+
+
+
+		private void setPreviousMinimalsFromCurrentMax(float currentMax, ArrayList<QuantityWithName> unknownMinimal) {
+			for(QuantityWithName qpc1:unknownMinimal){
+				((NotPreciseQuantity)(qpc1.getQuan())).setMinimalAmount(currentMax);
+
+			}
+			unknownMinimal.clear();
+		}
+
+
+
+		private void fillSkladnikMapAndOrderedQuanListWithoutAnyRelationToEachOther() {
 			Pattern p=Pattern.compile(singleIngredientPattern);
 			Matcher m=p.matcher(sklad);
 			while(m.find()){
 				String skladnik=m.group().trim();
 				if(skladnik.endsWith(","))
 					skladnik=skladnik.substring(0, skladnik.length()-1);
-
-
-				QuantityPhraseClone quanExtracted = extractQuantityAndPhraseIfPercent(skladnik, upperLevelquan);
-
-
+				QuantityWithName quanExtracted = extractQuantityAndPhraseIfPercent(skladnik, upperLevelquan);
 				orderedListOfQuans.add(quanExtracted);
 				mapaSkladnikow.put(skladnik, quanExtracted);
-
 			}
-			return orderedListOfQuans;
+			
 		}
 
 
@@ -408,10 +488,6 @@ public class AuchanRecipeParser extends AuchanParticular {
 			if(sklad.endsWith("."))
 				sklad=sklad.substring(0, sklad.length()-1);
 		}
-
-
-
-
 	}
 
 
@@ -438,12 +514,12 @@ public class AuchanRecipeParser extends AuchanParticular {
 
 
 	private static float getMaxAmountMinusNecessaryMinimals(AbstractQuantity upperLevelquan,
-			ArrayList<QuantityPhraseClone> orderedListOfQuans) {
+			ArrayList<QuantityWithName> orderedListOfQuans) {
 		float maxAmount = extractPossibleMaximumAmount(upperLevelquan);
 
 		float currentminimalAmountSkladnik=0f;
 		for(int i=orderedListOfQuans.size()-1;i>0;i--){
-			QuantityPhraseClone quantityPhraseClone = orderedListOfQuans.get(i);
+			QuantityWithName quantityPhraseClone = orderedListOfQuans.get(i);
 			AbstractQuantity iterateQuan = quantityPhraseClone.getQuan();
 			if(iterateQuan!=null&&((NotPreciseQuantity) iterateQuan).isMinimumValid())
 			{
@@ -464,47 +540,35 @@ public class AuchanRecipeParser extends AuchanParticular {
 		return maxAmount;
 	}
 
-
-
-
-	public static ArrayList<ProduktIngredientQuantity> parseSkladniki(
-			LinkedHashMap<String, QuantityPhraseClone> relativeAmountsFromSklad, AbstractQuantity upperQuan) {
-
-		if(relativeAmountsFromSklad==null)
+	public static ArrayList<ProduktIngredientQuantity> parseSkladnikiFromPartiallyParsedMap(
+			Collection<QuantityWithName> skladnikiPhrasesWithQuanties, AbstractQuantity upperLevelQuan) {
+		if(skladnikiPhrasesWithQuanties==null||skladnikiPhrasesWithQuanties.isEmpty())
 			return null;
-
-
-
 		ArrayList<ProduktIngredientQuantity> retValue=new ArrayList<ProduktIngredientQuantity>();
-
-
-		for(Entry<String, QuantityPhraseClone> e:relativeAmountsFromSklad.entrySet()){
-			String skladnik=e.getKey();
-
-			if(Pattern.matches(simpleSkladnikPattern, skladnik)){
-				String  skladnikBezProcenta=parseSimpleSkladnik(skladnik);
-				Basic_Ingredient simpleSkladnik = getSimpleSkladnik(skladnikBezProcenta);
-
-				BasicIngredientQuantity biq=new BasicIngredientQuantity(simpleSkladnik, e.getValue().getQuan());
-
+		for(QuantityWithName singleSkladnikWithExtractedQuantity:skladnikiPhrasesWithQuanties){
+			if(Pattern.matches(simpleSkladnikPattern, singleSkladnikWithExtractedQuantity.getPhrase())){
+				BasicIngredientQuantity biq = parseSimpleSkladnik(singleSkladnikWithExtractedQuantity.getQuan(), singleSkladnikWithExtractedQuantity.getPhrase());
 				retValue.add(biq);
-			}else if(Pattern.matches(compoundSkladnikPattern, skladnik)){
-				CompoundIngredientQuantity compoundSkladnik = getCompoundSkladnik(skladnik, e.getValue());
-
+			}else if(Pattern.matches(compoundSkladnikPattern, singleSkladnikWithExtractedQuantity.getPhrase())){
+				CompoundIngredientQuantity compoundSkladnik = parseCompoundSkladnik(singleSkladnikWithExtractedQuantity.getPhrase(), singleSkladnikWithExtractedQuantity);
 				retValue.add(compoundSkladnik);
 			}else{
-				ProblemLogger.logProblem("Ani prosty, ani skomplikowany sk³adnik??? "+skladnik);
+				ProblemLogger.logProblem("Ani prosty, ani skomplikowany sk³adnik??? "+singleSkladnikWithExtractedQuantity.getPhrase());
 			}
-
 		}
-
-
 		return retValue;
-
 	}
 
 
-	private static String parseSimpleSkladnik(String skladnik) {
+	private static BasicIngredientQuantity parseSimpleSkladnik(NotPreciseQuantity skladnikQuan, String skladnik) {
+		String  skladnikBezProcenta=removeProcentIfAny(skladnik);
+		Basic_Ingredient simpleSkladnik = retrieveFromDbOrCreateNewSimpleSkladnik(skladnikBezProcenta);
+		BasicIngredientQuantity biq=new BasicIngredientQuantity(simpleSkladnik, skladnikQuan);
+		return biq;
+	}
+
+
+	private static String removeProcentIfAny(String skladnik) {
 		String skladnikWithoutPercent=null;
 
 		if(Pattern.matches(percentCheckPatternSimple, skladnik)){
@@ -527,16 +591,12 @@ public class AuchanRecipeParser extends AuchanParticular {
 	}
 
 
-	private static Basic_Ingredient getSimpleSkladnik(String skladnik) {
-
+	private static Basic_Ingredient retrieveFromDbOrCreateNewSimpleSkladnik(String skladnik) {
+		//TODO dodaæ element zapisywania do i wyciagania z bazy danych
 		if(skladnik==null){
 			return null;
 		}else{
-			skladnik=skladnik.trim();
-			if(skladnik.charAt(skladnik.length()-1)==','){
-				skladnik=skladnik.substring(0,skladnik.length()-1).trim();
-			}
-
+			skladnik = trimAndRemoveTrailingCommaIfAny(skladnik);
 			Basic_Ingredient bi=new Basic_Ingredient();
 			bi.setName(skladnik);
 			return bi;
@@ -544,102 +604,72 @@ public class AuchanRecipeParser extends AuchanParticular {
 	}
 
 
-	public static QuantityPhraseClone extractQuantityAndPhraseIfPercent(String skladnik,
+	private static QuantityWithName extractQuantityAndPhraseIfPercent(String skladnik,
 			AbstractQuantity upperLevelquan) {
-		if(skladnik==null)
+		if(skladnik==null||upperLevelquan==null)
 			return null;
-
-		NotPreciseQuantity newQuan = null;
-		String nazwaSkladnika=null;
-
+		skladnik=skladnik.trim();
 		if(Pattern.matches(percentCheckPatternSimple, skladnik)){
 			Pattern p=Pattern.compile(percentFindPatternSimple);
-
 			Matcher m=p.matcher(skladnik);
-
 			if(m.find()){
-				String procent=m.group().trim();
-
-				nazwaSkladnika=skladnik.substring(0,skladnik.indexOf(procent)).trim();
-
-				if(procent.contains(",")&&!procent.contains("."))
-					procent=procent.replaceAll(",", ".");
-
-				procent=procent.replaceAll("%", "");
-				float fraction=Float.parseFloat(procent)/100f;
-				if(upperLevelquan instanceof PreciseQuantity){
-					PreciseQuantity pq=(PreciseQuantity)upperLevelquan;
-
-					PreciseQuantity newPQ=new PreciseQuantity();
-					newPQ.setType(pq.getType());
-					newPQ.setAmount(fraction*pq.getAmount());
-					newQuan=newPQ;
-				}else if(upperLevelquan instanceof NotPreciseQuantity){
-					NotPreciseQuantity npq=(NotPreciseQuantity)upperLevelquan;
-
-					NotPreciseQuantity newNpq=new NotPreciseQuantity();
-					newNpq.setType(upperLevelquan.getType());
-					newNpq.setMinimalAmount(npq.getMinimalAmount()*fraction);
-					newNpq.setMaximalAmount(npq.getMaximalAmount()*fraction);
-					newQuan=newNpq;
-				}
+				return extractQuantityWithPhraseFromSkladnikWithPercent(skladnik, upperLevelquan, m);
+			}else{
+				ProblemLogger.logProblem("Prawdopodobnie coœ nie tak z regexami: najpierw stwierdzono obecnoœæ procentu, potem go nie znaleziono dla "+skladnik);
+				return new QuantityWithName(skladnik, null);
 			}
 		}else{
-			///			if(upperLevelquan instanceof PreciseQuantity){
-			String tempSkladnik=skladnik.trim();	
-
-			Pattern p=Pattern.compile(findInnerSkladPattern);
-
-			Matcher m=p.matcher(tempSkladnik);
-
-			if(m.find()){
-				String sklad=m.group();
-				nazwaSkladnika=tempSkladnik.replaceAll(Pattern.quote(sklad), "").trim();
-
-			}else{
-				nazwaSkladnika=tempSkladnik;
-			}
-			newQuan=null;
-			//			}else if(upperLevelquan instanceof NotPreciseQuantity){
-			//				newQuan=null;
-			//				skladnikWithoutPercent=skladnik;
-			//			}
-
+			return new QuantityWithName(skladnik, null);
 		}
-
-
-		QuantityPhraseClone retValue=new QuantityPhraseClone(nazwaSkladnika,newQuan);
-
-		return retValue;
-
+		
 	}
 
 
-	public static CompoundIngredientQuantity getCompoundSkladnik(String skladnik,QuantityPhraseClone quantityPhraseClone) {
+	private static QuantityWithName extractQuantityWithPhraseFromSkladnikWithPercent(String skladnik,
+			AbstractQuantity upperLevelquan, Matcher m) {
+		//String nazwaSkladnika;
+		String procent=m.group().trim();
+		//nazwaSkladnika=skladnik.substring(0,skladnik.indexOf(procent)).trim();
+		float fraction = calculateFractionFromProcentString(procent);
+		NotPreciseQuantity relativeSkladnik = upperLevelquan.getClone();
+		relativeSkladnik.multiplyBy(fraction);
+		QuantityWithName retValue=new QuantityWithName(skladnik,relativeSkladnik);
+		return retValue;
+	}
 
+
+	private static NotPreciseQuantity getRelativeQuantity(AbstractQuantity upperLevelquan, float fraction) {
+		NotPreciseQuantity newQuan;
+		PreciseQuantity upperLevelQuanCastToPrecise=(PreciseQuantity)upperLevelquan;
+		PreciseQuantity newPQ=upperLevelQuanCastToPrecise.getClone();
+		newPQ.multiplyBy(fraction);
+		newQuan=newPQ;
+		return newQuan;
+	}
+
+
+	private static float calculateFractionFromProcentString(String procent) {
+		if(procent.contains(",")&&!procent.contains("."))
+			procent=procent.replaceAll(",", ".");
+		procent=procent.replaceAll("%", "");
+		float fraction=Float.parseFloat(procent)/100f;
+		return fraction;
+	}
+
+	public static CompoundIngredientQuantity parseCompoundSkladnik(QuantityWithName skladnikPhraseWirhQuantity) {
+		return parseCompoundSkladnik(skladnikPhraseWirhQuantity.getPhrase(),skladnikPhraseWirhQuantity);
+	}
+
+	public static CompoundIngredientQuantity parseCompoundSkladnik(String skladnik,QuantityWithName quantityPhraseClone) {
 		if(skladnik==null){
 			return null;
 		}else{
-			skladnik=skladnik.trim();
-			if(skladnik.charAt(skladnik.length()-1)==','){
-				skladnik=skladnik.substring(0,skladnik.length()-1).trim();
-			}
-
+			skladnik = trimAndRemoveTrailingCommaIfAny(skladnik);
 			String skladnikSklad=null;
-
-			if(skladnik.indexOf("(")<0){
-				ProblemLogger.logProblem("Nie naleziono nawiasów w sk³adniku z³o¿onym?!: "+skladnik);
-			}else{
-				String tempSkladnik=skladnik.substring(skladnik.indexOf("(")+1);
-				if(tempSkladnik.indexOf("(")>0){
-					ProblemLogger.logProblem("Znaleziono dwa nawiasy w sk³adniku: "+skladnik);
-				}else{
-					skladnikSklad=skladnik.substring(skladnik.indexOf("(")+1).trim();
-
-					skladnikSklad=skladnikSklad.substring(0,skladnikSklad.lastIndexOf(")"));
-
-					ArrayList<ProduktIngredientQuantity> parsedSklad = parseSklad(quantityPhraseClone.getQuan(), skladnikSklad);
-
+			if(!checkAndReportLackOfBracket(skladnik)){
+				if(!checkForAndReportTripleQuotes(skladnik)){
+					skladnikSklad = cutOutSkladString(skladnik);
+					ArrayList<ProduktIngredientQuantity> parsedSklad = parseSkladString(quantityPhraseClone.getQuan(), skladnikSklad);
 					ArrayList<BasicIngredientQuantity> prosteSkladniki=new ArrayList<BasicIngredientQuantity>();
 					ArrayList<CompoundIngredientQuantity> zlozoneSkladniki=new ArrayList<CompoundIngredientQuantity>();
 
@@ -649,20 +679,58 @@ public class AuchanRecipeParser extends AuchanParticular {
 
 						if(piq instanceof BasicIngredientQuantity)
 							prosteSkladniki.add((BasicIngredientQuantity) piq);
-
 					}
-
 					CompoundIngredientQuantity ciq = new CompoundIngredientQuantity(
 							quantityPhraseClone.getPhrase(), quantityPhraseClone.getQuan(), zlozoneSkladniki, prosteSkladniki);
-
 					return ciq;
 				}
-
 			}
-
 		}
-
 		return null;
+	}
+
+
+	private static String cutOutSkladString(String skladnik) {
+		String skladnikSklad;
+		skladnikSklad=skladnik.substring(skladnik.indexOf("(")+1).trim();
+		skladnikSklad=skladnikSklad.substring(0,skladnikSklad.lastIndexOf(")"));
+		return skladnikSklad;
+	}
+
+
+	private static String trimAndRemoveTrailingCommaIfAny(String skladnik) {
+		skladnik=skladnik.trim();
+		if(skladnik.charAt(skladnik.length()-1)==','){
+			skladnik=skladnik.substring(0,skladnik.length()-1).trim();
+		}
+		return skladnik;
+	}
+
+
+	private static boolean checkAndReportLackOfBracket(String skladnik) {
+		if(skladnik.indexOf("(")<0){
+			ProblemLogger.logProblem("Nie naleziono nawiasów w sk³adniku z³o¿onym?!: "+skladnik);
+			return true;
+		}
+		return false;
+	}
+
+
+	private static boolean checkForAndReportTripleQuotes(String skladnik) {
+		String skladnikWithSpace=skladnik+" ";
+		String[] splitOverOpeningBrackets = skladnikWithSpace.split("\\(");
+		String[] splitOverClosingBrackets = skladnikWithSpace.split("\\)");
+		if(splitOverOpeningBrackets.length!=splitOverClosingBrackets.length){
+			ProblemLogger.logProblem("Sk³adnik z ró¿n¹ liczb¹ nawiasów otwieraj¹cych i zamykaj¹cych:"+skladnik);
+			return true;
+		}else{
+			if(splitOverOpeningBrackets.length>3){
+				ProblemLogger.logProblem("Sk³adnik z iloœci¹ wiêksz¹ iloœci¹ nawiasów ni¿ 2:"+skladnik);
+				return true;
+			}
+		}
+		
+		return false;
 	}
 
 

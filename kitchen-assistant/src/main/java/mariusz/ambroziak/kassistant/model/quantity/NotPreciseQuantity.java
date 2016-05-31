@@ -48,7 +48,7 @@ public class NotPreciseQuantity extends AbstractQuantity {
 	}
 	
 	public boolean isValid(){
-		if(this.getType()==null||this.getMaximalAmount()<=0||this.getMinimalAmount()<=0
+		if(this.getType()==null||this.getMaximalAmount()<=0||this.getMinimalAmount()<0
 				||this.getMinimalAmount()>this.getMaximalAmount())
 			return false;
 		else
@@ -67,4 +67,15 @@ public class NotPreciseQuantity extends AbstractQuantity {
 		return minimalAmount+" - "+maximalAmount+" "+type;
 	}
 	
+	public void multiplyBy(float multiplier){
+		if(isMinimumValid())
+			minimalAmount*=multiplier;
+		
+		if(isMaximumValid())
+			maximalAmount*=multiplier;
+	}
+
+	public NotPreciseQuantity getClone(){
+		return new NotPreciseQuantity(this.getMinimalAmount(), this.getMinimalAmount(),this.getType());
+	}
 }

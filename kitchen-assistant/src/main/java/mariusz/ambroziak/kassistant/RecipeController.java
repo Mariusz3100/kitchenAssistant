@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import mariusz.ambroziak.kassistant.agents.FoodIngredientAgent;
 import mariusz.ambroziak.kassistant.agents.ProduktAgent;
 import mariusz.ambroziak.kassistant.agents.ReadingAgent;
 import mariusz.ambroziak.kassistant.agents.RecipeAgent;
@@ -20,6 +21,7 @@ import mariusz.ambroziak.kassistant.dao.DaoProvider;
 import mariusz.ambroziak.kassistant.exceptions.AgentSystemNotStartedException;
 import mariusz.ambroziak.kassistant.exceptions.Page404Exception;
 import mariusz.ambroziak.kassistant.exceptions.ShopNotFoundException;
+import mariusz.ambroziak.kassistant.model.Nutrient;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.jsp.InvalidSearchResult;
 import mariusz.ambroziak.kassistant.model.jsp.MultiProdukt_SearchResult;
@@ -27,6 +29,7 @@ import mariusz.ambroziak.kassistant.model.jsp.ProduktWithRecountedPrice;
 import mariusz.ambroziak.kassistant.model.jsp.SingleProdukt_SearchResult;
 import mariusz.ambroziak.kassistant.model.quantity.AmountTypes;
 import mariusz.ambroziak.kassistant.model.quantity.PreciseQuantity;
+import mariusz.ambroziak.kassistant.model.utils.AbstractQuantity;
 import mariusz.ambroziak.kassistant.model.utils.BasicIngredientQuantity;
 import mariusz.ambroziak.kassistant.model.utils.ProduktWithBasicIngredients;
 import mariusz.ambroziak.kassistant.utils.JspStringHolder;
@@ -315,6 +318,7 @@ public class RecipeController {
 
 
 		if(usersBadChoice.isEmpty()){
+//			createRecipeNutrientData(goodResults);
 			ModelAndView mav=new ModelAndView("displayNutrientValues");
 
 			try {
@@ -338,19 +342,54 @@ public class RecipeController {
 
 		}else{
 			ModelAndView mav=new ModelAndView("correctProducts");
-
 			mav.addObject("badResults",usersBadChoice);
-
 			mav.addObject("correctResults",goodResults);
-
 			mav.addObject("skippedResults",skippedResults);
-
 			return mav;
-
 		}
-
-
 	}
+
+//	private void createRecipeNutrientData(ArrayList<SingleProdukt_SearchResult> goodResults) {
+//		//IngredientName->(NutrientName->amount)
+//		Map<String, Map<String,String>> amountsMap=new HashMap<String, Map<String,String>>();
+//		Map<String,String> allNutriens=new HashMap<String,String>();
+//		ArrayList<BasicIngredientQuantity> allBasicIngredients = ingredients.getProduktAsIngredient().getAllBasicIngredients();
+//		for(int i=0; i<allBasicIngredients.size();i++){
+//			BasicIngredientQuantity biq=allBasicIngredients.get(i);
+//			Map<Nutrient, PreciseQuantity> parsedFoodIngredientNutrients = FoodIngredientAgent.parseFoodIngredient(biq.getName());
+//			Map<String,String> currentIngredientAmounts=new HashMap<String, String>();
+//			
+//			for(Nutrient nutrient:parsedFoodIngredientNutrients.keySet()){
+//				
+//				AbstractQuantity quantity = biq.getAmount();
+//				
+//				AbstractQuantity relativeAmount=multiplyQuantities(quantity,parsedFoodIngredientNutrients.get(nutrient));
+//				
+//				
+//				
+//				
+//				currentIngredientAmounts.put(nutrient.getName(), relativeAmount.toString());
+//				
+//				allNutriens.put(nutrient.getName(), nutrient.getName());
+//				
+//				
+//			}
+//			amountsMap.put(biq.getName()+" ["+biq.getAmount()+"]", currentIngredientAmounts);
+//			
+//		}
+//		
+//		List<String> nutrientsList=new ArrayList<String>(allNutriens.values());
+//		
+//		mav.addObject("amountsMap", amountsMap);
+//		mav.addObject("allNutrients",nutrientsList );
+//		
+//		return mav;		
+//	}
+//
+//
+//
+//
+
 
 	private ArrayList<PreciseQuantity> extractQuantities(ArrayList<MultiProdukt_SearchResult> results) {
 		ArrayList<PreciseQuantity> retValue=new ArrayList<PreciseQuantity>();

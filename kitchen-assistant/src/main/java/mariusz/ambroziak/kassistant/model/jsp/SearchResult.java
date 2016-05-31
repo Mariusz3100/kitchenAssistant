@@ -1,8 +1,7 @@
 package mariusz.ambroziak.kassistant.model.jsp;
 
-public abstract class SearchResult {
+public abstract class SearchResult extends SearchPhrase {
 
-	protected String searchPhrase;
 	protected String produktPhrase;
 	protected String quantity;
 
@@ -26,13 +25,5 @@ public abstract class SearchResult {
 	//				Base64.getEncoder().encodeToString(searchPhrase.getBytes());
 	//		return retValue;
 	//	}
-
-	public String getSearchPhrase() {
-		return searchPhrase;
-	}
-
-	public void setSearchPhrase(String searchPhrase) {
-		this.searchPhrase = searchPhrase;
-	}
 
 }

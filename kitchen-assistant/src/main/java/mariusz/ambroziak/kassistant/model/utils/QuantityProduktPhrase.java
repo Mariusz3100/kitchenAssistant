@@ -5,7 +5,7 @@ import mariusz.ambroziak.kassistant.model.quantity.PreciseQuantity;
 import mariusz.ambroziak.kassistant.utils.JspStringHolder;
 import mariusz.ambroziak.kassistant.utils.StringHolder;
 
-public class QuantityProdukt {
+public class QuantityProduktPhrase {
 	private String produktPhrase;
 	private PreciseQuantity quan;
 

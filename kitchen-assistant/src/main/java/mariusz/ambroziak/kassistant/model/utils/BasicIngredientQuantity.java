@@ -42,6 +42,8 @@ public class BasicIngredientQuantity implements ProduktIngredientQuantity{
 	}
 
 	
-	
+	public String toString(){
+		return "{"+getName()+" : "+getAmount()+"}";
+	}
 	
 }

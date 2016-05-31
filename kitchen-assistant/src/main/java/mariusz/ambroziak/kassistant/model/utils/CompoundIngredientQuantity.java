@@ -74,18 +74,27 @@ public class CompoundIngredientQuantity implements ProduktIngredientQuantity{
 
 	@Override
 	public String toString(){
-		String retValue=getName()+" : "+getAmount()+"->[basics:";
+		String retValue="{"+getName()+" : "+getAmount()+"->[!basics:";
 		
-		for(BasicIngredientQuantity biq:basicIngredients){
-			retValue+="{"+biq.getName()+" : "+biq.getAmount()+"}, ";
+		if(!basicIngredients.isEmpty()){
+			for(BasicIngredientQuantity biq:basicIngredients){
+				retValue+=biq.toString()+", ";
+			}
+		}else{
+			retValue+="none";
 		}
-		retValue+=" compouds: ";
 		
-		for(CompoundIngredientQuantity ciq:compoundIngredients){
-			retValue+="{"+ciq.toString()+"}, ";
+		retValue+=" !compouds: ";
+		
+		if(!compoundIngredients.isEmpty()){
+			for(CompoundIngredientQuantity ciq:compoundIngredients){
+				retValue+="{"+ciq.toString()+"}, ";
+			}
+		}else{
+			retValue+="none";
 		}
 		
-		retValue+="]";
+		retValue+="]}";
 		return retValue;
 	}
 

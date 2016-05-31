@@ -13,7 +13,7 @@ import webscrappers.przepisy.AbstractQuantityExtracter.QuantityTranslation;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
 import mariusz.ambroziak.kassistant.model.Base_Word;
 import mariusz.ambroziak.kassistant.model.quantity.AmountTypes;
-import mariusz.ambroziak.kassistant.model.utils.QuantityProdukt;
+import mariusz.ambroziak.kassistant.model.utils.QuantityProduktPhrase;
 import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 
 public class SkladnikiExtractor extends AbstractQuantityExtracter {
@@ -38,7 +38,7 @@ public class SkladnikiExtractor extends AbstractQuantityExtracter {
 				}
 				String[] elems=line.split("\t");
 				
-				QuantityProdukt extract = extract(elems[0], elems[1]);
+				QuantityProduktPhrase extract = extract(elems[0], elems[1]);
 				
 				String extractDesc=extract==null?"null!!!":(extract.getProduktPhrase()+" : "
 						+extract.getAmount()+" "+extract.getAmountType());
@@ -60,10 +60,10 @@ public class SkladnikiExtractor extends AbstractQuantityExtracter {
 		
 	}
 	
-	public static QuantityProdukt extract(String searchPhrase, String quantityPhrase){
+	public static QuantityProduktPhrase extract(String searchPhrase, String quantityPhrase){
 		boolean retValueQOk=false;
 		boolean retValuePOk=false;
-		QuantityProdukt retValue =null;
+		QuantityProduktPhrase retValue =null;
 		String ingredient=searchPhrase;
 		
 		if(ingredient.indexOf('(')>0&&ingredient.indexOf(')')>0){
@@ -75,7 +75,7 @@ public class SkladnikiExtractor extends AbstractQuantityExtracter {
 				
 				if(extractedQuantity!=null||
 						(retValue.getAmount()==-1&&AmountTypes.szt.equals(retValue.getAmountType()))){
-					retValue=new QuantityProdukt();
+					retValue=new QuantityProduktPhrase();
 					retValue.setAmountType(extractedQuantity.getType());
 					retValue.setAmount(extractedQuantity.getAmount());
 					retValue.setProduktPhrase(searchPhrase);
@@ -97,7 +97,7 @@ public class SkladnikiExtractor extends AbstractQuantityExtracter {
 		if(retValue==null){
 			Quantity extractedQuantity = extractQuantity(quantityPhrase);
 			
-			retValue=new QuantityProdukt();
+			retValue=new QuantityProduktPhrase();
 			
 			
 			retValue.setAmountType(extractedQuantity.getType());

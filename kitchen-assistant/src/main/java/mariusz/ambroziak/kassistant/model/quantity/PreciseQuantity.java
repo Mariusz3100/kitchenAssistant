@@ -43,6 +43,9 @@ public class PreciseQuantity extends NotPreciseQuantity {
 		return type+JspStringHolder.QUANTITY_PHRASE_BORDER+amount;
 	}
 	
+	public PreciseQuantity getClone(){
+		return new PreciseQuantity(this.getAmount(), this.getType());
+	}
 	
 	public static  PreciseQuantity parseFromJspString(String quanPhrase){
 		PreciseQuantity pq = null;
@@ -57,4 +60,21 @@ public class PreciseQuantity extends NotPreciseQuantity {
 		
 		return pq;
 	}
+	
+	public void multiplyBy(float multiplier){
+		if(isValid()){
+			this.setAmount(this.getAmount()*multiplier);
+		}
+	}
+	
+	
+	public boolean isValid(){
+		if(this.getType()==null||this.getAmount()<=0)
+			return false;
+		else
+			return true;
+	}
+
 }
+
+

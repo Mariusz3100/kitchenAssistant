@@ -53,7 +53,7 @@ import mariusz.ambroziak.kassistant.model.Recipe;
 import mariusz.ambroziak.kassistant.model.Recipe_Ingredient;
 import mariusz.ambroziak.kassistant.model.Variant_Word;
 import mariusz.ambroziak.kassistant.model.jsp.MultiProdukt_SearchResult;
-import mariusz.ambroziak.kassistant.model.utils.QuantityProdukt;
+import mariusz.ambroziak.kassistant.model.utils.QuantityProduktPhrase;
 import mariusz.ambroziak.kassistant.utils.Converter;
 import mariusz.ambroziak.kassistant.utils.MessageTypes;
 import mariusz.ambroziak.kassistant.utils.ParameterHolder;
@@ -264,7 +264,7 @@ public class RecipeAgent extends BaseAgent{
 
 			for(Element e:ings){
 				String ingredient = e.text();
-				QuantityProdukt produktAndAmount=retrieveProduktAmountData(e);
+				QuantityProduktPhrase produktAndAmount=retrieveProduktAmountData(e);
 				MultiProdukt_SearchResult sr = parseSkladnik(ingredient, produktAndAmount);
 				retValue.add(sr);
 				
@@ -292,7 +292,7 @@ public class RecipeAgent extends BaseAgent{
 
 			for(Element e:ings){
 				String ingredient = e.text();
-				QuantityProdukt produktAndAmount=retrieveProduktAmountData(e);
+				QuantityProduktPhrase produktAndAmount=retrieveProduktAmountData(e);
 				MultiProdukt_SearchResult sr =new MultiProdukt_SearchResult(ingredient,produktAndAmount.getProduktPhrase(),
 						produktAndAmount.getQuantityPhrase(), null);
 				retValue.add(sr);
@@ -314,29 +314,29 @@ public class RecipeAgent extends BaseAgent{
 
 
 	public MultiProdukt_SearchResult parseSkladnik(String searchPhrase, String  quanPhrase) {
-		QuantityProdukt qp=retrieveProduktAmountData(searchPhrase,quanPhrase);
+		QuantityProduktPhrase qp=retrieveProduktAmountData(searchPhrase,quanPhrase);
 
 		List<Produkt> potencjalneSkladniki = findSkladnik(qp.getProduktPhrase());
 		return new MultiProdukt_SearchResult(searchPhrase,qp.getProduktPhrase(),qp.getQuantityPhrase(),potencjalneSkladniki);
 	}
 	
-	public MultiProdukt_SearchResult parseSkladnik(String searchPhrase, QuantityProdukt qp) {
+	public MultiProdukt_SearchResult parseSkladnik(String searchPhrase, QuantityProduktPhrase qp) {
 		List<Produkt> potencjalneSkladniki = findSkladnik(qp.getProduktPhrase());
 		return new MultiProdukt_SearchResult(searchPhrase,qp.getProduktPhrase(),qp.getQuantityPhrase(),potencjalneSkladniki);
 	}
 	
 	
-	private QuantityProdukt retrieveProduktAmountData(Element e) {
+	private QuantityProduktPhrase retrieveProduktAmountData(Element e) {
 		String ingredient = e.text();
 		String quan =extractQuantity(e);
 
-		QuantityProdukt retValue = SkladnikiExtractor.extract(ingredient, quan);
+		QuantityProduktPhrase retValue = SkladnikiExtractor.extract(ingredient, quan);
 		return retValue;
 	}
 
-	private QuantityProdukt retrieveProduktAmountData(String ingredientPhrase, String quantityPhrase) {
+	private QuantityProduktPhrase retrieveProduktAmountData(String ingredientPhrase, String quantityPhrase) {
 
-		QuantityProdukt retValue = SkladnikiExtractor.extract(ingredientPhrase, quantityPhrase);
+		QuantityProduktPhrase retValue = SkladnikiExtractor.extract(ingredientPhrase, quantityPhrase);
 		return retValue;
 	}
 	

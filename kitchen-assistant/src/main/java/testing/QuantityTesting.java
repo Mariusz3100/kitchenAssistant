@@ -13,7 +13,7 @@ import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.Recipe;
 import mariusz.ambroziak.kassistant.model.Recipe_Ingredient;
 import mariusz.ambroziak.kassistant.model.jsp.MultiProdukt_SearchResult;
-import mariusz.ambroziak.kassistant.model.utils.QuantityProdukt;
+import mariusz.ambroziak.kassistant.model.utils.QuantityProduktPhrase;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -55,7 +55,7 @@ public class QuantityTesting {
 					String ingredient = e.text();
 					String quantity= extractQuantity(e);
 					
-					QuantityProdukt results = SkladnikiExtractor.extract(ingredient, quantity);
+					QuantityProduktPhrase results = SkladnikiExtractor.extract(ingredient, quantity);
 //					if(ingredient.indexOf('(')>0&&ingredient.indexOf(')')>0){
 //						String attemptedQ=
 //								ingredient.substring(ingredient.indexOf('(')+1,ingredient.indexOf(')'));
@@ -97,7 +97,7 @@ public class QuantityTesting {
 
 			return retValue;
 		}
-	private static QuantityProdukt retrieveQuantity(String quantity) {
+	private static QuantityProduktPhrase retrieveQuantity(String quantity) {
 		return PrzepisyPLQExtract.extractQuantity(quantity);
 		
 		
