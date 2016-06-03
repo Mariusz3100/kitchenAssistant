@@ -36,20 +36,13 @@
 				<input type="hidden"
 					name="${skladnikName}${skladnikiOuterCount}_${searchPhraseName}"
 					value="${result.searchPhrase}">
-
-
-				<c:forEach var="produkt" items="${result.produkts}"
-					varStatus="opcjaCount">
+				
 					<!-- Powinien być zawsze tylko jeden element -->
-					<b>${result.searchPhrase } -> </b> [${produkt.cena} zł] ${produkt.nazwa} ${produkt.url}	
+					<b>${result.searchPhrase } -> </b> [${result.produkt.cena} zł] ${result.produkt.nazwa} ${result.produkt.url}	
 						<br>
 					<input type="radio"
 						name="${skladnikName}${skladnikiOuterCount}_${skladnikRadioName}"
-						checked="checked" value="${radioValuePrefix}${produkt.url}">
-				</c:forEach>
-
-
-
+						checked="checked" value="${radioValuePrefix}${result.produkt.url}">
 				<br />
 			</c:forEach>
 

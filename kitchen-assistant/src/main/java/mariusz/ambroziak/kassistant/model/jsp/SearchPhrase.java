@@ -1,6 +1,6 @@
 package mariusz.ambroziak.kassistant.model.jsp;
 
-public class SearchPhrase {
+public abstract class SearchPhrase {
 
 	protected String searchPhrase;
 

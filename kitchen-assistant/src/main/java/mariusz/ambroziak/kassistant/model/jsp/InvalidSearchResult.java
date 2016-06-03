@@ -17,10 +17,10 @@ public class InvalidSearchResult extends MultiProdukt_SearchResult {
 	}
 
 	public InvalidSearchResult(String searchPhrase,String produktPhrase, String quantity,
-			List<Produkt> produkts,String invalidUrl) {
+			List<Produkt> produkts,String invalidityReason) {
 		super(searchPhrase, produktPhrase, quantity, produkts);
 		
-		this.invalidityReason=invalidUrl;
+		this.invalidityReason=invalidityReason;
 	}
 
 }

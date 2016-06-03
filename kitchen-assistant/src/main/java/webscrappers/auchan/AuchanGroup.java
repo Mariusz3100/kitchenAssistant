@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 
 import mariusz.ambroziak.kassistant.dao.Base_WordDAOImpl;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
+import mariusz.ambroziak.kassistant.exceptions.Page404Exception;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.utils.Converter;
 import mariusz.ambroziak.kassistant.utils.ProblemLogger;
@@ -41,78 +42,61 @@ public class AuchanGroup extends AuchanAbstractScrapper{
 	
 	
 	public static ArrayList<GA_ProduktScrapped> searchFor(String searchPhrase){
-		ArrayList<GA_ProduktScrapped> retValue=new ArrayList<GA_ProduktScrapped>();
-		
-//		String search4=searchPhrase.trim().replaceAll(" ", "+");
-		
-//		String search4withSpaces=search4.replaceAll("\\$", " ");
-				
-		
-//		String urlWithSpaces=auchanSearchUrl.replaceAll("__search__",search4withSpaces);
-		
 		if(searchPhrase==null||searchPhrase.equals(""))
-			return retValue;
+			return null;
+
+		String finalUrl = convertSearchPhraseIntoUrl(searchPhrase);
+		try {
+			String response = getPage(finalUrl);
+			return getListOfProduktsFromResponse(response);
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			ProblemLogger.logStackTrace(e.getStackTrace());
+			e.printStackTrace();
+		} catch (Page404Exception e) {
+			// TODO Auto-generated catch block
+			ProblemLogger.logStackTrace(e.getStackTrace());
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+
+
+
+	private static ArrayList<GA_ProduktScrapped> getListOfProduktsFromResponse(String response) {
+		ArrayList<GA_ProduktScrapped> retValue=new ArrayList<GA_ProduktScrapped>();
+		if(response.indexOf(noResults)>-1)
+		{
+			//no results, return empty list?
+		}else{
+			Document doc = Jsoup.parse(response);
+			doc.setBaseUri(baseURL);
+			Elements produkts=doc.select(".product");
+			for(Element produkt: produkts){
+				Elements links = produkt.select(".about").get(0).getElementsByTag("a");
+				for(Element link: links){
+					if(link.attr("href").indexOf(validLinkPart)>-1){
+						String l=link.absUrl("href");
+						String nazwa=link.text();
+						GA_ProduktScrapped gap=new GA_ProduktScrapped(nazwa, l);
+						retValue.add(gap);
+					}
+				}
+			}
+		}
 		
-		
+		return retValue;
+	}
+
+
+
+
+	private static String convertSearchPhraseIntoUrl(String searchPhrase) {
 		String searchForConverted = Converter.auchanConvertion(searchPhrase.trim());
 		String finalUrl=auchanSearchUrl.replace("__search__", 
 				searchForConverted);
-				
-				
-//				urlWithSpaces.replaceAll(" ","\\$");
-		
-		try {
-			String response = getPage(finalUrl);
-			
-			if(response.indexOf(noResults)>-1)
-			{
-				//no results, return empty list?
-			}else{
-				Document doc = Jsoup.parse(response);
-				
-				
-				
-				doc.setBaseUri(baseURL);
-				
-				Elements produkts=doc.select(".product");
-						
-				for(Element produkt: produkts){
-					Elements links = produkt.select(".about").get(0).getElementsByTag("a");
-					
-					for(Element link: links){
-						if(link.attr("href").indexOf(validLinkPart)>-1){
-							String l=link.absUrl("href");
-							String nazwa=link.text();
-							GA_ProduktScrapped gap=new GA_ProduktScrapped(nazwa, l);
-
-							retValue.add(gap);
-							
-								
-						}
-						
-					}
-					
-				}
-				
-				
-				
-				
-				
-
-			}
-			
-			
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		
-		return retValue;
-
+		return finalUrl;
 	}
 
 	

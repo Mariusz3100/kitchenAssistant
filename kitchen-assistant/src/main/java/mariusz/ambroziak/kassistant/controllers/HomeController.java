@@ -1,4 +1,4 @@
-package mariusz.ambroziak.kassistant;
+package mariusz.ambroziak.kassistant.controllers;
 
 import java.util.ArrayList;
 import java.util.List;

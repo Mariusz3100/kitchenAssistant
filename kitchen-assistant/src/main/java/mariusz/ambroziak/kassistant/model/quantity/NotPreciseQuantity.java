@@ -1,5 +1,7 @@
 package mariusz.ambroziak.kassistant.model.quantity;
 
+import java.util.PrimitiveIterator.OfDouble;
+
 import mariusz.ambroziak.kassistant.exceptions.IncopatibleAmountTypesException;
 import mariusz.ambroziak.kassistant.exceptions.InvalidArgumentException;
 import mariusz.ambroziak.kassistant.model.utils.AbstractQuantity;
@@ -23,17 +25,38 @@ public class NotPreciseQuantity extends AbstractQuantity {
 		this.maximalAmount = maximalAmount;
 	}
 	
-	public NotPreciseQuantity add(NotPreciseQuantity other) 
+	public void add(NotPreciseQuantity other) 
 			throws IncopatibleAmountTypesException, InvalidArgumentException{
+		if(other instanceof PreciseQuantity){
+			this.addPrecise((PreciseQuantity) other);
+			return;
+		}
+		
 		if(!this.isValid())
 			throw new InvalidArgumentException(this+" is not valid Quantity!");
-		if(this.getType().equals(other.getType()))
+		if(!this.getType().equals(other.getType()))
 			throw new IncopatibleAmountTypesException(getType(),other.getType());
 		
 		float retMinimum=this.getMinimalAmount()+other.getMinimalAmount();
 		float retMaximal=this.getMaximalAmount()+other.getMaximalAmount();
-		return new NotPreciseQuantity(retMinimum,retMaximal,this.getType());
+		setMaximalAmount(retMaximal);
+		setMinimalAmount(retMinimum);
 	}
+	
+	public void addPrecise(PreciseQuantity other) 
+			throws IncopatibleAmountTypesException, InvalidArgumentException{
+		if(!this.isValid())
+			throw new InvalidArgumentException(this+" is not valid Quantity!");
+		if(!this.getType().equals(other.getType()))
+			throw new IncopatibleAmountTypesException(getType(),other.getType());
+		
+		float retMinimum=this.getMinimalAmount()+other.getAmount();
+		float retMaximal=this.getMaximalAmount()+other.getAmount();
+		setMaximalAmount(retMaximal);
+		setMinimalAmount(retMinimum);
+	}
+	
+	
 	
 	public NotPreciseQuantity() {
 		super();
@@ -48,7 +71,7 @@ public class NotPreciseQuantity extends AbstractQuantity {
 	}
 	
 	public boolean isValid(){
-		if(this.getType()==null||this.getMaximalAmount()<=0||this.getMinimalAmount()<0
+		if(this.getType()==null||this.getMaximalAmount()<0||this.getMinimalAmount()<0
 				||this.getMinimalAmount()>this.getMaximalAmount())
 			return false;
 		else
@@ -76,6 +99,6 @@ public class NotPreciseQuantity extends AbstractQuantity {
 	}
 
 	public NotPreciseQuantity getClone(){
-		return new NotPreciseQuantity(this.getMinimalAmount(), this.getMinimalAmount(),this.getType());
+		return new NotPreciseQuantity(this.getMinimalAmount(), this.getMaximalAmount(),this.getType());
 	}
 }

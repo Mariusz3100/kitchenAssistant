@@ -1,5 +1,7 @@
 package mariusz.ambroziak.kassistant.model.quantity;
 
+import mariusz.ambroziak.kassistant.exceptions.IncopatibleAmountTypesException;
+import mariusz.ambroziak.kassistant.exceptions.InvalidArgumentException;
 import mariusz.ambroziak.kassistant.utils.JspStringHolder;
 import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 
@@ -22,6 +24,19 @@ public class PreciseQuantity extends NotPreciseQuantity {
 		this.setMinimalAmount(amount);
 		
 	}
+	
+	public void addPrecise(PreciseQuantity other) 
+			throws IncopatibleAmountTypesException, InvalidArgumentException{
+		if(!this.isValid())
+			throw new InvalidArgumentException(this+" is not valid Quantity!");
+		if(!this.getType().equals(other.getType()))
+			throw new IncopatibleAmountTypesException(getType(),other.getType());
+		
+		float value=this.getAmount()+other.getAmount();
+		setAmount(value);
+	}
+	
+	
 	public PreciseQuantity() {
 		super();
 		amount=-1;
@@ -69,7 +84,7 @@ public class PreciseQuantity extends NotPreciseQuantity {
 	
 	
 	public boolean isValid(){
-		if(this.getType()==null||this.getAmount()<=0)
+		if(this.getType()==null||this.getAmount()<0)
 			return false;
 		else
 			return true;

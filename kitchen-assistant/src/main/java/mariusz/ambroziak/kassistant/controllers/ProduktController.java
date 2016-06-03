@@ -1,4 +1,4 @@
-package mariusz.ambroziak.kassistant;
+package mariusz.ambroziak.kassistant.controllers;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -225,19 +225,10 @@ public class ProduktController {
 						Map<String,String> currentIngredientAmounts=new HashMap<String, String>();
 						
 						for(Nutrient nutrient:parsedFoodIngredientNutrients.keySet()){
-							
 							AbstractQuantity quantity = biq.getAmount();
-							
 							AbstractQuantity relativeAmount=multiplyQuantities(quantity,parsedFoodIngredientNutrients.get(nutrient));
-							
-							
-							
-							
 							currentIngredientAmounts.put(nutrient.getName(), relativeAmount.toString());
-							
 							allNutriens.put(nutrient.getName(), nutrient.getName());
-							
-							
 						}
 						amountsMap.put(biq.getName()+" ["+biq.getAmount()+"]", currentIngredientAmounts);
 						

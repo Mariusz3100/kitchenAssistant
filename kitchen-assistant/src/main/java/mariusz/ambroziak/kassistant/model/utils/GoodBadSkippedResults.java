@@ -4,11 +4,12 @@ import java.util.ArrayList;
 
 import mariusz.ambroziak.kassistant.model.jsp.InvalidSearchResult;
 import mariusz.ambroziak.kassistant.model.jsp.SingleProdukt_SearchResult;
+import mariusz.ambroziak.kassistant.model.jsp.SkippedSearchResult;
 
 public class GoodBadSkippedResults {
 	private ArrayList<SingleProdukt_SearchResult> goodResults= new ArrayList<SingleProdukt_SearchResult>();
 	private ArrayList<InvalidSearchResult> usersBadChoice= new ArrayList<InvalidSearchResult>();
-	private ArrayList<String> skippedResults= new ArrayList<String>();
+	private ArrayList<SkippedSearchResult> skippedResults= new ArrayList<SkippedSearchResult>();
 	public ArrayList<SingleProdukt_SearchResult> getGoodResults() {
 		return goodResults;
 	}
@@ -21,11 +22,11 @@ public class GoodBadSkippedResults {
 	public void addUsersBadChoice(InvalidSearchResult usersBadChoice) {
 		this.usersBadChoice.add(usersBadChoice);
 	}
-	public ArrayList<String> getSkippedResults() {
+	public ArrayList<SkippedSearchResult> getSkippedResults() {
 		return skippedResults;
 	}
-	public void addSkippedResults(ArrayList<String> skippedResults) {
-		this.skippedResults = skippedResults;
+	public void addSkippedResults(SkippedSearchResult skippedSearchResult) {
+		this.skippedResults.add(skippedSearchResult);
 	}
 
 	

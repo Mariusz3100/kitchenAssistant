@@ -47,6 +47,7 @@ import mariusz.ambroziak.kassistant.dao.DaoProvider;
 import mariusz.ambroziak.kassistant.dao.ProduktDAO;
 import mariusz.ambroziak.kassistant.dao.Variant_WordDAOImpl;
 import mariusz.ambroziak.kassistant.exceptions.AgentSystemNotStartedException;
+import mariusz.ambroziak.kassistant.exceptions.Page404Exception;
 import mariusz.ambroziak.kassistant.model.Base_Word;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.Recipe;
@@ -124,7 +125,8 @@ public class RecipeAgent extends BaseAgent{
 		super.end();
 	}
 
-	public static ArrayList<MultiProdukt_SearchResult> getQuantitiesAndProduktsFromRecipeUrl(String url) throws AgentSystemNotStartedException{
+	public static ArrayList<MultiProdukt_SearchResult> getQuantitiesAndProduktsFromRecipeUrl(String url)
+			throws AgentSystemNotStartedException, Page404Exception{
 		RecipeAgent freeOne = getFreeAgent();
 		
 		if(freeOne!=null)
@@ -139,7 +141,7 @@ public class RecipeAgent extends BaseAgent{
 	
 	}
 
-	public static ArrayList<MultiProdukt_SearchResult> getPhrasesAndQuantitiesFromRecipeUrl(String url) throws AgentSystemNotStartedException{
+	public static ArrayList<MultiProdukt_SearchResult> getPhrasesAndQuantitiesFromRecipeUrl(String url) throws AgentSystemNotStartedException, Page404Exception{
 		RecipeAgent freeOne = getFreeAgent();
 		
 		if(freeOne!=null)
@@ -236,7 +238,7 @@ public class RecipeAgent extends BaseAgent{
 		return freeOne;
 	}
 
-	private ArrayList<MultiProdukt_SearchResult> getFromDbOrParseRecipe(String url) {
+	private ArrayList<MultiProdukt_SearchResult> getFromDbOrParseRecipe(String url) throws Page404Exception {
 		//TODO actual db saving and retrieving.
 		//For now I decided to leave it as it is, every time parse, 
 		//because I need to make sure if recipes remain the same 
@@ -256,10 +258,10 @@ public class RecipeAgent extends BaseAgent{
 
 
 	
-	public ArrayList<MultiProdukt_SearchResult> parseProduktsPhrasesAndQuantitiesFromRecipeUrl(String url){
+	public ArrayList<MultiProdukt_SearchResult> parseProduktsPhrasesAndQuantitiesFromRecipeUrl(String url) throws Page404Exception{
 		ArrayList<MultiProdukt_SearchResult> retValue=new ArrayList<MultiProdukt_SearchResult>();
 		try{
-			PrzepisyPlWebscrapper scrapperPrzepisu=new PrzepisyPlWebscrapper(url);
+			PrzepisyPlWebscrapper scrapperPrzepisu=PrzepisyPlWebscrapper.parse(url);
 			Elements ings=scrapperPrzepisu.extractIngredients();
 
 			for(Element e:ings){
@@ -284,10 +286,10 @@ public class RecipeAgent extends BaseAgent{
 	}
 
 	
-	public ArrayList<MultiProdukt_SearchResult> parsePhrasesAndQuantitiesFromRecipeUrl(String url){
+	public ArrayList<MultiProdukt_SearchResult> parsePhrasesAndQuantitiesFromRecipeUrl(String url) throws Page404Exception{
 		ArrayList<MultiProdukt_SearchResult> retValue=new ArrayList<MultiProdukt_SearchResult>();
 		try{
-			PrzepisyPlWebscrapper scrapperPrzepisu=new PrzepisyPlWebscrapper(url);
+			PrzepisyPlWebscrapper scrapperPrzepisu=PrzepisyPlWebscrapper.parse(url);
 			Elements ings=scrapperPrzepisu.extractIngredients();
 
 			for(Element e:ings){
@@ -296,9 +298,7 @@ public class RecipeAgent extends BaseAgent{
 				MultiProdukt_SearchResult sr =new MultiProdukt_SearchResult(ingredient,produktAndAmount.getProduktPhrase(),
 						produktAndAmount.getQuantityPhrase(), null);
 				retValue.add(sr);
-				
 				htmlLog("\n"+ingredient+"->\n");
-				
 				if(sr.getProdukts()!=null&&sr.getProdukts().size()>0)
 					for(Produkt p:sr.getProdukts()){
 						htmlLog(p.getUrl()+"\n");

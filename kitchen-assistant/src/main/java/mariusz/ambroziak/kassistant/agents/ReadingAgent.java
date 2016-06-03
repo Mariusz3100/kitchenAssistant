@@ -186,9 +186,39 @@ public class ReadingAgent extends BaseAgent{
 		Map<Basic_Ingredient,NotPreciseQuantity> retValue=new HashMap<Basic_Ingredient,NotPreciseQuantity>();
 		for( Entry<SingleProdukt_SearchResult, ProduktWithBasicIngredients> e:nutrients.entrySet()){
 			ProduktWithBasicIngredients value = e.getValue();
-			addBasicIngredientsToMap(retValue, value);
+			addBasicNutrientsToMap(value,retValue);
 		}
 		return getBasicIngredientQuantityCollection(retValue);
+	}
+
+	public static Collection<BasicIngredientQuantity> getSumOfAllBasicIngredients(Map<SingleProdukt_SearchResult, ProduktWithAllIngredients> nutrients) {
+		Map<Basic_Ingredient,NotPreciseQuantity> retValue=new HashMap<Basic_Ingredient,NotPreciseQuantity>();
+		for( Entry<SingleProdukt_SearchResult, ProduktWithAllIngredients> e:nutrients.entrySet()){
+			ProduktWithAllIngredients value = e.getValue();
+			ArrayList<BasicIngredientQuantity> allBasicIngredients = value.getProduktAsIngredient().getAllBasicIngredients();
+			addBasicNutrientsToMap(allBasicIngredients,retValue);
+		}
+		return getBasicIngredientQuantityCollection(retValue);
+	}
+	
+	private static void addBasicNutrientsToMap(ArrayList<BasicIngredientQuantity> allBasicIngredients,
+			Map<Basic_Ingredient, NotPreciseQuantity> mapWithSums) {
+		for(BasicIngredientQuantity biq:allBasicIngredients){
+			NotPreciseQuantity ingredientsQuantity = mapWithSums.get(biq.getBi());
+			if(ingredientsQuantity==null){
+				mapWithSums.put(biq.getBi(),biq.getAmount().getClone());
+			}else{
+				try {
+					ingredientsQuantity.add(biq.getAmount());
+				} catch (IncopatibleAmountTypesException e1) {
+					ProblemLogger.logProblem("There was a problem with summing up nutrients from: "+biq
+							+" to "+ingredientsQuantity);
+				} catch (InvalidArgumentException e1) {
+					e1.printStackTrace();
+				}
+			}
+			
+		}		
 	}
 
 	private static Collection<BasicIngredientQuantity> getBasicIngredientQuantityCollection(Map<Basic_Ingredient, NotPreciseQuantity> ingredientQuantitiesMap) {
@@ -200,17 +230,17 @@ public class ReadingAgent extends BaseAgent{
 		return retValue;
 	}
 
-	private static void addBasicIngredientsToMap(Map<Basic_Ingredient, NotPreciseQuantity> retValue,
-			ProduktWithBasicIngredients value) {
-		for(BasicIngredientQuantity biq:value.getBasicsFromLabelTable()){
-			NotPreciseQuantity ingredientsQuantity = retValue.get(biq.getBi());
+	private static void addBasicNutrientsToMap(ProduktWithBasicIngredients valueToAdd,
+			Map<Basic_Ingredient, NotPreciseQuantity> mapWithSums) {
+		for(BasicIngredientQuantity biq:valueToAdd.getBasicsFromLabelTable()){
+			NotPreciseQuantity ingredientsQuantity = mapWithSums.get(biq.getBi());
 			if(ingredientsQuantity==null){
-				retValue.put(biq.getBi(),biq.getAmount());
+				mapWithSums.put(biq.getBi(),biq.getAmount().getClone());
 			}else{
 				try {
 					ingredientsQuantity.add(biq.getAmount());
 				} catch (IncopatibleAmountTypesException e1) {
-					ProblemLogger.logProblem("There was a problem with summing up nutrients from: "+value.getProdukt().getUrl()
+					ProblemLogger.logProblem("There was a problem with summing up nutrients from: "+valueToAdd.getProdukt().getUrl()
 							+" to "+ingredientsQuantity);
 				} catch (InvalidArgumentException e1) {
 					e1.printStackTrace();
@@ -231,6 +261,19 @@ public class ReadingAgent extends BaseAgent{
 		}
 		return retValue;
 	}
+	
+	public static Map<SingleProdukt_SearchResult, ProduktWithAllIngredients> 
+	retrieveOrScrapAllNutrientValues(ArrayList<SingleProdukt_SearchResult> goodResults) 
+		throws AgentSystemNotStartedException, ShopNotFoundException, Page404Exception{
+	Map<SingleProdukt_SearchResult,ProduktWithAllIngredients> retValue=
+			new HashMap<SingleProdukt_SearchResult,ProduktWithAllIngredients>();
+	for(SingleProdukt_SearchResult sr:goodResults){
+		ProduktWithAllIngredients basics = ReadingAgent.parseFullSklad(sr.getProdukt().getUrl());
+		retValue.put(sr, basics);
+	}
+	return retValue;
+}
+	
 	
 	public static ProduktWithBasicIngredients parseBasicSklad(String shortUrl)
 			throws AgentSystemNotStartedException, ShopNotFoundException, Page404Exception {

@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -12,29 +13,30 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import mariusz.ambroziak.kassistant.exceptions.Page404Exception;
+import mariusz.ambroziak.kassistant.model.utils.AbstractQuantity;
+import webscrappers.AbstractScrapper;
 
-public class PrzepisyPlWebscrapper {
 
+public class PrzepisyPlWebscrapper extends AbstractScrapper {
+	private String url;
 	private Element doc;
 
 
-	public PrzepisyPlWebscrapper(String url) throws IOException{
-		URLConnection connection = new URL(url).openConnection();//connection.getRequestProperties()
-		connection.setRequestProperty("Accept-Charset", java.nio.charset.StandardCharsets.UTF_8.toString());
-		InputStream detResponse = connection.getInputStream();
-		InputStreamReader inputStreamReader = new InputStreamReader(detResponse,java.nio.charset.StandardCharsets.UTF_8.toString());
-		BufferedReader detBR=new BufferedReader(inputStreamReader);
-		String respLine=null;
-		String html="";
-		while((respLine=detBR.readLine())!=null){
-			html+=respLine;
-		}
-
-		doc = Jsoup.parse(html);
-
-
+	public static PrzepisyPlWebscrapper parse(String url) throws MalformedURLException, Page404Exception{
+		PrzepisyPlWebscrapper retValue=new PrzepisyPlWebscrapper(url);
+		retValue.parsePageContent();
+		return retValue;
+	}
+	
+	private PrzepisyPlWebscrapper(String url){
+		this.url=url;
 	}
 
+	public void parsePageContent() throws MalformedURLException, Page404Exception{
+		String content=getPage(url);
+		doc = Jsoup.parse(content);
+	}
 
 	public Elements extractIngredients(){
 		Elements ings=doc.select("[itemprop=\"recipeIngredient\"]");

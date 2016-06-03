@@ -1,4 +1,4 @@
-package mariusz.ambroziak.kassistant;
+package mariusz.ambroziak.kassistant.controllers;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;

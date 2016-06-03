@@ -27,7 +27,7 @@ public class AuchanQExtract extends AbstractQuantityExtracter{
 	@SuppressWarnings("unused")
 	public static PreciseQuantity extractQuantity(String text){
 		PreciseQuantity retValue=null;
-
+		text=correctText(text);
 		if(text==null||text.equals("")){
 			return createInvalidPreciseQuantity();
 		}
@@ -59,6 +59,28 @@ public class AuchanQExtract extends AbstractQuantityExtracter{
 		return retValue;
 
 
+	}
+
+
+
+
+
+
+
+
+
+
+
+	private static String correctText(String text) {
+		///TODO wykasowaæ, powinno byæ zast¹pione rêcznym sprawdzaniem w bazie danych albo nawet niczym.
+		if(text==null||text.equals(""))
+			return "";
+		
+		if(text.startsWith("/"))
+			text=text.substring(1);
+		
+		return text;
+		
 	}
 
 
@@ -225,7 +247,6 @@ public class AuchanQExtract extends AbstractQuantityExtracter{
 
 
 	public static AbstractQuantity retrieveProduktAmountData(Element e) {
-		// TODO Auto-generated method stub
 		String ingredient = e.text();
 		AbstractQuantity retValue =null;
 

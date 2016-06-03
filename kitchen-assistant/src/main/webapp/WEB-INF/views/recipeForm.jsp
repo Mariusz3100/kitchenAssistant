@@ -7,7 +7,8 @@
 
 </head>
 <body>
-
+	<font style="color: red;">${invalidUrlInformation}</font>
+	
 	<form action="correctQuantities">
 		Paste url:<br> 
 		<input type="text" name="${recipeUrl_name}">
