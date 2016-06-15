@@ -11,7 +11,7 @@ CREATE TABLE Basic_Ingredient_Nutrient_amount
   binu_id serial not null,
   nu_id integer not null,
   bi_id integer not null,
-  coeficient real,
+  coefficient real,
   
   CONSTRAINT Basic_Ingredient_Nutrient_amount_pk PRIMARY KEY (binu_id)
 );

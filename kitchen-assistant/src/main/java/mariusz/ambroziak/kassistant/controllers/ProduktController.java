@@ -36,6 +36,7 @@ import mariusz.ambroziak.kassistant.model.utils.CompoundIngredientQuantity;
 import mariusz.ambroziak.kassistant.model.utils.ProduktIngredientQuantity;
 import mariusz.ambroziak.kassistant.model.utils.ProduktWithAllIngredients;
 import mariusz.ambroziak.kassistant.model.utils.ProduktWithBasicIngredients;
+import mariusz.ambroziak.kassistant.utils.CompoundMapManipulator;
 import mariusz.ambroziak.kassistant.utils.JspStringHolder;
 import mariusz.ambroziak.kassistant.utils.StringHolder;
 
@@ -154,113 +155,9 @@ public class ProduktController {
 			String shortUrl=AuchanAbstractScrapper.getAuchanShortestWorkingUrl(url);
 
 			if(type.equals("NV")){
-				try {
-					ProduktWithBasicIngredients basics = ReadingAgent.parseBasicSklad(shortUrl);
-					
-					
-					
-					ArrayList<String> list=new ArrayList<String>();
-					list.add(basics.getProdukt().getNazwa()+" - "+basics.getProdukt().getUrl());
-					
-					for(BasicIngredientQuantity bpi:basics.getBasicsFromLabelTable())
-					{
-						String opis=bpi.getName()+": "+bpi.getAmount();
-						
-
-							
-						list.add(opis);
-					}
-					
-					ModelAndView mav=new ModelAndView("List");
-					
-					mav.addObject("list", list);
-					
-					return mav;
-					
-				} catch (Page404Exception e) {
-					ModelAndView mav=new ModelAndView("List");
-					ArrayList<String> list=new ArrayList<String>();
-					
-					list.add("Url "+url+"->"+shortUrl+
-							" jest podobny do stron jakiegoœ sklepu, ale nie wskazuje na ¿adn¹ stronê z produktem.");
-					mav.addObject("list", list);
-					
-					return mav;
-				} catch (AgentSystemNotStartedException e) {
-					return new ModelAndView("agentSystemNotStarted");
-				} catch (ShopNotFoundException e) {
-					ModelAndView mav=new ModelAndView("List");
-					ArrayList<String> list=new ArrayList<String>();
-					
-					list.add("Url "+url+"->"+shortUrl+" nie zosta³ dopasowany do ¿adnego ze sklepów");
-					mav.addObject("list", list);
-					
-					return mav;
-				}
+				return getBasicNutritionalDataForProduktHandleErrors(url, shortUrl);
 			}else if(type.equals("Full")){
-				try {
-					ProduktWithAllIngredients ingredients = ReadingAgent.parseFullSklad(shortUrl);
-					
-					ModelAndView mav=new ModelAndView("produktDetails");
-					
-					Produkt produkt =DaoProvider.getInstance().getProduktDao().getProduktsByURL(shortUrl);
-					if(produkt==null)
-					{
-						produkt=ingredients.getProdukt().extractProduktWithoutUrl();
-						produkt.setUrl(shortUrl);
-	
-						DaoProvider.getInstance().getProduktDao().saveProdukt(produkt);
-					}
-							
-					mav.addObject("produkt", produkt);
-					mav.addObject("compundIngredient", ingredients.getProduktAsIngredient()==null?"BRAK INFORMACJI":ingredients.getProduktAsIngredient().toString());
-					
-					//IngredientName->(NutrientName->amount)
-					Map<String, Map<String,String>> amountsMap=new HashMap<String, Map<String,String>>();
-					Map<String,String> allNutriens=new HashMap<String,String>();
-					ArrayList<BasicIngredientQuantity> allBasicIngredients = ingredients.getProduktAsIngredient().getAllBasicIngredients();
-					for(int i=0; i<allBasicIngredients.size();i++){
-						BasicIngredientQuantity biq=allBasicIngredients.get(i);
-						Map<Nutrient, PreciseQuantity> parsedFoodIngredientNutrients = FoodIngredientAgent.parseFoodIngredient(biq.getName());
-						Map<String,String> currentIngredientAmounts=new HashMap<String, String>();
-						
-						for(Nutrient nutrient:parsedFoodIngredientNutrients.keySet()){
-							AbstractQuantity quantity = biq.getAmount();
-							AbstractQuantity relativeAmount=multiplyQuantities(quantity,parsedFoodIngredientNutrients.get(nutrient));
-							currentIngredientAmounts.put(nutrient.getName(), relativeAmount.toString());
-							allNutriens.put(nutrient.getName(), nutrient.getName());
-						}
-						amountsMap.put(biq.getName()+" ["+biq.getAmount()+"]", currentIngredientAmounts);
-						
-					}
-					
-					List<String> nutrientsList=new ArrayList<String>(allNutriens.values());
-					
-					mav.addObject("amountsMap", amountsMap);
-					mav.addObject("allNutrients",nutrientsList );
-					
-					return mav;
-					
-				} catch (Page404Exception e) {
-					ModelAndView mav=new ModelAndView("List");
-					ArrayList<String> list=new ArrayList<String>();
-					
-					list.add("Url "+url+"->"+shortUrl+
-							" jest podobny do stron jakiegoœ sklepu, ale nie wskazuje na ¿adn¹ stronê z produktem.");
-					mav.addObject("list", list);
-					
-					return mav;
-				} catch (AgentSystemNotStartedException e) {
-					return new ModelAndView("agentSystemNotStarted");
-				} catch (ShopNotFoundException e) {
-					ModelAndView mav=new ModelAndView("List");
-					ArrayList<String> list=new ArrayList<String>();
-					
-					list.add("Url "+url+"->"+shortUrl+" nie zosta³ dopasowany do ¿adnego ze sklepów");
-					mav.addObject("list", list);
-					
-					return mav;
-				}
+				return parseAllIngredientsOfProduktHandleExceptions(url, shortUrl);
 			}
 			
 			return null;
@@ -269,11 +166,137 @@ public class ProduktController {
 	}
 
 
-	private AbstractQuantity multiplyQuantities(AbstractQuantity ingredientQuantity,PreciseQuantity quanPer100g) {
+	private ModelAndView parseAllIngredientsOfProduktHandleExceptions(String url, String shortUrl) {
+		try {
+			ProduktWithAllIngredients ingredients = ReadingAgent.parseFullSklad(shortUrl);
+			Produkt produkt = retrieveFromDbOrParseProdukt(shortUrl, ingredients);
+			
+			
+			//IngredientName->(NutrientName->amount)
+			Map<String, Map<String, NotPreciseQuantity>> amountsMap = getMapOfIngredients(ingredients);
+			
+			CompoundMapManipulator<String, String> cmm=new CompoundMapManipulator<String, String>(amountsMap);
+			Map<String,NotPreciseQuantity> sums=cmm.sumUpInnerMaps();
+			List<String> nutrientsList=new ArrayList<String>(cmm.getAllInnerMapsKeys());
+			ModelAndView mav=new ModelAndView("produktDetails");
+			mav.addObject("produkt", produkt);
+			mav.addObject("compundIngredient", ingredients.getProduktAsIngredient()==null?"BRAK INFORMACJI":ingredients.getProduktAsIngredient().toString());
+			mav.addObject("amountsSum", sums);
+			mav.addObject("amountsMap", amountsMap);
+			mav.addObject("allNutrients",nutrientsList );
+			
+			return mav;
+			
+		} catch (Page404Exception e) {
+			return createPageEmptyMav(url, shortUrl);
+		} catch (AgentSystemNotStartedException e) {
+			return new ModelAndView("agentSystemNotStarted");
+		} catch (ShopNotFoundException e) {
+			return createShopUnknownMav(url, shortUrl);
+		}
+	}
+
+
+	private Map<String, Map<String, NotPreciseQuantity>> getMapOfIngredients(ProduktWithAllIngredients ingredients)
+			throws AgentSystemNotStartedException {
+		Map<String, Map<String,NotPreciseQuantity>> amountsMap=new HashMap<String, Map<String,NotPreciseQuantity>>();
+
+		ArrayList<BasicIngredientQuantity> allBasicIngredients = ingredients.getProduktAsIngredient().getAllBasicIngredients();
+		for(int i=0; i<allBasicIngredients.size();i++){
+			BasicIngredientQuantity biq=allBasicIngredients.get(i);
+			Map<Nutrient, PreciseQuantity> parsedFoodIngredientNutrients = FoodIngredientAgent.parseFoodIngredient(biq.getName());
+			Map<String,NotPreciseQuantity> currentIngredientAmounts=new HashMap<String, NotPreciseQuantity>();
+			
+			for(Nutrient nutrient:parsedFoodIngredientNutrients.keySet()){
+				NotPreciseQuantity quantity = biq.getAmount();
+				NotPreciseQuantity relativeAmount=multiplyQuantities(quantity,parsedFoodIngredientNutrients.get(nutrient));
+				currentIngredientAmounts.put(nutrient.getName(), relativeAmount);
+			}
+			amountsMap.put(biq.getName()+" ["+biq.getAmount()+"]", currentIngredientAmounts);
+			
+		}
+		return amountsMap;
+	}
+
+
+	private Produkt retrieveFromDbOrParseProdukt(String shortUrl, ProduktWithAllIngredients ingredients) {
+		Produkt produkt =DaoProvider.getInstance().getProduktDao().getProduktsByURL(shortUrl);
+		if(produkt==null)
+		{
+			produkt=ingredients.getProdukt().extractProduktWithoutUrl();
+			produkt.setUrl(shortUrl);
+
+			DaoProvider.getInstance().getProduktDao().saveProdukt(produkt);
+		}
+		return produkt;
+	}
+
+
+	private ModelAndView createShopUnknownMav(String url, String shortUrl) {
+		ModelAndView mav=new ModelAndView("List");
+		ArrayList<String> list=new ArrayList<String>();
+		
+		list.add("Url "+url+"->"+shortUrl+" nie zosta³ dopasowany do ¿adnego ze sklepów");
+		mav.addObject("list", list);
+		
+		return mav;
+	}
+
+
+	private ModelAndView createPageEmptyMav(String url, String shortUrl) {
+		ModelAndView mav=new ModelAndView("List");
+		ArrayList<String> list=new ArrayList<String>();
+		
+		list.add("Url "+url+"->"+shortUrl+
+				" jest podobny do stron jakiegoœ sklepu, ale nie wskazuje na ¿adn¹ stronê z produktem.");
+		mav.addObject("list", list);
+		
+		return mav;
+	}
+
+
+	private ModelAndView getBasicNutritionalDataForProduktHandleErrors(String url, String shortUrl) {
+		try {
+			return scrapBasicNutritionalDataFromLabel(shortUrl);
+			
+		} catch (Page404Exception e) {
+			return createPageEmptyMav(url, shortUrl);
+		} catch (AgentSystemNotStartedException e) {
+			return new ModelAndView("agentSystemNotStarted");
+		} catch (ShopNotFoundException e) {
+			return createShopUnknownMav(url, shortUrl);
+		}
+	}
+
+
+	private ModelAndView scrapBasicNutritionalDataFromLabel(String shortUrl)
+			throws AgentSystemNotStartedException, ShopNotFoundException, Page404Exception {
+		ProduktWithBasicIngredients basics = ReadingAgent.parseBasicSklad(shortUrl);
+		
+		
+		
+		ArrayList<String> list=new ArrayList<String>();
+		list.add(basics.getProdukt().getNazwa()+" - "+basics.getProdukt().getUrl());
+		
+		for(BasicIngredientQuantity bpi:basics.getBasicsFromLabelTable())
+		{
+			String opis=bpi.getName()+": "+bpi.getAmount();
+			list.add(opis);
+		}
+		
+		ModelAndView mav=new ModelAndView("List");
+		
+		mav.addObject("list", list);
+		
+		return mav;
+	}
+
+
+	private NotPreciseQuantity multiplyQuantities(AbstractQuantity ingredientQuantity,PreciseQuantity quanPer100g) {
 		
 		Float coeff=quanPer100g.getAmount()/(1000*100);
 		
-		AbstractQuantity aq=null;
+		NotPreciseQuantity aq=null;
 		if(ingredientQuantity instanceof PreciseQuantity){
 			PreciseQuantity pq=new PreciseQuantity();
 			pq.setAmount(coeff*((PreciseQuantity)ingredientQuantity).getAmount());

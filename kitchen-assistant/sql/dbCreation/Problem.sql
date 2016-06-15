@@ -1,4 +1,4 @@
-﻿CREATE TABLE Problem
+CREATE TABLE Problem
 (
   p_id serial not null,
   next_p_id int,

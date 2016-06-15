@@ -89,6 +89,18 @@ public class PreciseQuantity extends NotPreciseQuantity {
 		else
 			return true;
 	}
+	
+	
+	public float getFractionOf100g() {
+		if(getType()==AmountTypes.mg){
+			return (getAmount()/1000)/100;
+		}else{
+			ProblemLogger.logProblem("Trying to extract data from something else than mg");
+			return 0;
+		}
+		
+		
+	}
 
 }
 

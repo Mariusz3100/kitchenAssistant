@@ -43,6 +43,7 @@ import mariusz.ambroziak.kassistant.model.utils.GoodBadSkippedResults;
 import mariusz.ambroziak.kassistant.model.utils.ProduktWithAllIngredients;
 import mariusz.ambroziak.kassistant.model.utils.ProduktWithBasicIngredients;
 import mariusz.ambroziak.kassistant.utils.JspStringHolder;
+import mariusz.ambroziak.kassistant.utils.CompoundMapManipulator;
 import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 import webscrappers.auchan.AuchanAbstractScrapper;
 import webscrappers.auchan.AuchanParticular;
@@ -161,10 +162,7 @@ public class RecipeController {
 			if(produktQuan.getAmount()>=neededQuantity.getAmount()){
 				recountedPrice=produktQuan+"->"+p.getCena()+" z³";
 			}else{
-				int multiplier=1;
-				while(produktQuan.getAmount()*multiplier<neededQuantity.getAmount()){
-					++multiplier;
-				}
+				int multiplier = getMultiplierOfProduktQuantityForNeededQuantity(neededQuantity, produktQuan);
 				recountedPrice=produktQuan+" x "+multiplier+" -> "
 						+p.getCena()+" x "+multiplier+" z³="+p.getCena()*multiplier+" z³";
 			}
@@ -173,6 +171,25 @@ public class RecipeController {
 
 		ProduktWithRecountedPrice retValue=new ProduktWithRecountedPrice(p, recountedPrice);
 		return retValue;
+	}
+
+
+
+
+
+
+	private int getMultiplierOfProduktQuantityForNeededQuantity(NotPreciseQuantity neededQuantity,
+			PreciseQuantity produktQuan) {
+		int multiplier=1;
+
+		if(!(neededQuantity instanceof PreciseQuantity)){
+			ProblemLogger.logProblem("Calculating coefficient for NotPreciseQuantity");
+		}
+		//raczej zawsze bêdzie PreciseQuantity dwa razy, ale zawsze lepiej wzi¹æ pod uwagê max
+		while(produktQuan.getAmount()*multiplier<neededQuantity.getMaximalAmount()){
+			++multiplier;
+		}
+		return multiplier;
 	}
 
 
@@ -247,69 +264,11 @@ public class RecipeController {
 		}
 
 		if(resultsHolder.getUsersBadChoice().isEmpty()){
-			//			createRecipeNutrientData(goodResults);
-			ModelAndView mav=new ModelAndView("recipeNutrientData");
-
-			Map<SingleProdukt_SearchResult, ProduktWithBasicIngredients> retrievedBasicNutrientValues = null;
 			try {
-				retrievedBasicNutrientValues = scrapNutrientValuesDataHandleUnlikelyExceptions(resultsHolder);
+				return createProperResultsNutrientData(resultsHolder);
 			} catch (AgentSystemNotStartedException e) {
-				returnAgentSystemNotStartedPage();
-			} catch (Page404Exception e) {
-				try {
-					moveNotFoundProduktFromGoodToBadChoices(e.getUrl(),resultsHolder);
-				} catch (AgentSystemNotStartedException e1) {
-					returnAgentSystemNotStartedPage();
-				}
-				return returnProduktsCorrectingPage(resultsHolder);
-				
-			}
-			
-			//Nazwa produktu->[nazwa sk³adnika->iloœæ]
-			Map<String, Map<String, NotPreciseQuantity>> nutrientsMap = getSimplerMap(retrievedBasicNutrientValues);
-			
-			Map<String, NotPreciseQuantity> sumOfNutrients = calculateSumsForEachNutrient(nutrientsMap);
-			List<String> nutrientsList = getAllNutrientsList(nutrientsMap);
-			
-			mav.addObject("nutrientsMap", nutrientsMap);
-			mav.addObject("allNutrients",nutrientsList );
-			mav.addObject("sumOfNutrients", sumOfNutrients);
-
-			
-			
-			Map<SingleProdukt_SearchResult, ProduktWithAllIngredients> retrievedAllNutrientValues = null;
-			try {
-				retrievedAllNutrientValues = scrapAllNutrientsDataHandleUnlikelyExceptions(resultsHolder);
-			} catch (AgentSystemNotStartedException e) {
-				returnAgentSystemNotStartedPage();
-			} catch (Page404Exception e) {
-				try {
-					moveNotFoundProduktFromGoodToBadChoices(e.getUrl(),resultsHolder);
-				} catch (AgentSystemNotStartedException e1) {
-					returnAgentSystemNotStartedPage();
-				}
-				return returnProduktsCorrectingPage(resultsHolder);
-				
-			}
-		
-			
-			Map<String, Map<String, NotPreciseQuantity>> simplerAllMap = getSimplerAllMap(retrievedAllNutrientValues);
-			Map<String, NotPreciseQuantity> sumsForEachNutrient = calculateSumsForEachNutrient(simplerAllMap);
-			List<String> allNutrientsList = getAllNutrientsList(simplerAllMap);
-			
-			
-			mav.addObject("ingredientsMap", simplerAllMap);
-			mav.addObject("allIngredients",allNutrientsList);
-			mav.addObject("sumOfIngredients", sumsForEachNutrient);
-
-			
-			
-			FoodIngredientAgent.parseFoodIngredient(name)
-			
-			
-			
-			
-			return mav; 
+				return returnAgentSystemNotStartedPage();
+			} 
 
 		}else{
 			return returnProduktsCorrectingPage(resultsHolder);
@@ -321,15 +280,124 @@ public class RecipeController {
 
 
 
-	private List<String> getAllNutrientsList(Map<String, Map<String, NotPreciseQuantity>> nutrientsMap) {
-		Set<String> setOfAllNutrients=new HashSet<String>();
-		
-		for(Map<String,NotPreciseQuantity> nutrient:nutrientsMap.values())
-			setOfAllNutrients.addAll(nutrient.keySet());
-			
-		List<String> retValue=new ArrayList<String>();
-		retValue.addAll(setOfAllNutrients);
-		return retValue;
+	private ModelAndView createProperResultsNutrientData(GoodBadSkippedResults resultsHolder) throws AgentSystemNotStartedException {
+		Map<SingleProdukt_SearchResult, ProduktWithBasicIngredients> retrievedBasicNutrientValues = null;
+		try {
+			retrievedBasicNutrientValues = scrapNutrientValuesDataHandleUnlikelyExceptions(resultsHolder);
+		} catch (AgentSystemNotStartedException e) {
+			returnAgentSystemNotStartedPage();
+		} catch (Page404Exception e) {
+			try {
+				moveNotFoundProduktFromGoodToBadChoices(e.getUrl(),resultsHolder);
+			} catch (AgentSystemNotStartedException e1) {
+				returnAgentSystemNotStartedPage();
+			}
+			return returnProduktsCorrectingPage(resultsHolder);
+		}
+
+		//Nazwa produktu->[nazwa sk³adnika->iloœæ]
+		Map<String, Map<String, NotPreciseQuantity>> nutrientsMap = getProduktToSkladnikToAmountMap(retrievedBasicNutrientValues);
+
+		CompoundMapManipulator<String, String> cmm=new CompoundMapManipulator<String, String>(nutrientsMap);
+		Map<String, NotPreciseQuantity> sumOfNutrients = cmm.sumUpInnerMaps();
+		List<String> nutrientsList = new ArrayList<String>(cmm.getAllInnerMapsKeys());
+
+		ModelAndView mav=new ModelAndView("recipeNutrientData");		
+		mav.addObject("nutrientsMap", nutrientsMap);
+		mav.addObject("allNutrients",nutrientsList );
+		mav.addObject("sumOfNutrients", sumOfNutrients);
+
+
+
+		Map<SingleProdukt_SearchResult, ProduktWithAllIngredients> retrievedAllNutrientValues = null;
+		try {
+			retrievedAllNutrientValues = scrapAllNutrientsDataHandleUnlikelyExceptions(resultsHolder);
+		} catch (AgentSystemNotStartedException e) {
+			returnAgentSystemNotStartedPage();
+		} catch (Page404Exception e) {
+			try {
+				moveNotFoundProduktFromGoodToBadChoices(e.getUrl(),resultsHolder);
+			} catch (AgentSystemNotStartedException e1) {
+				returnAgentSystemNotStartedPage();
+			}
+			return returnProduktsCorrectingPage(resultsHolder);
+
+		}
+
+
+		Map<String, Map<String, NotPreciseQuantity>> simplerAllMap = getSimplerAllMap(retrievedAllNutrientValues);
+		CompoundMapManipulator<String, String> cmm2=new CompoundMapManipulator<String, String>(simplerAllMap);
+
+		Map<String, NotPreciseQuantity> sumsForEachNutrient = cmm2.sumUpInnerMaps();
+		List<String> allNutrientsList = new ArrayList<String>(cmm2.getAllInnerMapsKeys());
+
+
+		mav.addObject("ingredientsMap", simplerAllMap);
+		mav.addObject("allIngredients",allNutrientsList);
+		mav.addObject("sumOfIngredients", sumsForEachNutrient);
+
+		Map<String,Map<Nutrient, PreciseQuantity>> sumsForInfredients=new HashMap<String, Map<Nutrient,PreciseQuantity>>(); 
+		Map<String, Map<Nutrient, NotPreciseQuantity>> lastMap=new HashMap<String, Map<Nutrient,NotPreciseQuantity>>();
+
+
+
+		for(Entry<String, Map<String, NotPreciseQuantity>> e:simplerAllMap.entrySet()){
+			Map<Nutrient, NotPreciseQuantity> map = lastMap.get(e.getKey());
+
+			if(map==null){
+				map=new HashMap<Nutrient, NotPreciseQuantity>();
+				lastMap.put(e.getKey(), map);
+			}
+
+			for(Entry<String, NotPreciseQuantity> e2:e.getValue().entrySet()){
+
+				Map<Nutrient, PreciseQuantity> singleIngredientNutrients =
+						FoodIngredientAgent.parseFoodIngredient(e2.getKey());
+
+				for(Entry <Nutrient, PreciseQuantity> e3:singleIngredientNutrients.entrySet()){
+					NotPreciseQuantity sum = map.get(e3.getKey());
+
+					if(sum==null){
+						sum=e3.getValue();
+						map.put(e3.getKey(), sum);
+					}else{
+						try {
+							sum.add(e3.getValue());
+						} catch (IncopatibleAmountTypesException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						} catch (InvalidArgumentException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+					}
+				}
+
+			}
+		}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		CompoundMapManipulator<String,Nutrient> cmm3=new CompoundMapManipulator<String, Nutrient>(lastMap);
+
+		Map<Nutrient,NotPreciseQuantity> lastSum=cmm3.sumUpInnerMaps();
+		List<Nutrient> allLastIngs = new ArrayList<Nutrient>(cmm3.getAllInnerMapsKeys());
+		mav.addObject("lastMap", lastMap);
+		mav.addObject("lastSum", lastSum);
+		mav.addObject("allLastIngs", allLastIngs);
+
+		return mav;
 	}
 
 
@@ -337,36 +405,98 @@ public class RecipeController {
 
 
 
-	private Map<String, NotPreciseQuantity> calculateSumsForEachNutrient(
-			Map<String, Map<String, NotPreciseQuantity>> nutrientsMap) {
-		Map<String,NotPreciseQuantity >retValue=new HashMap<String, NotPreciseQuantity>();
-		for(Entry<String, Map<String, NotPreciseQuantity>> nutrientsForProdukt:nutrientsMap.entrySet()){
-			
-			for(Entry<String, NotPreciseQuantity> amountOfSingleNutrient:nutrientsForProdukt.getValue().entrySet()){
+	//	private List<String> getAllNutrientsList(Map<String, Map<String, NotPreciseQuantity>> nutrientsMap) {
+	//		Set<String> setOfAllNutrients=new HashSet<String>();
+	//
+	//		for(Map<String,NotPreciseQuantity> nutrient:nutrientsMap.values())
+	//			setOfAllNutrients.addAll(nutrient.keySet());
+	//
+	//		List<String> retValue=new ArrayList<String>();
+	//		retValue.addAll(setOfAllNutrients);
+	//		return retValue;
+	//	}
+
+
+	//	private List<Nutrient> getAllNutrientsListNut(Map<String, Map<Nutrient, NotPreciseQuantity>> nutrientsMap) {
+	//		Set<Nutrient> setOfAllNutrients=new HashSet<Nutrient>();
+	//
+	//		for(Map<Nutrient, NotPreciseQuantity> nutrient:nutrientsMap.values())
+	//			setOfAllNutrients.addAll(nutrient.keySet());
+	//
+	//		List<Nutrient> retValue=new ArrayList<Nutrient>();
+	//		retValue.addAll(setOfAllNutrients);
+	//		return retValue;
+	//	}
+
+
+
+
+
+	//
+	//	private Map<String, NotPreciseQuantity> calculateSumsForEachNutrient(
+	//			Map<String, Map<String, NotPreciseQuantity>> nutrientsMap) {
+	//		Map<String,NotPreciseQuantity >retValue=new HashMap<String, NotPreciseQuantity>();
+	//		for(Entry<String, Map<String, NotPreciseQuantity>> nutrientsForProdukt:nutrientsMap.entrySet()){
+	//
+	//			for(Entry<String, NotPreciseQuantity> amountOfSingleNutrient:nutrientsForProdukt.getValue().entrySet()){
+	//				NotPreciseQuantity sumForNutrient=retValue.get(amountOfSingleNutrient.getKey());
+	//
+	//				if(sumForNutrient==null){
+	//					sumForNutrient=amountOfSingleNutrient.getValue().getClone();
+	//					retValue.put(amountOfSingleNutrient.getKey(),sumForNutrient);
+	//				}else{
+	//					addToSumHandleExceptions(amountOfSingleNutrient, sumForNutrient);
+	//				}
+	//
+	//
+	//
+	//			}
+	//
+	//		}
+	//		return retValue;
+	//
+	//	}
+
+	private Map<Nutrient, NotPreciseQuantity> calculateSumsForEachNutrientNUT(
+			Map<String, Map<Nutrient, NotPreciseQuantity>> nutrientsMap) {
+		Map<Nutrient, NotPreciseQuantity>retValue=new HashMap<Nutrient, NotPreciseQuantity>();
+		for(Entry<String, Map<Nutrient, NotPreciseQuantity>> nutrientsForProdukt:nutrientsMap.entrySet()){
+
+			for(Entry<Nutrient, NotPreciseQuantity> amountOfSingleNutrient:nutrientsForProdukt.getValue().entrySet()){
 				NotPreciseQuantity sumForNutrient=retValue.get(amountOfSingleNutrient.getKey());
-				
+
 				if(sumForNutrient==null){
 					sumForNutrient=amountOfSingleNutrient.getValue().getClone();
 					retValue.put(amountOfSingleNutrient.getKey(),sumForNutrient);
 				}else{
-					addToSumHandleExceptions(amountOfSingleNutrient, sumForNutrient);
+					addToSumHandleExceptionsNUT(amountOfSingleNutrient, sumForNutrient);
 				}
-				
-				
-				
 			}
-			
 		}
 		return retValue;
-		
 	}
 
 
 
 
 
+	//	private void addToSumHandleExceptions(Entry<String, NotPreciseQuantity> amountOfSingleNutrient,
+	//			NotPreciseQuantity sumForNutrient) {
+	//		try {
+	//			sumForNutrient.add(amountOfSingleNutrient.getValue());
+	//		} catch (IncopatibleAmountTypesException e) {
+	//			// TODO Auto-generated catch block
+	//			e.printStackTrace();
+	//		} catch (InvalidArgumentException e) {
+	//			ProblemLogger.logProblem("There was a problem with summing up nutrients from: "+amountOfSingleNutrient.getValue()
+	//			+" to "+sumForNutrient);
+	//			ProblemLogger.logStackTrace(e.getStackTrace());
+	//		}
+	//	}
 
-	private void addToSumHandleExceptions(Entry<String, NotPreciseQuantity> amountOfSingleNutrient,
+
+
+	private void addToSumHandleExceptionsNUT(Entry<Nutrient, NotPreciseQuantity> amountOfSingleNutrient,
 			NotPreciseQuantity sumForNutrient) {
 		try {
 			sumForNutrient.add(amountOfSingleNutrient.getValue());
@@ -375,10 +505,11 @@ public class RecipeController {
 			e.printStackTrace();
 		} catch (InvalidArgumentException e) {
 			ProblemLogger.logProblem("There was a problem with summing up nutrients from: "+amountOfSingleNutrient.getValue()
-					+" to "+sumForNutrient);
+			+" to "+sumForNutrient);
 			ProblemLogger.logStackTrace(e.getStackTrace());
 		}
 	}
+
 
 
 
@@ -396,7 +527,7 @@ public class RecipeController {
 			e.printStackTrace();
 		}
 		return retrievedBasicNutrientValues; 
-		
+
 	}
 
 
@@ -417,58 +548,81 @@ public class RecipeController {
 
 
 
-	private Map<String, Map<String, NotPreciseQuantity>> getSimplerMap(
+	private Map<String, Map<String, NotPreciseQuantity>> getProduktToSkladnikToAmountMap(
+			//SearchResult->(ProduktWithListOfNutrient)
 			Map<SingleProdukt_SearchResult, ProduktWithBasicIngredients> retrievedBasicNutrientValues) {
 		//IngredientName->(NutrientName->amount)
 		Map<String, Map<String,NotPreciseQuantity>> amountsMap=new HashMap<String, Map<String,NotPreciseQuantity>>();
-		
+
 		for(Entry<SingleProdukt_SearchResult, ProduktWithBasicIngredients> e:retrievedBasicNutrientValues.entrySet()){
 			Map<String, NotPreciseQuantity> produktNutrients = amountsMap.get(e.getKey());
-			if(produktNutrients==null){
-				produktNutrients=new HashMap<String,NotPreciseQuantity>();
-				amountsMap.put(e.getKey().getProdukt().getNazwa(),produktNutrients );
-			}
-			
+
+			produktNutrients=new HashMap<String,NotPreciseQuantity>();
+			amountsMap.put(e.getKey().getProduktNameAndSearchPhrase(),produktNutrients );
+
+
 			for(BasicIngredientQuantity biq:e.getValue().getBasicsFromLabelTable()){
-				produktNutrients.put(biq.getName(),biq.getAmount());
+				produktNutrients.put(biq.getName(),getAmountMulltipliedByProduktAmountOver100g(biq.getAmount(),e));
 			}
-			
+
 		}
 		return amountsMap;
 	}
+
+	private NotPreciseQuantity getAmountMulltipliedByProduktAmountOver100g(NotPreciseQuantity amountPer100gOfProdukt,
+			Entry<SingleProdukt_SearchResult, ProduktWithBasicIngredients> e) {
+
+		PreciseQuantity produktAmount = e.getValue().getProdukt().getAmount();
+
+
+		int multiplier=getMultiplierOfProduktQuantityForNeededQuantity(PreciseQuantity.parseFromJspString(e.getKey().getQuantity()), produktAmount);
+
+		amountPer100gOfProdukt.multiplyBy(produktAmount.getFractionOf100g()*multiplier);
+
+		return amountPer100gOfProdukt;	
+
+
+	}
+
 
 	private Map<String, Map<String, NotPreciseQuantity>> getSimplerAllMap(
 			Map<SingleProdukt_SearchResult, ProduktWithAllIngredients> retrievedAllNutrientValues) {
 		//IngredientName->(FoodIngredientName->amount)
 		Map<String, Map<String, NotPreciseQuantity>> amountsMap=new HashMap<String, Map<String,NotPreciseQuantity>>();
-		
+
 		for(Entry<SingleProdukt_SearchResult, ProduktWithAllIngredients> e:retrievedAllNutrientValues.entrySet()){
 			Map<String, NotPreciseQuantity> produktNutrients = amountsMap.get(e.getKey());
 			if(produktNutrients==null){
-				Map<String, NotPreciseQuantity> mapOutOfList = getMapOutOfSum(e.getValue().getProduktAsIngredient().getAllBasicIngredients());
+				Map<String, NotPreciseQuantity> mapOutOfList = new HashMap<String, NotPreciseQuantity>();
 				amountsMap.put(e.getKey().getProdukt().getNazwa(),mapOutOfList);
 				produktNutrients=mapOutOfList;
-			}else{
-				
-				for(BasicIngredientQuantity biq:e.getValue().getProduktAsIngredient().getAllBasicIngredients()){
-					NotPreciseQuantity ingredientAmountSoFar = produktNutrients.get(biq.getName());
-					
-					if(ingredientAmountSoFar==null){
-						produktNutrients.put(biq.getName(), biq.getAmount());
-						ingredientAmountSoFar=biq.getAmount();
-					}else{
-						try {
-							ingredientAmountSoFar.add(biq.getAmount());
-						} catch (IncopatibleAmountTypesException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						} catch (InvalidArgumentException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
-					}
-				}
 			}
+
+			for(BasicIngredientQuantity biq:e.getValue().getProduktAsIngredient().getAllBasicIngredients()){
+				NotPreciseQuantity ingredientAmountSoFar = produktNutrients.get(biq.getName());
+
+				NotPreciseQuantity amount = biq.getAmount();
+				amount.multiplyBy(
+						getMultiplierOfProduktQuantityForNeededQuantity(PreciseQuantity.parseFromJspString(e.getKey().getQuantity()),
+								e.getValue().getProdukt().getAmount()));;
+
+								if(ingredientAmountSoFar==null){
+									ingredientAmountSoFar=amount;
+									produktNutrients.put(biq.getName(), amount);
+
+								}else{
+									try {
+										ingredientAmountSoFar.add(amount);
+									} catch (IncopatibleAmountTypesException e1) {
+										// TODO Auto-generated catch block
+										e1.printStackTrace();
+									} catch (InvalidArgumentException e1) {
+										// TODO Auto-generated catch block
+										e1.printStackTrace();
+									}
+								}
+			}
+
 		}
 		return amountsMap;
 	}
@@ -478,13 +632,13 @@ public class RecipeController {
 
 
 
-//	private List<String> getAllNutrientsList(Collection<BasicIngredientQuantity> sumOfNutrients) {
-//		List<String> nutrientsList=new ArrayList<String>();
-//		for(BasicIngredientQuantity biq:sumOfNutrients){
-//			nutrientsList.add(biq.getName());
-//		}
-//		return nutrientsList;
-//	}
+	//	private List<String> getAllNutrientsList(Collection<BasicIngredientQuantity> sumOfNutrients) {
+	//		List<String> nutrientsList=new ArrayList<String>();
+	//		for(BasicIngredientQuantity biq:sumOfNutrients){
+	//			nutrientsList.add(biq.getName());
+	//		}
+	//		return nutrientsList;
+	//	}
 
 
 
@@ -509,16 +663,16 @@ public class RecipeController {
 		Iterator<SingleProdukt_SearchResult> goodProduktsIterator = resultsToBeUpdated.getGoodResults().iterator();
 		while(goodProduktsIterator.hasNext()){
 			SingleProdukt_SearchResult produktToBeChecked = goodProduktsIterator.next();
-			
+
 			if(shortUrl.equals(produktToBeChecked.getProdukt().getUrl())){
 				goodProduktsIterator.remove();
-				
+
 				InvalidSearchResult goodResultConverted=convertGoodResultToBadOne(produktToBeChecked);
-				
+
 				resultsToBeUpdated.getUsersBadChoice().add(goodResultConverted);
 			}
 		}
-		
+
 	}
 
 
@@ -526,14 +680,14 @@ public class RecipeController {
 
 
 
-	private InvalidSearchResult convertGoodResultToBadOne(SingleProdukt_SearchResult produktToBeChecked) throws AgentSystemNotStartedException {
-		List<Produkt> searchResults= ProduktAgent.searchForProdukt(produktToBeChecked.getProduktPhrase());
-		InvalidSearchResult retValue=new InvalidSearchResult(produktToBeChecked.getSearchPhrase(),
-				produktToBeChecked.getProduktPhrase(), 
-				produktToBeChecked.getQuantity(), 
+	private InvalidSearchResult convertGoodResultToBadOne(SingleProdukt_SearchResult produktToBeConverted) throws AgentSystemNotStartedException {
+		List<Produkt> searchResults= ProduktAgent.searchForProdukt(produktToBeConverted.getProduktPhrase());
+		InvalidSearchResult retValue=new InvalidSearchResult(produktToBeConverted.getSearchPhrase(),
+				produktToBeConverted.getProduktPhrase(), 
+				produktToBeConverted.getQuantity(), 
 				searchResults, 
-				generateSorryProduktNotFoundInvalidityReason(produktToBeChecked));
-		
+				generateSorryProduktNotFoundInvalidityReason(produktToBeConverted));
+
 		return retValue;
 	}
 
@@ -692,7 +846,7 @@ public class RecipeController {
 			}else{
 				String[] elems=quanPhrase.split(JspStringHolder.QUANTITY_PHRASE_BORDER);
 				if(elems.length<2){
-					ProblemLogger.logProblem("Empty quantity from hidden field");
+					ProblemLogger.logProblem("Empty or too short quantity from hidden field: "+quanPhrase);
 				}else{
 					float amount=Float.parseFloat(elems[1]);
 					AmountTypes at=AmountTypes.retrieveTypeByName(elems[0]);
@@ -707,15 +861,7 @@ public class RecipeController {
 		return retValue;
 	}
 
-	@RequestMapping(value="/quantitiesCorrected")
-	public ModelAndView quantitiesCorrected(HttpServletRequest request) {
 
-
-
-
-
-		return null;
-	}
 
 
 }

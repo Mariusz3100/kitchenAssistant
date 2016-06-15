@@ -16,7 +16,7 @@
 			</i> został sparsowany, a produkty wybrane, oto wyniki:
 		</h1>
 
-		Basic ingredients:
+		Basic nutrients read from produkt table:
 		<table border="1">
 			<tr>
 				<th>-</th>
@@ -43,7 +43,7 @@
 		</table>
 
 
-
+		Basic ingredients from "skład":
 
 		<table border="1">
 			<tr>
@@ -74,6 +74,34 @@
 	</div>
 
 
+		List of nutrients parsed from ingredients:
+		<table border="1">
+			<tr>
+				<th>-</th>
+				<c:forEach var="nutrient" items="${allLastIngs}" varStatus="status">
+					<th>${nutrient}</th>
+				</c:forEach>
+			</tr>
+			<c:forEach var="ingredient" items="${lastMap}" varStatus="status">
+				<tr>
+					<td>${ingredient.key}</td>
+					<c:forEach var="nutrient" items="${allLastIngs}"
+						varStatus="status">
+						<td>${ingredient.value[nutrient]}</td>
+					</c:forEach>
+				</tr>
+			</c:forEach>
+				<tr>
+					<td><b>Sum of ingredients:</b></td>
+					<c:forEach var="nutrient" items="${allLastIngs}"
+						varStatus="status">
+						<td><b>${lastSum[nutrient]}</b></td>
+					</c:forEach>
+				</tr>
+		</table>
+
+
+	</div>
 
 
 

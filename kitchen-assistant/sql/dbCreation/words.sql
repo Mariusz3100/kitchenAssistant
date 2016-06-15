@@ -1,4 +1,4 @@
-﻿CREATE TABLE Base_Word
+CREATE TABLE Base_Word
 (
   id serial not null,
   b_word varchar(100),

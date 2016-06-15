@@ -16,7 +16,7 @@ public class MultiProdukt_SearchResult extends SearchResult{
 		super();
 		this.searchPhrase = searchPhrase;
 		this.produktPhrase = produktPhrase;
-		this.quantity = quantity;
+		this.quantityPhrase = quantity;
 		this.produkts =new ArrayList<Produkt>();
 		if(produkts!=null)
 			this.produkts.addAll(produkts);	

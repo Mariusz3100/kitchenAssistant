@@ -1,4 +1,4 @@
-﻿CREATE TABLE recipe (
+CREATE TABLE recipe (
   rec_id int NOT NULL,
   url varchar(100) NOT NULL,
 

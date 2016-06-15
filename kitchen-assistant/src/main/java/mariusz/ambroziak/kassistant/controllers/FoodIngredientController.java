@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 import javax.servlet.http.HttpServletRequest;
 
 import madkit.kernel.Madkit;
+import mariusz.ambroziak.kassistant.QuantityExtractor.AuchanQExtract;
 import mariusz.ambroziak.kassistant.QuantityExtractor.JedzDobrzeExtractor;
 import mariusz.ambroziak.kassistant.agents.ClockAgent;
 import mariusz.ambroziak.kassistant.agents.FoodIngredientAgent;
@@ -77,7 +78,7 @@ public class FoodIngredientController {
 			try {
 				scrapSkladnik = FoodIngredientAgent.parseFoodIngredient(phrase);
 			} catch (AgentSystemNotStartedException e) {
-				return new ModelAndView("agentSystemNotStarted");
+				return createAgentSystemNotStartedMav();
 			}
 			
 			
@@ -104,6 +105,80 @@ public class FoodIngredientController {
 	}
 	
 	
+	@RequestMapping(value="/logFood")
+	public ModelAndView simpleFoodLogging(HttpServletRequest request) {
+		try {
+			request.setCharacterEncoding(StringHolder.ENCODING);
+		} catch (UnsupportedEncodingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		String phrase=request.getParameter("foodPhrase");
+		
+		if(phrase==null||phrase.equals(""))
+		{
+			return new ModelAndView("foodLogForm");
+		}else{
+			String invalidEntriesInfo="";
+			ModelAndView mav=new ModelAndView("List");
+			
+			Map<String, Map<Nutrient, PreciseQuantity>> resultsMap=new HashMap<String, Map<Nutrient,PreciseQuantity>>();
+			
+			String[] entries=phrase.split(",");
+			try {
+				for(String entry:entries){
+					String[] dividedEntry=entry.split(":");
+					if(dividedEntry.length<2){
+						invalidEntriesInfo+="entry "+entry+" doesn't have proper distinction between quantity and produkt<br>";
+					}
+					PreciseQuantity extractedQuantity = AuchanQExtract.extractQuantity(dividedEntry[0]);
+					String amount = dividedEntry[0];
+					String produktPhrase= dividedEntry[1];
+					Map<Nutrient, PreciseQuantity> nutrients = FoodIngredientAgent.parseFoodIngredient(amount);
+					
+					resultsMap.put(amount, nutrients);
+					
+				}
+			} catch (AgentSystemNotStartedException e) {
+				return createAgentSystemNotStartedMav();
+			}
+			
+			ArrayList<String> lista=new ArrayList<String>();
+			Map<Nutrient, PreciseQuantity> scrapSkladnik = null;
+			try {
+				scrapSkladnik = FoodIngredientAgent.parseFoodIngredient(phrase);
+			} catch (AgentSystemNotStartedException e) {
+				
+			}
+			
+			
+			
+
+			
+			if(scrapSkladnik!=null&&scrapSkladnik.size()>0)
+			{
+				lista.add("Dla skladnika zywnoœciowego: "+phrase+" znaleziono nastêpuj¹ce wartosci od¿ywcze:<br>");
+				
+				for(Nutrient key:scrapSkladnik.keySet()){
+					lista.add(key.getName()+" - "+scrapSkladnik.get(key));
+				}				
+			}else{
+				lista.add("Skladnika zywnoœciowego: "+phrase+" nie odnaleziono.<br>");
+			}
+			
+			
+			mav.addObject("list",lista);
+	
+			
+			return mav;
+		}
+	}
+
+
+	private ModelAndView createAgentSystemNotStartedMav() {
+		return new ModelAndView("agentSystemNotStarted");
+	}
 	
 
 

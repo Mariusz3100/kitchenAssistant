@@ -7,21 +7,12 @@ import webscrappers.auchan.ProduktDetails;
 import mariusz.ambroziak.kassistant.model.Produkt;
 
 public class ProduktWithBasicIngredients {
-
 	private ProduktDetails produkt;
-	
-
 	private ArrayList<BasicIngredientQuantity> basicsFromLabelTable;
-	
-	
-
 
 	public ProduktDetails getProdukt() {
 		return produkt;
 	}
-
-
-
 
 	public ProduktWithBasicIngredients(ProduktDetails produkt,
 			ArrayList<BasicIngredientQuantity> basicsFor100g) {
@@ -29,11 +20,6 @@ public class ProduktWithBasicIngredients {
 		this.produkt = produkt;
 		this.basicsFromLabelTable = basicsFor100g;
 	}
-
-
-
-
-
 
 	public ArrayList<BasicIngredientQuantity> getBasicsFromLabelTable() {
 		return basicsFromLabelTable;

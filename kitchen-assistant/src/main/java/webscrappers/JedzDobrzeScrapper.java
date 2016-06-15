@@ -55,7 +55,7 @@ public class JedzDobrzeScrapper extends AbstractScrapper {
 
 											PreciseQuantity quan=
 													JedzDobrzeExtractor.extractQuantity(quantity);
-											
+
 											if(AmountTypes.szt.equals(quan.getType())&&quan.getAmount()==-1){
 												ProblemLogger.logProblem(
 														"Nie uda³o siê sparsowaæ iloœci sk³adnika odzywczego "+hri.getName());				
@@ -63,7 +63,7 @@ public class JedzDobrzeScrapper extends AbstractScrapper {
 													!AmountTypes.kalorie.equals(quan.getType()))
 											{
 												ProblemLogger.logProblem(
-													"Próbowano zapisaæ typ iloœci inny ni¿ mg lub kcal dla sk³adnika "+url);
+														"Próbowano zapisaæ typ iloœci inny ni¿ mg lub kcal dla sk³adnika "+url);
 											}else{
 												retValue.put(hri, quan);
 											}
@@ -115,16 +115,18 @@ public class JedzDobrzeScrapper extends AbstractScrapper {
 
 				for(Element e:rows){
 					Elements tds = e.select("td");
-
 					if(tds!=null&&tds.size()>4){
 						//						if(tds.get(2).text()==null||tds.get(2).text().equals(" ")trim().equals("")||tds.get(2).text().trim().equals("&nbsp;"))
-						{
+						if(!checkIfItIsSomeCompanyProdukt(tds)){
+
+
+
 							Element firstElement = tds.get(0);
 
 							String tableText=firstElement.text();
 							boolean found=true;
 							for(String phraseElement:compareFraza.split(" ")){
-								if(!tableText.contains(phraseElement)){
+								if(!tableText.toLowerCase().contains(phraseElement.toLowerCase())){
 									found=false;
 								}
 							}
@@ -142,7 +144,11 @@ public class JedzDobrzeScrapper extends AbstractScrapper {
 							}
 
 
+
+						}else{
+
 						}
+
 					}else{
 						ProblemLogger.logProblem("Za ma³o kolumn wewn¹trz tabeli na jedzdobrze?!");
 					}
@@ -161,6 +167,12 @@ public class JedzDobrzeScrapper extends AbstractScrapper {
 		}
 
 		return retUrl;
+	}
+
+	private static boolean checkIfItIsSomeCompanyProdukt(Elements tds) {
+		return !(tds.get(2).text()==null||tds.get(2).text().equals("")
+				||tds.get(2).text().trim().equals("&nbsp;")
+				||tds.get(2).text().trim().equals("\u00A0"));
 	}
 
 	public static boolean checkIf_ParticularProduktPage_TableHeadIsOk(Elements thead) {
@@ -224,12 +236,12 @@ public class JedzDobrzeScrapper extends AbstractScrapper {
 								||"Producent / Dystrubutor".equals(tds.get(2).text())
 								||"Energia w 100g.".equals(tds.get(3).text())
 								||"Indeks Dietmana".equals(tds.get(4).text())){
-							
+
 							return true;
 						}else{
 							ProblemLogger.logProblem("Kolumny maj¹ nieprawid³owe podpisy");
 							return false;
-							
+
 						}
 					}
 				}else{

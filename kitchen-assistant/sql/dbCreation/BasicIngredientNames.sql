@@ -1,7 +1,7 @@
-﻿CREATE TABLE Basic_Ingredient
+CREATE TABLE Basic_Ingredient
 (
   bi_id serial not null,
-  name varchar(20),
+  name varchar(100),
 
   CONSTRAINT Basic_Ingredient_pk PRIMARY KEY (bi_id)
 );

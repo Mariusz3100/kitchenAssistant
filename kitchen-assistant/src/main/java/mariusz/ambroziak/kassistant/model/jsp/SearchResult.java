@@ -3,7 +3,7 @@ package mariusz.ambroziak.kassistant.model.jsp;
 public abstract class SearchResult extends SearchPhrase {
 
 	protected String produktPhrase;
-	protected String quantity;
+	protected String quantityPhrase;
 
 	public String getProduktPhrase() {
 		return produktPhrase;
@@ -14,11 +14,11 @@ public abstract class SearchResult extends SearchPhrase {
 	}
 
 	public String getQuantity() {
-		return quantity;
+		return quantityPhrase;
 	}
 
 	public void setQuantity(String quantity) {
-			this.quantity = quantity;
+			this.quantityPhrase = quantity;
 		}
 	//	public String getSearchPhraseEncoded() {
 	//		String retValue=
