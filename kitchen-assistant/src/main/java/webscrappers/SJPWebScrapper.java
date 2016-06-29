@@ -89,6 +89,45 @@ public class SJPWebScrapper {
 		return retValue;
 	}
 	
+	public static String retrieveFromDbOrScrapAndSaveInDb(String variantWord){
+		if(variantWord==null||variantWord.equals("")){
+			return "";
+		}else{
+			return retrieveFromDbOrScrapAndSaveNotEmptyArgument(variantWord);	
+		}
+		
+	}
+
+
+	private static String retrieveFromDbOrScrapAndSaveNotEmptyArgument(String variantWord) {
+		String base_word = tryGettingFromDb(variantWord);
+		if(base_word!=null){
+			return base_word;
+		}
+		else
+			return getAndSaveNewRelation(variantWord.toLowerCase());
+	}
+
+
+	private static String tryGettingFromDb(String variantWord) {
+		Base_Word base_Name = DaoProvider.getInstance().getVariantWordDao().getBase_Name(variantWord.toLowerCase());
+
+		if(base_Name==null)
+			return null;
+		
+		return processNotNullPossiblyInvalidBaseWord(base_Name);
+	}
+
+
+	private static String processNotNullPossiblyInvalidBaseWord(Base_Word base_Name) {
+		if(!base_Name.getB_word().equals("")&&
+				!Base_WordDAOImpl.niepoprawneSlowoBazowe.equals(base_Name.getB_word()))
+			return base_Name.getB_word();
+		else
+			return "";
+	}
+	
+	
 	
 	public static void main(String[] args){
 		scrapWord("³y¿eczki");

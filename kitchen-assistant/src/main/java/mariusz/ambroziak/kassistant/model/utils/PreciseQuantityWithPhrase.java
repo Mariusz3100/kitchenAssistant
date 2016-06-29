@@ -5,12 +5,23 @@ import mariusz.ambroziak.kassistant.model.quantity.PreciseQuantity;
 import mariusz.ambroziak.kassistant.utils.JspStringHolder;
 import mariusz.ambroziak.kassistant.utils.StringHolder;
 
-public class QuantityProduktPhrase {
+public class PreciseQuantityWithPhrase {
 	private String produktPhrase;
 	private PreciseQuantity quan;
 
+	public PreciseQuantity getQuan() {
+		return quan;
+	}
+	public void setQuan(PreciseQuantity quan) {
+		this.quan = quan;
+	}
 	public String getProduktPhrase() {
 		return produktPhrase;
+	}
+	public PreciseQuantityWithPhrase(String produktPhrase, PreciseQuantity quan) {
+		super();
+		this.produktPhrase = produktPhrase;
+		this.quan = quan;
 	}
 	public void setProduktPhrase(String produktName) {
 		this.produktPhrase = produktName;
@@ -32,8 +43,14 @@ public class QuantityProduktPhrase {
 		this.quan.setAmount(amount);
 	}
 	
-	public String getQuantityPhrase() {
+	public PreciseQuantity getQuantity() {
+		return quan;
+	}
+	public String getQuantityJspPhrase() {
 		return getAmountType()+JspStringHolder.QUANTITY_PHRASE_BORDER+getAmount();
 	}
 	
+	public String toString(){
+		return getProduktPhrase()+"["+getQuantity()+"]";
+	}
 }

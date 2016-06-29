@@ -40,6 +40,7 @@ public class AbstractQuantityExtracter {
 		translations.put("opak.",new QuantityTranslation(AmountTypes.szt, 1) );
 
 		translations.put("sztuka",new QuantityTranslation(AmountTypes.szt, 1) );
+		translations.put("",new QuantityTranslation(AmountTypes.szt, 1) );
 		
 		ommissions=new ArrayList<String>();
 		

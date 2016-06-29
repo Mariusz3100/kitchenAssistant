@@ -23,7 +23,7 @@ import org.jsoup.select.Elements;
 import mariusz.ambroziak.kassistant.model.quantity.AmountTypes;
 import mariusz.ambroziak.kassistant.model.quantity.PreciseQuantity;
 import mariusz.ambroziak.kassistant.model.utils.ProduktIngredientQuantity;
-import mariusz.ambroziak.kassistant.model.utils.QuantityWithName;
+import mariusz.ambroziak.kassistant.model.utils.NotPreciseQuantityWithPhrase;
 import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 import mariusz.ambroziak.kassistant.utils.StringHolder;
 

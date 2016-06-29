@@ -10,7 +10,7 @@ import mariusz.ambroziak.kassistant.model.quantity.PreciseQuantity;
 import mariusz.ambroziak.kassistant.model.utils.AbstractQuantity;
 import mariusz.ambroziak.kassistant.model.utils.CompoundIngredientQuantity;
 import mariusz.ambroziak.kassistant.model.utils.ProduktIngredientQuantity;
-import mariusz.ambroziak.kassistant.model.utils.QuantityWithName;
+import mariusz.ambroziak.kassistant.model.utils.NotPreciseQuantityWithPhrase;
 import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 import webscrappers.auchan.AuchanRecipeParser;
 

@@ -2,6 +2,7 @@ package mariusz.ambroziak.kassistant.utils;
 
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
 import mariusz.ambroziak.kassistant.model.Basic_Ingredient;
+import webscrappers.SJPWebScrapper;
 
 public class SkladnikiFinder {
 	
@@ -22,7 +23,12 @@ public class SkladnikiFinder {
 	
 	public static String getBaseName(String phrase){
 		//TODO jakaœ logika
-		return phrase;
+		//na razie sprowadzamy do formy bazowej pojedyncze s³owo
+		if(phrase.contains(" "))
+			return phrase;
+		else
+			return SJPWebScrapper.retrieveFromDbOrScrapAndSaveInDb(phrase);
+		
 	}
 	
 	

@@ -9,11 +9,12 @@
 <body>
 	<font style="color: red;">${invalidPhraseInformation}</font>
 	
-	<form action="correctQuantities">
-		Ok, what have you eaten? Write everything here, in form:<br>
-		<textarea name="${foodPhrase}">
-		quantity:produkt, quantity:produkt...
+	<form>
+		Co zjadłeś? Napisz wszystko, w formie:<br>
+		<textarea name="foodPhrase">ilość:produkt, ilość:produkt...
 		</textarea>
+		
+		<input type="submit" value="Submit">
 	</form>
 	
 </body>

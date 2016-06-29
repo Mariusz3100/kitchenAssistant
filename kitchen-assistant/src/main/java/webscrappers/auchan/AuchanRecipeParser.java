@@ -31,8 +31,8 @@ import mariusz.ambroziak.kassistant.model.utils.CompoundIngredientQuantity;
 import mariusz.ambroziak.kassistant.model.utils.ProduktIngredientQuantity;
 import mariusz.ambroziak.kassistant.model.utils.ProduktWithBasicIngredients;
 import mariusz.ambroziak.kassistant.model.utils.ProduktWithAllIngredients;
-import mariusz.ambroziak.kassistant.model.utils.QuantityWithName;
-import mariusz.ambroziak.kassistant.model.utils.QuantityProduktPhrase;
+import mariusz.ambroziak.kassistant.model.utils.NotPreciseQuantityWithPhrase;
+import mariusz.ambroziak.kassistant.model.utils.PreciseQuantityWithPhrase;
 import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 import mariusz.ambroziak.kassistant.utils.SkladnikiFinder;
 
@@ -268,7 +268,7 @@ public class AuchanRecipeParser extends AuchanParticular {
 		if(skladString==null)
 			return null;
 		SkladReader skladParser=new SkladReader(skladString, upperLevelQuan);
-		Collection<QuantityWithName> skladnikiPhrasesWithQuanties = skladParser.parseSkladnikiStringsWithProperlyCalulatedQuantities();
+		Collection<NotPreciseQuantityWithPhrase> skladnikiPhrasesWithQuanties = skladParser.parseSkladnikiStringsWithProperlyCalulatedQuantities();
 		ArrayList<ProduktIngredientQuantity> skladnikiSparsowane;
 		if(skladnikiPhrasesWithQuanties.size()==1){
 			skladnikiSparsowane=new ArrayList<ProduktIngredientQuantity>();
@@ -280,14 +280,14 @@ public class AuchanRecipeParser extends AuchanParticular {
 	}
 
 
-	private static QuantityWithName getOneEntryFrom(
-			Collection<QuantityWithName> skladnikiPhrasesWithQuanties) {
+	private static NotPreciseQuantityWithPhrase getOneEntryFrom(
+			Collection<NotPreciseQuantityWithPhrase> skladnikiPhrasesWithQuanties) {
 		return skladnikiPhrasesWithQuanties.iterator().next();
 	}
 
 
 	private static ProduktIngredientQuantity parseSkladnikiFromPartiallyParsedMapWhenThereIsOnlyOneElement(
-			QuantityWithName quantityWithName) {
+			NotPreciseQuantityWithPhrase quantityWithName) {
 		if(quantityWithName==null){
 			return null;
 		}else{
@@ -306,8 +306,8 @@ public class AuchanRecipeParser extends AuchanParticular {
 
 	private static class SkladReader{
 		private String sklad;
-		private LinkedHashMap<String,QuantityWithName> mapaSkladnikow;
-		private ArrayList<QuantityWithName> orderedListOfQuans;
+		private LinkedHashMap<String,NotPreciseQuantityWithPhrase> mapaSkladnikow;
+		private ArrayList<NotPreciseQuantityWithPhrase> orderedListOfQuans;
 
 		private NotPreciseQuantity upperLevelquan;
 
@@ -317,13 +317,13 @@ public class AuchanRecipeParser extends AuchanParticular {
 			eliminateDotAtEndOfSkladIfPresent();
 			addCommaAtEndOfSkladIfNotPresent();
 			this.upperLevelquan=upperLevelquan;
-			mapaSkladnikow=new LinkedHashMap<String, QuantityWithName>();
-			orderedListOfQuans=new ArrayList<QuantityWithName>();
+			mapaSkladnikow=new LinkedHashMap<String, NotPreciseQuantityWithPhrase>();
+			orderedListOfQuans=new ArrayList<NotPreciseQuantityWithPhrase>();
 		}
 
 
 
-		public Collection<QuantityWithName> parseSkladnikiStringsWithProperlyCalulatedQuantities(){
+		public Collection<NotPreciseQuantityWithPhrase> parseSkladnikiStringsWithProperlyCalulatedQuantities(){
 			fillSkladnikMapAndOrderedQuanListWithoutAnyRelationToEachOther();
 			adjustQuantitiesOfIngredientWithRespectToOtherIngredients();
 			return mapaSkladnikow.values();
@@ -336,7 +336,7 @@ public class AuchanRecipeParser extends AuchanParticular {
 				updateSingleUnknownMinimalByCopyingUpperLevelMinimal(mapaSkladnikow.entrySet().iterator().next().getValue());
 			}else{
 			
-				ArrayList<QuantityWithName> unknownMinimal = 
+				ArrayList<NotPreciseQuantityWithPhrase> unknownMinimal = 
 						adjustQuantitiesOfIngredientsWithRespectToEachOtherExceptForLastUnknownMinimls();
 				updateLastUnknownMinimals(unknownMinimal);
 			}
@@ -345,7 +345,7 @@ public class AuchanRecipeParser extends AuchanParticular {
 
 
 
-		private void updateLastUnknownMinimals(ArrayList<QuantityWithName> unknownMinimal) {
+		private void updateLastUnknownMinimals(ArrayList<NotPreciseQuantityWithPhrase> unknownMinimal) {
 			if(!unknownMinimal.isEmpty()){
 					float rest = calculateUpperMinimalMinusKnownMinimals();
 					removeFirstElementAndUpdateItWithRestOverNumberOfUnknowns(unknownMinimal, rest);
@@ -356,7 +356,7 @@ public class AuchanRecipeParser extends AuchanParticular {
 
 
 
-		private void updateSingleUnknownMinimalByCopyingUpperLevelMinimal(QuantityWithName quantityWithName) {
+		private void updateSingleUnknownMinimalByCopyingUpperLevelMinimal(NotPreciseQuantityWithPhrase quantityWithName) {
 			quantityWithName.setQuan(upperLevelquan.getClone());
 		}
 
@@ -373,8 +373,8 @@ public class AuchanRecipeParser extends AuchanParticular {
 
 
 
-		private void updateCollectionWithMinimalFractionOfUpperQuan(ArrayList<QuantityWithName> unknownMinimal) {
-			for(QuantityWithName qpc1:unknownMinimal){
+		private void updateCollectionWithMinimalFractionOfUpperQuan(ArrayList<NotPreciseQuantityWithPhrase> unknownMinimal) {
+			for(NotPreciseQuantityWithPhrase qpc1:unknownMinimal){
 				if(upperLevelquan instanceof NotPreciseQuantity){
 					((NotPreciseQuantity)(qpc1.getQuan())).setMinimalAmount((float)Math.floor(absoluteMinimalFraction*((NotPreciseQuantity)upperLevelquan).getMinimalAmount()));
 				}
@@ -384,17 +384,17 @@ public class AuchanRecipeParser extends AuchanParticular {
 
 
 
-		private void removeFirstElementAndUpdateItWithRestOverNumberOfUnknowns(ArrayList<QuantityWithName> unknownMinimal,
+		private void removeFirstElementAndUpdateItWithRestOverNumberOfUnknowns(ArrayList<NotPreciseQuantityWithPhrase> unknownMinimal,
 				float rest) {
-			QuantityWithName firstElement = getFirstNotNullElementIfPossible(unknownMinimal);
+			NotPreciseQuantityWithPhrase firstElement = getFirstNotNullElementIfPossible(unknownMinimal);
 			((NotPreciseQuantity)firstElement.getQuan()).setMinimalAmount((rest/(float)unknownMinimal.size()));
 			unknownMinimal.remove(firstElement);
 		}
 
 
 
-		private QuantityWithName getFirstNotNullElementIfPossible(ArrayList<QuantityWithName> unknownMinimal) {
-			QuantityWithName firstElement = unknownMinimal.get(0);
+		private NotPreciseQuantityWithPhrase getFirstNotNullElementIfPossible(ArrayList<NotPreciseQuantityWithPhrase> unknownMinimal) {
+			NotPreciseQuantityWithPhrase firstElement = unknownMinimal.get(0);
 			for(int i=1;i<unknownMinimal.size()&&firstElement==null;i++){
 				firstElement=unknownMinimal.get(i);
 			}
@@ -403,7 +403,7 @@ public class AuchanRecipeParser extends AuchanParticular {
 
 
 
-		private ArrayList<QuantityWithName> adjustQuantitiesOfIngredientsWithRespectToEachOtherExceptForLastUnknownMinimls() {
+		private ArrayList<NotPreciseQuantityWithPhrase> adjustQuantitiesOfIngredientsWithRespectToEachOtherExceptForLastUnknownMinimls() {
 			float currentMax = calculateFirstElementMaxUsingConstantsAndUpperQuanAndMinimals();
 			return adjustQuantitiesOfIngredientsWithRespectToEachOtherExceptForLastUnknownMinimalsStartingWithCurrentMax(
 					currentMax);
@@ -411,11 +411,11 @@ public class AuchanRecipeParser extends AuchanParticular {
 
 
 
-		private ArrayList<QuantityWithName> adjustQuantitiesOfIngredientsWithRespectToEachOtherExceptForLastUnknownMinimalsStartingWithCurrentMax(
+		private ArrayList<NotPreciseQuantityWithPhrase> adjustQuantitiesOfIngredientsWithRespectToEachOtherExceptForLastUnknownMinimalsStartingWithCurrentMax(
 				float currentMax) {
-			ArrayList<QuantityWithName> unknownMinimal=new ArrayList<QuantityWithName>();
+			ArrayList<NotPreciseQuantityWithPhrase> unknownMinimal=new ArrayList<NotPreciseQuantityWithPhrase>();
 			for(int i=0;i<orderedListOfQuans.size();i++){
-				QuantityWithName qpc=orderedListOfQuans.get(i);
+				NotPreciseQuantityWithPhrase qpc=orderedListOfQuans.get(i);
 				currentMax = adjustMaxAmountInCaseCalculatingFromPositionIsPreciser(upperLevelquan, currentMax, i);
 				NotPreciseQuantity quan = qpc.getQuan();
 				if(quan!=null){
@@ -453,8 +453,8 @@ public class AuchanRecipeParser extends AuchanParticular {
 
 
 
-		private void setPreviousMinimalsFromCurrentMax(float currentMax, ArrayList<QuantityWithName> unknownMinimal) {
-			for(QuantityWithName qpc1:unknownMinimal){
+		private void setPreviousMinimalsFromCurrentMax(float currentMax, ArrayList<NotPreciseQuantityWithPhrase> unknownMinimal) {
+			for(NotPreciseQuantityWithPhrase qpc1:unknownMinimal){
 				((NotPreciseQuantity)(qpc1.getQuan())).setMinimalAmount(currentMax);
 
 			}
@@ -470,7 +470,7 @@ public class AuchanRecipeParser extends AuchanParticular {
 				String skladnik=m.group().trim();
 				if(skladnik.endsWith(","))
 					skladnik=skladnik.substring(0, skladnik.length()-1);
-				QuantityWithName quanExtracted = extractQuantityAndPhraseIfPercent(skladnik, upperLevelquan);
+				NotPreciseQuantityWithPhrase quanExtracted = extractQuantityAndPhraseIfPercent(skladnik, upperLevelquan);
 				orderedListOfQuans.add(quanExtracted);
 				mapaSkladnikow.put(skladnik, quanExtracted);
 			}
@@ -514,12 +514,12 @@ public class AuchanRecipeParser extends AuchanParticular {
 
 
 	private static float getMaxAmountMinusNecessaryMinimals(AbstractQuantity upperLevelquan,
-			ArrayList<QuantityWithName> orderedListOfQuans) {
+			ArrayList<NotPreciseQuantityWithPhrase> orderedListOfQuans) {
 		float maxAmount = extractPossibleMaximumAmount(upperLevelquan);
 
 		float currentminimalAmountSkladnik=0f;
 		for(int i=orderedListOfQuans.size()-1;i>0;i--){
-			QuantityWithName quantityPhraseClone = orderedListOfQuans.get(i);
+			NotPreciseQuantityWithPhrase quantityPhraseClone = orderedListOfQuans.get(i);
 			AbstractQuantity iterateQuan = quantityPhraseClone.getQuan();
 			if(iterateQuan!=null&&((NotPreciseQuantity) iterateQuan).isMinimumValid())
 			{
@@ -541,11 +541,11 @@ public class AuchanRecipeParser extends AuchanParticular {
 	}
 
 	public static ArrayList<ProduktIngredientQuantity> parseSkladnikiFromPartiallyParsedMap(
-			Collection<QuantityWithName> skladnikiPhrasesWithQuanties, AbstractQuantity upperLevelQuan) {
+			Collection<NotPreciseQuantityWithPhrase> skladnikiPhrasesWithQuanties, AbstractQuantity upperLevelQuan) {
 		if(skladnikiPhrasesWithQuanties==null||skladnikiPhrasesWithQuanties.isEmpty())
 			return null;
 		ArrayList<ProduktIngredientQuantity> retValue=new ArrayList<ProduktIngredientQuantity>();
-		for(QuantityWithName singleSkladnikWithExtractedQuantity:skladnikiPhrasesWithQuanties){
+		for(NotPreciseQuantityWithPhrase singleSkladnikWithExtractedQuantity:skladnikiPhrasesWithQuanties){
 			if(Pattern.matches(simpleSkladnikPattern, singleSkladnikWithExtractedQuantity.getPhrase())){
 				BasicIngredientQuantity biq = parseSimpleSkladnik(singleSkladnikWithExtractedQuantity.getQuan(), singleSkladnikWithExtractedQuantity.getPhrase());
 				retValue.add(biq);
@@ -604,7 +604,7 @@ public class AuchanRecipeParser extends AuchanParticular {
 	}
 
 
-	private static QuantityWithName extractQuantityAndPhraseIfPercent(String skladnik,
+	private static NotPreciseQuantityWithPhrase extractQuantityAndPhraseIfPercent(String skladnik,
 			AbstractQuantity upperLevelquan) {
 		if(skladnik==null||upperLevelquan==null)
 			return null;
@@ -616,16 +616,16 @@ public class AuchanRecipeParser extends AuchanParticular {
 				return extractQuantityWithPhraseFromSkladnikWithPercent(skladnik, upperLevelquan, m);
 			}else{
 				ProblemLogger.logProblem("Prawdopodobnie coœ nie tak z regexami: najpierw stwierdzono obecnoœæ procentu, potem go nie znaleziono dla "+skladnik);
-				return new QuantityWithName(skladnik, null);
+				return new NotPreciseQuantityWithPhrase(skladnik, null);
 			}
 		}else{
-			return new QuantityWithName(skladnik, null);
+			return new NotPreciseQuantityWithPhrase(skladnik, null);
 		}
 		
 	}
 
 
-	private static QuantityWithName extractQuantityWithPhraseFromSkladnikWithPercent(String skladnik,
+	private static NotPreciseQuantityWithPhrase extractQuantityWithPhraseFromSkladnikWithPercent(String skladnik,
 			AbstractQuantity upperLevelquan, Matcher m) {
 		//String nazwaSkladnika;
 		String procent=m.group().trim();
@@ -633,7 +633,7 @@ public class AuchanRecipeParser extends AuchanParticular {
 		float fraction = calculateFractionFromProcentString(procent);
 		NotPreciseQuantity relativeSkladnik = upperLevelquan.getClone();
 		relativeSkladnik.multiplyBy(fraction);
-		QuantityWithName retValue=new QuantityWithName(skladnik,relativeSkladnik);
+		NotPreciseQuantityWithPhrase retValue=new NotPreciseQuantityWithPhrase(skladnik,relativeSkladnik);
 		return retValue;
 	}
 
@@ -656,11 +656,11 @@ public class AuchanRecipeParser extends AuchanParticular {
 		return fraction;
 	}
 
-	public static CompoundIngredientQuantity parseCompoundSkladnik(QuantityWithName skladnikPhraseWirhQuantity) {
+	public static CompoundIngredientQuantity parseCompoundSkladnik(NotPreciseQuantityWithPhrase skladnikPhraseWirhQuantity) {
 		return parseCompoundSkladnik(skladnikPhraseWirhQuantity.getPhrase(),skladnikPhraseWirhQuantity);
 	}
 
-	public static CompoundIngredientQuantity parseCompoundSkladnik(String skladnik,QuantityWithName quantityPhraseClone) {
+	public static CompoundIngredientQuantity parseCompoundSkladnik(String skladnik,NotPreciseQuantityWithPhrase quantityPhraseClone) {
 		if(skladnik==null){
 			return null;
 		}else{

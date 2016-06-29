@@ -136,7 +136,7 @@ public class JedzDobrzeScrapper extends AbstractScrapper {
 
 								if(links!=null&&links.size()>0){
 									String link=links.get(0).absUrl("href");
-									if(retUrl==null||link.length()<retUrl.length()){
+									if(retUrl==null||link.length()<retUrl.length()){//logika: im krótszy url pasuje, tym jest bardziej dopasowany
 										retUrl=link;
 									}
 								}

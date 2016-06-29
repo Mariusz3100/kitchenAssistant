@@ -78,7 +78,9 @@ public class PreciseQuantity extends NotPreciseQuantity {
 	
 	public void multiplyBy(float multiplier){
 		if(isValid()){
-			this.setAmount(this.getAmount()*multiplier);
+			float amountToRoundUp = this.getAmount()*multiplier;
+			amountToRoundUp=Math.round(amountToRoundUp*100)/100;
+			this.setAmount(amountToRoundUp);
 		}
 	}
 	

@@ -13,7 +13,7 @@ import mariusz.ambroziak.kassistant.dao.DaoProvider;
 import mariusz.ambroziak.kassistant.model.Base_Word;
 import mariusz.ambroziak.kassistant.model.Recipe_Ingredient;
 import mariusz.ambroziak.kassistant.model.quantity.AmountTypes;
-import mariusz.ambroziak.kassistant.model.utils.QuantityProduktPhrase;
+import mariusz.ambroziak.kassistant.model.utils.PreciseQuantityWithPhrase;
 import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 
 public class PrzepisyPLQExtract extends AbstractQuantityExtracter{
@@ -21,8 +21,8 @@ public class PrzepisyPLQExtract extends AbstractQuantityExtracter{
 	
 
 	
-	public static QuantityProduktPhrase extractQuantity(String text){
-		QuantityProduktPhrase retValue=new QuantityProduktPhrase();
+	public static PreciseQuantityWithPhrase extractQuantity(String text){
+		PreciseQuantityWithPhrase retValue=new PreciseQuantityWithPhrase();
 		
 		if(text==null||text.equals(""))
 		{
@@ -92,10 +92,10 @@ public class PrzepisyPLQExtract extends AbstractQuantityExtracter{
 
 	
 	
-	public static QuantityProduktPhrase retrieveProduktAmountData(Element e) {
+	public static PreciseQuantityWithPhrase retrieveProduktAmountData(Element e) {
 		// TODO Auto-generated method stub
 		String ingredient = e.text();
-		QuantityProduktPhrase retValue =null;
+		PreciseQuantityWithPhrase retValue =null;
 		
 		if(ingredient.indexOf('(')>0&&ingredient.indexOf(')')>0){
 			String attemptedQ=

@@ -2,7 +2,7 @@ package webscrappers.auchan;
 
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.quantity.PreciseQuantity;
-import mariusz.ambroziak.kassistant.model.utils.QuantityProduktPhrase;
+import mariusz.ambroziak.kassistant.model.utils.PreciseQuantityWithPhrase;
 
 public class ProduktDetails {
 	private String url;

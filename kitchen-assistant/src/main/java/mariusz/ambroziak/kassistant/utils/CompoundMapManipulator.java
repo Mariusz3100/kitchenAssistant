@@ -16,6 +16,7 @@ import mariusz.ambroziak.kassistant.exceptions.IncopatibleAmountTypesException;
 import mariusz.ambroziak.kassistant.exceptions.InvalidArgumentException;
 import mariusz.ambroziak.kassistant.model.jsp.SingleProdukt_SearchResult;
 import mariusz.ambroziak.kassistant.model.quantity.NotPreciseQuantity;
+import mariusz.ambroziak.kassistant.model.quantity.PreciseQuantity;
 import mariusz.ambroziak.kassistant.model.utils.BasicIngredientQuantity;
 import mariusz.ambroziak.kassistant.model.utils.ProduktWithBasicIngredients;
 
@@ -24,8 +25,39 @@ public class CompoundMapManipulator <OuterMapKey,InnerMapKey>{
 	private Map<OuterMapKey,Map<InnerMapKey,NotPreciseQuantity>> compoundMap;
 	
 	
+	
 	public CompoundMapManipulator(Map<OuterMapKey,Map<InnerMapKey,NotPreciseQuantity>> compoundMap){
 		this.compoundMap=compoundMap;
+	}
+	
+	public CompoundMapManipulator(){
+		
+	}
+	
+	public Map<OuterMapKey, Map<InnerMapKey, NotPreciseQuantity>> getCompoundMap() {
+		return compoundMap;
+	}
+
+	public void setCompoundMap(Map<OuterMapKey, Map<InnerMapKey, NotPreciseQuantity>> compoundMap) {
+		this.compoundMap = compoundMap;
+	}
+
+	public void setFromDifferentCompoundMap(Map<OuterMapKey, Map<InnerMapKey, PreciseQuantity>> compoundMap) {
+		this.compoundMap = preciseToNotPreciseQuantity(compoundMap);
+		
+	}
+
+	public Map<OuterMapKey,Map<InnerMapKey,NotPreciseQuantity>> preciseToNotPreciseQuantity(Map<OuterMapKey,Map<InnerMapKey,PreciseQuantity>> map){
+		Map<OuterMapKey,Map<InnerMapKey,NotPreciseQuantity>> retValue=new HashMap<OuterMapKey, Map<InnerMapKey,NotPreciseQuantity>>(map.size());
+		for(OuterMapKey omKey:map.keySet()){
+			Map<InnerMapKey, PreciseQuantity> outerMapValue = map.get(omKey);
+			Map<InnerMapKey,NotPreciseQuantity> innerRetMap=new HashMap<InnerMapKey, NotPreciseQuantity>();
+			for(InnerMapKey innerMapKey:outerMapValue.keySet()){
+				innerRetMap.put(innerMapKey, outerMapValue.get(innerMapKey));
+			}
+			retValue.put(omKey, innerRetMap);
+		}
+		return retValue;
 	}
 	
 	public Set<InnerMapKey> getAllInnerMapsKeys() {

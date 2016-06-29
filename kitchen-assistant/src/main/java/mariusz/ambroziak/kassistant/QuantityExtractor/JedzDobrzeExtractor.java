@@ -16,7 +16,7 @@ import mariusz.ambroziak.kassistant.model.Recipe_Ingredient;
 import mariusz.ambroziak.kassistant.model.quantity.AmountTypes;
 import mariusz.ambroziak.kassistant.model.quantity.PreciseQuantity;
 import mariusz.ambroziak.kassistant.model.utils.AbstractQuantity;
-import mariusz.ambroziak.kassistant.model.utils.QuantityProduktPhrase;
+import mariusz.ambroziak.kassistant.model.utils.PreciseQuantityWithPhrase;
 import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 
 public class JedzDobrzeExtractor extends AbstractQuantityExtracter{

@@ -13,7 +13,8 @@ import webscrappers.przepisy.AbstractQuantityExtracter.QuantityTranslation;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
 import mariusz.ambroziak.kassistant.model.Base_Word;
 import mariusz.ambroziak.kassistant.model.quantity.AmountTypes;
-import mariusz.ambroziak.kassistant.model.utils.QuantityProduktPhrase;
+import mariusz.ambroziak.kassistant.model.quantity.PreciseQuantity;
+import mariusz.ambroziak.kassistant.model.utils.PreciseQuantityWithPhrase;
 import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 
 public class SkladnikiExtractor extends AbstractQuantityExtracter {
@@ -38,7 +39,7 @@ public class SkladnikiExtractor extends AbstractQuantityExtracter {
 				}
 				String[] elems=line.split("\t");
 				
-				QuantityProduktPhrase extract = extract(elems[0], elems[1]);
+				PreciseQuantityWithPhrase extract = extract(elems[0], elems[1]);
 				
 				String extractDesc=extract==null?"null!!!":(extract.getProduktPhrase()+" : "
 						+extract.getAmount()+" "+extract.getAmountType());
@@ -60,10 +61,10 @@ public class SkladnikiExtractor extends AbstractQuantityExtracter {
 		
 	}
 	
-	public static QuantityProduktPhrase extract(String searchPhrase, String quantityPhrase){
+	public static PreciseQuantityWithPhrase extract(String searchPhrase, String quantityPhrase){
 		boolean retValueQOk=false;
 		boolean retValuePOk=false;
-		QuantityProduktPhrase retValue =null;
+		PreciseQuantityWithPhrase retValue =null;
 		String ingredient=searchPhrase;
 		
 		if(ingredient.indexOf('(')>0&&ingredient.indexOf(')')>0){
@@ -75,11 +76,9 @@ public class SkladnikiExtractor extends AbstractQuantityExtracter {
 				
 				if(extractedQuantity!=null||
 						(retValue.getAmount()==-1&&AmountTypes.szt.equals(retValue.getAmountType()))){
-					retValue=new QuantityProduktPhrase();
-					retValue.setAmountType(extractedQuantity.getType());
-					retValue.setAmount(extractedQuantity.getAmount());
-					retValue.setProduktPhrase(searchPhrase);
-				
+					retValue=new PreciseQuantityWithPhrase(searchPhrase,
+							new PreciseQuantity(extractedQuantity.getAmount(), extractedQuantity.getType()));
+					
 				
 					ingredient=ingredient.replaceAll(Pattern.quote(attemptedQ), "")
 						.replaceAll("\\(", "")
@@ -97,8 +96,8 @@ public class SkladnikiExtractor extends AbstractQuantityExtracter {
 		if(retValue==null){
 			Quantity extractedQuantity = extractQuantity(quantityPhrase);
 			
-			retValue=new QuantityProduktPhrase();
-			
+			retValue=new PreciseQuantityWithPhrase(searchPhrase,
+					new PreciseQuantity(extractedQuantity.getAmount(), extractedQuantity.getType()));
 			
 			retValue.setAmountType(extractedQuantity.getType());
 			retValue.setAmount(extractedQuantity.getAmount());

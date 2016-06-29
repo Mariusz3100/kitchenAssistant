@@ -2,6 +2,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
    "http://www.w3.org/TR/html4/loose.dtd">
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
 <html>
 <head>
@@ -10,22 +11,21 @@
 </head>
 <body>
 	<div align="left">
-		<h1>Produkt details:</h1>
+		
 
-
-		<ul>
-
-			<li>ID: ${produkt.p_id}</li>
-			<li>url: ${produkt.url}</li>
-			<li>Nazwa: ${produkt.nazwa}</li>
-			<li>Opis: ${produkt.opis}</li>
-			<li>Cena: ${produkt.cena} zł</li>
-		</ul>
-
-
-		Ingredients hierarchy: <br> ${compundIngredient} <br>
-
-		Nutritients of Ingredients:
+		Z twojego opisu:
+		<br>
+		${originalPhrase}
+		<br>
+		<c:if test="${not empty fn:trim(invalidEntriesInfo)}">
+			nie udało się wyodrębnić następujących wpisów:
+			<br>
+			${invalidEntriesInfo}
+		
+		</c:if>
+		<br>
+		 Poprawnie wyodrębniono następujące składniki 
+		 	(możliwe, że nie zostały odnalezione na listach wartości odżywczych)
 		<table border="1">
 
 			<tr>
@@ -38,9 +38,6 @@
 			<c:forEach var="ingredient" items="${amountsMap}" varStatus="status">
 				<tr>
 					<td>${ingredient.key}</td>
-
-
-
 					<c:forEach var="nutrient" items="${allNutrients}"
 						varStatus="status">
 						<td>${ingredient.value[nutrient]}</td>
@@ -53,7 +50,7 @@
 				<td><b>Sum</b></td>
 
 				<c:forEach var="nutrient" items="${allNutrients}" varStatus="status">
-					<td>${amountsSum[nutrient]}</td>
+					<td><b>${amountsSum[nutrient]}</b></td>
 				</c:forEach>
 
 			</tr>

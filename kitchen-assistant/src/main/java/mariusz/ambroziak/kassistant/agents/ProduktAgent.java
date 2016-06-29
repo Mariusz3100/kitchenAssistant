@@ -16,7 +16,7 @@ import mariusz.ambroziak.kassistant.exceptions.AgentSystemNotStartedException;
 import mariusz.ambroziak.kassistant.exceptions.ShopNotFoundException;
 import mariusz.ambroziak.kassistant.model.Base_Word;
 import mariusz.ambroziak.kassistant.model.Produkt;
-import mariusz.ambroziak.kassistant.model.utils.QuantityProduktPhrase;
+import mariusz.ambroziak.kassistant.model.utils.PreciseQuantityWithPhrase;
 import mariusz.ambroziak.kassistant.shops.ShopRecognizer;
 import mariusz.ambroziak.kassistant.utils.MessageTypes;
 import mariusz.ambroziak.kassistant.utils.ParameterHolder;
@@ -248,7 +248,7 @@ public class ProduktAgent extends BaseAgent{
 		return quantity;
 	}
 
-	private static QuantityProduktPhrase retrieveQuantity(String quantity) {
+	private static PreciseQuantityWithPhrase retrieveQuantity(String quantity) {
 		return PrzepisyPLQExtract.extractQuantity(quantity);
 		
 		
