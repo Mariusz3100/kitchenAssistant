@@ -13,10 +13,7 @@ public class MultiProdukt_SearchResult extends SearchResult{
 	
 	public MultiProdukt_SearchResult(String searchPhrase, String produktPhrase,
 			String quantity, List<Produkt> produkts) {
-		super();
-		this.searchPhrase = searchPhrase;
-		this.produktPhrase = produktPhrase;
-		this.quantityPhrase = quantity;
+		super(searchPhrase,produktPhrase, quantity);
 		this.produkts =new ArrayList<Produkt>();
 		if(produkts!=null)
 			this.produkts.addAll(produkts);	

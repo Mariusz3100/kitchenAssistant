@@ -10,7 +10,7 @@
 	<font style="color: red;">${invalidUrlInformation}</font>
 	
 	<form action="correctQuantities">
-		Paste url:<br> 
+		Paste url:<br> ${recipeUrl_name}
 		<input type="text" name="${recipeUrl_name}">
 	</form>
 	

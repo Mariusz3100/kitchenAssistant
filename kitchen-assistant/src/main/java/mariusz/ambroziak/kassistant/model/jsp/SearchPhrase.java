@@ -1,11 +1,17 @@
 package mariusz.ambroziak.kassistant.model.jsp;
 
-public abstract class SearchPhrase {
+public class SearchPhrase {
 
 	protected String searchPhrase;
 
-	public SearchPhrase() {
+	public SearchPhrase(String searchPhrase) {
 		super();
+		this.searchPhrase=searchPhrase;
+	}
+
+	@Override
+	public String toString() {
+		return searchPhrase;
 	}
 
 	public String getSearchPhrase() {

@@ -12,17 +12,10 @@ import mariusz.ambroziak.kassistant.utils.JspStringHolder;
 public class SingleProdukt_SearchResult extends SearchResult{
 	private Produkt produkt;
 	private Float iloscSztuk=1f;
-	
-	
-	
-
-
 	public SingleProdukt_SearchResult(String searchPhrase, String produktPhrase,
 			String quantity, Produkt produkt) {
-		super();
-		this.searchPhrase = searchPhrase;
+		super(searchPhrase,produktPhrase,quantity);
 		this.produktPhrase = produktPhrase;
-		
 		if(quantity!=null&&quantity.contains(JspStringHolder.QUANTITY_MULTIPLY_PREFIX_BORDER)){
 			String[] splitted=quantity.split(JspStringHolder.QUANTITY_MULTIPLY_PREFIX_BORDER);
 			iloscSztuk=Float.parseFloat(splitted[0]);
@@ -42,7 +35,7 @@ public class SingleProdukt_SearchResult extends SearchResult{
 	}
 	
 	public String getProduktNameAndSearchPhrase(){
-		return getProdukt().getNazwa()+" ("+this.getSearchPhrase()+")";
+		return getProdukt().getNazwa()+" ("+this.searchPhraseAnswered.getSearchPhrase()+")";
 	}
 	
 	public Float getIloscSztuk() {

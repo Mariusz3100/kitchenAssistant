@@ -54,6 +54,7 @@ import mariusz.ambroziak.kassistant.model.Recipe;
 import mariusz.ambroziak.kassistant.model.Recipe_Ingredient;
 import mariusz.ambroziak.kassistant.model.Variant_Word;
 import mariusz.ambroziak.kassistant.model.jsp.MultiProdukt_SearchResult;
+import mariusz.ambroziak.kassistant.model.jsp.SearchResult;
 import mariusz.ambroziak.kassistant.model.utils.PreciseQuantityWithPhrase;
 import mariusz.ambroziak.kassistant.utils.Converter;
 import mariusz.ambroziak.kassistant.utils.MessageTypes;
@@ -141,14 +142,14 @@ public class RecipeAgent extends BaseAgent{
 	
 	}
 
-	public static ArrayList<MultiProdukt_SearchResult> getPhrasesAndQuantitiesFromRecipeUrl(String url) throws AgentSystemNotStartedException, Page404Exception{
+	public static ArrayList<SearchResult> getPhrasesAndQuantitiesFromRecipeUrl(String url) throws AgentSystemNotStartedException, Page404Exception{
 		RecipeAgent freeOne = getFreeAgent();
 		
 		if(freeOne!=null)
 		{
 			freeOne.busy=true;
 			//TODO potem dodaæ opcjê wyci¹gania z bazy? Do rozwa¿enia
-			ArrayList<MultiProdukt_SearchResult> result= freeOne.parsePhrasesAndQuantitiesFromRecipeUrl(url);
+			ArrayList<SearchResult> result= freeOne.parsePhrasesAndQuantitiesFromRecipeUrl(url);
 			freeOne.busy=false;
 			return result;
 		}else
@@ -286,8 +287,8 @@ public class RecipeAgent extends BaseAgent{
 	}
 
 	
-	public ArrayList<MultiProdukt_SearchResult> parsePhrasesAndQuantitiesFromRecipeUrl(String url) throws Page404Exception{
-		ArrayList<MultiProdukt_SearchResult> retValue=new ArrayList<MultiProdukt_SearchResult>();
+	public ArrayList<SearchResult> parsePhrasesAndQuantitiesFromRecipeUrl(String url) throws Page404Exception{
+		ArrayList<SearchResult> retValue=new ArrayList<SearchResult>();
 		try{
 			PrzepisyPlWebscrapper scrapperPrzepisu=PrzepisyPlWebscrapper.parse(url);
 			Elements ings=scrapperPrzepisu.extractIngredients();
@@ -295,16 +296,10 @@ public class RecipeAgent extends BaseAgent{
 			for(Element e:ings){
 				String ingredient = e.text();
 				PreciseQuantityWithPhrase produktAndAmount=retrieveProduktAmountData(e);
-				MultiProdukt_SearchResult sr =new MultiProdukt_SearchResult(ingredient,produktAndAmount.getProduktPhrase(),
-						produktAndAmount.getQuantityJspPhrase(), null);
+				SearchResult sr =new SearchResult(ingredient,produktAndAmount.getProduktPhrase(),
+						produktAndAmount.getQuantityJspPhrase());
 				retValue.add(sr);
-				htmlLog("\n"+ingredient+"->\n");
-				if(sr.getProdukts()!=null&&sr.getProdukts().size()>0)
-					for(Produkt p:sr.getProdukts()){
-						htmlLog(p.getUrl()+"\n");
-					}
-				else
-					htmlLog("Nothing Found\n");
+				
 			}
 		}catch( IOException e){
 			e.printStackTrace();
@@ -342,7 +337,7 @@ public class RecipeAgent extends BaseAgent{
 	
 	private String extractQuantity(Element e) {
 		
-		String quantity=e.parent().select(".quantity").text();
+		String quantity=e.select(".quantity").text();
 		
 		
 		if(quantity==null||quantity.equals(""))

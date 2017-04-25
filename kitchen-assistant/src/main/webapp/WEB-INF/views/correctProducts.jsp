@@ -20,6 +20,8 @@
 			"</i> znaleziono następujące składniki:
 		</h1>
 
+
+
 		<form action="correctProdukts">
 			<input type="hidden" name="${liczbaSkladnikow}" value="${fn:length(skippedResults)+fn:length(correctResults)+fn:length(badResults)}">
 			<input type="hidden" name="${recipeUrl_name}" value="${url}">
@@ -35,10 +37,10 @@
 					value="${result.quantity}">
 				<input type="hidden"
 					name="${skladnikName}${skladnikiOuterCount}_${searchPhraseName}"
-					value="${result.searchPhrase}">
+					value="${result.searchPhraseAnswered}">
 				
 					<!-- Powinien być zawsze tylko jeden element -->
-					<b>${result.searchPhrase } -> </b> [${result.produkt.cena} zł] ${result.produkt.nazwa} ${result.produkt.url}	
+					<b>${result.searchPhraseAnswered } -> </b> [${result.produkt.cena} zł] ${result.produkt.nazwa} ${result.produkt.url}	
 						<br>
 					<input type="radio"
 						name="${skladnikName}${skladnikiOuterCount}_${skladnikRadioName}"
@@ -91,12 +93,12 @@
 					value="${result.quantity}">
 				<input type="hidden"
 					name="${skladnikName}${skladnikiOuterCount}_${searchPhraseName}"
-					value="${result.searchPhrase}">
-				<b>Składnik ${result.searchPhrase } nie został poprawnie
+					value="${result.searchPhraseAnswered}">
+				<b>Składnik ${result.searchPhraseAnswered } nie został poprawnie
 					wybrany: ${result.invalidityReason} </b>
 				<c:choose>
 					<c:when test="${fn:length(result.produkts) gt 0}">
-						<b>Dla składnika ${result.searchPhrase } znaleziono
+						<b>Dla składnika ${result.searchPhraseAnswered } znaleziono
 							następujące produkty:</b>
 						<br>
 						<c:forEach var="produkt" items="${result.produkts}"
@@ -110,7 +112,7 @@
 
 					</c:when>
 					<c:otherwise>
-						<b>Dla składnika ${result.searchPhrase } nie znaleziono
+						<b>Dla składnika ${result.searchPhraseAnswered } nie znaleziono
 							żadnych produktów.</b>
 
 						<br />

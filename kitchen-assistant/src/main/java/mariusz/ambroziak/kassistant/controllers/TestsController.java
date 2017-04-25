@@ -15,6 +15,7 @@ import mariusz.ambroziak.kassistant.agents.RecipeAgent;
 import mariusz.ambroziak.kassistant.agents.config.AgentsSystem;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
 import mariusz.ambroziak.kassistant.exceptions.AgentSystemNotStartedException;
+import mariusz.ambroziak.kassistant.exceptions.Page404Exception;
 import mariusz.ambroziak.kassistant.model.Problem;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.User;
@@ -180,6 +181,9 @@ public class TestsController {
 			try {
 				result = RecipeAgent.getQuantitiesAndProduktsFromRecipeUrl(url);
 			} catch (AgentSystemNotStartedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (Page404Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}

@@ -38,11 +38,11 @@
 							value="${result.key.produktPhrase}">
 				<input type="hidden"
 							name="${skladnikName}${skladnikCount.count}_${searchPhraseName}"
-							value="${result.key.searchPhrase}">
+							value="${result.key.searchPhraseAnswered}">
 											
 				<c:choose>
 					<c:when test="${fn:length(result.key.produkts) gt 0}">
-						<b>Dla składnika ${result.key.searchPhrase } [${result.value}]znaleziono
+						<b>Dla składnika ${result.key.searchPhraseAnswered } [${result.value}]znaleziono
 							następujące produkty:</b>
 						<br>
 						
@@ -56,7 +56,7 @@
 						</c:forEach>
 					</c:when>
 					<c:otherwise>
-						<b>Dla składnika ${result.key.searchPhrase } nie znaleziono
+						<b>Dla składnika ${result.key.searchPhraseAnswered } nie znaleziono
 							żadnych produktów.</b>
 
 						<br />

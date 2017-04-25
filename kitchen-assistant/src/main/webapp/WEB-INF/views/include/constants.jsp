@@ -20,5 +20,4 @@
 <c:set var="produktUrl_name" value="<%= mariusz.ambroziak.kassistant.utils.JspStringHolder.produktUrl_name%>" scope="session"/>
 <c:set var="recipeUrl_name" value="<%= mariusz.ambroziak.kassistant.utils.JspStringHolder.recipeUrl_name%>" scope="session"/>
 
-
 <c:set var="amountTypesWithoutCalories" value="<%= AmountTypes.valuesWithoutCalories()%>" scope="session"/>

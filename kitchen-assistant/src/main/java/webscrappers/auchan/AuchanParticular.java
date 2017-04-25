@@ -51,7 +51,7 @@ public class AuchanParticular extends AuchanAbstractScrapper{
 	public static ProduktDetails extractDataExceptUrl(Document doc) {
 		ProduktDetails retValue=new ProduktDetails();
 
-		Elements header = doc.select(".label");
+		Elements header = doc.select(".product-resume .title");
 		
 		retValue.setNazwa(getOwnTextOrEmpty(header));
 		
@@ -70,10 +70,18 @@ public class AuchanParticular extends AuchanAbstractScrapper{
 
 		retValue.setOpis(opisProduktuText);
 		
-		
+		String page=doc.toString();
 		
 		String cenaZl=getOwnTextOrEmpty(doc.select(".p-nb"));
 		String cenaGr=getOwnTextOrEmpty(doc.select(".p-cents"));
+		
+		if(cenaZl==null||cenaZl.equals("")){
+			cenaZl="1";
+		}
+		
+		if(cenaGr==null||cenaGr.equals("")){
+			cenaGr="0";
+		}
 		
 		float cena=combineCena(cenaZl,cenaGr);
 		

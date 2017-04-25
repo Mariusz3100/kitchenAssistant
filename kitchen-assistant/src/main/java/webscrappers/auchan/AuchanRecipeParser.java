@@ -73,7 +73,7 @@ public class AuchanRecipeParser extends AuchanParticular {
 			throw new Page404Exception( url);
 
 		ProduktDetails produkt = extractDataExceptUrl(doc);
-
+		
 
 		produkt.setUrl(url);
 

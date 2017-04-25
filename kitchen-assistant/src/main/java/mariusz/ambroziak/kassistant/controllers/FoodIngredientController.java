@@ -177,6 +177,7 @@ public class FoodIngredientController {
 
 
 	private void setEncoding(HttpServletRequest request) {
+		
 		try {
 			request.setCharacterEncoding(StringHolder.ENCODING);
 		} catch (UnsupportedEncodingException e1) {

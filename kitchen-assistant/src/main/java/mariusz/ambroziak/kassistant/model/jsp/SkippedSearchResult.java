@@ -1,10 +1,12 @@
 package mariusz.ambroziak.kassistant.model.jsp;
 
-public class SkippedSearchResult extends SearchPhrase {
+public class SkippedSearchResult{
 
+	protected SearchPhrase phraseAnswered;
+	
 	public SkippedSearchResult(String phrase) {
-		super();
-		this.setSearchPhrase(phrase);
+		this.phraseAnswered=new SearchPhrase(phrase);
+		
 	}
 
 }

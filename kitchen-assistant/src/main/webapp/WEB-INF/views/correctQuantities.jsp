@@ -18,9 +18,10 @@
 					.getParameter(mariusz.ambroziak.kassistant.utils.JspStringHolder.recipeUrl_name)%>
 				"
 			</i> wraz z ich wielkościami. Jeśli uważasz, że któraś z wielkości
-			została podana błędnie, możesz ją poprawić:
+			została podana błędnie, możesz ją poprawić!
 		</h1>
-
+		
+		
 		<form action="chooseProdukts">
 			<input type="hidden" name="${liczbaSkladnikow}"
 				value="${fn:length(results)}">
@@ -30,6 +31,8 @@
 					.getParameter(mariusz.ambroziak.kassistant.utils.JspStringHolder.recipeUrl_name)%>"
 			>
 
+
+			<c:if test="${fn:length(results)-1>0}">
 			<c:forEach begin="0" end="${fn:length(results)-1}" varStatus="loop">
 
 				<br>
@@ -38,13 +41,13 @@
 
 				<input type="hidden"
 					name="${skladnikName}${loop.index}_${searchPhraseName}"
-					value="${results[loop.index].searchPhrase}">
+					value="${results[loop.index].searchPhraseAnswered}">
 
 				<input type="hidden"
 					name="${skladnikName}${loop.index}_${produktPhraseName}"
 					value="${results[loop.index].produktPhrase}">
 			
-				<b>${results[loop.index].searchPhrase}</b>:
+				<b>${results[loop.index].searchPhraseAnswered}</b>:
 				<br>
 
 				<input type="hidden"
@@ -65,7 +68,7 @@
 
 			</c:forEach>
 
-
+			</c:if>
 
 			<input type="submit" value="Submit">
 		</form>

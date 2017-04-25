@@ -9,34 +9,13 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.logging.Level;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 import webscrappers.auchan.AuchanAbstractScrapper;
 import webscrappers.auchan.AuchanGroup;
@@ -61,8 +40,9 @@ public class AuchanAgent extends BaseAgent {
 
 	public static final String acceptedURL="(http://)?www.auchandirect.pl/sklep/.+";
 	public static final String baseUrl="www.auchandirect.pl/";
-
-
+	int tickets=0;
+	int lastCheckedClock=0;
+	
 	public static boolean agentOn=true;
 	private static ArrayList<GA_ProduktScrapped> produktsToScrap;
 
@@ -90,8 +70,23 @@ public class AuchanAgent extends BaseAgent {
 	}
 
 	public void enjoyYourOwn() {
-		//		if(ParameterHolder.isCheckShops())
-		//			webScrapper.enjoyYourOwn();
+//				if(ParameterHolder.isCheckShops())
+//					if(produktsToScrap!=null&&!produktsToScrap.isEmpty()){
+//						try {
+//							Thread.sleep(20000);
+//						} catch (InterruptedException e) {
+//							// TODO Auto-generated catch block
+//							e.printStackTrace();
+//						}
+//						Iterator<GA_ProduktScrapped> it=produktsToScrap.iterator();
+//						GA_ProduktScrapped produkt = it.next();
+//						it.remove();
+//						Produkt pToSave=getOrParseProduktByUrl(produkt.getUrl());
+//						DaoProvider.getInstance().getProduktDao().saveProdukt(pToSave);
+//					}
+					
+					
+					
 	}
 
 	@ResponseBody
@@ -270,6 +265,8 @@ public class AuchanAgent extends BaseAgent {
 
 	}
 
+	
+	
 	public void processGetProduktByUrlMesage(StringMessage m) {
 		Produkt produkt = getOrParseProduktByUrl(m);
 
@@ -289,6 +286,58 @@ public class AuchanAgent extends BaseAgent {
 		sendReplyWithRoleKA(m, messageToSend,AGENT_ROLE);
 	}
 
+	
+	public Produkt  getOrParseProduktByUrl(String produktUrl) {
+		if(produktUrl==null||produktUrl.equals("")){
+			ProblemLogger.logProblem("Empty url in "+produktUrl);
+			return null;
+		}else{
+			String shorturl=AuchanAbstractScrapper.getAuchanShortestWorkingUrl(produktUrl);
+
+			Produkt foundProdukt=
+					DaoProvider.getInstance().getProduktDao().getProduktsByURL(shorturl);
+
+			if(foundProdukt!=null){
+				htmlLog("Na podstawie url "+shorturl
+						+" w bazie danych znaleziono produkt o id ["+foundProdukt.getP_id()+"]\n");
+
+			}else{
+				
+				ProduktDetails produktDetails = null;
+				try {
+					if(shorturl!=null&&!shorturl.equals(""))
+						produktDetails = AuchanParticular.getProduktDetails(shorturl);
+
+				} catch (Page404Exception e) {
+					ProblemLogger.logProblem("404 page at "+produktUrl);
+					ProblemLogger.logStackTrace(e.getStackTrace());
+				}
+
+				if(produktDetails!=null){
+					foundProdukt=new Produkt();
+					foundProdukt.setCena(produktDetails.getCena());
+					foundProdukt.setNazwa(produktDetails.getNazwa());
+					foundProdukt.setOpis(produktDetails.getOpis());
+					foundProdukt.setPrzetworzony(false);
+					foundProdukt.setUrl(shorturl);
+					foundProdukt.setQuantityPhrase(produktDetails.getAmount()==null?
+							"":produktDetails.getAmount().toJspString());
+					
+					DaoProvider.getInstance().getProduktDao().saveProdukt(foundProdukt);
+
+					htmlLog("Na podstawie url "+shorturl
+							+" sparsowano i zapisano w bd produkt o id ["+foundProdukt.getP_id()+"]\n");
+
+				}
+			}
+			return foundProdukt;
+
+		}
+	
+		
+		
+		
+	}
 	public Produkt  getOrParseProduktByUrl(StringMessage m) {
 		JSONObject json=new JSONObject(m.getContent());
 

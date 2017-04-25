@@ -22,7 +22,7 @@ public class PrzepisyPLQExtract extends AbstractQuantityExtracter{
 
 	
 	public static PreciseQuantityWithPhrase extractQuantity(String text){
-		PreciseQuantityWithPhrase retValue=new PreciseQuantityWithPhrase();
+		PreciseQuantityWithPhrase retValue=new PreciseQuantityWithPhrase(text, null);
 		
 		if(text==null||text.equals(""))
 		{

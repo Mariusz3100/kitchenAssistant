@@ -39,7 +39,8 @@ public class PrzepisyPlWebscrapper extends AbstractScrapper {
 	}
 
 	public Elements extractIngredients(){
-		Elements ings=doc.select("[itemprop=\"recipeIngredient\"]");
+		Elements ings=doc.select(".row-ingredient");
+						
 
 		return ings;
 	}

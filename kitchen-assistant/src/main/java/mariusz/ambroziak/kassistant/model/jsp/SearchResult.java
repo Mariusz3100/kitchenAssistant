@@ -1,7 +1,15 @@
 package mariusz.ambroziak.kassistant.model.jsp;
 
-public abstract class SearchResult extends SearchPhrase {
+public class SearchResult {
 
+	protected SearchPhrase searchPhraseAnswered;
+	public SearchPhrase getSearchPhraseAnswered() {
+		return searchPhraseAnswered;
+	}
+
+	public void setSearchPhraseAnswered(SearchPhrase searchPhraseAnswered) {
+		this.searchPhraseAnswered = searchPhraseAnswered;
+	}
 	protected String produktPhrase;
 	protected String quantityPhrase;
 
@@ -18,12 +26,12 @@ public abstract class SearchResult extends SearchPhrase {
 	}
 
 	public void setQuantity(String quantity) {
-			this.quantityPhrase = quantity;
-		}
-	//	public String getSearchPhraseEncoded() {
-	//		String retValue=
-	//				Base64.getEncoder().encodeToString(searchPhrase.getBytes());
-	//		return retValue;
-	//	}
+		this.quantityPhrase = quantity;
+	}
+	public SearchResult(String searchPhrase, String produktPhrase, String quantityPhrase) {
+		this.searchPhraseAnswered=new SearchPhrase(searchPhrase);
+		this.produktPhrase = produktPhrase;
+		this.quantityPhrase = quantityPhrase;
+	}
 
 }

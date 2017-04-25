@@ -1,6 +1,7 @@
 package webscrappers.auchan;
 
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -10,6 +11,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import mariusz.ambroziak.kassistant.exceptions.Page404Exception;
 import mariusz.ambroziak.kassistant.utils.StringHolder;
 import webscrappers.AbstractScrapper;
 
@@ -25,8 +27,14 @@ public abstract class AuchanAbstractScrapper extends AbstractScrapper{
 	public static final String baseURL = "http://www.auchandirect.pl";
 	
 	static final String emptyContentString = "Przepraszamy , strona o tym adresie nie istnieje";
-
 	
+	private static int tickets=0;
+	
+	
+//	public static String getPage(String finalUrl) throws MalformedURLException, Page404Exception {
+//		super.
+//	
+//	}
 
 //	public static String getAuchanUrlPattern(String url) {
 //			
@@ -81,6 +89,14 @@ public abstract class AuchanAbstractScrapper extends AbstractScrapper{
 		
 	
 	}
+	
+	
+//	public static String getPage(String finalUrl) throws MalformedURLException, Page404Exception {
+//		getPa
+//	}
+
+		
+	
 	
 	public static boolean checkIf404Page(Document doc) {
 		Elements pageError=doc.select(".page.error");//.get(0).;
