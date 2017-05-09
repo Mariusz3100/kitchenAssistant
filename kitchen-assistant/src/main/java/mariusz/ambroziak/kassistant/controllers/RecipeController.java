@@ -14,14 +14,20 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import javassist.CodeConverter.ArrayAccessReplacementMethodNames;
+import mariusz.ambroziak.kassistant.Apiclients.edaman.EdamanApiClient;
+import mariusz.ambroziak.kassistant.Apiclients.edaman.RecipeData;
 import mariusz.ambroziak.kassistant.agents.FoodIngredientAgent;
 import mariusz.ambroziak.kassistant.agents.ProduktAgent;
 import mariusz.ambroziak.kassistant.agents.ReadingAgent;
 import mariusz.ambroziak.kassistant.agents.RecipeAgent;
+import mariusz.ambroziak.kassistant.api.agents.EdamanRecipeAgent;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
 import mariusz.ambroziak.kassistant.exceptions.AgentSystemNotStartedException;
 import mariusz.ambroziak.kassistant.exceptions.IncopatibleAmountTypesException;
@@ -50,6 +56,7 @@ import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 import mariusz.ambroziak.kassistant.utils.StringHolder;
 import webscrappers.auchan.AuchanAbstractScrapper;
 import webscrappers.auchan.AuchanParticular;
+import webscrappers.przepisy.PrzepisyPlWebscrapper;
 
 @Controller
 public class RecipeController {
@@ -63,7 +70,39 @@ public class RecipeController {
 
 	}
 
+	@RequestMapping(value="/recipeApiForm")
 
+	public ModelAndView recipeApiForm(HttpServletRequest request) {
+
+		return new ModelAndView("recipeApiForm");
+
+	}
+	
+	@RequestMapping(value="/apirecipes")
+	public ModelAndView recipeApiResult(HttpServletRequest request) throws AgentSystemNotStartedException {
+		String url=request.getParameter("recipeUrl");
+		List<RecipeData> results;
+		
+		if(url==null||url.equals("")){
+			String phrase=request.getParameter(JspStringHolder.searchPhrase_name);
+			
+			results=EdamanRecipeAgent.searchForRecipe(phrase);	
+		}else{
+			results=new ArrayList<>();
+			results.add(EdamanApiClient.getSingleRecipe(url));
+		}
+		
+		
+		ModelAndView modelAndView = new ModelAndView("recipesFromApiList");
+		
+		modelAndView.addObject("recipeList", results);
+		
+		return modelAndView;
+
+	}
+	
+
+	
 	@RequestMapping(value="/chooseProdukts")
 	public ModelAndView chooseProdukts(HttpServletRequest request) {
 		setEncoding(request);
