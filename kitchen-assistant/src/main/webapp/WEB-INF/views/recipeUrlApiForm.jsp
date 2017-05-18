@@ -9,9 +9,9 @@
 <body>
 	<font style="color: red;">${invalidUrlInformation}</font>
 	
-	<form action="correctQuantities">
-		Paste url:<br> ${recipeUrl_name}
-		<input type="text" name="${recipeUrl_name}">
+	<form action="apiRecipeParsed">
+		paste recipe id:<br>
+		<input type="text" name="recipeId">
 	</form>
 	
 </body>

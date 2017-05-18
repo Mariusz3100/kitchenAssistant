@@ -14,10 +14,7 @@
 		<input type="text" name="searchPhrase">
 	</form>
 	
-	<form action="apirecipes">
-		Or just paste url:<br>
-		<input type="text" name="recipeUrl">
-	</form>
+	
 	
 </body>
 <jsp:include page="include/constants.jsp" />

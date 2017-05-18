@@ -16,6 +16,9 @@ import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 
+import mariusz.ambroziak.kassistant.model.utils.ApiIngredientAmount;
+import mariusz.ambroziak.kassistant.model.utils.ProduktIngredientQuantity;
+
 
 
 
@@ -80,11 +83,25 @@ public class EdamanApiClient {
 			String recipeUrl=(String)root.get("shareAs");
 			String label=(String)root.get("label");
 			String imgUrl=(String)root.get("image");
+			JSONArray recipeIngredients = root.getJSONArray("ingredients");
+			
+			ArrayList<ApiIngredientAmount> parsedIngredients=new ArrayList<>();
+			for(int i=0;i<recipeIngredients.length();i++){
+				JSONObject ingredient = (JSONObject) recipeIngredients.get(i);
+				Double weight = (Double) ingredient.get("weight");
+				
+				String name= (String) ingredient.get("food");
+				ApiIngredientAmount aia=new ApiIngredientAmount(name,(float)(weight*1000));
+				parsedIngredients.add(aia);
+			}
+			
+			
 			
 			RecipeData rd=new RecipeData();
 			rd.setLabel(label);
 			rd.setUrl(recipeUrl);
 			rd.setImageUrl(imgUrl);
+			rd.setIngredients(parsedIngredients);
 			return rd;
 		
 	}

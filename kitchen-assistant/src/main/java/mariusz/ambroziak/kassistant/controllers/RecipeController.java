@@ -46,6 +46,7 @@ import mariusz.ambroziak.kassistant.model.quantity.AmountTypes;
 import mariusz.ambroziak.kassistant.model.quantity.NotPreciseQuantity;
 import mariusz.ambroziak.kassistant.model.quantity.PreciseQuantity;
 import mariusz.ambroziak.kassistant.model.utils.AbstractQuantity;
+import mariusz.ambroziak.kassistant.model.utils.ApiIngredientAmount;
 import mariusz.ambroziak.kassistant.model.utils.BasicIngredientQuantity;
 import mariusz.ambroziak.kassistant.model.utils.GoodBadSkippedResults;
 import mariusz.ambroziak.kassistant.model.utils.ProduktWithAllIngredients;
@@ -71,26 +72,36 @@ public class RecipeController {
 	}
 
 	@RequestMapping(value="/recipeApiForm")
-
 	public ModelAndView recipeApiForm(HttpServletRequest request) {
 
 		return new ModelAndView("recipeApiForm");
 
 	}
 	
+	@RequestMapping(value="/recipeUrlApiForm")
+	public ModelAndView recipeUrlApiForm(HttpServletRequest request) {
+
+		return new ModelAndView("recipeUrlApiForm");
+
+	}
+	
 	@RequestMapping(value="/apirecipes")
 	public ModelAndView recipeApiResult(HttpServletRequest request) throws AgentSystemNotStartedException {
-		String url=request.getParameter("recipeUrl");
+		String recipeID=request.getParameter("recipeId");
 		List<RecipeData> results;
 		
-		if(url==null||url.equals("")){
+		if(recipeID==null||recipeID.equals("")){
 			String phrase=request.getParameter(JspStringHolder.searchPhrase_name);
 			
 			results=EdamanRecipeAgent.searchForRecipe(phrase);	
 		}else{
 			results=new ArrayList<>();
-			results.add(EdamanApiClient.getSingleRecipe(url));
+			results.add(EdamanApiClient.getSingleRecipe(recipeID));
 		}
+		
+		
+		
+		
 		
 		
 		ModelAndView modelAndView = new ModelAndView("recipesFromApiList");
@@ -101,6 +112,70 @@ public class RecipeController {
 
 	}
 	
+
+	@RequestMapping(value="/apiRecipeParsed")
+	public ModelAndView apiRecipeParsed(HttpServletRequest request) throws AgentSystemNotStartedException {
+		String recipeID=request.getParameter("recipeId");
+		List<Produkt> results;
+		
+		RecipeData singleRecipe = EdamanApiClient.getSingleRecipe(recipeID);
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		int liczbaSkladnikow=singleRecipe.getIngredients().size();
+				
+
+		Map<MultiProdukt_SearchResult,PreciseQuantity> result = new HashMap<MultiProdukt_SearchResult,PreciseQuantity>();
+
+		for(int i=0;i<liczbaSkladnikow;i++){
+			ApiIngredientAmount aia=singleRecipe.getIngredients().get(i);
+			PreciseQuantity quantity=aia.getAmount();
+			String produktPhrase=aia.getName(); //the same for precise quantity
+			
+			List<Produkt> possibleProdukts=null;
+			try {
+				possibleProdukts=getProduktsWithRecountedPrice(RecipeAgent.parseProdukt(produktPhrase),quantity);
+			} catch (AgentSystemNotStartedException e) {
+				return returnAgentSystemNotStartedPage();
+			}
+
+			result.put(
+					new MultiProdukt_SearchResult(aia.getName(), produktPhrase, quantity.toJspString(), possibleProdukts)
+					,quantity);
+		}
+
+		if(result==null||result.isEmpty()){
+
+			return returnAgentSystemNotStartedPage();
+
+		}else{
+			ModelAndView mav=new ModelAndView("chooseProducts");
+
+			mav.addObject("url",singleRecipe.getUrl());
+			mav.addObject("results",result);
+
+			return mav;
+		}
+
+
+		
+		
+		
+		
+		
+//		ModelAndView modelAndView = new ModelAndView("recipesFromApiList");
+//		
+//		modelAndView.addObject("recipeList", results);
+		
+//		return modelAndView;
+
+	}
 
 	
 	@RequestMapping(value="/chooseProdukts")
