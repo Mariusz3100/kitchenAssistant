@@ -45,16 +45,9 @@ public class ProduktAgent extends BaseAgent{
 	private static final long serialVersionUID = 1L;
 	
 	static ArrayList<ProduktAgent> agents;
-	private boolean busy=false;
 	public  static final boolean checkShops = true;
 
-	public void setBusy(boolean busy) {
-		this.busy = busy;
-	}
-	
-	public boolean isBusy() {
-		return busy;
-	}
+
 
 
 	@Override

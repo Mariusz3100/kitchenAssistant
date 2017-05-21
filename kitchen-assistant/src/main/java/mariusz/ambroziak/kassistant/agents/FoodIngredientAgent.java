@@ -65,23 +65,12 @@ import webscrappers.przepisy.PrzepisyPLQExtract;
 public class FoodIngredientAgent extends BaseAgent{
 
 	static ArrayList<FoodIngredientAgent> agents;
-	private boolean busy=false;
-
-	
-	
 	public static final String PARSER_NAME = "foodIngredientParser";
 
 	private static final long serialVersionUID = 1L;
 	public  static final boolean checkShops = true;
 
 
-	public void setBusy(boolean busy) {
-		this.busy = busy;
-	}
-	
-	public boolean isBusy() {
-		return busy;
-	}
 
 
 	@Override

@@ -68,23 +68,10 @@ import mariusz.ambroziak.kassistant.utils.StringHolder;
 public class EdamanRecipeAgent extends BaseAgent{
 
 	static ArrayList<EdamanRecipeAgent> agents;
-	private boolean busy=false;
-
-
-
 	public static final String PARSER_NAME = "recipeParser";
 
 	private static final long serialVersionUID = 1L;
 	public  static final boolean checkShops = true;
-
-	public void setBusy(boolean busy) {
-		this.busy = busy;
-	}
-
-	public boolean isBusy() {
-		return busy;
-	}
-
 
 	@Override
 	protected void live() {
@@ -134,9 +121,9 @@ public class EdamanRecipeAgent extends BaseAgent{
 
 		if(freeOne!=null)
 		{
-			freeOne.busy=true;
+			freeOne.setBusy(true);
 			ArrayList<MultiProdukt_SearchResult> result= freeOne.getFromDbOrParseRecipe(url);
-			freeOne.busy=false;
+			freeOne.setBusy(false);
 			return result;
 		}else
 			return null;
@@ -149,10 +136,10 @@ public class EdamanRecipeAgent extends BaseAgent{
 
 		if(freeOne!=null)
 		{
-			freeOne.busy=true;
+			freeOne.setBusy(true);
 			//TODO potem dodaæ opcjê wyci¹gania z bazy? Do rozwa¿enia
 			ArrayList<SearchResult> result= freeOne.parsePhrasesAndQuantitiesFromRecipeUrl(url);
-			freeOne.busy=false;
+			freeOne.setBusy(false);
 			return result;
 		}else
 			return null;
@@ -163,16 +150,16 @@ public class EdamanRecipeAgent extends BaseAgent{
 		EdamanRecipeAgent freeOne = getFreeAgent();
 		if(freeOne!=null)
 		{
-			freeOne.busy=true;
+			freeOne.setBusy(true);
 			List<Produkt> result= freeOne.findSkladnik(produktPhrase);
-			freeOne.busy=false;
+			freeOne.setBusy(false);
 			return result;
 		}else
 			return null;
 	}
 
 	public static List<Produkt> searchForProdukt(String searchPhrase) throws AgentSystemNotStartedException{
-		EdamanRecipeAgent freeOne = getFreeAgent();
+		BaseAgent freeOne = getFreeAgent();
 		if(freeOne==null){
 			return null;
 		}else{

@@ -67,21 +67,10 @@ import webscrappers.przepisy.PrzepisyPLQExtract;
 public class ReadingAgent extends BaseAgent{
 
 	static ArrayList<ReadingAgent> agents;
-	private boolean busy=false;
-
 	public static final String PARSER_NAME = "labelParser";
 
 	private static final long serialVersionUID = 1L;
 	public  static final boolean checkShops = true;
-
-
-	public void setBusy(boolean busy) {
-		this.busy = busy;
-	}
-
-	public boolean isBusy() {
-		return busy;
-	}
 
 
 	@Override

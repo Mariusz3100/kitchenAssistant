@@ -127,6 +127,8 @@ public abstract class BaseAgent extends Agent {
 	private HashMap<ConversationID,StringMessage> messagesSent;
 	private HashMap<ConversationID,StringMessage> messagesReceived;
 	private HashMap<ConversationID,ConversationID> mesageRelations;
+
+	private boolean busy = false;
 	
 	
 	protected void addMessageSentToList(StringMessage m){
@@ -284,6 +286,16 @@ public abstract class BaseAgent extends Agent {
 				+ "AGENT_COMMUNITY:" + AGENT_COMMUNITY + ", "
 				+ "AGENT_GROUP:" + AGENT_GROUP + ", "
 				+ "AGENT_ROLE="+ AGENT_ROLE + "]";
+	}
+
+
+	public void setBusy(boolean busy) {
+		this.busy = busy;
+	}
+
+
+	public boolean isBusy() {
+		return busy;
 	}
 
 

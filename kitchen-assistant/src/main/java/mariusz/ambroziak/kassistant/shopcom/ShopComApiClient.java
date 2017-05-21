@@ -26,27 +26,6 @@ import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 public class ShopComApiClient {
 
 
-//	public static ArrayList<Produkt> getRecipes(String phrase){
-//		String response1 = getResponse(phrase);
-//
-//		ArrayList<Produkt> rdList=new ArrayList<>();
-//		
-//		JSONObject root=new JSONObject(response1);
-//		
-//		
-//			
-//		}
-//		
-//		
-//		
-//		return rdList;
-//
-//	}
-//
-
-
-
-
 	private static String getResponse(String phrase) {
 		ClientConfig cc = new DefaultClientConfig();
 		cc.getProperties().put(ClientConfig.PROPERTY_FOLLOW_REDIRECTS, true);
@@ -121,10 +100,13 @@ public class ShopComApiClient {
 
 
 	public static void main(String [] args){
-		System.out.println(getProduktsFor("chicken"));
+		//System.out.println(getProduktsFor("chicken"));
+		
 	}
 
-
+	public Produkt getProduktByShopId(String id){
+		return null;
+	}
 
 
 }
