@@ -13,6 +13,7 @@ import madkit.kernel.Agent;
 import madkit.kernel.AgentAddress;
 import madkit.kernel.Message;
 import madkit.message.StringMessage;
+import mariusz.ambroziak.kassistant.api.agents.ShopComAgent;
 import mariusz.ambroziak.kassistant.shops.ShopRecognizer;
 import mariusz.ambroziak.kassistant.shops.Shops;
 import mariusz.ambroziak.kassistant.utils.MessageTypes;
@@ -69,13 +70,13 @@ public class ShopsListAgent extends BaseAgent {
 						&&!m.getSender().getRole().equals(ProduktAgent.PARSER_NAME)){
 					ProblemLogger.logProblem("Received searchFor request not from parser");	
 				}
-				AgentAddress x=getAgentWithRole(AGENT_COMMUNITY, StringHolder.SCRAPPERS_GROUP, AuchanAgent.AUCHAN_WEB_SCRAPPER_NAME);
+				AgentAddress x=getAgentWithRole(AGENT_COMMUNITY, StringHolder.SCRAPPERS_GROUP, ShopComAgent.SHOP_COM_API_CLIENT_NAME);
 				StringMessage newM=new StringMessage(((StringMessage)m).getContent());
 				addMessagesRelation((StringMessage) m,newM);
 				sendMessageWithRole(x, newM,ShopsListAgent.SHOP_LIST_NAME);
 
 			}else if(json.get(StringHolder.MESSAGE_TYPE_NAME).equals(MessageTypes.SearchForResponse.toString())){
-				if(!m.getSender().getRole().equals(AuchanAgent.AUCHAN_WEB_SCRAPPER_NAME)){
+				if(!m.getSender().getRole().equals(ShopComAgent.SHOP_COM_API_CLIENT_NAME)){
 					ProblemLogger.logProblem("Received searchForResponse Message not from shop agent");
 
 				}
@@ -131,7 +132,7 @@ public class ShopsListAgent extends BaseAgent {
 		JSONObject json=new JSONObject(content);
 
 		if(RecipeAgent.PARSER_NAME.equals(json.get(StringHolder.MESSAGE_CREATOR_NAME))){
-			AgentAddress x=getAgentWithRole(AGENT_COMMUNITY, StringHolder.SCRAPPERS_GROUP, AuchanAgent.AUCHAN_WEB_SCRAPPER_NAME);
+			AgentAddress x=getAgentWithRole(AGENT_COMMUNITY, StringHolder.SCRAPPERS_GROUP,ShopComAgent.SHOP_COM_API_CLIENT_NAME);
 			StringMessage newM=new StringMessage(((StringMessage)m).getContent());
 			sendMessageWithRole(x, newM,ShopsListAgent.SHOP_LIST_NAME);
 
@@ -167,6 +168,11 @@ public class ShopsListAgent extends BaseAgent {
 			AgentAddress x=getAgentWithRole(AGENT_COMMUNITY, StringHolder.SCRAPPERS_GROUP, AuchanAgent.AUCHAN_WEB_SCRAPPER_NAME);
 	
 			shopUrlMap.put(Shops.Auchan,x);
+			
+			AgentAddress y=getAgentWithRole(AGENT_COMMUNITY, StringHolder.SCRAPPERS_GROUP, ShopComAgent.SHOP_COM_API_CLIENT_NAME);
+			
+			shopUrlMap.put(Shops.ShopCom,y);
+			
 		}
 
 	@Override

@@ -18,6 +18,7 @@ import mariusz.ambroziak.kassistant.agents.ProduktAgent;
 import mariusz.ambroziak.kassistant.agents.ReadingAgent;
 import mariusz.ambroziak.kassistant.agents.RecipeAgent;
 import mariusz.ambroziak.kassistant.agents.config.AgentsSystem;
+import mariusz.ambroziak.kassistant.api.agents.ShopComAgent;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
 import mariusz.ambroziak.kassistant.dao.ProduktDAO;
 import mariusz.ambroziak.kassistant.exceptions.AgentSystemNotStartedException;
@@ -82,7 +83,9 @@ public class ProduktController {
 		{
 			List<Produkt> produkts = null;
 			try {
+//				produkts = ShopComAgent.searchForIngredient(url);
 				produkts = RecipeAgent.searchForProdukt(url,quantity);
+
 			} catch (AgentSystemNotStartedException e) {
 				return new ModelAndView("agentSystemNotStarted");
 			}
@@ -94,31 +97,33 @@ public class ProduktController {
 		}
 	}
 	
-	@RequestMapping(value="/searchApiForProdukt")
-	public ModelAndView searchApiForProdukt(HttpServletRequest request) throws UnsupportedEncodingException {
-		
-		request.setCharacterEncoding(StringHolder.ENCODING);
-		String searchFor=request.getParameter("searchFor");
-		String quantity=request.getParameter("quantity");
-		
-
-		if(searchFor==null||searchFor.equals("")||quantity==null||quantity.equals(""))
-			return new ModelAndView("produktSearchForForm");
-		else
-		{
-			List<Produkt> produkts = null;
-			try {
-				produkts = RecipeAgent.searchForProdukt(searchFor,quantity);
-			} catch (AgentSystemNotStartedException e) {
-				return new ModelAndView("agentSystemNotStarted");
-			}
-			
-			ModelAndView model = new ModelAndView("produktsList");
-			model.addObject("produktList", produkts);
-			
-			return model;
-		}
-	}
+//	@RequestMapping(value="/searchApiForProdukt")
+//	public ModelAndView searchApiForProdukt(HttpServletRequest request) throws UnsupportedEncodingException {
+//		
+//		request.setCharacterEncoding(StringHolder.ENCODING);
+//		String searchFor=request.getParameter("searchFor");
+//		String quantity=request.getParameter("quantity");
+//		
+//
+//		if(searchFor==null||searchFor.equals("")||quantity==null||quantity.equals(""))
+//			return new ModelAndView("produktSearchForForm");
+//		else
+//		{
+//			List<Produkt> produkts = null;
+//			try {
+//				produkts = ShopComAgent.searchForIngredient(searchFor);
+//			} catch (AgentSystemNotStartedException e) {
+//				return new ModelAndView("agentSystemNotStarted");
+//			}
+//			
+//			ModelAndView model = new ModelAndView("produktsList");
+//			model.addObject("produktList", produkts);
+//			
+//			return model;
+//		}
+//	}
+	
+	
 	
 	@RequestMapping(value="/produktUrl")
 	public ModelAndView produktUrl(HttpServletRequest request) {

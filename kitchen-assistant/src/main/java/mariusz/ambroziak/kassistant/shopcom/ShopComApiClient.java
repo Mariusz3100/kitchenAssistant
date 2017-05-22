@@ -58,18 +58,19 @@ public class ShopComApiClient {
 		JSONArray produkts=((JSONArray)root.get("products"));
 		
 		for(int i=0;i<produkts.length();i++){
-			JSONObject ApiProdukt=(JSONObject) produkts.get(0);
-			String description=(String) ApiProdukt.get("description");
-			String name=(String) ApiProdukt.get("name");
-			String url=(String) ApiProdukt.get("referralUrl");
-			float price=getPrice(ApiProdukt,url);
-			
-			Produkt resultProdukt =new Produkt();
-			resultProdukt.setNazwa(name);
-			resultProdukt.setOpis(description);
-			resultProdukt.setUrl(url);
-			resultProdukt.setCena(price);
-			retValue.add(resultProdukt);
+			JSONObject ApiProdukt=(JSONObject) produkts.get(i);
+//			String description=(String) ApiProdukt.get("description");
+//			String name=(String) ApiProdukt.get("name");
+//			String url=(String) ApiProdukt.get("referralUrl");
+//			float price=getPrice(ApiProdukt,url);
+//			
+//			Produkt resultProdukt =new Produkt();
+//			resultProdukt.setNazwa(name);
+//			resultProdukt.setOpis(description);
+//			resultProdukt.setUrl(url);
+//			resultProdukt.setCena(price);
+//			retValue.add(resultProdukt);
+			retValue.add(ShopComApiClientParticularProduct.getProduktByShopId((Integer)ApiProdukt.get("id")));
 		}
 		
 		return retValue;

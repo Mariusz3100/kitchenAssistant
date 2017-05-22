@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import madkit.message.StringMessage;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.RecipeData;
 import mariusz.ambroziak.kassistant.agents.BaseAgent;
+import mariusz.ambroziak.kassistant.agents.ProduktAgent;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
 import mariusz.ambroziak.kassistant.exceptions.AgentSystemNotStartedException;
 import mariusz.ambroziak.kassistant.exceptions.Page404Exception;
@@ -26,7 +27,7 @@ import webscrappers.auchan.GA_ProduktScrapped;
 import webscrappers.auchan.ProduktDetails;
 
 public class ShopComAgent extends BaseAgent {
-	public static final String SHOP_COM_API_CLIENT_NAME = "auchanWebScrapper";
+	public static final String SHOP_COM_API_CLIENT_NAME = "shopComApiClient";
 
 	static ArrayList<ShopComAgent> agents;
 	int tickets=0;
@@ -34,6 +35,8 @@ public class ShopComAgent extends BaseAgent {
 
 	public static boolean agentOn=true;
 	private static ArrayList<GA_ProduktScrapped> produktsToScrap;
+
+	public static String baseUrl="https://api.shop.com/stores/v1/products/";
 
 	public ShopComAgent() {
 		super();
@@ -262,7 +265,7 @@ public class ShopComAgent extends BaseAgent {
 				//		try {
 				if(produktUrl!=null&&!produktUrl.equals(""))
 					foundProdukt = ShopComApiClientParticularProduct.getProduktByShopId(produktUrl);
-
+					DaoProvider.getInstance().getProduktDao().saveProdukt(foundProdukt);
 				//				} catch (Page404Exception e) {
 				//				ProblemLogger.logProblem("404 page at "+produktUrl);
 				//				ProblemLogger.logStackTrace(e.getStackTrace());
@@ -352,7 +355,9 @@ public class ShopComAgent extends BaseAgent {
 		if(!isGroup(AGENT_COMMUNITY,AGENT_GROUP)){
 			createGroup(AGENT_COMMUNITY,AGENT_GROUP);
 		}
-
+		if(agents==null)agents=new ArrayList<ShopComAgent>();
+		agents.add(this);
+		
 		requestRole(AGENT_COMMUNITY,AGENT_GROUP, AGENT_ROLE);
 		super.activate();
 	}

@@ -26,7 +26,7 @@ import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 
 
 public class ShopComApiClientParticularProduct {
-
+	public static float fakeWeight=10;
 
 	private static String getResponseById(String id) {
 		ClientConfig cc = new DefaultClientConfig();
@@ -38,8 +38,26 @@ public class ShopComApiClientParticularProduct {
 		MultivaluedMap<String, String> queryParams = new MultivaluedMapImpl();
 		queryParams.add("allperms","false");
 		queryParams.add("apikey", "l7xxeb4363ce0bcc441eb94134734dec9aed");
-		String response1 = resource.queryParams(queryParams).accept("application/json").get(String.class);
-		return response1;
+		
+		sleep();
+		
+		try{
+			String response1 = resource.queryParams(queryParams).accept("application/json").get(String.class);
+			return response1;
+
+		}catch( com.sun.jersey.api.client.UniformInterfaceException e){
+			System.err.println(e);
+		}
+		return null;
+	}
+
+	private static void sleep() {
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	private static String getResponseByUrl(String url) {
@@ -53,16 +71,43 @@ public class ShopComApiClientParticularProduct {
 		return response1;
 	}
 
-
+	public static Produkt getProduktByShopId(Integer id){
+		return getProduktByShopId(Integer.toString(id));
+//		JSONObject root=new JSONObject(response);
+//		String description=(String) root.get("description");
+//		String name=(String) root.get("caption");
+//		Object proceObj = root.get("price");
+//		float price=Float.parseFloat(proceObj==null?"0":proceObj.toString());
+//		
+//		
+//		
+//		
+//		double weight=(double) root.get("weight");
+//		
+//		PreciseQuantity pq=new PreciseQuantity(fakeWeight,AmountTypes.mg);
+//		Produkt resultProdukt =new Produkt();
+//		resultProdukt.setNazwa(name);
+//		resultProdukt.setOpis(description);
+//		resultProdukt.setUrl("https://api.shop.com/stores/v1/products/"+id);
+//		resultProdukt.setCena((float)price);
+//		resultProdukt.setQuantityPhrase(pq.toJspString());
+//
+//		return resultProdukt;
+	}
 	public static Produkt getProduktByShopId(String id){
 		String response=getResponseById(id);
 		JSONObject root=new JSONObject(response);
 		String description=(String) root.get("description");
 		String name=(String) root.get("caption");
-		double price=(double) root.get("price");
+		Object proceObj = root.get("price");
+		float price=Float.parseFloat(proceObj==null?"0":proceObj.toString());
+		
+		
+		
+		
 		double weight=(double) root.get("weight");
 		
-		PreciseQuantity pq=new PreciseQuantity((float)(weight*1000),AmountTypes.mg);
+		PreciseQuantity pq=new PreciseQuantity(fakeWeight,AmountTypes.mg);
 		Produkt resultProdukt =new Produkt();
 		resultProdukt.setNazwa(name);
 		resultProdukt.setOpis(description);
