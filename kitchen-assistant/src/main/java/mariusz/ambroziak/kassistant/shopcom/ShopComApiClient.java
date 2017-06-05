@@ -42,9 +42,23 @@ public class ShopComApiClient {
 		queryParams.add("apikey", "l7xxeb4363ce0bcc441eb94134734dec9aed");
 		
 		
+		String response1 ="";
+//		try{
+			response1 = resource.queryParams(queryParams).accept("application/json").get(String.class);
+//		}catch( com.sun.jersey.api.client.UniformInterfaceException e){
+//			e.printStackTrace();
+//			sleep(2000);
+//			try{
+//				response1 = resource.queryParams(queryParams).accept("application/json").get(String.class);
+//				return response1;
+//
+//			}catch( com.sun.jersey.api.client.UniformInterfaceException ex){
+//				System.err.println("Double: "+ex);
+//				ex.printStackTrace();
+//			}
+//		}
 
-		
-		String response1 = resource.queryParams(queryParams).accept("application/json").get(String.class);
+
 		return response1;
 	}
 
@@ -53,7 +67,7 @@ public class ShopComApiClient {
 		ArrayList<Produkt> retValue=new ArrayList<Produkt>();
 		
 		String response=getResponse(phrase);
-		
+		sleep(2000);
 		JSONObject root=new JSONObject(response);
 		JSONArray produkts=((JSONArray)root.get("products"));
 		
@@ -109,5 +123,12 @@ public class ShopComApiClient {
 		return null;
 	}
 
-
+	private static void sleep(long milis) {
+		try {
+			Thread.sleep(milis);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }

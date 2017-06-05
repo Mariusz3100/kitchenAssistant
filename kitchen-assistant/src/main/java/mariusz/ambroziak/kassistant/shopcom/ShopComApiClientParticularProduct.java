@@ -39,21 +39,31 @@ public class ShopComApiClientParticularProduct {
 		queryParams.add("allperms","false");
 		queryParams.add("apikey", "l7xxeb4363ce0bcc441eb94134734dec9aed");
 		
-		sleep();
+		sleep(2000);
 		
-		try{
+//		try{
 			String response1 = resource.queryParams(queryParams).accept("application/json").get(String.class);
 			return response1;
 
-		}catch( com.sun.jersey.api.client.UniformInterfaceException e){
-			System.err.println(e);
-		}
-		return null;
+//		}catch( com.sun.jersey.api.client.UniformInterfaceException e){
+//			e.printStackTrace();
+//			sleep(2000);
+//			try{
+//				String response1 = resource.queryParams(queryParams).accept("application/json").get(String.class);
+//				return response1;
+//
+//			}catch( com.sun.jersey.api.client.UniformInterfaceException ex){
+//				System.err.println("Double: "+ex);
+//				ex.printStackTrace();
+//			
+//			}
+//		}
+//		return null;
 	}
 
-	private static void sleep() {
+	private static void sleep(long milis) {
 		try {
-			Thread.sleep(1000);
+			Thread.sleep(milis);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

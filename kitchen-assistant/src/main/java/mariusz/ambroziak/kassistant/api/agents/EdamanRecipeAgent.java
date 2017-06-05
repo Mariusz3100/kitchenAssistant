@@ -213,7 +213,7 @@ public class EdamanRecipeAgent extends BaseAgent{
 	}
 
 	private List<RecipeData> fetchRecipes(String searchPhrase) {
-		ArrayList<RecipeData> recipes = EdamanApiClient.getRecipes(searchPhrase);
+		ArrayList<RecipeData> recipes = EdamanApiClient.getRecipesByPhrase(searchPhrase);
 		return recipes;
 	}
 

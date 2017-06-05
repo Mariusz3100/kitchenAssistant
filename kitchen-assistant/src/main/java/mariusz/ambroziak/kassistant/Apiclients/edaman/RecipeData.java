@@ -9,8 +9,31 @@ public class RecipeData {
 	String url;
 	String label;
 	String imageUrl;
-	
+	String shopId;
+	public String getShopId() {
+		return shopId;
+	}
+	public void setShopId(String shopId) {
+		this.shopId = shopId;
+	}
+	private ArrayList<HealthLabels> healthLabels=new ArrayList<>();
+	private ArrayList<DietLabels> dietLabels=new ArrayList<>();
 	ArrayList<ApiIngredientAmount> ingredients;
+	
+	
+	public ArrayList<HealthLabels> getHealthLabels() {
+		return healthLabels;
+	}
+	public void addHealthLabels(HealthLabels healthLabel) {
+		this.healthLabels.add(healthLabel);
+	}
+	public ArrayList<DietLabels> getDietLabels() {
+		return dietLabels;
+	}
+	public void addDietLabel(DietLabels dietLabel) {
+		this.dietLabels.add(dietLabel);
+	}
+
 	
 	public void setIngredients(ArrayList<ApiIngredientAmount> ingredients) {
 		this.ingredients = ingredients;

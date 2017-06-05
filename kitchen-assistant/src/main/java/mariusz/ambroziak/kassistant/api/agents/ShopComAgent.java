@@ -27,7 +27,7 @@ import webscrappers.auchan.GA_ProduktScrapped;
 import webscrappers.auchan.ProduktDetails;
 
 public class ShopComAgent extends BaseAgent {
-	public static final String SHOP_COM_API_CLIENT_NAME = "shopComApiClient";
+	public static final String SHOP_COM_API_AGENT_NAME = "shopComApiAgent";
 
 	static ArrayList<ShopComAgent> agents;
 	int tickets=0;
@@ -40,7 +40,7 @@ public class ShopComAgent extends BaseAgent {
 
 	public ShopComAgent() {
 		super();
-		AGENT_ROLE = SHOP_COM_API_CLIENT_NAME;	
+		AGENT_ROLE = SHOP_COM_API_AGENT_NAME;	
 
 		AGENT_COMMUNITY=StringHolder.AGENT_COMMUNITY;
 		//		AGENT_GROUP = StringHolder.SCRAPPERS_GROUP;
@@ -82,7 +82,7 @@ public class ShopComAgent extends BaseAgent {
 	}
 
 	@ResponseBody
-	@RequestMapping("/agents/"+SHOP_COM_API_CLIENT_NAME)
+	@RequestMapping("/agents/"+SHOP_COM_API_AGENT_NAME)
 	public String showData(){
 		return htmlLogs.toString().replace("\n", "\n<br>");
 	}
@@ -167,10 +167,17 @@ public class ShopComAgent extends BaseAgent {
 			}
 			ids=ids.trim();
 		}
+		
+		if(ids.indexOf("null")>0){
+			ids=ids.replaceAll("null", "");
+			ids.replaceAll("  ", " ");
+		}
+		
 		JSONObject result=new JSONObject();
 
 		result.put(StringHolder.PRODUKT_IDS_NAME, ids);
 		result.put(StringHolder.MESSAGE_TYPE_NAME, MessageTypes.SearchForResponse);
+		result.put(StringHolder.MESSAGE_CREATOR_NAME, SHOP_COM_API_AGENT_NAME);
 
 		StringMessage messageToSend = new StringMessage(result.toString());
 

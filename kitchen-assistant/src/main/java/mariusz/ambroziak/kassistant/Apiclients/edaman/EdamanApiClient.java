@@ -2,6 +2,7 @@ package mariusz.ambroziak.kassistant.Apiclients.edaman;
 
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Map;
 
 import javax.ws.rs.core.MultivaluedMap;
@@ -26,27 +27,10 @@ import mariusz.ambroziak.kassistant.model.utils.ProduktIngredientQuantity;
 public class EdamanApiClient {
 
 
-	public static ArrayList<RecipeData> getRecipes(String phrase){
+	public static ArrayList<RecipeData> getRecipesByPhrase(String phrase){
 		String response1 = getResponse(phrase);
 
-		ArrayList<RecipeData> rdList=new ArrayList<>();
-		
-		JSONObject root=new JSONObject(response1);
-		
-		JSONArray recipeHits = root.getJSONArray("hits");
-		for(int i=0;i<recipeHits.length();i++){
-			JSONObject recipeHit=(JSONObject) recipeHits.get(i);
-			JSONObject recipeUrlList=(JSONObject)recipeHit.get("recipe");
-			String url=(String)recipeUrlList.get("shareAs");
-			String label=(String)recipeUrlList.get("label");
-			String imgUrl=(String)recipeUrlList.get("image");
-			
-			RecipeData rd=new RecipeData();
-			rd.setLabel(label);
-			rd.setUrl(url);
-			rd.setImageUrl(imgUrl);
-			rdList.add(rd);
-		}
+		ArrayList<RecipeData> rdList = parseResponseIntoRecipes(response1);
 		
 		
 		
@@ -54,9 +38,68 @@ public class EdamanApiClient {
 
 	}
 
+	public static ArrayList<RecipeData> getRecipesByParameters(EdamanApiParameters eap){
+		String response1 = getResponse(eap);
+
+		ArrayList<RecipeData> rdList = parseResponseIntoRecipes(response1);
+		
+//		extractRightRecipes(rdList,eap);
+		
+		return rdList;
+
+	}
 
 
-	public static RecipeData getSingleRecipe(String url) {
+//	private static void extractRightRecipes(ArrayList<RecipeData> rdList, EdamanApiParameters eap) {
+//		Iterator<RecipeData> iterator = rdList.iterator();
+//		while(iterator.hasNext()){
+//			RecipeData next = iterator.next();
+//			
+//			if(next.getDietLabels().contains(o))
+//		}
+//	}
+
+	private static ArrayList<RecipeData> parseResponseIntoRecipes(String response1) {
+		ArrayList<RecipeData> rdList=new ArrayList<>();
+		
+		JSONObject root=new JSONObject(response1);
+		
+		JSONArray recipeHits = root.getJSONArray("hits");
+		for(int i=0;i<recipeHits.length();i++){
+			RecipeData rd=new RecipeData();
+
+			JSONObject recipeHit=(JSONObject) recipeHits.get(i);
+			JSONObject recipeUrlList=(JSONObject)recipeHit.get("recipe");
+			String url=(String)recipeUrlList.get("shareAs");
+			String label=(String)recipeUrlList.get("label");
+			String imgUrl=(String)recipeUrlList.get("image");
+			JSONArray healthLabels=(JSONArray)recipeUrlList.getJSONArray("healthLabels");
+
+			rd.setLabel(label);
+			rd.setUrl(url);
+			rd.setImageUrl(imgUrl);
+			for(int j=0;j<healthLabels.length();j++){
+				HealthLabels retrievedHL = HealthLabels.retrieveByName((String) healthLabels.get(j));
+				if(retrievedHL!=null)
+					rd.addHealthLabels(retrievedHL);
+			}
+			
+			JSONArray dietLabels=(JSONArray)recipeUrlList.getJSONArray("dietLabels");
+
+			for(int j=0;j<dietLabels.length();j++){
+				DietLabels retrievedDL = DietLabels.retrieveByName((String) dietLabels.get(j));
+				if(retrievedDL!=null)
+					rd.addDietLabel(retrievedDL);
+			}
+			
+			rdList.add(rd);
+		}
+		return rdList;
+	}
+
+
+
+	public static RecipeData getSingleRecipe(String urlID) {
 		ClientConfig cc = new DefaultClientConfig();
 		cc.getProperties().put(ClientConfig.PROPERTY_FOLLOW_REDIRECTS, true);
 
@@ -64,7 +107,7 @@ public class EdamanApiClient {
 		WebResource resource = c.resource("https://api.edamam.com/search");
 //
 		MultivaluedMap<String, String> queryParams = new MultivaluedMapImpl();
-		queryParams.add("r", url);
+		queryParams.add("r", urlID);
 		//       queryParams.add("app_id", "af08be14");
 
 
@@ -83,6 +126,7 @@ public class EdamanApiClient {
 			String recipeUrl=(String)root.get("shareAs");
 			String label=(String)root.get("label");
 			String imgUrl=(String)root.get("image");
+			String uri=(String)root.get("uri");
 			JSONArray recipeIngredients = root.getJSONArray("ingredients");
 			
 			ArrayList<ApiIngredientAmount> parsedIngredients=new ArrayList<>();
@@ -98,6 +142,7 @@ public class EdamanApiClient {
 			
 			
 			RecipeData rd=new RecipeData();
+			rd.setShopId(uri);
 			rd.setLabel(label);
 			rd.setUrl(recipeUrl);
 			rd.setImageUrl(imgUrl);
@@ -106,9 +151,13 @@ public class EdamanApiClient {
 		
 	}
 
-
-
 	private static String getResponse(String phrase) {
+		EdamanApiParameters eap=new EdamanApiParameters();
+		eap.setPhrase(phrase);
+		return getResponse(eap);
+	}
+
+	private static String getResponse(EdamanApiParameters eap) {
 		ClientConfig cc = new DefaultClientConfig();
 		cc.getProperties().put(ClientConfig.PROPERTY_FOLLOW_REDIRECTS, true);
 
@@ -116,8 +165,13 @@ public class EdamanApiClient {
 		WebResource resource = c.resource("https://api.edamam.com/search");
 
 		MultivaluedMap<String, String> queryParams = new MultivaluedMapImpl();
-		queryParams.add("q", phrase);
-		//       queryParams.add("app_id", "af08be14");
+		queryParams.add("q", eap.getPhrase());
+		for(HealthLabels hl:eap.getHealthLabels())
+			queryParams.add("health", hl.getParameterName());
+		
+		for(DietLabels dl:eap.getDietLabels())
+			queryParams.add("diet", dl.getParameterName());
+
 
 
 		String response1 = resource.queryParams(queryParams).accept("text/plain").get(String.class);
@@ -126,13 +180,20 @@ public class EdamanApiClient {
 
 
 
-
+	
 
 	public static void main(String [] args){
 		//getRecipes("chicken");
-		System.out.println(getSingleRecipe("https://www.edamam.com/recipe/chicken-mole-72d7a1a4ab4bd65e9a546ce7b3f974b5/chicken"));
+//		System.out.println(getSingleRecipe("https://www.edamam.com/recipe/chicken-mole-72d7a1a4ab4bd65e9a546ce7b3f974b5/chicken"));
 		
 //		System.out.println(getSingleRecipe("http://www.bonappetit.com/recipe/herbes-de-provence-rotisserie-chickens"));
+		
+//		System.out.println(getRecipesByPhrase("chicken"));
+		EdamanApiParameters eap=new EdamanApiParameters();
+		eap.addHealthLabels(HealthLabels.Alcohol_free);
+		eap.setPhrase("cake");
+		ArrayList<RecipeData> recipesByParameters = getRecipesByParameters(eap);
+		System.out.println(recipesByParameters);
 	}
 
 

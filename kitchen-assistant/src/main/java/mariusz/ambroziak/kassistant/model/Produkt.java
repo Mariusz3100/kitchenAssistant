@@ -17,7 +17,7 @@ import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = "url"))
 public class Produkt {
-	public static final int opis_length=2700;
+	public static final int opis_length=5000;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long p_id;

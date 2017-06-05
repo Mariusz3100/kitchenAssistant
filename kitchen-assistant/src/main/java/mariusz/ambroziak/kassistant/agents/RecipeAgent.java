@@ -346,28 +346,28 @@ public class RecipeAgent extends BaseAgent{
 
 	private List<Produkt> findSkladnik(String produktPhrase) {
 		List<Produkt> results;
-		ArrayList<String> baseWords = null;
+//		ArrayList<String> baseWords = null;
 		results=checkInDb(produktPhrase);
 
-		if(results==null||results.size()<1){
-			baseWords=getBaseWords(produktPhrase);
-			
-			baseWords=removeNiepoprawne(baseWords);
-			
-			if(baseWords.size()>0)
-				results=checkInDb(baseWords);
-		}
+//		if(results==null||results.size()<1){
+//			baseWords=getBaseWords(produktPhrase);
+//			
+//			baseWords=removeNiepoprawne(baseWords);
+//			
+//			if(baseWords.size()>0)
+//				results=checkInDb(baseWords);
+//		}
 
-		if(results==null||results.size()<1){
+		//if(results==null||results.size()<1){
 			
-			if(baseWords==null)
-				baseWords=getBaseWords(produktPhrase);
+//			if(baseWords==null)
+//				baseWords=getBaseWords(produktPhrase);
 			
-			baseWords=removeNiepoprawne(baseWords);
+//			baseWords=removeNiepoprawne(baseWords);
 			
-			if(baseWords.size()>0)
-				results=checkShops(baseWords);
-		}
+	//		if(baseWords.size()>0)
+//				results=checkShops(produktPhrase);
+		//}
 		
 		
 		if(results==null||results.size()<1){
