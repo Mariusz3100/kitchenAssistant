@@ -1,6 +1,7 @@
 package mariusz.ambroziak.kassistant.controllers;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -92,8 +93,11 @@ public class RecipeController {
 		
 		if(recipeID==null||recipeID.equals("")){
 			String phrase=request.getParameter(JspStringHolder.searchPhrase_name);
-			
-			results=EdamanRecipeAgent.searchForRecipe(phrase);	
+			try{
+				results=EdamanRecipeAgent.searchForRecipe(phrase);
+			}catch (AgentSystemNotStartedException e) {
+					return returnAgentSystemNotStartedPage();
+			}
 		}else{
 			results=new ArrayList<>();
 			results.add(EdamanApiClient.getSingleRecipe(recipeID));
@@ -105,6 +109,12 @@ public class RecipeController {
 		
 		
 		ModelAndView modelAndView = new ModelAndView("recipesFromApiList");
+		
+		for(RecipeData rd:results){
+			String id=rd.getShopId();
+			rd.setShopId("/kitchen-assistant/apiRecipeParsed?recipeId="+URLEncoder.encode(id));
+			
+		}
 		
 		modelAndView.addObject("recipeList", results);
 		

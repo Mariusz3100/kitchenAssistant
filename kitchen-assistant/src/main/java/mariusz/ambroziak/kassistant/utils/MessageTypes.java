@@ -6,7 +6,9 @@ public enum MessageTypes {
 	
 	
 	GetProduktData,
-	GetProduktDataResponse
+	GetProduktDataResponse,
 	
+	
+	GetLimitations
 	;
 }

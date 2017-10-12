@@ -74,7 +74,10 @@ public class EdamanApiClient {
 			String label=(String)recipeUrlList.get("label");
 			String imgUrl=(String)recipeUrlList.get("image");
 			JSONArray healthLabels=(JSONArray)recipeUrlList.getJSONArray("healthLabels");
-
+			
+			String id=(String)recipeUrlList.get("uri");
+			
+			rd.setShopId(id);
 			rd.setLabel(label);
 			rd.setUrl(url);
 			rd.setImageUrl(imgUrl);

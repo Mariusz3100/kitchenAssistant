@@ -3,6 +3,12 @@ package mariusz.ambroziak.kassistant.Apiclients.edaman;
 import java.util.ArrayList;
 
 public class EdamanApiParameters {
+	public void setHealthLabels(ArrayList<HealthLabels> healthLabels) {
+		this.healthLabels = healthLabels;
+	}
+	public void setDietLabels(ArrayList<DietLabels> dietLabels) {
+		this.dietLabels = dietLabels;
+	}
 	private String phrase;
 	private ArrayList<HealthLabels> healthLabels=new ArrayList<>();
 	private ArrayList<DietLabels> dietLabels=new ArrayList<>();
@@ -26,10 +32,10 @@ public class EdamanApiParameters {
 	}
 	
 	
-	public boolean isRecipeAcceptable(RecipeData rd){
-		for(HealthLabels hl:getHealthLabels()){
-			if(rd.getHealthLabels().contains(hl.getParameterName().compareToIgnoreCase(str)))
-		}
-	}
+//	public boolean isRecipeAcceptable(RecipeData rd){
+//		for(HealthLabels hl:getHealthLabels()){
+//			if(rd.getHealthLabels().contains(hl.getParameterName().compareToIgnoreCase(str)))
+//		}
+//	}
 	
 }

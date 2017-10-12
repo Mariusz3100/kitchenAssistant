@@ -42,6 +42,7 @@ import madkit.kernel.AgentAddress;
 import madkit.kernel.Message;
 import madkit.message.StringMessage;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.EdamanApiClient;
+import mariusz.ambroziak.kassistant.Apiclients.edaman.EdamanApiParameters;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.RecipeData;
 import mariusz.ambroziak.kassistant.QuantityExtractor.AuchanQExtract;
 import mariusz.ambroziak.kassistant.agents.BaseAgent;
@@ -213,18 +214,41 @@ public class EdamanRecipeAgent extends BaseAgent{
 	}
 
 	private List<RecipeData> fetchRecipes(String searchPhrase) {
-		ArrayList<RecipeData> recipes = EdamanApiClient.getRecipesByPhrase(searchPhrase);
+		
+		EdamanApiParameters eap=new EdamanApiParameters();
+		
+		eap.setDietLabels(GoogleAccessAgent.getDietLabels());
+		eap.setHealthLabels(GoogleAccessAgent.getHealthLabels());
+		ArrayList<RecipeData> recipes = EdamanApiClient.getRecipesByParameters(eap);
 		return recipes;
 	}
 
-	private RecipeData parseRecipe(String url) {
-		return EdamanApiClient.getSingleRecipe(url);
-		
-	}
+//	private RecipeData parseRecipe(String url) {
+//		return EdamanApiClient.getSingleRecipe(url);
+//		
+//	}
 
 	//	public Produkt getProduktFromDbByUrl(String produktUrl) {
 	//		return produktDao.getProduktsByURL(produktUrl);
 	//	}
+
+	private void sendGetPreferencesMessage() {
+		JSONObject json = new JSONObject();
+
+		
+		json.put(StringHolder.MESSAGE_CREATOR_NAME, PARSER_NAME);
+		json.put(StringHolder.MESSAGE_TYPE_NAME, MessageTypes.GetLimitations);
+
+
+		AgentAddress x=getAgentWithRole(StringHolder.AGENT_COMMUNITY, AGENT_GROUP, GoogleAccessAgent.AGENT_NAME);
+
+		StringMessage messageToSend = new StringMessage(json.toString());
+		StringMessage response=(StringMessage) 
+				sendMessageWithRoleAndWaitForReplyKA(x, messageToSend,PARSER_NAME);
+
+		System.out.println(response.getContent());
+	}
+
 
 	private static EdamanRecipeAgent getFreeAgent() throws AgentSystemNotStartedException {
 		EdamanRecipeAgent freeOne=null;

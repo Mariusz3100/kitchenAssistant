@@ -16,7 +16,7 @@ public class AgentsSystem {
 //		"agent.ShopsListAgent,false" };
 	//	Madkit.main(args2);
 		
-		new Madkit("--launchAgents", 
+		String [] x={"--launchAgents", 
 				"mariusz.ambroziak.kassistant.agents.AuchanAgent,false,1;",
 				"mariusz.ambroziak.kassistant.agents.RecipeAgent,false,1;",
 				"mariusz.ambroziak.kassistant.agents.ClockAgent,false,1;",
@@ -26,8 +26,10 @@ public class AgentsSystem {
 				"mariusz.ambroziak.kassistant.agents.ReadingAgent,false,1;",
 				"mariusz.ambroziak.kassistant.agents.FoodIngredientAgent,false,1;",
 				"mariusz.ambroziak.kassistant.api.agents.EdamanRecipeAgent,false,1;",
-				"mariusz.ambroziak.kassistant.api.agents.ShopComAgent,false,1"
-				);
+				"mariusz.ambroziak.kassistant.api.agents.ShopComAgent,false,1;",
+				"mariusz.ambroziak.kassistant.api.agents.GoogleAgent,false,1"};
+		
+		new Madkit(x);
 		
 		
 //		response.setCharacterEncoding(StringHolder.SERVLET_RESPONSE_ENCODING);

@@ -26,7 +26,7 @@ import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 
 
 public class ShopComApiClientParticularProduct {
-	public static float fakeWeight=10;
+	public static float fakeWeight=1000000;
 
 	private static String getResponseById(String id) {
 		ClientConfig cc = new DefaultClientConfig();
