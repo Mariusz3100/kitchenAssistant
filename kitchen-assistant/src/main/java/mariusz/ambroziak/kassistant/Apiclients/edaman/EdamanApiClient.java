@@ -167,7 +167,12 @@ public class EdamanApiClient {
 		Client c = Client.create();
 		WebResource resource = c.resource("https://api.edamam.com/search");
 
+		MultivaluedMap<String, String> queryParams_appId = new MultivaluedMapImpl();
+		queryParams_appId.add("app_id",EdamanApiParameters.getApp_id());
+
 		MultivaluedMap<String, String> queryParams = new MultivaluedMapImpl();
+		queryParams.add("app_key",EdamanApiParameters.getApp_key());
+		
 		queryParams.add("q", eap.getPhrase());
 		for(HealthLabels hl:eap.getHealthLabels())
 			queryParams.add("health", hl.getParameterName());
@@ -177,7 +182,7 @@ public class EdamanApiClient {
 
 
 
-		String response1 = resource.queryParams(queryParams).accept("text/plain").get(String.class);
+		String response1 = resource.queryParams(queryParams_appId).queryParams(queryParams).accept("text/plain").get(String.class);
 		return response1;
 	}
 
@@ -193,6 +198,7 @@ public class EdamanApiClient {
 		
 //		System.out.println(getRecipesByPhrase("chicken"));
 		EdamanApiParameters eap=new EdamanApiParameters();
+		
 		eap.addHealthLabels(HealthLabels.Alcohol_free);
 		eap.setPhrase("cake");
 		ArrayList<RecipeData> recipesByParameters = getRecipesByParameters(eap);

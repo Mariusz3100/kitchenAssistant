@@ -28,7 +28,7 @@ INSERT 0 1
  setval 
 --------
      10
-(1 wiersz)
+(1 row)
 
 INSERT 0 1
 INSERT 0 1
@@ -42,7 +42,7 @@ INSERT 0 1
  setval 
 --------
      15
-(1 wiersz)
+(1 row)
 
 INSERT 0 1
 INSERT 0 1
@@ -86,7 +86,7 @@ INSERT 0 1
  setval 
 --------
      40
-(1 wiersz)
+(1 row)
 
 INSERT 0 1
 INSERT 0 1
@@ -99,7 +99,7 @@ INSERT 0 1
  setval 
 --------
      10
-(1 wiersz)
+(1 row)
 
 CREATE TABLE
 CREATE TABLE

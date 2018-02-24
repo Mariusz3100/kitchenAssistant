@@ -3,6 +3,16 @@ package mariusz.ambroziak.kassistant.Apiclients.edaman;
 import java.util.ArrayList;
 
 public class EdamanApiParameters {
+	public static String getApp_id() {
+		return app_id;
+	}
+	public static String getApp_key() {
+		return app_key;
+	}
+	private static String app_id="af08be14";
+	private static String app_key="2ac175efa4ddfeff85890bed42dff521";
+	
+	
 	public void setHealthLabels(ArrayList<HealthLabels> healthLabels) {
 		this.healthLabels = healthLabels;
 	}

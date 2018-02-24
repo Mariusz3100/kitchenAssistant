@@ -139,7 +139,7 @@ public class RecipeAgent extends BaseAgent{
 		if(freeOne!=null)
 		{
 			freeOne.setBusy(true);
-			//TODO potem dodaæ opcjê wyci¹gania z bazy? Do rozwa¿enia
+			//TODO potem dodaï¿½ opcjï¿½ wyciï¿½gania z bazy? Do rozwaï¿½enia
 			ArrayList<SearchResult> result= freeOne.parsePhrasesAndQuantitiesFromRecipeUrl(url);
 			freeOne.setBusy(false);
 			return result;
@@ -490,5 +490,9 @@ public class RecipeAgent extends BaseAgent{
 		}else{
 			return null;
 		}
+	}
+
+	public void main(String[] args) throws AgentSystemNotStartedException, Page404Exception {
+		RecipeAgent.getPhrasesAndQuantitiesFromRecipeUrl("https://www.przepisy.pl/przepis/nalesniki-z-cukinia-i-serem");
 	}
 }
