@@ -16,34 +16,14 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
+	<classpathentry exported="true" kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/myMadkit17.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/myMadkit17.jar"/>
 	<classpathentry kind="lib" path="lib/google/commons-logging-1.1.1.jar"/>
-	<classpathentry kind="lib" path="lib/google/google-api-client-1.22.0.jar"/>
-	<classpathentry kind="lib" path="lib/google/google-api-client-android-1.22.0.jar"/>
-	<classpathentry kind="lib" path="lib/google/google-api-client-appengine-1.22.0.jar"/>
-	<classpathentry kind="lib" path="lib/google/google-api-client-gson-1.22.0.jar"/>
-	<classpathentry kind="lib" path="lib/google/google-api-client-jackson2-1.22.0.jar"/>
-	<classpathentry kind="lib" path="lib/google/google-api-client-java6-1.22.0.jar"/>
-	<classpathentry kind="lib" path="lib/google/google-api-client-servlet-1.22.0.jar"/>
-	<classpathentry kind="lib" path="lib/google/google-api-services-calendar-v3-rev202-1.22.0.jar"/>
-	<classpathentry kind="lib" path="lib/google/google-api-services-drive-v3-rev72-1.22.0.jar"/>
-	<classpathentry kind="lib" path="lib/google/google-http-client-1.22.0.jar"/>
-	<classpathentry kind="lib" path="lib/google/google-http-client-android-1.22.0.jar"/>
-	<classpathentry kind="lib" path="lib/google/google-http-client-appengine-1.22.0.jar"/>
-	<classpathentry kind="lib" path="lib/google/google-http-client-gson-1.22.0.jar"/>
-	<classpathentry kind="lib" path="lib/google/google-http-client-jackson2-1.22.0.jar"/>
-	<classpathentry kind="lib" path="lib/google/google-http-client-jdo-1.22.0.jar"/>
-	<classpathentry kind="lib" path="lib/google/google-oauth-client-1.22.0.jar"/>
-	<classpathentry kind="lib" path="lib/google/google-oauth-client-appengine-1.22.0.jar"/>
-	<classpathentry kind="lib" path="lib/google/google-oauth-client-java6-1.22.0.jar"/>
-	<classpathentry kind="lib" path="lib/google/google-oauth-client-jetty-1.22.0.jar"/>
-	<classpathentry kind="lib" path="lib/google/google-oauth-client-servlet-1.22.0.jar"/>
 	<classpathentry kind="lib" path="lib/google/gson-2.1.jar"/>
 	<classpathentry kind="lib" path="lib/google/httpclient-4.0.1.jar"/>
 	<classpathentry kind="lib" path="lib/google/httpcore-4.0.1.jar"/>
@@ -62,7 +42,8 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6">
 		<attributes>
-			<attribute name="owner.project.facets" value="java"/>
+			<attribute name="module" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="output" path="target/classes"/>

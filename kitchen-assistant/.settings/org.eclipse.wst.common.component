@@ -24,9 +24,6 @@
         
         
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
-        <dependent-module archiveName="myMadkit17.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/kitchen-assistant/lib/myMadkit17.jar">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
                                 		
         
         
