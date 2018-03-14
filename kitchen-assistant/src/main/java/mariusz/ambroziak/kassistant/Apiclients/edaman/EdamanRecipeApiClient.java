@@ -1,6 +1,7 @@
 package mariusz.ambroziak.kassistant.Apiclients.edaman;
 
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
@@ -17,6 +18,7 @@ import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 
+import api.extractors.EdamanQExtract;
 import mariusz.ambroziak.kassistant.model.utils.ApiIngredientAmount;
 import mariusz.ambroziak.kassistant.model.utils.ProduktIngredientQuantity;
 
@@ -24,7 +26,7 @@ import mariusz.ambroziak.kassistant.model.utils.ProduktIngredientQuantity;
 
 
 
-public class EdamanApiClient {
+public class EdamanRecipeApiClient {
 
 
 	public static ArrayList<RecipeData> getRecipesByPhrase(String phrase){
@@ -77,7 +79,7 @@ public class EdamanApiClient {
 			
 			String id=(String)recipeUrlList.get("uri");
 			
-			rd.setShopId(id);
+			rd.setEdamanId(id);
 			rd.setLabel(label);
 			rd.setUrl(url);
 			rd.setImageUrl(imgUrl);
@@ -110,11 +112,16 @@ public class EdamanApiClient {
 		WebResource resource = c.resource("https://api.edamam.com/search");
 //
 		MultivaluedMap<String, String> queryParams = new MultivaluedMapImpl();
-		queryParams.add("r", urlID);
+		queryParams.add("r", urlID);//URLEncoder.encode(urlID="http://www.edamam.com/ontologies/edamam.owl#recipe_1f8a034117737c47cd89d227e67be98d");
+		queryParams.add("app_key",EdamanApiParameters.getApp_key());
+
 		//       queryParams.add("app_id", "af08be14");
+		MultivaluedMap<String, String> queryParams_appId = new MultivaluedMapImpl();
+		queryParams_appId.add("app_id",EdamanApiParameters.getApp_id());
 
 
-		String response1 = resource.queryParams(queryParams).accept("text/plain").get(String.class);
+
+		String response1 = resource.queryParams(queryParams_appId).queryParams(queryParams).accept("text/plain").get(String.class);
 		
 		if(response1.charAt(0)=='[')
 			response1=response1.substring(1);
@@ -137,7 +144,9 @@ public class EdamanApiClient {
 				JSONObject ingredient = (JSONObject) recipeIngredients.get(i);
 				Double weight = (Double) ingredient.get("weight");
 				
-				String name= (String) ingredient.get("food");
+				String name= (String) ingredient.get("text");
+				
+				//name=EdamanQExtract.correctText(name);
 				ApiIngredientAmount aia=new ApiIngredientAmount(name,(float)(weight*1000));
 				parsedIngredients.add(aia);
 			}
@@ -145,7 +154,7 @@ public class EdamanApiClient {
 			
 			
 			RecipeData rd=new RecipeData();
-			rd.setShopId(uri);
+			rd.setEdamanId(uri);
 			rd.setLabel(label);
 			rd.setUrl(recipeUrl);
 			rd.setImageUrl(imgUrl);
@@ -174,11 +183,14 @@ public class EdamanApiClient {
 		queryParams.add("app_key",EdamanApiParameters.getApp_key());
 		
 		queryParams.add("q", eap.getPhrase());
-		for(HealthLabels hl:eap.getHealthLabels())
-			queryParams.add("health", hl.getParameterName());
 		
-		for(DietLabels dl:eap.getDietLabels())
-			queryParams.add("diet", dl.getParameterName());
+		if(eap.getHealthLabels()!=null)
+			for(HealthLabels hl:eap.getHealthLabels())
+				queryParams.add("Health", hl.getParameterName());
+		
+		if(eap.getDietLabels()!=null)
+			for(DietLabels dl:eap.getDietLabels())
+				queryParams.add("Diet", dl.getParameterName());
 
 
 

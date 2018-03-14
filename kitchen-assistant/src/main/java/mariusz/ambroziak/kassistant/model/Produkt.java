@@ -118,7 +118,7 @@ public class Produkt {
 		if(opis!=null){
 			if(opis.length()>opis_length){
 				ProblemLogger.logProblem("opis produktu \""
-						+opis+"\" jest za d³ugi. Maksymalna d³ugoœæ to "+opis_length);
+						+opis+"\" jest za dÅ‚ugi. Maksymalna dÅ‚ugoÅ›Ä‡ to "+opis_length);
 				opis=opis.substring(0,opis_length);
 			}
 		}

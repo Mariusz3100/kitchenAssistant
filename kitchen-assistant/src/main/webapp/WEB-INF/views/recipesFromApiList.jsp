@@ -16,7 +16,7 @@
 	        	<tr>
 	        		<td><img alt="" src="${recipe.imageUrl}"></td>
 					<td><b>${recipe.label}</b><br><a href="${recipe.url}">${recipe.url}</a></td>
-					<td><a href="${recipe.shopId}">Parse</a></td>	
+					<td><a href="${recipe.parseUrl}">Parse</a></td>	
 	        	</tr>
 				</c:forEach>	        	
         	</table>

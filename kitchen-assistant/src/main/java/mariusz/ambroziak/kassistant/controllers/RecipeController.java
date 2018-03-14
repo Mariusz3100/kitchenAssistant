@@ -21,8 +21,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import api.extractors.EdamanQExtract;
 import javassist.CodeConverter.ArrayAccessReplacementMethodNames;
-import mariusz.ambroziak.kassistant.Apiclients.edaman.EdamanApiClient;
+import mariusz.ambroziak.kassistant.Apiclients.edaman.EdamanRecipeApiClient;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.RecipeData;
 import mariusz.ambroziak.kassistant.agents.FoodIngredientAgent;
 import mariusz.ambroziak.kassistant.agents.ProduktAgent;
@@ -100,7 +101,7 @@ public class RecipeController {
 			}
 		}else{
 			results=new ArrayList<>();
-			results.add(EdamanApiClient.getSingleRecipe(recipeID));
+			results.add(EdamanRecipeApiClient.getSingleRecipe(recipeID));
 		}
 		
 		
@@ -110,11 +111,11 @@ public class RecipeController {
 		
 		ModelAndView modelAndView = new ModelAndView("recipesFromApiList");
 		
-		for(RecipeData rd:results){
-			String id=rd.getShopId();
-			rd.setShopId("/kitchen-assistant/apiRecipeParsed?recipeId="+URLEncoder.encode(id));
-			
-		}
+//		for(RecipeData rd:results){
+//			String id=rd.getEdamanId();
+//			rd.setEdamanId(""+URLEncoder.encode(id));
+//			
+//		}
 		
 		modelAndView.addObject("recipeList", results);
 		
@@ -128,14 +129,7 @@ public class RecipeController {
 		String recipeID=request.getParameter("recipeId");
 		List<Produkt> results;
 		
-		RecipeData singleRecipe = EdamanApiClient.getSingleRecipe(recipeID);
-		
-		
-		
-		
-		
-		
-		
+		RecipeData singleRecipe = EdamanRecipeApiClient.getSingleRecipe(recipeID);
 		
 		
 		int liczbaSkladnikow=singleRecipe.getIngredients().size();
@@ -146,11 +140,11 @@ public class RecipeController {
 		for(int i=0;i<liczbaSkladnikow;i++){
 			ApiIngredientAmount aia=singleRecipe.getIngredients().get(i);
 			PreciseQuantity quantity=aia.getAmount();
-			String produktPhrase=aia.getName(); //the same for precise quantity
+			String produktPhrase=EdamanQExtract.correctText(aia.getName()); //the same for precise quantity
 			
 			List<Produkt> possibleProdukts=null;
 			try {
-				possibleProdukts=getProduktsWithRecountedPrice(RecipeAgent.parseProdukt(produktPhrase),quantity);
+				possibleProdukts=getProduktsWithRecountedPrice(RecipeAgent.parseProdukt(produktPhrase),quantity,"$");
 			} catch (AgentSystemNotStartedException e) {
 				return returnAgentSystemNotStartedPage();
 			}
@@ -165,7 +159,7 @@ public class RecipeController {
 			return returnAgentSystemNotStartedPage();
 
 		}else{
-			ModelAndView mav=new ModelAndView("chooseProducts");
+			ModelAndView mav=new ModelAndView("chooseEngProducts");
 
 			mav.addObject("url",singleRecipe.getUrl());
 			mav.addObject("results",result);
@@ -239,11 +233,19 @@ public class RecipeController {
 
 	private List<Produkt> getProduktsWithRecountedPrice(List<Produkt> parseProdukt,
 			PreciseQuantity neededQuantity) {
+		return getProduktsWithRecountedPrice(parseProdukt,neededQuantity,"zÅ‚");
+
+	}
+	
+	
+	
+	private List<Produkt> getProduktsWithRecountedPrice(List<Produkt> parseProdukt,
+			PreciseQuantity neededQuantity, String curency) {
 
 		List<Produkt> retValue=new ArrayList<Produkt>();
 		if(parseProdukt!=null){
 			for(Produkt p:parseProdukt){
-				ProduktWithRecountedPrice pRec=getProduktWithRecountedPrice(p,neededQuantity);
+				ProduktWithRecountedPrice pRec=getProduktWithRecountedPrice(p,neededQuantity,curency);
 				retValue.add(pRec);
 			}
 		}
@@ -251,18 +253,18 @@ public class RecipeController {
 		return retValue;
 	}
 
-	private ProduktWithRecountedPrice getProduktWithRecountedPrice(Produkt p, PreciseQuantity neededQuantity) {
+	private ProduktWithRecountedPrice getProduktWithRecountedPrice(Produkt p, PreciseQuantity neededQuantity, String curency) {
 		String recountedPrice="";
 		PreciseQuantity produktQuan=PreciseQuantity.parseFromJspString(p.getQuantityPhrase());
 		if(produktQuan.getType()!=neededQuantity.getType()){
-			ProblemLogger.logProblem("Wielkoœci skladnika w przepisie+"+neededQuantity+" i w sklepie "+produktQuan+"nie s¹ tego samego typu");
+			ProblemLogger.logProblem("WielkoÅ›ci skladnika w przepisie+"+neededQuantity+" i w sklepie "+produktQuan+"nie sÄ… tego samego typu");
 		}else{
 			if(produktQuan.getAmount()>=neededQuantity.getAmount()){
-				recountedPrice=produktQuan+"->"+p.getCena()+" z³";
+				recountedPrice=produktQuan+"->"+p.getCena()+" "+curency;
 			}else{
 				int multiplier = getMultiplierOfProduktQuantityForNeededQuantity(neededQuantity, produktQuan);
 				recountedPrice=produktQuan+" x "+multiplier+" -> "
-						+p.getCena()+" x "+multiplier+" z³="+p.getCena()*multiplier+" z³";
+						+p.getCena()+" x "+multiplier+" "+curency+"="+p.getCena()*multiplier+" "+curency;
 			}
 		}
 
@@ -278,7 +280,7 @@ public class RecipeController {
 		if(!(neededQuantity instanceof PreciseQuantity)){
 			ProblemLogger.logProblem("Calculating coefficient for NotPreciseQuantity");
 		}
-		//raczej zawsze bêdzie PreciseQuantity dwa razy, ale zawsze lepiej wzi¹æ pod uwagê max
+		//raczej zawsze bï¿½dzie PreciseQuantity dwa razy, ale zawsze lepiej wziï¿½ï¿½ pod uwagï¿½ max
 		while(produktQuan.getAmount()*multiplier<neededQuantity.getMaximalAmount()){
 			++multiplier;
 		}
@@ -336,7 +338,7 @@ public class RecipeController {
 
 	private ModelAndView returnPageNotFoundRecipeForm(String url) {
 		ModelAndView mav=returnAgentSystemNotStartedPage();
-		mav.addObject("invalidUrlInformation","Url "+url+" nie prowadzi do strony ¿adnego przepisu");
+		mav.addObject("invalidUrlInformation","Url "+url+" nie prowadzi do strony ï¿½adnego przepisu");
 		return mav;
 	}
 
@@ -390,7 +392,7 @@ public class RecipeController {
 			return returnProduktsCorrectingPage(resultsHolder);
 		}
 
-		//Nazwa produktu->[nazwa sk³adnika->iloœæ]
+		//Nazwa produktu->[nazwa skï¿½adnika->iloï¿½ï¿½]
 		Map<String, Map<String, NotPreciseQuantity>> nutrientsMap = getProduktToSkladnikToAmountMap(retrievedBasicNutrientValues);
 
 		CompoundMapManipulator<String, String> cmm=new CompoundMapManipulator<String, String>(nutrientsMap);
@@ -490,7 +492,7 @@ public class RecipeController {
 			retrievedBasicNutrientValues = 
 					ReadingAgent.retrieveOrScrapAllNutrientValues(resultsHolder.getGoodResults());
 		} catch (ShopNotFoundException e) {
-			//pozostawione, nie powinno wyst¹piæ
+			//pozostawione, nie powinno wystï¿½piï¿½
 			e.printStackTrace();
 		}
 		return retrievedBasicNutrientValues; 
@@ -634,7 +636,7 @@ public class RecipeController {
 			retrievedBasicNutrientValues = 
 					ReadingAgent.retrieveOrScrapBasicNutrientValues(resultsHolder.getGoodResults());
 		} catch (ShopNotFoundException e) {
-			//pozostawione, nie powinno wyst¹piæ
+			//pozostawione, nie powinno wystï¿½piï¿½
 			e.printStackTrace();
 		}
 		return retrievedBasicNutrientValues;
@@ -666,7 +668,7 @@ public class RecipeController {
 						//znowu pobieramy produkty
 						List<Produkt> possibleProdukts = ProduktAgent.searchForProdukt(produktPhrase);
 						InvalidSearchResult isr=new InvalidSearchResult(searchPhrase,produktPhrase,quantityPhrase,possibleProdukts,
-								"Wygl¹da na to, ¿e strona internetowa pod url \""+innyUrl+"\" nie istnieje, lub nie opisuje ¿adnego produktu");
+								"Wyglï¿½da na to, ï¿½e strona internetowa pod url \""+innyUrl+"\" nie istnieje, lub nie opisuje ï¿½adnego produktu");
 						resultsHolder.addUsersBadChoice(isr);
 					}
 				} catch (ShopNotFoundException e) {
@@ -674,8 +676,8 @@ public class RecipeController {
 					List<Produkt> searchResults;
 					searchResults = ProduktAgent.searchForProdukt(produktPhrase);
 					InvalidSearchResult isr=new InvalidSearchResult(searchPhrase,produktPhrase,quantityPhrase,searchResults,
-							"Wygl¹da na to, ¿e url \""+innyUrl
-							+"\" nie zosta³ rozpoznany jako pasuj¹cy do ¿adnego ze wspieranych sklepów.");
+							"Wyglï¿½da na to, ï¿½e url \""+innyUrl
+							+"\" nie zostaï¿½ rozpoznany jako pasujï¿½cy do ï¿½adnego ze wspieranych sklepï¿½w.");
 					resultsHolder.addUsersBadChoice(isr);
 
 				} 
@@ -691,14 +693,14 @@ public class RecipeController {
 
 				if(produkt==null){
 					ProblemLogger.logProblem(
-							"Wygl¹da na to, ¿e produkt wybrany przez przycisk radio nie istnieje w systemie!: "
+							"Wyglï¿½da na to, ï¿½e produkt wybrany przez przycisk radio nie istnieje w systemie!: "
 									+wybranyProdukt);
 					List<Produkt> searchResults;
 
 					searchResults = ProduktAgent.searchForProdukt(produktPhrase);
 
 					InvalidSearchResult isr=new InvalidSearchResult(searchPhrase,produktPhrase,quantityPhrase,searchResults,
-							"UPS! Wydaje siê, ¿e zaproponowany przez nas produkt nie wystêpuje w naszym systemie!! Powiadom o tym administratora albo coœ...");
+							"UPS! Wydaje siï¿½, ï¿½e zaproponowany przez nas produkt nie wystï¿½puje w naszym systemie!! Powiadom o tym administratora albo coï¿½...");
 					resultsHolder.addUsersBadChoice(isr);
 
 				}else{

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import api.extractors.AbstractQuantityEngExtractor.QuantityTranslation;
 import mariusz.ambroziak.kassistant.model.quantity.AmountTypes;
 
 public class AbstractQuantityExtracter {
@@ -14,7 +15,7 @@ public class AbstractQuantityExtracter {
 	static{
 		
 		
-		translations=new HashMap<String, PrzepisyPLQExtract.QuantityTranslation>();
+		translations=new HashMap<String, QuantityTranslation>();
 		
 		translations.put("g",new QuantityTranslation(AmountTypes.mg, 1000) );
 		translations.put("kg",new QuantityTranslation(AmountTypes.mg, 1000000) );
@@ -25,11 +26,11 @@ public class AbstractQuantityExtracter {
 		
 		
 		translations.put("l",new QuantityTranslation(AmountTypes.ml, 1000) );
-		translations.put("³y¿eczka",new QuantityTranslation(AmountTypes.ml, 5) );
+		translations.put("ï¿½yï¿½eczka",new QuantityTranslation(AmountTypes.ml, 5) );
 		translations.put("kropla",new QuantityTranslation(AmountTypes.ml, 0.1f) );
 		translations.put("l",new QuantityTranslation(AmountTypes.ml, 1000) );
-		translations.put("³y¿ka",new QuantityTranslation(AmountTypes.ml, 15) );
-		translations.put("³y¿ka sto³owa",new QuantityTranslation(AmountTypes.ml, 15) );
+		translations.put("ï¿½yï¿½ka",new QuantityTranslation(AmountTypes.ml, 15) );
+		translations.put("ï¿½yï¿½ka stoï¿½owa",new QuantityTranslation(AmountTypes.ml, 15) );
 		translations.put("szklanka",new QuantityTranslation(AmountTypes.ml, 250) );
 		translations.put("mililitr",new QuantityTranslation(AmountTypes.ml, 1) );
 		translations.put("litr",new QuantityTranslation(AmountTypes.ml, 1000) );
@@ -45,34 +46,12 @@ public class AbstractQuantityExtracter {
 		ommissions=new ArrayList<String>();
 		
 		ommissions.add("ok.");
-		ommissions.add("oko³o");
+		ommissions.add("okoï¿½o");
 		
 		
 		
 	}
 	
 	
-	public static class QuantityTranslation{
-		private AmountTypes targetAmountType;
-		private float multiplier;
-		
-		
-		public QuantityTranslation(AmountTypes targetAmountType, float multiplier) {
-			super();
-			this.targetAmountType = targetAmountType;
-			this.multiplier = multiplier;
-		}
-		public AmountTypes getTargetAmountType() {
-			return targetAmountType;
-		}
-		public void setTargetAmountType(AmountTypes targetAmountType) {
-			this.targetAmountType = targetAmountType;
-		}
-		public float getMultiplier() {
-			return multiplier;
-		}
-		public void setMultiplier(float multiplier) {
-			this.multiplier = multiplier;
-		}
-	}
+
 }

@@ -40,7 +40,7 @@ public class ShopComApiClient {
 		queryParams.add("perPage","50");
 		queryParams.add("apikey", "l7xxeb4363ce0bcc441eb94134734dec9aed");
 		
-		
+//https://api.shop.com/AffiliatePublisherNetwork/v1/products?apikey=l7xxeb4363ce0bcc441eb94134734dec9aed&publisherID=TEST&locale=en_US&categoryId=1-32806&perPage=50
 		String response1 ="";
 //		try{
 			response1 = resource.queryParams(queryParams).accept("application/json").get(String.class);

@@ -1,0 +1,7 @@
+\i Problem.sql
+\i words.sql
+\i produkty.sql
+\i BasicIngredientNames.sql
+\i HealthRelevantIngs.sql
+\i IngredientRelevanceInserts.sql
+\i recipes.sql

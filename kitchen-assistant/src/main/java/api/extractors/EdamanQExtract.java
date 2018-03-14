@@ -1,4 +1,4 @@
-package mariusz.ambroziak.kassistant.QuantityExtractor;
+package api.extractors;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,7 +20,7 @@ import mariusz.ambroziak.kassistant.model.utils.AbstractQuantity;
 import mariusz.ambroziak.kassistant.model.utils.PreciseQuantityWithPhrase;
 import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 
-public class AuchanQExtract extends AbstractQuantityExtracter{
+public class EdamanQExtract extends AbstractQuantityEngExtractor{
 
 
 
@@ -72,15 +72,30 @@ public class AuchanQExtract extends AbstractQuantityExtracter{
 
 
 
-	private static String correctText(String text) {
+	public static String correctText(String text) {
 		///TODO wykasowa�, powinno by� zast�pione r�cznym sprawdzaniem w bazie danych albo nawet niczym.
 		if(text==null||text.equals(""))
 			return "";
 		
-		if(text.startsWith("/"))
-			text=text.substring(1);
+		String retText=text;
+		for(String portion:translations.keySet()) {
+			retText=retText.replace(portion+" ", "");
+		}
 		
-		return text;
+		for(int i=0;i<10;i++) {
+			retText=retText.replace(i+"⁄","");
+			retText=retText.replace(i+"/","");
+			retText=retText.replace(i+".","");
+
+			retText=retText.replace(i+"","");
+		}
+		retText=retText.trim();
+		
+		if(retText.startsWith("of"))
+			retText=retText.replace("of","");
+		
+		retText=retText.trim();
+		return retText;
 		
 	}
 

@@ -8,8 +8,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.regex.Pattern;
 
+import api.extractors.AbstractQuantityEngExtractor.QuantityTranslation;
 import webscrappers.SJPWebScrapper;
-import webscrappers.przepisy.AbstractQuantityExtracter.QuantityTranslation;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
 import mariusz.ambroziak.kassistant.model.Base_Word;
 import mariusz.ambroziak.kassistant.model.quantity.AmountTypes;
@@ -107,9 +107,9 @@ public class SkladnikiExtractor extends AbstractQuantityExtracter {
 		}
 		
 		if(retValue.getAmount()==-1&&AmountTypes.szt.equals(retValue.getAmountType())){
-			ProblemLogger.logProblem("Nie uda³o siê wyekstrachowaæ miary z "+searchPhrase+"|"+quantityPhrase);
+			ProblemLogger.logProblem("Nie udaï¿½o siï¿½ wyekstrachowaï¿½ miary z "+searchPhrase+"|"+quantityPhrase);
 			retValue.setAmount(1);
-			//TODO zostawiæ -1, by obs³uzyæ gdzie indziej?
+			//TODO zostawiï¿½ -1, by obsï¿½uzyï¿½ gdzie indziej?
 		}
 		
 		return retValue;

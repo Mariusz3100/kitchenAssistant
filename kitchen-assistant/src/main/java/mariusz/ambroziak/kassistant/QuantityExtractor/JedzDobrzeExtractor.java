@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 
 import org.jsoup.nodes.Element;
 
+import api.extractors.AbstractQuantityEngExtractor.QuantityTranslation;
 import webscrappers.SJPWebScrapper;
 import webscrappers.przepisy.AbstractQuantityExtracter;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;

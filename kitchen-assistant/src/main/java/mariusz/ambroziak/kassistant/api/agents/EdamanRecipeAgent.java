@@ -41,7 +41,7 @@ import madkit.kernel.Agent;
 import madkit.kernel.AgentAddress;
 import madkit.kernel.Message;
 import madkit.message.StringMessage;
-import mariusz.ambroziak.kassistant.Apiclients.edaman.EdamanApiClient;
+import mariusz.ambroziak.kassistant.Apiclients.edaman.EdamanRecipeApiClient;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.EdamanApiParameters;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.RecipeData;
 import mariusz.ambroziak.kassistant.QuantityExtractor.AuchanQExtract;
@@ -138,7 +138,7 @@ public class EdamanRecipeAgent extends BaseAgent{
 		if(freeOne!=null)
 		{
 			freeOne.setBusy(true);
-			//TODO potem dodaæ opcjê wyci¹gania z bazy? Do rozwa¿enia
+			//TODO potem dodaï¿½ opcjï¿½ wyciï¿½gania z bazy? Do rozwaï¿½enia
 			ArrayList<SearchResult> result= freeOne.parsePhrasesAndQuantitiesFromRecipeUrl(url);
 			freeOne.setBusy(false);
 			return result;
@@ -209,24 +209,25 @@ public class EdamanRecipeAgent extends BaseAgent{
 
 
 	private RecipeData fetchRecipe(String url) {
-	
-		return EdamanApiClient.getSingleRecipe(url);
+
+		return EdamanRecipeApiClient.getSingleRecipe(url);
 	}
 
 	private List<RecipeData> fetchRecipes(String searchPhrase) {
-		
+
 		EdamanApiParameters eap=new EdamanApiParameters();
-		
+
 		eap.setDietLabels(GoogleAccessAgent.getDietLabels());
 		eap.setHealthLabels(GoogleAccessAgent.getHealthLabels());
-		ArrayList<RecipeData> recipes = EdamanApiClient.getRecipesByParameters(eap);
+		eap.setPhrase(searchPhrase);
+		ArrayList<RecipeData> recipes = EdamanRecipeApiClient.getRecipesByParameters(eap);
 		return recipes;
 	}
 
-//	private RecipeData parseRecipe(String url) {
-//		return EdamanApiClient.getSingleRecipe(url);
-//		
-//	}
+	//	private RecipeData parseRecipe(String url) {
+	//		return EdamanApiClient.getSingleRecipe(url);
+	//		
+	//	}
 
 	//	public Produkt getProduktFromDbByUrl(String produktUrl) {
 	//		return produktDao.getProduktsByURL(produktUrl);
@@ -235,7 +236,7 @@ public class EdamanRecipeAgent extends BaseAgent{
 	private void sendGetPreferencesMessage() {
 		JSONObject json = new JSONObject();
 
-		
+
 		json.put(StringHolder.MESSAGE_CREATOR_NAME, PARSER_NAME);
 		json.put(StringHolder.MESSAGE_TYPE_NAME, MessageTypes.GetLimitations);
 

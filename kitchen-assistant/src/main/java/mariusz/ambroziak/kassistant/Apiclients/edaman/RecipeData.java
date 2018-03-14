@@ -1,20 +1,37 @@
 package mariusz.ambroziak.kassistant.Apiclients.edaman;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 import mariusz.ambroziak.kassistant.model.utils.ApiIngredientAmount;
 import mariusz.ambroziak.kassistant.model.utils.ProduktIngredientQuantity;
+import mariusz.ambroziak.kassistant.utils.StringHolder;
 
 public class RecipeData {
 	String url;
 	String label;
 	String imageUrl;
-	String shopId;
-	public String getShopId() {
-		return shopId;
+	String edamanId;
+	String parseUrl;
+	
+	public String getEdamanId() {
+		return edamanId;
 	}
-	public void setShopId(String shopId) {
-		this.shopId = shopId;
+	
+	public String getParseUrl() {
+		try {
+			return "/kitchen-assistant/apiRecipeParsed?recipeId="+URLEncoder.encode(edamanId,StringHolder.ENCODING);
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "/kitchen-assistant/apiRecipeParsed?recipeId="+URLEncoder.encode(edamanId);
+
+	}
+	
+	public void setEdamanId(String shopId) {
+		this.edamanId = shopId;
 	}
 	private ArrayList<HealthLabels> healthLabels=new ArrayList<>();
 	private ArrayList<DietLabels> dietLabels=new ArrayList<>();
