@@ -19,6 +19,7 @@ import com.google.api.services.drive.model.*;
 
 import mariusz.ambroziak.kassistant.Apiclients.edaman.DietLabels;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.HealthLabels;
+import mariusz.ambroziak.kassistant.utils.StringHolder;
 
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.Drive.Files.Export;
@@ -34,6 +35,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -45,7 +47,7 @@ public class GoogleDriveApiClient {
 
 	/** Directory to store user credentials for this application. */
 	private static final java.io.File DATA_STORE_DIR = new java.io.File(
-			System.getProperty("user.home"), ".credentials/drive-java-quickstart");
+			".credentials/drive-java-quickstart");
 
 	/** Global instance of the {@link FileDataStoreFactory}. */
 	private static FileDataStoreFactory DATA_STORE_FACTORY;
@@ -85,24 +87,25 @@ public class GoogleDriveApiClient {
 	 */
 	public static Credential authorize() throws IOException {
 		// Load client secrets.
-		InputStream in =new FileInputStream("WEB-INF/resources/client_secret.json");
+//		InputStream in =new FileInputStream("WEB-INF/resources/client_secret.json");
 		//            Quickstart.class.getResourceAsStream("/client_secret.json");
-//		new java.io.File("").getAbsolutePath();new java.io.File("").getAbsolutePath();
-		GoogleClientSecrets clientSecrets =
-				GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
-		// Build flow and trigger user authorization request.
-		GoogleAuthorizationCodeFlow flow =
-				new GoogleAuthorizationCodeFlow.Builder(
-						HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
-				.setDataStoreFactory(DATA_STORE_FACTORY)
-				.setAccessType("offline")
-				.build();
-		Credential credential = new AuthorizationCodeInstalledApp(
-				flow, new LocalServerReceiver()).authorize("user");
-		//new java.io.File("resources/client_secret.json").exists()
-		System.out.println(
-				"Credentials saved to " + DATA_STORE_DIR.getAbsolutePath());
-		return credential;
+//		new java.io.File("").getAbsolutePath();new java.io.File("WEB-INF").exists();.getAbsolutePath();
+//		GoogleClientSecrets clientSecrets =
+//				GoogleClientSecrets.load(JSON_FACTORY, new StringReader(StringHolder.googleIds));
+//		// Build flow and trigger user authorization request.
+//		GoogleAuthorizationCodeFlow flow =
+//				new GoogleAuthorizationCodeFlow.Builder(
+//						HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
+//				.setDataStoreFactory(DATA_STORE_FACTORY)
+//				.setAccessType("offline")
+//				.build();
+//		Credential credential = new AuthorizationCodeInstalledApp(
+//				flow, new LocalServerReceiver()).authorize("user");
+//		//new java.io.File("resources/client_secret.json").exists()
+//		System.out.println(
+//				"Credentials saved to " + DATA_STORE_DIR.getAbsolutePath());
+//		return credential;
+		return null;
 	}
 
 	/**

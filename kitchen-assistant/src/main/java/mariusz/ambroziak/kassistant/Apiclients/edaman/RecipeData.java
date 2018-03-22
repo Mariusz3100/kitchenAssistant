@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import mariusz.ambroziak.kassistant.model.utils.ApiIngredientAmount;
 import mariusz.ambroziak.kassistant.model.utils.ProduktIngredientQuantity;
+import mariusz.ambroziak.kassistant.utils.JspStringHolder;
 import mariusz.ambroziak.kassistant.utils.StringHolder;
 
 public class RecipeData {
@@ -21,12 +22,12 @@ public class RecipeData {
 	
 	public String getParseUrl() {
 		try {
-			return "/kitchen-assistant/apiRecipeParsed?recipeId="+URLEncoder.encode(edamanId,StringHolder.ENCODING);
+			return StringHolder.currentAppName+"/apiRecipeParsed?"+JspStringHolder.recipeApiId+"="+URLEncoder.encode(edamanId,StringHolder.ENCODING);
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return "/kitchen-assistant/apiRecipeParsed?recipeId="+URLEncoder.encode(edamanId);
+		return StringHolder.currentAppName+"/apiRecipeParsed?recipeId="+URLEncoder.encode(edamanId);
 
 	}
 	

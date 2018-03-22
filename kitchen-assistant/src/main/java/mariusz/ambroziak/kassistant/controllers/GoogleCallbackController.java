@@ -2,6 +2,7 @@ package mariusz.ambroziak.kassistant.controllers;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,6 +12,7 @@ import java.util.Map;
 import javax.jdo.JDOHelper;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import madkit.kernel.Madkit;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.DietLabels;
@@ -33,7 +35,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.google.api.client.auth.oauth2.AuthorizationCodeFlow;
+import com.google.api.client.auth.oauth2.AuthorizationCodeResponseUrl;
 import com.google.api.client.auth.oauth2.BearerToken;
+import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.extensions.servlet.auth.oauth2.AbstractAuthorizationCodeCallbackServlet;
 import com.google.api.client.extensions.servlet.auth.oauth2.AbstractAuthorizationCodeServlet;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
@@ -44,6 +49,7 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
+import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
 
 
@@ -51,7 +57,9 @@ import com.google.api.services.drive.DriveScopes;
 //import database.holders.StringHolder;
 
 @Controller
-public class GoogleController extends AbstractAuthorizationCodeServlet{
+public class GoogleCallbackController extends AbstractAuthorizationCodeCallbackServlet{
+
+	
 	private static final String APPLICATION_NAME =
 			"Kitchen Assistant";
 
@@ -88,128 +96,67 @@ public class GoogleController extends AbstractAuthorizationCodeServlet{
 			System.exit(1);
 		}
 	}
-	
-	public static String problems="";
 
-
-
-
-	@RequestMapping(value="/google/health/get")
-	public ModelAndView problems1(HttpServletRequest request) throws IOException {
-		ArrayList<HealthLabels> healthLimittions = GoogleDriveApiClient.getHealthLimitations();
-		
-		ModelAndView mav=new ModelAndView("List");
-		ArrayList<String> list=new ArrayList<String>();
-
-		if(healthLimittions==null||healthLimittions.isEmpty())
-			list.add("Health labels for a user not implemented.");
-		else{
-			list.add("Health labels for a user:");
-	
-			for(HealthLabels s:healthLimittions)
-			{	
-				list.add(s.getParameterName());
-			}
-		}
-		
-		mav.addObject("list",list);
-
-		return mav;
-
-
-	}
-
-	@RequestMapping(value="/google/test")
-	public ModelAndView test(HttpServletRequest request) throws IOException {
-		
-		getCredential();
-		ArrayList<String> arr=new ArrayList<String>();
-		
-		arr.add("teeesting");
-		ModelAndView mav=new ModelAndView("List");
-		mav.addObject("list",arr);
-		
-		return mav;
-	}
 	
 	
-	@RequestMapping(value="/google/diet/get")
-	public ModelAndView getDiet(HttpServletRequest request) throws IOException {
-		ArrayList<DietLabels> healthLimittions = GoogleDriveApiClient.getDietLimitations();
-		
-		ModelAndView mav=new ModelAndView("List");
-		ArrayList<String> list=new ArrayList<String>();
-
-		if(healthLimittions==null||healthLimittions.isEmpty())
-			list.add("Diet labels for a user not found.");
-		else{
-			list.add("Diet labels for a user:");
-	
-			for(DietLabels s:healthLimittions)
-			{	
-				list.add(s.getParameterName());
-			}
-		}
-		
-		mav.addObject("list",list);
-
-		return mav;
-
-
-	}
-	
-	
-	@RequestMapping(value="/google/health/renew")
-	public ModelAndView googleDelete(HttpServletRequest request) throws IOException {
-		
-		GoogleDriveApiClient.deleteCredentials();
-		
-		ModelAndView mav=new ModelAndView("List");
-		ArrayList<String> list=new ArrayList<String>();
-		
-		list.add("renewed");
-		
-		mav.addObject("list",list);
-		return mav;
-		
-		
-	}
-
-//	@Override
-//	protected AuthorizationCodeFlow initializeFlow() throws ServletException, IOException {
-//		GoogleClientSecrets clientSecrets =
-//				GoogleClientSecrets.load(JSON_FACTORY, new StringReader(StringHolder.googleIds));
-//		
-//		return new GoogleAuthorizationCodeFlow.Builder(
-//				HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
-//		.setDataStoreFactory(DATA_STORE_FACTORY)
-//		.setAccessType("offline")
-//		.build();
-//	}
 	  @Override
 	  protected AuthorizationCodeFlow initializeFlow() throws IOException {
-		  GoogleClientSecrets clientSecrets =
-					GoogleClientSecrets.load(JSON_FACTORY, new StringReader(StringHolder.googleIds));
-			// Build flow and trigger user authorization request.
-			GoogleAuthorizationCodeFlow flow =
-					new GoogleAuthorizationCodeFlow.Builder(
-							HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
-					.setDataStoreFactory(DATA_STORE_FACTORY)
-					.setAccessType("offline")
-					.build();
-			
-			return flow;
-		  
-//		  return new AuthorizationCodeFlow.Builder(BearerToken.authorizationHeaderAccessMethod(),
-//	        HTTP_TRANSPORT,
-//	        new JacksonFactory(),
-//	        new GenericUrl("https://server.example.com/token"),
-//	        new BasicAuthentication("s6BhdRkqt3", "7Fjfp0ZBr1KtDRbnfVdmIw"),
-//	        "s6BhdRkqt3",
-//	        "https://server.example.com/authorize").setDataStoreFactory(
-//	        DATA_STORE_FACTORY)
-//	        .build();
+	    return new AuthorizationCodeFlow.Builder(BearerToken.authorizationHeaderAccessMethod(),
+	        new NetHttpTransport(),
+	        new JacksonFactory(),
+	        new GenericUrl("http://localhost/authorize"),
+	        new BasicAuthentication("s6BhdRkqt3", "7Fjfp0ZBr1KtDRbnfVdmIw"),
+	        "s6BhdRkqt3",
+	        "http://localhost/authorize").setDataStoreFactory(DATA_STORE_FACTORY)
+	        .build();
 	  }
+
+		public static Drive getDriveService() throws IOException {
+			Credential credential = authorize();
+			return new Drive.Builder(
+					HTTP_TRANSPORT, JSON_FACTORY, credential)
+					.setApplicationName(APPLICATION_NAME)
+					.build();
+		}
+
+		public static Credential authorize() throws IOException {
+			// Load client secrets.
+//			InputStream in =new FileInputStream("WEB-INF/resources/client_secret.json");
+//			            Quickstart.class.getResourceAsStream("/client_secret.json");
+//			new java.io.File("").getAbsolutePath();new java.io.File("WEB-INF").exists();.getAbsolutePath();
+//			GoogleClientSecrets clientSecrets =
+//					GoogleClientSecrets.load(JSON_FACTORY, new StringReader(StringHolder.googleIds));
+//			// Build flow and trigger user authorization request.
+//			GoogleAuthorizationCodeFlow flow =
+//					new GoogleAuthorizationCodeFlow.Builder(
+//							HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
+//					.setDataStoreFactory(DATA_STORE_FACTORY)
+//					.setAccessType("offline")
+//					.build();
+//			Credential credential = new AuthorizationCodeInstalledApp(
+//					flow, new LocalServerReceiver()).authorize("user");
+//			//new java.io.File("resources/client_secret.json").exists()
+//			System.out.println(
+//					"Credentials saved to " + DATA_STORE_DIR.getAbsolutePath());
+//			return credential;
+			return null;
+		}
+
+	  @Override
+	  protected void onSuccess(HttpServletRequest req, HttpServletResponse resp, Credential credential)
+	      throws ServletException, IOException {
+		System.out.println("out");
+
+	    resp.sendRedirect("/");
+	  }
+
+	  @Override
+	  protected void onError(
+	      HttpServletRequest req, HttpServletResponse resp, AuthorizationCodeResponseUrl errorResponse)
+	      throws ServletException, IOException {
+		  System.out.println("err");
+	  }
+
 	  @Override
 	  protected String getRedirectUri(HttpServletRequest req) throws ServletException, IOException {
 	    GenericUrl url = new GenericUrl(req.getRequestURL().toString());
@@ -217,8 +164,8 @@ public class GoogleController extends AbstractAuthorizationCodeServlet{
 	    return url.build();
 	  }
 
-	  
-	  private int i=0;
+	
+	private int i=0;
 	@Override
 	protected String getUserId(HttpServletRequest req) throws ServletException, IOException {
 		// TODO Auto-generated method stub

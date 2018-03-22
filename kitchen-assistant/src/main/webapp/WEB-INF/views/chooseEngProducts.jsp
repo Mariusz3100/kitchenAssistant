@@ -17,7 +17,7 @@
 		<h1>
 
 			<br>For url <i>
-			"<%= pageContext.getRequest().getParameter(mariusz.ambroziak.kassistant.utils.JspStringHolder.recipeUrl_name) %>"
+			"<%= pageContext.getRequest().getParameter(mariusz.ambroziak.kassistant.utils.JspStringHolder.recipeId_name) %>"
 			</i> these products were found for ingredients:
 
 		</h1>

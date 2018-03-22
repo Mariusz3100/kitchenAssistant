@@ -186,11 +186,11 @@ public class EdamanRecipeApiClient {
 		
 		if(eap.getHealthLabels()!=null)
 			for(HealthLabels hl:eap.getHealthLabels())
-				queryParams.add("Health", hl.getParameterName());
+				queryParams.add("health", hl.getParameterName());
 		
 		if(eap.getDietLabels()!=null)
 			for(DietLabels dl:eap.getDietLabels())
-				queryParams.add("Diet", dl.getParameterName());
+				queryParams.add("diet", dl.getParameterName());
 
 
 

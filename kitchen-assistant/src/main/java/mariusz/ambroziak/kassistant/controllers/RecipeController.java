@@ -89,7 +89,7 @@ public class RecipeController {
 	
 	@RequestMapping(value="/apirecipes")
 	public ModelAndView recipeApiResult(HttpServletRequest request) throws AgentSystemNotStartedException {
-		String recipeID=request.getParameter("recipeId");
+		String recipeID=request.getParameter(JspStringHolder.recipeApiId);
 		List<RecipeData> results;
 		
 		if(recipeID==null||recipeID.equals("")){
@@ -126,7 +126,7 @@ public class RecipeController {
 
 	@RequestMapping(value="/apiRecipeParsed")
 	public ModelAndView apiRecipeParsed(HttpServletRequest request) throws AgentSystemNotStartedException {
-		String recipeID=request.getParameter("recipeId");
+		String recipeID=request.getParameter(JspStringHolder.recipeApiId);
 		List<Produkt> results;
 		
 		RecipeData singleRecipe = EdamanRecipeApiClient.getSingleRecipe(recipeID);
