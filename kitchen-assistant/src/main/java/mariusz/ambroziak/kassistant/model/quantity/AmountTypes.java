@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 
 public enum AmountTypes {
-	ml("ml"),
-	mg("mg"),
-	szt("szt"),
-	kalorie("kcal");
+	ml("ml","http://www.edamam.com/ontologies/edamam.owl#Measure_milliliter"),
+	mg("mg","http://www.edamam.com/ontologies/edamam.owl#Measure_gram"),
+	szt("szt","http://www.edamam.com/ontologies/edamam.owl#Measure_unit"),
+	kalorie("kcal",null);
 	
 	
 	public String getType() {
@@ -20,9 +20,10 @@ public enum AmountTypes {
 	}
 
 	String type;
-
-	private AmountTypes(String type){
+	String edamanUri;
+	private AmountTypes(String type,String edamanUri){
 		this.type=type;
+		this.edamanUri=edamanUri;
 		
 	}
 	

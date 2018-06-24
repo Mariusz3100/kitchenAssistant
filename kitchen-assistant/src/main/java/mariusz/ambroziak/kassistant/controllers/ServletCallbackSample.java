@@ -2,7 +2,6 @@ package mariusz.ambroziak.kassistant.controllers;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,7 +48,6 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
-import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
 
 
@@ -57,9 +55,8 @@ import com.google.api.services.drive.DriveScopes;
 //import database.holders.StringHolder;
 
 @Controller
-public class GoogleCallbackController extends AbstractAuthorizationCodeCallbackServlet{
+public class ServletCallbackSample extends AbstractAuthorizationCodeCallbackServlet {
 
-	
 	private static final String APPLICATION_NAME =
 			"Kitchen Assistant";
 
@@ -96,80 +93,49 @@ public class GoogleCallbackController extends AbstractAuthorizationCodeCallbackS
 			System.exit(1);
 		}
 	}
-
 	
-	
-	  @Override
-	  protected AuthorizationCodeFlow initializeFlow() throws IOException {
-	    return new AuthorizationCodeFlow.Builder(BearerToken.authorizationHeaderAccessMethod(),
-	        new NetHttpTransport(),
-	        new JacksonFactory(),
-	        new GenericUrl("http://localhost/authorize"),
-	        new BasicAuthentication("s6BhdRkqt3", "7Fjfp0ZBr1KtDRbnfVdmIw"),
-	        "s6BhdRkqt3",
-	        "http://localhost/authorize").setDataStoreFactory(DATA_STORE_FACTORY)
-	        .build();
-	  }
-
-		public static Drive getDriveService() throws IOException {
-			Credential credential = authorize();
-			return new Drive.Builder(
-					HTTP_TRANSPORT, JSON_FACTORY, credential)
-					.setApplicationName(APPLICATION_NAME)
-					.build();
-		}
-
-		public static Credential authorize() throws IOException {
-			// Load client secrets.
-//			InputStream in =new FileInputStream("WEB-INF/resources/client_secret.json");
-//			            Quickstart.class.getResourceAsStream("/client_secret.json");
-//			new java.io.File("").getAbsolutePath();new java.io.File("WEB-INF").exists();.getAbsolutePath();
-//			GoogleClientSecrets clientSecrets =
-//					GoogleClientSecrets.load(JSON_FACTORY, new StringReader(StringHolder.googleIds));
-//			// Build flow and trigger user authorization request.
-//			GoogleAuthorizationCodeFlow flow =
-//					new GoogleAuthorizationCodeFlow.Builder(
-//							HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
-//					.setDataStoreFactory(DATA_STORE_FACTORY)
-//					.setAccessType("offline")
-//					.build();
-//			Credential credential = new AuthorizationCodeInstalledApp(
-//					flow, new LocalServerReceiver()).authorize("user");
-//			//new java.io.File("resources/client_secret.json").exists()
-//			System.out.println(
-//					"Credentials saved to " + DATA_STORE_DIR.getAbsolutePath());
-//			return credential;
-			return null;
-		}
 
 	  @Override
 	  protected void onSuccess(HttpServletRequest req, HttpServletResponse resp, Credential credential)
 	      throws ServletException, IOException {
-		System.out.println("out");
-
-	    resp.sendRedirect("/");
+	    resp.sendRedirect("/kitchen-assistant/");
 	  }
 
 	  @Override
 	  protected void onError(
 	      HttpServletRequest req, HttpServletResponse resp, AuthorizationCodeResponseUrl errorResponse)
 	      throws ServletException, IOException {
-		  System.out.println("err");
+	    // handle error
+		  
+		  System.out.println("Error");
 	  }
 
 	  @Override
 	  protected String getRedirectUri(HttpServletRequest req) throws ServletException, IOException {
 	    GenericUrl url = new GenericUrl(req.getRequestURL().toString());
-	    url.setRawPath("/oauth2callback");
+	    url.setRawPath("/kitchen-assistant/oauth2callback");
 	    return url.build();
 	  }
-
-	
-	private int i=0;
-	@Override
-	protected String getUserId(HttpServletRequest req) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		return Integer.toString(i);
+	  
+	  
+		@Override
+		protected AuthorizationCodeFlow initializeFlow() throws ServletException, IOException {
+			GoogleClientSecrets clientSecrets =
+					GoogleClientSecrets.load(JSON_FACTORY, new StringReader(StringHolder.googleIds));
+			
+			return new GoogleAuthorizationCodeFlow.Builder(
+					HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
+			.setDataStoreFactory(DATA_STORE_FACTORY)
+			.setAccessType("offline")
+			.build();
+		}
+	  
+	  
+	  
+	  @Override
+	  protected String getUserId(HttpServletRequest req) throws ServletException, IOException {
+	   return "0";
+	  
 	}
 
 

@@ -46,8 +46,8 @@ public class GoogleDriveApiClient {
 			"Kitchen Assistant";
 
 	/** Directory to store user credentials for this application. */
-	private static final java.io.File DATA_STORE_DIR = new java.io.File(
-			".credentials/drive-java-quickstart");
+//	private static final java.io.File DATA_STORE_DIR = new java.io.File(
+//			".credentials/drive-java-quickstart");
 
 	/** Global instance of the {@link FileDataStoreFactory}. */
 	private static FileDataStoreFactory DATA_STORE_FACTORY;
@@ -70,15 +70,15 @@ public class GoogleDriveApiClient {
 					DriveScopes.DRIVE_APPDATA,DriveScopes.DRIVE);
 
 
-	static {
-		try {
-			HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-			DATA_STORE_FACTORY = new FileDataStoreFactory(DATA_STORE_DIR);
-		} catch (Throwable t) {
-			t.printStackTrace();
-			System.exit(1);
-		}
-	}
+//	static {
+//		try {
+//			HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+//			DATA_STORE_FACTORY = new FileDataStoreFactory(DATA_STORE_DIR);
+//		} catch (Throwable t) {
+//			t.printStackTrace();
+//			System.exit(1);
+//		}
+//	}
 
 	/**
 	 * Creates an authorized Credential object.
@@ -126,104 +126,104 @@ public class GoogleDriveApiClient {
 
 	}
 
-	public static void deleteCredentials(){
-		
-		if(DATA_STORE_DIR.isDirectory()){
-			for(java.io.File f:DATA_STORE_DIR.listFiles()){
-				f.delete();
-			}
-		}else{
-			DATA_STORE_DIR.delete();
-		}
-	}
+//	public static void deleteCredentials(){
+//		
+//		if(DATA_STORE_DIR.isDirectory()){
+//			for(java.io.File f:DATA_STORE_DIR.listFiles()){
+//				f.delete();
+//			}
+//		}else{
+//			DATA_STORE_DIR.delete();
+//		}
+//	}
 	
 	
 	public static ArrayList<HealthLabels> getHealthLimitations() throws IOException {
 		ArrayList<HealthLabels> retValue=new ArrayList<>();
-		// Build a new authorized API client service.
-		Drive service = getDriveService();
-
-		// Print the names and IDs for up to 10 files.
-		FileList result = service.files().list()
-				.setPageSize(10)
-				.setFields("nextPageToken, files(id, name)")
-				//          .setQ("mimeType='application/vnd.google-apps.folder'")
-				.setQ("name='health'")
-
-				.execute();
-
-		if(result.isEmpty()||result.getFiles().isEmpty())
-			return retValue;
-		OutputStream outputStream = new ByteArrayOutputStream();
-		
-		
-		service.files()
-		.export(result.getFiles().get(0).getId(),"text/csv")
-		.executeMediaAndDownloadTo(outputStream);
-		String driveContent=outputStream.toString();
-		
-		String[] labels=driveContent.split("\r\n");
-		for(String lab:labels){
-			retValue.add(HealthLabels.retrieveByName(lab));
-		}
+//		// Build a new authorized API client service.
+//		Drive service = getDriveService();
+//
+//		// Print the names and IDs for up to 10 files.
+//		FileList result = service.files().list()
+//				.setPageSize(10)
+//				.setFields("nextPageToken, files(id, name)")
+//				//          .setQ("mimeType='application/vnd.google-apps.folder'")
+//				.setQ("name='health'")
+//
+//				.execute();
+//
+//		if(result.isEmpty()||result.getFiles().isEmpty())
+//			return retValue;
+//		OutputStream outputStream = new ByteArrayOutputStream();
+//		
+//		
+//		service.files()
+//		.export(result.getFiles().get(0).getId(),"text/csv")
+//		.executeMediaAndDownloadTo(outputStream);
+//		String driveContent=outputStream.toString();
+//		
+//		String[] labels=driveContent.split("\r\n");
+//		for(String lab:labels){
+//			retValue.add(HealthLabels.retrieveByName(lab));
+//		}
 
 		return retValue;
 	}
 
 	
 	public static String getHealthLimitationsAsString() throws IOException {
-		Drive service = getDriveService();
-
-		// Print the names and IDs for up to 10 files.
-		FileList result = service.files().list()
-				.setPageSize(10)
-				.setFields("nextPageToken, files(id, name)")
-				//          .setQ("mimeType='application/vnd.google-apps.folder'")
-				.setQ("name='health'")
-
-				.execute();
-
-		if(result.isEmpty()||result.getFiles().isEmpty())
-			return "";
-		OutputStream outputStream = new ByteArrayOutputStream();
-		
-		
-		service.files()
-		.export(result.getFiles().get(0).getId(),"text/csv")
-		.executeMediaAndDownloadTo(outputStream);
-		String driveContent=outputStream.toString();
-		
-		return driveContent;
+//		Drive service = getDriveService();
+//
+//		// Print the names and IDs for up to 10 files.
+//		FileList result = service.files().list()
+//				.setPageSize(10)
+//				.setFields("nextPageToken, files(id, name)")
+//				//          .setQ("mimeType='application/vnd.google-apps.folder'")
+//				.setQ("name='health'")
+//
+//				.execute();
+//
+//		if(result.isEmpty()||result.getFiles().isEmpty())
+//			return "";
+//		OutputStream outputStream = new ByteArrayOutputStream();
+//		
+//		
+//		service.files()
+//		.export(result.getFiles().get(0).getId(),"text/csv")
+//		.executeMediaAndDownloadTo(outputStream);
+//		String driveContent=outputStream.toString();
+//		
+		return "";//driveContent;
 	}
 	
 	public static ArrayList<DietLabels> getDietLimitations() throws IOException {
 		ArrayList<DietLabels> retValue=new ArrayList<>();
-		// Build a new authorized API client service.
-		Drive service = getDriveService();
-
-		// Print the names and IDs for up to 10 files.
-		FileList result = service.files().list()
-				.setPageSize(10)
-				.setFields("nextPageToken, files(id, name)")
-				//          .setQ("mimeType='application/vnd.google-apps.folder'")
-				.setQ("name='diet'")
-
-				.execute();
-
-		if(result.isEmpty()||result.getFiles().isEmpty())
-			return retValue;
-		OutputStream outputStream = new ByteArrayOutputStream();
-		
-		
-		service.files()
-		.export(result.getFiles().get(0).getId(),"text/csv")
-		.executeMediaAndDownloadTo(outputStream);
-		String driveContent=outputStream.toString();
-		
-		String[] labels=driveContent.split("\r\n");
-		for(String lab:labels){
-			retValue.add(DietLabels.retrieveByName(lab));
-		}
+//		// Build a new authorized API client service.
+//		Drive service = getDriveService();
+//
+//		// Print the names and IDs for up to 10 files.
+//		FileList result = service.files().list()
+//				.setPageSize(10)
+//				.setFields("nextPageToken, files(id, name)")
+//				//          .setQ("mimeType='application/vnd.google-apps.folder'")
+//				.setQ("name='diet'")
+//
+//				.execute();
+//
+//		if(result.isEmpty()||result.getFiles().isEmpty())
+//			return retValue;
+//		OutputStream outputStream = new ByteArrayOutputStream();
+//		
+//		
+//		service.files()
+//		.export(result.getFiles().get(0).getId(),"text/csv")
+//		.executeMediaAndDownloadTo(outputStream);
+//		String driveContent=outputStream.toString();
+//		
+//		String[] labels=driveContent.split("\r\n");
+//		for(String lab:labels){
+//			retValue.add(DietLabels.retrieveByName(lab));
+//		}
 
 		return retValue;
 	}
@@ -231,27 +231,27 @@ public class GoogleDriveApiClient {
 	
 	
 	public static String getDietLimitationsAsString() throws IOException {
-		Drive service = getDriveService();
-
-		FileList result = service.files().list()
-				.setPageSize(10)
-				.setFields("nextPageToken, files(id, name)")
-				//          .setQ("mimeType='application/vnd.google-apps.folder'")
-				.setQ("name='diet'")
-
-				.execute();
-
-		if(result.isEmpty()||result.getFiles().isEmpty())
-			return "";
-		OutputStream outputStream = new ByteArrayOutputStream();
+//		Drive service = getDriveService();
+//
+//		FileList result = service.files().list()
+//				.setPageSize(10)
+//				.setFields("nextPageToken, files(id, name)")
+//				//          .setQ("mimeType='application/vnd.google-apps.folder'")
+//				.setQ("name='diet'")
+//
+//				.execute();
+//
+//		if(result.isEmpty()||result.getFiles().isEmpty())
+//			return "";
+//		OutputStream outputStream = new ByteArrayOutputStream();
+//		
+//		
+//		service.files()
+//		.export(result.getFiles().get(0).getId(),"text/csv")
+//		.executeMediaAndDownloadTo(outputStream);
+//		String driveContent=outputStream.toString();
 		
-		
-		service.files()
-		.export(result.getFiles().get(0).getId(),"text/csv")
-		.executeMediaAndDownloadTo(outputStream);
-		String driveContent=outputStream.toString();
-		
-		return driveContent;
+		return "";//driveContent;
 	}
 
 }

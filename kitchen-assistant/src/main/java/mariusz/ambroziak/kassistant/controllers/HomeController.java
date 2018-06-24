@@ -46,9 +46,9 @@ public class HomeController {
 
 
 	@ResponseBody
-	@RequestMapping(value="/")
-	public String welcome() {
-		return "Welcome to kitchen assistant!";
+	@RequestMapping(value="/home")
+	public ModelAndView welcome() {
+		return new ModelAndView("home");
 	}
 	
 	
@@ -208,7 +208,7 @@ public class HomeController {
 	//	@RequestMapping(value="/vwords1")
 	//	@ResponseBody
 	//	public String vwords1() {
-	//		List<Variant_Word> x= variant_wordDao.getVariant_Name("sa³atê");
+	//		List<Variant_Word> x= variant_wordDao.getVariant_Name("saï¿½atï¿½");
 	//		
 	//
 	//		return x.get(0).getV_word();
@@ -218,9 +218,9 @@ public class HomeController {
 	//	@RequestMapping(value="/vwords2")
 	//	@ResponseBody
 	//	public String vwords2() {
-	//		List<Variant_Word> x= variant_wordDao.getVariant_Name("sa³atê");
+	//		List<Variant_Word> x= variant_wordDao.getVariant_Name("saï¿½atï¿½");
 	//
-	//		Base_Word y= variant_wordDao.getBase_Name("sa³atê");
+	//		Base_Word y= variant_wordDao.getBase_Name("saï¿½atï¿½");
 	//		
 	//
 	//		return x.get(0).getV_word()+"->"+y.getB_word();
@@ -230,7 +230,7 @@ public class HomeController {
 	//	@ResponseBody
 	//	public String vwords3() {
 	//		ArrayList<String>temp=new ArrayList<String>();
-	//		temp.add("sa³atê");
+	//		temp.add("saï¿½atï¿½");
 	//		temp.add("czosnku");
 	//		List<Base_Word> x= variant_wordDao.getBase_Names(temp);
 	//
@@ -243,7 +243,7 @@ public class HomeController {
 	//	@ResponseBody
 	//	public String vwords4() {
 	//		ArrayList<String>temp=new ArrayList<String>();
-	//		temp.add("ogórkiem");
+	//		temp.add("ogï¿½rkiem");
 	//		temp.add("sztuki");
 	//		List<Produkt> x= produktDao.getProduktsByVariantNames(temp);
 	//

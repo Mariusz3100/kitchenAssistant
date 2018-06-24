@@ -25,10 +25,19 @@
    <servlet-name>ServletSample</servlet-name>
    <servlet-class>mariusz.ambroziak.kassistant.controllers.ServletSample</servlet-class>
 	</servlet>
-  
+	<servlet>
+   <servlet-name>CallbackServlet</servlet-name>
+   <servlet-class>mariusz.ambroziak.kassistant.controllers.ServletCallbackSample</servlet-class>
+	</servlet>
+	
+	  
     <servlet-mapping>
     <servlet-name>ServletSample</servlet-name>
     <url-pattern>/ServletSample</url-pattern>
+  </servlet-mapping>
+      <servlet-mapping>
+    <servlet-name>CallbackServlet</servlet-name>
+    <url-pattern>/oauth2callback</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>appServlet</servlet-name>

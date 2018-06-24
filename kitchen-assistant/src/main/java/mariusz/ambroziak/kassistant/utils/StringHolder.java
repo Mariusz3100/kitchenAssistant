@@ -45,13 +45,19 @@ public class StringHolder {
 			"		\"redirect_uris\": [\n" + 
 			"			\"http://localhost:50135/Callback\",\n" + 
 			"			\"http://localhost\",\n" + 
-			"			\"http://localhost/Callback\"\n" + 
+			"			\"http://localhost/Callback\",\n" + 
+			"			\"http://localhost:8080\",\n" + 
+			"			\"http://localhost:8080/kitchen-assistant/oauth2callback\"\n" + 
 			"		],\n" + 
 			"		\"javascript_origins\": [\n" + 
-			"			\"http://localhost:8000\"\n" + 
+			"			\"http://localhost:8000\",\n" + 
+			"			\"http://localhost:8080\"\n" + 
 			"		]\n" + 
 			"	}\n" + 
 			"}";
+	
+	
+			
 	
 	public static final String SQPhrasesDivider="|"; 
 	
