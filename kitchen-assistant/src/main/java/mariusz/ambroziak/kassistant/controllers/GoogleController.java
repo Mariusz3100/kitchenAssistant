@@ -189,7 +189,7 @@ public class GoogleController extends AbstractAuthorizationCodeServlet{
 	  @Override
 	  protected AuthorizationCodeFlow initializeFlow() throws IOException {
 		  GoogleClientSecrets clientSecrets =
-					GoogleClientSecrets.load(JSON_FACTORY, new StringReader(StringHolder.googleIds));
+					GoogleClientSecrets.load(JSON_FACTORY, new StringReader(StringHolder.googleCredentials));
 			// Build flow and trigger user authorization request.
 			GoogleAuthorizationCodeFlow flow =
 					new GoogleAuthorizationCodeFlow.Builder(

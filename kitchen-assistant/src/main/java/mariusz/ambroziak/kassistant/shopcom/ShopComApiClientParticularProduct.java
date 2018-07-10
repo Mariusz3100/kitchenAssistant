@@ -38,26 +38,26 @@ public class ShopComApiClientParticularProduct {
 		queryParams.add("allperms","false");
 		queryParams.add("apikey", "l7xxeb4363ce0bcc441eb94134734dec9aed");
 		
-		sleep(2000);
+//		sleep(2000);
 		
-//		try{
+		try{
 			String response1 = resource.queryParams(queryParams).accept("application/json").get(String.class);
 			return response1;
 
-//		}catch( com.sun.jersey.api.client.UniformInterfaceException e){
-//			e.printStackTrace();
-//			sleep(2000);
-//			try{
-//				String response1 = resource.queryParams(queryParams).accept("application/json").get(String.class);
-//				return response1;
-//
-//			}catch( com.sun.jersey.api.client.UniformInterfaceException ex){
-//				System.err.println("Double: "+ex);
-//				ex.printStackTrace();
-//			
-//			}
-//		}
-//		return null;
+		}catch( com.sun.jersey.api.client.UniformInterfaceException e){
+			ProblemLogger.logProblem("UniformInterfaceException for id: "+id+". Waiting and retrying");
+			sleep(2000);
+			try{
+				String response1 = resource.queryParams(queryParams).accept("application/json").get(String.class);
+				return response1;
+
+			}catch( com.sun.jersey.api.client.UniformInterfaceException ex){
+				System.err.println("Double: "+ex);
+				ex.printStackTrace();
+			
+			}
+		}
+		return "";
 	}
 
 	private static void sleep(long milis) {
@@ -105,6 +105,10 @@ public class ShopComApiClientParticularProduct {
 	}
 	public static Produkt getProduktByShopId(String id){
 		String response=getResponseById(id);
+		
+		if(response==null||response.equals(""))
+			return null;
+		
 		JSONObject root=new JSONObject(response);
 		String description=(String) root.get("description");
 		String name=(String) root.get("caption");
@@ -150,7 +154,8 @@ public class ShopComApiClientParticularProduct {
 
 	public static void main(String [] args){
 		//System.out.println(getProduktsFor("chicken"));
-		System.out.println(getProduktByShopId("1471164119"));
+		for(int i=0;i<10;i++)
+			System.out.println("\n\n\n\n"+getProduktByShopId("1471164119"));
 	}
 
 

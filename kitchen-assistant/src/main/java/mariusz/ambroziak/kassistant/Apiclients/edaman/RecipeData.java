@@ -15,7 +15,19 @@ public class RecipeData {
 	String imageUrl;
 	String edamanId;
 	String parseUrl;
+	String recipeDetailsInApi;
 	
+	public String getRecipeDetailsInApi() {
+		
+			return EdamanApiParameters.getBaseUrl()+
+					"?app_id="+EdamanApiParameters.getApp_id()
+					+"&app_key="+EdamanApiParameters.getApp_key()
+					+"&r="+getAdjustedEdamanId();
+			
+	}
+
+
+
 	public String getEdamanId() {
 		return edamanId;
 	}
@@ -84,4 +96,9 @@ public class RecipeData {
 	public void setImageUrl(String imageUrl) {
 		this.imageUrl = imageUrl;
 	}
+	
+	private  String getAdjustedEdamanId() {
+		return (edamanId==null?"":edamanId).replaceAll("#","%23");
+	}
+	
 }

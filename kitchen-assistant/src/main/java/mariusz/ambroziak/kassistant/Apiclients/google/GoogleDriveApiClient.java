@@ -88,24 +88,25 @@ public class GoogleDriveApiClient {
 	public static Credential authorize() throws IOException {
 		// Load client secrets.
 //		InputStream in =new FileInputStream("WEB-INF/resources/client_secret.json");
-		//            Quickstart.class.getResourceAsStream("/client_secret.json");
+//		            Quickstart.class.getResourceAsStream("/client_secret.json");
 //		new java.io.File("").getAbsolutePath();new java.io.File("WEB-INF").exists();.getAbsolutePath();
-//		GoogleClientSecrets clientSecrets =
-//				GoogleClientSecrets.load(JSON_FACTORY, new StringReader(StringHolder.googleIds));
-//		// Build flow and trigger user authorization request.
-//		GoogleAuthorizationCodeFlow flow =
-//				new GoogleAuthorizationCodeFlow.Builder(
-//						HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
-//				.setDataStoreFactory(DATA_STORE_FACTORY)
-//				.setAccessType("offline")
-//				.build();
-//		Credential credential = new AuthorizationCodeInstalledApp(
-//				flow, new LocalServerReceiver()).authorize("user");
-//		//new java.io.File("resources/client_secret.json").exists()
-//		System.out.println(
-//				"Credentials saved to " + DATA_STORE_DIR.getAbsolutePath());
-//		return credential;
-		return null;
+		GoogleClientSecrets clientSecrets =
+				GoogleClientSecrets.load(JSON_FACTORY, new StringReader(StringHolder.googleCredentials));
+		// Build flow and trigger user authorization request.
+		GoogleAuthorizationCodeFlow flow =
+				new GoogleAuthorizationCodeFlow.Builder(
+						HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
+				.setDataStoreFactory(DATA_STORE_FACTORY)
+				.setAccessType("offline")
+				.build();
+		Credential credential = new AuthorizationCodeInstalledApp(
+				flow, new LocalServerReceiver()).authorize("user");
+		//new java.io.File("resources/client_secret.json").exists()
+		System.out.println(
+				"Credentials saved to " + DATA_STORE_DIR.getAbsolutePath());
+		return credential;
+//		return null;//new java.io.File(""); 
+		
 	}
 
 	/**
@@ -114,7 +115,7 @@ public class GoogleDriveApiClient {
 	 * @throws IOException
 	 */
 	public static Drive getDriveService() throws IOException {
-		Credential credential = authorize();
+		Credential credential = authorize();//new java.io.File("").getAbsolutePath()
 		return new Drive.Builder(
 				HTTP_TRANSPORT, JSON_FACTORY, credential)
 				.setApplicationName(APPLICATION_NAME)

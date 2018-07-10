@@ -109,7 +109,7 @@ public class EdamanRecipeApiClient {
 		cc.getProperties().put(ClientConfig.PROPERTY_FOLLOW_REDIRECTS, true);
 
 		Client c = Client.create();
-		WebResource resource = c.resource("https://api.edamam.com/search");
+		WebResource resource = c.resource(EdamanApiParameters.getBaseUrl());
 //
 		MultivaluedMap<String, String> queryParams = new MultivaluedMapImpl();
 		queryParams.add("r", urlID);//URLEncoder.encode(urlID="http://www.edamam.com/ontologies/edamam.owl#recipe_1f8a034117737c47cd89d227e67be98d");
@@ -193,14 +193,29 @@ public class EdamanRecipeApiClient {
 				queryParams.add("diet", dl.getParameterName());
 
 
-
+		
 		String response1 = resource.queryParams(queryParams_appId).queryParams(queryParams).accept("text/plain").get(String.class);
 		return response1;
 	}
 
 
+	private static String convertEapToLink(EdamanApiParameters eap) {
+		String link="https://api.edamam.com/search?app_id="+eap.getApp_id()
+			+"&app_key="+EdamanApiParameters.getApp_key()
+			+"&q="+eap.getPhrase();
+		
+		if(eap.getHealthLabels()!=null)
+			for(HealthLabels hl:eap.getHealthLabels())
+				link+="&health="+hl.getParameterName();
+		
+		if(eap.getDietLabels()!=null)
+			for(DietLabels dl:eap.getDietLabels())
+				link+="&diet="+dl.getParameterName();
 
-	
+		return link;
+	}
+
+
 
 	public static void main(String [] args){
 		//getRecipes("chicken");

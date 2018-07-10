@@ -24,9 +24,11 @@
 			<c:forEach var="recipe" items="${recipeList}" varStatus="">
 				<tr>
 					<td><img alt="" src="${recipe.imageUrl}"></td>
-					<td><b>${recipe.label}</b><br>
-					<a href="${recipe.url}">${recipe.url}</a></td>
+					<td><b>${recipe.label}</b> <br> <a href="${recipe.url}">${recipe.url}</a>
+						<br> <a href="${recipe.recipeDetailsInApi}">Details on
+							Edaman api</a></td>
 					<td><a href="${recipe.parseUrl}">Parse</a></td>
+
 				</tr>
 			</c:forEach>
 		</table>

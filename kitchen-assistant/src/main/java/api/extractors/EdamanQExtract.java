@@ -78,9 +78,7 @@ public class EdamanQExtract extends AbstractQuantityEngExtractor{
 			return "";
 		
 		String retText=text;
-		for(String portion:translations.keySet()) {
-			retText=retText.replace(portion+" ", "");
-		}
+
 		
 		for(int i=0;i<10;i++) {
 			retText=retText.replace(i+"⁄","");
@@ -89,6 +87,20 @@ public class EdamanQExtract extends AbstractQuantityEngExtractor{
 
 			retText=retText.replace(i+"","");
 		}
+		
+		for(String portion:translations.keySet()) {
+			retText=retText.replace("rounded "+portion+" ", "");
+			retText=retText.replace("rounded "+portion+".", "");
+			retText=retText.replace(" "+portion+" ", "");
+			retText=retText.replace(" "+portion+".", "");
+
+			
+	//		retText=retText.replaceAll("\\d*"+portion+" ", "");
+		}
+
+		retText=retText.replace("½", "");
+		retText=retText.replace("¼", "");
+		
 		retText=retText.trim();
 		
 		if(retText.startsWith("of"))
@@ -97,6 +109,44 @@ public class EdamanQExtract extends AbstractQuantityEngExtractor{
 		retText=retText.trim();
 		return retText;
 		
+	}
+
+
+
+
+
+
+
+
+
+
+
+	private static PreciseQuantity tryGettingAmountFromTwoElements(String[] elems) {
+		if(elems==null||elems.length<2)
+			return null;
+	
+		PreciseQuantity retValue=new PreciseQuantity(-1,null);
+		String probablyFloat=elems[0].replaceAll(",", ".").trim();
+		String probablyQuantityTypePhrase=elems[1];
+		float parsedFloat = -1;
+	
+		try{
+			parsedFloat=Float.parseFloat(probablyFloat);
+		}catch(NumberFormatException e){
+			ProblemLogger.logProblem("Unparsable quantity found: "+elems[0]+" "+elems[1]);
+		}
+		
+		retValue.setAmount(parsedFloat);
+		for(AmountTypes at:AmountTypes.values()){
+			if(at.getType().equals(probablyQuantityTypePhrase)){
+				retValue.setType(at);
+			}
+		}
+		//TODO poprawi�
+		
+		
+		
+		return retValue;
 	}
 
 
@@ -157,36 +207,6 @@ public class EdamanQExtract extends AbstractQuantityEngExtractor{
 
 
 
-	private static PreciseQuantity tryGettingAmountFromTwoElements(String[] elems) {
-		if(elems==null||elems.length<2)
-			return null;
-
-		PreciseQuantity retValue=new PreciseQuantity(-1,null);
-		String probablyFloat=elems[0].replaceAll(",", ".").trim();
-		String probablyQuantityTypePhrase=elems[1];
-		float parsedFloat = -1;
-
-		try{
-			parsedFloat=Float.parseFloat(probablyFloat);
-		}catch(NumberFormatException e){
-			ProblemLogger.logProblem("Unparsable quantity found: "+elems[0]+" "+elems[1]);
-		}
-		
-		retValue.setAmount(parsedFloat);
-		for(AmountTypes at:AmountTypes.values()){
-			if(at.getType().equals(probablyQuantityTypePhrase)){
-				retValue.setType(at);
-			}
-		}
-		//TODO poprawi�
-		
-		
-		
-		return retValue;
-	}
-
-	
-	
 	private static String[] extractAmountArrayFromSpacelessText(String text) {
 		String[] elems;
 		elems=new String[2];
@@ -301,5 +321,24 @@ public class EdamanQExtract extends AbstractQuantityEngExtractor{
 			quantity=e.parent().parent().select(".quantity").text();
 		return quantity;
 	}
+	
+	public static void main(String[] arg) {
+		String[] args= {
+				"3 rounded tsp. chopped garlic or to taste", 
+				"1 sprig of fresh mint, finely chopped\n",
+				"½ large cucumber or 1 small cucumber, peeled and grated\n", 
+				"1 garlic clove, peeled and grated\n",
+				"Zest of ¼ lemon and juice of ½ lemon\n", 
+				"1 1/3 cups nutritional yeast flakes"
+		};
+		
+		
+		for(String phrase:args) {
+			String result=correctText(phrase);
+			System.out.println(result);
+		}
+	}
+	
+	
 
 }

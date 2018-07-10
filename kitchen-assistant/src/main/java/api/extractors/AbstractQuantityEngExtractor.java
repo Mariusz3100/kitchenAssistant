@@ -23,6 +23,7 @@ public class AbstractQuantityEngExtractor {
 		translations.put("kilogram",new QuantityTranslation(AmountTypes.mg, 1000000) );
 		translations.put("lbs",new QuantityTranslation(AmountTypes.mg, 453000) );
 		translations.put("pound",new QuantityTranslation(AmountTypes.mg, 453000) );
+		translations.put("lbs.",new QuantityTranslation(AmountTypes.mg, 453000) );
 		translations.put("lb",new QuantityTranslation(AmountTypes.mg, 453000) );
 		translations.put("pounds",new QuantityTranslation(AmountTypes.mg, 453000) );
 		 
@@ -32,7 +33,7 @@ public class AbstractQuantityEngExtractor {
 		translations.put("teaspoon",new QuantityTranslation(AmountTypes.ml, 5) );
 		translations.put("teaspoons",new QuantityTranslation(AmountTypes.ml, 5) );
 		translations.put("drop",new QuantityTranslation(AmountTypes.ml, 0.1f) );
-		translations.put("l",new QuantityTranslation(AmountTypes.ml, 1000) );
+//		translations.put("l",new QuantityTranslation(AmountTypes.ml, 1000) );
 		translations.put("tablespoon",new QuantityTranslation(AmountTypes.ml, 15) );
 		translations.put("tsp",new QuantityTranslation(AmountTypes.ml, 15) );
 		translations.put("tablespoons",new QuantityTranslation(AmountTypes.ml, 15) );

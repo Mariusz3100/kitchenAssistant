@@ -34,7 +34,7 @@ public class StringHolder {
 	public static final String user_name_value_suffix ="_users_value";
 
 	public static final String ENCODING =java.nio.charset.StandardCharsets.UTF_8.toString();
-	public static final String googleIds="{\n" + 
+	public static final String googleCredentials="{\n" + 
 			"	\"web\": {\n" + 
 			"		\"client_id\": \"154940187807-pm1l0s790ftmvbk3sor55q7vhmmsf65i.apps.googleusercontent.com\",\n" + 
 			"		\"project_id\": \"fluted-curve-166814\",\n" + 

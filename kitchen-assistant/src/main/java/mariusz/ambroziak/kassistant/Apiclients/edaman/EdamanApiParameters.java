@@ -12,7 +12,14 @@ public class EdamanApiParameters {
 	private static String app_id="af08be14";
 	private static String app_key="2ac175efa4ddfeff85890bed42dff521";
 	
+	private static String baseUrl="https://api.edamam.com/search";
 	
+	public static String getBaseUrl() {
+		return baseUrl;
+	}
+	public static void setBaseUrl(String baseUrl) {
+		EdamanApiParameters.baseUrl = baseUrl;
+	}
 	public void setHealthLabels(ArrayList<HealthLabels> healthLabels) {
 		this.healthLabels = healthLabels;
 	}
