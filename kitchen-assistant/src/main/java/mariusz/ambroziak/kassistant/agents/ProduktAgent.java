@@ -8,7 +8,6 @@ import java.util.logging.Level;
 import madkit.kernel.AgentAddress;
 import madkit.kernel.Message;
 import madkit.message.StringMessage;
-import mariusz.ambroziak.kassistant.QuantityExtractor.AuchanQExtract;
 import mariusz.ambroziak.kassistant.dao.Base_WordDAOImpl;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
 import mariusz.ambroziak.kassistant.dao.ProduktDAO;
@@ -26,18 +25,7 @@ import mariusz.ambroziak.kassistant.utils.StringHolder;
 import org.json.JSONObject;
 import org.jsoup.nodes.Element;
 import org.springframework.beans.factory.annotation.Autowired;
-
-//import com.codesnippets4all.json.parsers.JsonParserFactory;
-
-
-
-
-
-
-
-
 import webscrappers.SJPWebScrapper;
-import webscrappers.auchan.AuchanAbstractScrapper;
 import webscrappers.przepisy.PrzepisyPLQExtract;
 
 public class ProduktAgent extends BaseAgent{
@@ -157,7 +145,7 @@ public class ProduktAgent extends BaseAgent{
 					}
 				}else if(jsonResponse.has(StringHolder.SINGLE_PRODUKT_ID_NAME))
 				{
-				//TODO co tu powinno byæ w ogóle?	
+				//TODO co tu powinno byï¿½ w ogï¿½le?	
 					produkt=processSingleIdStringMessage(jsonResponse, produktUrl,shortUrl);
 				}else{
 					ProblemLogger.logProblem("some weird message: "+jsonResponse+" in produktAgent");

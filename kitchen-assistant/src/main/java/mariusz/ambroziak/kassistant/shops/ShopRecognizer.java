@@ -1,6 +1,5 @@
 package mariusz.ambroziak.kassistant.shops;
 
-import webscrappers.auchan.AuchanAbstractScrapper;
 
 public class ShopRecognizer {
 
@@ -17,10 +16,10 @@ public class ShopRecognizer {
 	public static String getShortestWorkingUrl(String baseUrl){
 		Shops shop=recognizeShop(baseUrl);
 		
-		if(shop==Shops.Auchan)
-		{
-			return AuchanAbstractScrapper.getAuchanShortestWorkingUrl(baseUrl);
-		}
+//		if(shop==Shops.ShopCom)
+//		{
+//			return AuchanAbstractScrapper.getAuchanShortestWorkingUrl(baseUrl);
+//		}
 		
 		return "";
 	}

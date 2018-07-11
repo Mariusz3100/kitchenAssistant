@@ -22,7 +22,6 @@ import mariusz.ambroziak.kassistant.shopcom.ShopComApiClientParticularProduct;
 import mariusz.ambroziak.kassistant.utils.MessageTypes;
 import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 import mariusz.ambroziak.kassistant.utils.StringHolder;
-import webscrappers.auchan.AuchanParticular;
 import webscrappers.auchan.GA_ProduktScrapped;
 import webscrappers.auchan.ProduktDetails;
 
@@ -315,14 +314,14 @@ public class ShopComAgent extends BaseAgent {
 			}else{
 
 				ProduktDetails produktDetails = null;
-				try {
+		//		try {
 					if(url!=null&&!url.equals(""))
-						produktDetails = AuchanParticular.getProduktDetails(url);
+						produktDetails = null;//will it work??? AuchanParticular.getProduktDetails(url);
 
-				} catch (Page404Exception e) {
-					ProblemLogger.logProblem("404 page at "+url);
-					ProblemLogger.logStackTrace(e.getStackTrace());
-				}
+		//		} catch (Page404Exception e) {
+			//		ProblemLogger.logProblem("404 page at "+url);
+			//		ProblemLogger.logStackTrace(e.getStackTrace());
+		//		}
 
 				if(produktDetails!=null){
 					foundProdukt=new Produkt();

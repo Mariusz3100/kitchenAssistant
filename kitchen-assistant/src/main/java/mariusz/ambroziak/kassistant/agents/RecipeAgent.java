@@ -41,7 +41,6 @@ import madkit.kernel.Agent;
 import madkit.kernel.AgentAddress;
 import madkit.kernel.Message;
 import madkit.message.StringMessage;
-import mariusz.ambroziak.kassistant.QuantityExtractor.AuchanQExtract;
 import mariusz.ambroziak.kassistant.dao.Base_WordDAOImpl;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
 import mariusz.ambroziak.kassistant.dao.ProduktDAO;

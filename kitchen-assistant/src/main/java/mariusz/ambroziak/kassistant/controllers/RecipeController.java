@@ -27,7 +27,6 @@ import mariusz.ambroziak.kassistant.Apiclients.edaman.EdamanRecipeApiClient;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.RecipeData;
 import mariusz.ambroziak.kassistant.agents.FoodIngredientAgent;
 import mariusz.ambroziak.kassistant.agents.ProduktAgent;
-import mariusz.ambroziak.kassistant.agents.ReadingAgent;
 import mariusz.ambroziak.kassistant.agents.RecipeAgent;
 import mariusz.ambroziak.kassistant.api.agents.EdamanRecipeAgent;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
@@ -57,8 +56,6 @@ import mariusz.ambroziak.kassistant.utils.JspStringHolder;
 import mariusz.ambroziak.kassistant.utils.CompoundMapManipulator;
 import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 import mariusz.ambroziak.kassistant.utils.StringHolder;
-import webscrappers.auchan.AuchanAbstractScrapper;
-import webscrappers.auchan.AuchanParticular;
 import webscrappers.przepisy.PrzepisyPlWebscrapper;
 
 @Controller
@@ -488,13 +485,16 @@ public class RecipeController {
 	private Map<SingleProdukt_SearchResult, ProduktWithAllIngredients> scrapAllNutrientsDataHandleUnlikelyExceptions(
 			GoodBadSkippedResults resultsHolder) throws AgentSystemNotStartedException, Page404Exception {
 		Map<SingleProdukt_SearchResult, ProduktWithAllIngredients> retrievedBasicNutrientValues=null;
-		try {
-			retrievedBasicNutrientValues = 
-					ReadingAgent.retrieveOrScrapAllNutrientValues(resultsHolder.getGoodResults());
-		} catch (ShopNotFoundException e) {
-			//pozostawione, nie powinno wyst�pi�
-			e.printStackTrace();
-		}
+
+		//TODO update and correct
+		
+		//		try {
+//			retrievedBasicNutrientValues = 
+//					ReadingAgent.retrieveOrScrapAllNutrientValues(resultsHolder.getGoodResults());
+//		} catch (ShopNotFoundException e) {
+//			//pozostawione, nie powinno wyst�pi�
+//			e.printStackTrace();
+//		}
 		return retrievedBasicNutrientValues; 
 
 	}
@@ -596,19 +596,21 @@ public class RecipeController {
 	}
 
 	private void moveNotFoundProduktFromGoodToBadChoices(String produktUrl, GoodBadSkippedResults resultsToBeUpdated) throws AgentSystemNotStartedException {
-		String shortUrl=AuchanAbstractScrapper.getAuchanShortestWorkingUrl(produktUrl);
-		Iterator<SingleProdukt_SearchResult> goodProduktsIterator = resultsToBeUpdated.getGoodResults().iterator();
-		while(goodProduktsIterator.hasNext()){
-			SingleProdukt_SearchResult produktToBeChecked = goodProduktsIterator.next();
-
-			if(shortUrl.equals(produktToBeChecked.getProdukt().getUrl())){
-				goodProduktsIterator.remove();
-
-				InvalidSearchResult goodResultConverted=convertGoodResultToBadOne(produktToBeChecked);
-
-				resultsToBeUpdated.getUsersBadChoice().add(goodResultConverted);
-			}
-		}
+		//TODO correct
+		
+		//		String shortUrl=AuchanAbstractScrapper.getAuchanShortestWorkingUrl(produktUrl);
+//		Iterator<SingleProdukt_SearchResult> goodProduktsIterator = resultsToBeUpdated.getGoodResults().iterator();
+//		while(goodProduktsIterator.hasNext()){
+//			SingleProdukt_SearchResult produktToBeChecked = goodProduktsIterator.next();
+//
+//			if(shortUrl.equals(produktToBeChecked.getProdukt().getUrl())){
+//				goodProduktsIterator.remove();
+//
+//				InvalidSearchResult goodResultConverted=convertGoodResultToBadOne(produktToBeChecked);
+//
+//				resultsToBeUpdated.getUsersBadChoice().add(goodResultConverted);
+//			}
+//		}
 
 	}
 
@@ -629,16 +631,19 @@ public class RecipeController {
 		return "We are really sorry, it seems url "+produktToBeChecked.getProdukt().getUrl()+" points to a produkt in our database, that is no longer avaible at the shop. Please, choose something else.";
 	}
 
+	
 	private Map<SingleProdukt_SearchResult, ProduktWithBasicIngredients> scrapNutrientValuesDataHandleUnlikelyExceptions(
 			GoodBadSkippedResults resultsHolder) throws AgentSystemNotStartedException, Page404Exception {
 		Map<SingleProdukt_SearchResult, ProduktWithBasicIngredients> retrievedBasicNutrientValues=null;
-		try {
-			retrievedBasicNutrientValues = 
-					ReadingAgent.retrieveOrScrapBasicNutrientValues(resultsHolder.getGoodResults());
-		} catch (ShopNotFoundException e) {
-			//pozostawione, nie powinno wyst�pi�
-			e.printStackTrace();
-		}
+
+		//TODO correct
+		//		try {
+//			retrievedBasicNutrientValues = 
+//					ReadingAgent.retrieveOrScrapBasicNutrientValues(resultsHolder.getGoodResults());
+//		} catch (ShopNotFoundException e) {
+//			//pozostawione, nie powinno wyst�pi�
+//			e.printStackTrace();
+//		}
 		return retrievedBasicNutrientValues;
 	}
 

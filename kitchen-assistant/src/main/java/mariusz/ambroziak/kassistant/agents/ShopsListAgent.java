@@ -168,10 +168,6 @@ public class ShopsListAgent extends BaseAgent {
 				shopUrlMap=new HashMap<Shops, AgentAddress>();
 			}
 			
-			AgentAddress x=getAgentWithRole(AGENT_COMMUNITY, StringHolder.SCRAPPERS_GROUP, AuchanAgent.AUCHAN_WEB_SCRAPPER_NAME);
-	
-			shopUrlMap.put(Shops.Auchan,x);
-			
 			AgentAddress y=getAgentWithRole(AGENT_COMMUNITY, StringHolder.SCRAPPERS_GROUP, ShopComAgent.SHOP_COM_API_AGENT_NAME);
 			
 			shopUrlMap.put(Shops.ShopCom,y);

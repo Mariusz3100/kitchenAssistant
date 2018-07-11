@@ -24,7 +24,6 @@ import mariusz.ambroziak.kassistant.shopcom.ShopComApiClientParticularProduct;
 import mariusz.ambroziak.kassistant.utils.MessageTypes;
 import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 import mariusz.ambroziak.kassistant.utils.StringHolder;
-import webscrappers.auchan.AuchanParticular;
 import webscrappers.auchan.GA_ProduktScrapped;
 import webscrappers.auchan.ProduktDetails;
 

@@ -11,7 +11,6 @@ import java.util.logging.Level;
 import madkit.kernel.AgentAddress;
 import madkit.kernel.Message;
 import madkit.message.StringMessage;
-import mariusz.ambroziak.kassistant.QuantityExtractor.AuchanQExtract;
 import mariusz.ambroziak.kassistant.dao.Base_WordDAOImpl;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
 import mariusz.ambroziak.kassistant.dao.ProduktDAO;
@@ -39,7 +38,6 @@ import org.json.JSONObject;
 import org.jsoup.nodes.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import webscrappers.JedzDobrzeScrapper;
 
 //import com.codesnippets4all.json.parsers.JsonParserFactory;
 
@@ -58,8 +56,7 @@ import webscrappers.JedzDobrzeScrapper;
 
 
 import webscrappers.SJPWebScrapper;
-import webscrappers.auchan.AuchanAbstractScrapper;
-import webscrappers.auchan.AuchanRecipeParser;
+
 import webscrappers.przepisy.PrzepisyPLQExtract;
 
 public class FoodIngredientAgent extends BaseAgent{
@@ -148,30 +145,33 @@ public class FoodIngredientAgent extends BaseAgent{
 	}
 
 	private Map<Nutrient, PreciseQuantity> retrieveFromDbOrParseNutrientsOf(String ingredientPhrase) {
-		String name=SkladnikiFinder.getBaseName(ingredientPhrase);
-		Basic_Ingredient basicIngredientFromDb = SkladnikiFinder.findBasicIngredientInDbByBaseName(name);
-		boolean nutrientsSurelyNotInDb=false;
-		if(basicIngredientFromDb==null){
-			nutrientsSurelyNotInDb=true;
-			basicIngredientFromDb=new Basic_Ingredient();
-			basicIngredientFromDb.setName(name);
-			DaoProvider.getInstance().getBasicIngredientDao().saveBasicIngredient(basicIngredientFromDb);
-		}
-		if(!nutrientsSurelyNotInDb){
-			nutrientsSurelyNotInDb=!DaoProvider.getInstance().getNutrientDao()
-					.areNutrientsForBasicIngredient(basicIngredientFromDb.getBi_id());
-		}
+		//TODO update
+		return null;
 		
-		Map<Nutrient, PreciseQuantity> retValue=null;
-		if(nutrientsSurelyNotInDb){
-			HashMap<Nutrient, PreciseQuantity> scrapedNutritientData = JedzDobrzeScrapper.scrapSkladnik(basicIngredientFromDb.getName());
-			saveInDb(basicIngredientFromDb,scrapedNutritientData);
-			retValue=scrapedNutritientData;
-		}else{
-			retValue=retrieveFromDbNutrientDataFor(basicIngredientFromDb);
-		}
-		
-		return retValue;
+		//		String name=SkladnikiFinder.getBaseName(ingredientPhrase);
+//		Basic_Ingredient basicIngredientFromDb = SkladnikiFinder.findBasicIngredientInDbByBaseName(name);
+//		boolean nutrientsSurelyNotInDb=false;
+//		if(basicIngredientFromDb==null){
+//			nutrientsSurelyNotInDb=true;
+//			basicIngredientFromDb=new Basic_Ingredient();
+//			basicIngredientFromDb.setName(name);
+//			DaoProvider.getInstance().getBasicIngredientDao().saveBasicIngredient(basicIngredientFromDb);
+//		}
+//		if(!nutrientsSurelyNotInDb){
+//			nutrientsSurelyNotInDb=!DaoProvider.getInstance().getNutrientDao()
+//					.areNutrientsForBasicIngredient(basicIngredientFromDb.getBi_id());
+//		}
+//		
+//		Map<Nutrient, PreciseQuantity> retValue=null;
+//		if(nutrientsSurelyNotInDb){
+//			HashMap<Nutrient, PreciseQuantity> scrapedNutritientData = JedzDobrzeScrapper.scrapSkladnik(basicIngredientFromDb.getName());
+//			saveInDb(basicIngredientFromDb,scrapedNutritientData);
+//			retValue=scrapedNutritientData;
+//		}else{
+//			retValue=retrieveFromDbNutrientDataFor(basicIngredientFromDb);
+//		}
+//		
+//		return retValue;
 	}
 
 	private Map<Nutrient, PreciseQuantity> retrieveFromDbNutrientDataFor(Basic_Ingredient basicIngredientFromDb) {
@@ -214,7 +214,7 @@ public class FoodIngredientAgent extends BaseAgent{
 			
 			if(!AmountTypes.mg.equals(value.getType())&&!AmountTypes.kalorie.equals(value.getType())){
 				ProblemLogger.logProblem(
-						"Próba zapisywania w bazie innego typu iloœci sk³adnika od¿ywczego ni¿ mg.");
+						"Prï¿½ba zapisywania w bazie innego typu iloï¿½ci skï¿½adnika odï¿½ywczego niï¿½ mg.");
 			}else{
 				
 				

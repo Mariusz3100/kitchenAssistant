@@ -44,7 +44,6 @@ import madkit.message.StringMessage;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.EdamanRecipeApiClient;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.EdamanApiParameters;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.RecipeData;
-import mariusz.ambroziak.kassistant.QuantityExtractor.AuchanQExtract;
 import mariusz.ambroziak.kassistant.agents.BaseAgent;
 import mariusz.ambroziak.kassistant.agents.ShopsListAgent;
 import mariusz.ambroziak.kassistant.dao.Base_WordDAOImpl;

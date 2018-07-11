@@ -19,7 +19,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import mariusz.ambroziak.kassistant.agents.FoodIngredientAgent;
 import mariusz.ambroziak.kassistant.agents.ProduktAgent;
-import mariusz.ambroziak.kassistant.agents.ReadingAgent;
 import mariusz.ambroziak.kassistant.agents.RecipeAgent;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
 import mariusz.ambroziak.kassistant.exceptions.AgentSystemNotStartedException;
@@ -46,8 +45,6 @@ import mariusz.ambroziak.kassistant.model.utils.ProduktWithBasicIngredients;
 import mariusz.ambroziak.kassistant.utils.JspStringHolder;
 import mariusz.ambroziak.kassistant.utils.CompoundMapManipulator;
 import mariusz.ambroziak.kassistant.utils.ProblemLogger;
-import webscrappers.auchan.AuchanAbstractScrapper;
-import webscrappers.auchan.AuchanParticular;
 
 @Controller
 public class RecipeConstantNutrientsController {
@@ -110,7 +107,7 @@ public class RecipeConstantNutrientsController {
 
 	private ModelAndView returnPageNotFoundRecipeForm(String url) {
 		ModelAndView mav=returnAgentSystemNotStartedPage();
-		mav.addObject("invalidUrlInformation","Url "+url+" nie prowadzi do strony ¿adnego przepisu");
+		mav.addObject("invalidUrlInformation","Url "+url+" nie prowadzi do strony ï¿½adnego przepisu");
 		return mav;
 	}
 	

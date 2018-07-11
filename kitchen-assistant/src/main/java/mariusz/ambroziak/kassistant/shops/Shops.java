@@ -1,10 +1,8 @@
 package mariusz.ambroziak.kassistant.shops;
 
-import mariusz.ambroziak.kassistant.agents.AuchanAgent;
 import mariusz.ambroziak.kassistant.api.agents.ShopComAgent;
 
 public enum Shops {
-	Auchan("Auchan",AuchanAgent.baseUrl),
 	ShopCom("ShopCom",ShopComAgent.baseUrl),
 	UnknownShop("Unknown Shop","");
 	
