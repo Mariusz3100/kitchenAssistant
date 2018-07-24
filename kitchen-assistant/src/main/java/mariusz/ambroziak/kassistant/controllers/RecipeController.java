@@ -277,7 +277,7 @@ public class RecipeController {
 		if(!(neededQuantity instanceof PreciseQuantity)){
 			ProblemLogger.logProblem("Calculating coefficient for NotPreciseQuantity");
 		}
-		//raczej zawsze b�dzie PreciseQuantity dwa razy, ale zawsze lepiej wzi�� pod uwag� max
+		//raczej zawsze b---dzie PreciseQuantity dwa razy, ale zawsze lepiej wzi------ pod uwag--- max
 		while(produktQuan.getAmount()*multiplier<neededQuantity.getMaximalAmount()){
 			++multiplier;
 		}
@@ -335,7 +335,7 @@ public class RecipeController {
 
 	private ModelAndView returnPageNotFoundRecipeForm(String url) {
 		ModelAndView mav=returnAgentSystemNotStartedPage();
-		mav.addObject("invalidUrlInformation","Url "+url+" nie prowadzi do strony �adnego przepisu");
+		mav.addObject("invalidUrlInformation","Url "+url+" nie prowadzi do strony ---adnego przepisu");
 		return mav;
 	}
 
@@ -389,7 +389,7 @@ public class RecipeController {
 			return returnProduktsCorrectingPage(resultsHolder);
 		}
 
-		//Nazwa produktu->[nazwa sk�adnika->ilo��]
+		//Nazwa produktu->[nazwa skladnika->ilosc]
 		Map<String, Map<String, NotPreciseQuantity>> nutrientsMap = getProduktToSkladnikToAmountMap(retrievedBasicNutrientValues);
 
 		CompoundMapManipulator<String, String> cmm=new CompoundMapManipulator<String, String>(nutrientsMap);
@@ -492,7 +492,7 @@ public class RecipeController {
 //			retrievedBasicNutrientValues = 
 //					ReadingAgent.retrieveOrScrapAllNutrientValues(resultsHolder.getGoodResults());
 //		} catch (ShopNotFoundException e) {
-//			//pozostawione, nie powinno wyst�pi�
+//			//pozostawione, nie powinno wyst---pi---
 //			e.printStackTrace();
 //		}
 		return retrievedBasicNutrientValues; 
@@ -641,7 +641,7 @@ public class RecipeController {
 //			retrievedBasicNutrientValues = 
 //					ReadingAgent.retrieveOrScrapBasicNutrientValues(resultsHolder.getGoodResults());
 //		} catch (ShopNotFoundException e) {
-//			//pozostawione, nie powinno wyst�pi�
+//			//pozostawione, nie powinno wyst---pi---
 //			e.printStackTrace();
 //		}
 		return retrievedBasicNutrientValues;
@@ -673,7 +673,7 @@ public class RecipeController {
 						//znowu pobieramy produkty
 						List<Produkt> possibleProdukts = ProduktAgent.searchForProdukt(produktPhrase);
 						InvalidSearchResult isr=new InvalidSearchResult(searchPhrase,produktPhrase,quantityPhrase,possibleProdukts,
-								"Wygl�da na to, �e strona internetowa pod url \""+innyUrl+"\" nie istnieje, lub nie opisuje �adnego produktu");
+								"Wygl---da na to, ---e strona internetowa pod url \""+innyUrl+"\" nie istnieje, lub nie opisuje ---adnego produktu");
 						resultsHolder.addUsersBadChoice(isr);
 					}
 				} catch (ShopNotFoundException e) {
@@ -681,8 +681,8 @@ public class RecipeController {
 					List<Produkt> searchResults;
 					searchResults = ProduktAgent.searchForProdukt(produktPhrase);
 					InvalidSearchResult isr=new InvalidSearchResult(searchPhrase,produktPhrase,quantityPhrase,searchResults,
-							"Wygl�da na to, �e url \""+innyUrl
-							+"\" nie zosta� rozpoznany jako pasuj�cy do �adnego ze wspieranych sklep�w.");
+							"Wygl---da na to, ---e url \""+innyUrl
+							+"\" nie zosta--- rozpoznany jako pasuj---cy do ---adnego ze wspieranych sklep---w.");
 					resultsHolder.addUsersBadChoice(isr);
 
 				} 
@@ -698,14 +698,14 @@ public class RecipeController {
 
 				if(produkt==null){
 					ProblemLogger.logProblem(
-							"Wygl�da na to, �e produkt wybrany przez przycisk radio nie istnieje w systemie!: "
+							"Wygl---da na to, ---e produkt wybrany przez przycisk radio nie istnieje w systemie!: "
 									+wybranyProdukt);
 					List<Produkt> searchResults;
 
 					searchResults = ProduktAgent.searchForProdukt(produktPhrase);
 
 					InvalidSearchResult isr=new InvalidSearchResult(searchPhrase,produktPhrase,quantityPhrase,searchResults,
-							"UPS! Wydaje si�, �e zaproponowany przez nas produkt nie wyst�puje w naszym systemie!! Powiadom o tym administratora albo co�...");
+							"UPS! Wydaje si---, ---e zaproponowany przez nas produkt nie wyst---puje w naszym systemie!! Powiadom o tym administratora albo co---...");
 					resultsHolder.addUsersBadChoice(isr);
 
 				}else{

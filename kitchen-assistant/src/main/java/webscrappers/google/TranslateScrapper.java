@@ -97,7 +97,7 @@ public class TranslateScrapper {
 			if(ths!=null&&ths.size()>1){
 				if(!"POLSKI".equalsIgnoreCase(ths.get(0).text())
 						||!"ANGIELSKI".equalsIgnoreCase(ths.get(1).text())){
-					ProblemLogger.logProblem("Jêzyki w s³owniku siê nie zgadzaj¹: "+row);
+					ProblemLogger.logProblem("J---zyki w s---owniku si--- nie zgadzaj---: "+row);
 				}
 			}
 			

@@ -33,7 +33,7 @@ public class AgentsSystem {
 		
 		
 //		response.setCharacterEncoding(StringHolder.SERVLET_RESPONSE_ENCODING);
-		//response.getWriter().write("Agent System Started�곟z���");
+		//response.getWriter().write("Agent System Started");
 		
 		return "agent system started";
 	}

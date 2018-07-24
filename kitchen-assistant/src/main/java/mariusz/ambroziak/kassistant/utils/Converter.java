@@ -8,17 +8,17 @@ import java.util.regex.Pattern;
 public class Converter {
 	private static String[] converts=
 		{
-		"≥-\\$0142",
-		"π-\\$0105",
+		"----\\$0142",
+		"----\\$0105",
 		",-\\$002C",
-		"ø-\\$017C",
-		"ü-\\$017A",
-		"Ê-\\$0107",
-		"Ò-\\$0144",
-		"Û-\\$00F3",
-		"Í-\\$0119",
+		"----\\$017C",
+		"----\\$017A",
+		"----\\$0107",
+		"----\\$0144",
+		"----\\$00F3",
+		"----\\$0119",
 		" -\\$0020",
-		"ú-\\$015B",
+		"----\\$015B",
 		"%-\\$0025",
 	 
 		
@@ -31,24 +31,24 @@ public class Converter {
 		"+",
 		};
 	private static String[] encodingConverts={
-	 "•-&#260;",
-	 "∆-&#262;",
-	 " -&#280;",
-	 "£-&#321;",
-	 "—-&#323;",
-	 "”-&#211;",
-	 "å-&#346;",
-	 "è-&#377;",
-	 "Ø-&#379;",
-	 "π-&#261;",
-	 "Ê-&#263;",
-	 "Í-&#281;",
-	 "≥-&#322;",
-	 "Ò-&#324;",
-	 "Û-&#243;",
-	 "ú-&#347;",
-	 "ü-&#378;",
-	 "ø-&#380;",
+	 "----&#260;",
+	 "----&#262;",
+	 "----&#280;",
+	 "----&#321;",
+	 "----&#323;",
+	 "----&#211;",
+	 "----&#346;",
+	 "----&#377;",
+	 "----&#379;",
+	 "----&#261;",
+	 "----&#263;",
+	 "----&#281;",
+	 "----&#322;",
+	 "----&#324;",
+	 "----&#243;",
+	 "----&#347;",
+	 "----&#378;",
+	 "----&#380;",
 		};
 	
 	
@@ -70,12 +70,12 @@ public class Converter {
 
 
 	public static String getOnlyLetters(String text){
-		return text.replaceAll("[^A-Za-zπÊÍ≥ÒÛúüø• £—”åèØ]", "");
+		return text.replaceAll("[^A-Za-z------------Ûúüø--- £---”å------]", "");
 	}
 
 
 	public static void main(String args[]){
-		System.out.println(auchanConvertion("sa≥ata lodowa"));
+		System.out.println(auchanConvertion("sa---ata lodowa"));
 	}
 
 	public static String listToString(ArrayList<String> words){

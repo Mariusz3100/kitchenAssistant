@@ -22,7 +22,7 @@
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry exported="true" kind="lib" path="lib/myMadkit17.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/myMadkit17.jar" sourcepath="madkit-5.0.5.2-src"/>
 	<classpathentry kind="lib" path="lib/google/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/google/gson-2.1.jar"/>
 	<classpathentry kind="lib" path="lib/google/httpclient-4.0.1.jar"/>

@@ -138,7 +138,7 @@ public class RecipeAgent extends BaseAgent{
 		if(freeOne!=null)
 		{
 			freeOne.setBusy(true);
-			//TODO potem doda� opcj� wyci�gania z bazy? Do rozwa�enia
+			//TODO potem dodac opcje wyciagania z bazy? Do rozwazenia
 			ArrayList<SearchResult> result= freeOne.parsePhrasesAndQuantitiesFromRecipeUrl(url);
 			freeOne.setBusy(false);
 			return result;

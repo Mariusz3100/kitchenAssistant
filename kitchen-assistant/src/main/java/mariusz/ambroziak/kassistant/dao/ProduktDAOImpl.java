@@ -100,7 +100,7 @@ public class ProduktDAOImpl implements ProduktDAO {
 			this.sessionFactory.getCurrentSession().save(produkt);
 		}else{
 			if(produkt.getOpis()!=null&&produkt.getOpis().length()>Produkt.opis_length)
-				ProblemLogger.logProblem("Opis produktu"+produkt.getUrl()+" by³ za d³ugi, by go zapisaæ");
+				ProblemLogger.logProblem("Opis produktu"+produkt.getUrl()+" by--- za d---ugi, by go zapisa---");
 		}
 		
 		

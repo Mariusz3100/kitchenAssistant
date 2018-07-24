@@ -60,13 +60,13 @@ public class FoodIngredientController {
 //
 //			if(scrapSkladnik!=null&&scrapSkladnik.size()>0)
 //			{
-//				lista.add("Dla skladnika zywno�ciowego: "+phrase+" znaleziono nast�puj�ce wartosci od�ywcze:<br>");
+//				lista.add("Dla skladnika zywnosciowego: "+phrase+" znaleziono nastepujace wartosci odzywcze:<br>");
 //
 //				for(Nutrient key:scrapSkladnik.keySet()){
 //					lista.add(key.getName()+" - "+scrapSkladnik.get(key));
 //				}				
 //			}else{
-//				lista.add("Skladnika zywno�ciowego: "+phrase+" nie odnaleziono.<br>");
+//				lista.add("Skladnika zywnosciowego: "+phrase+" nie odnaleziono.<br>");
 //			}
 //
 //
@@ -134,8 +134,8 @@ public class FoodIngredientController {
 //					usualAmountOfSztuka.multiplyBy(pqwp.getAmount());;
 //					pqwp.setQuan(usualAmountOfSztuka);
 //				}else{
-//					errors.append("nie uda�o si� oceni�, jakiej wielko�ci mo�e by� �rednia porcja produktu \""+pqwp.getProduktPhrase()
-//					+"\", pozostawiono 0 gram. Spr�buj jeszcze raz, ale podaj wielko�� w gramach.");
+//					errors.append("nie udalo sie ocenic, jakiej wielkosci moze byc ---rednia porcja produktu \""+pqwp.getProduktPhrase()
+//					+"\", pozostawiono 0 gram. Spr---buj jeszcze raz, ale podaj wielko------ w gramach.");
 //					pqwp.setAmount(0);
 //					pqwp.setAmountType(AmountTypes.mg);
 //				}
@@ -165,7 +165,7 @@ public class FoodIngredientController {
 //			if(extractedQuantity.isValid()){
 //				phraseDividedQuantitiesParsed.add(new PreciseQuantityWithPhrase(produktPhrase, extractedQuantity));
 //			}else{
-//				errorList.append("Nie uda�o si� sparsowa� wielko�ci z "+amount+"<br>");
+//				errorList.append("Nie uda---o si--- sparsowa--- wielkosci z "+amount+"<br>");
 //			}
 //			
 //		}
@@ -213,7 +213,7 @@ public class FoodIngredientController {
 //
 //		ArrayList<String> lista=new ArrayList<String>();
 //
-//		lista.add("Dla skladnika zywno�ciowego: banan znaleziono nast�puj�ce wartosci od�ywcze:");
+//		lista.add("Dla skladnika zywnosciowego: banan znaleziono nast---puj---ce wartosci odzywcze:");
 //
 //		for(Nutrient key:scrapSkladnik.keySet()){
 //			lista.add(key.getName()+" - "+scrapSkladnik.get(key));

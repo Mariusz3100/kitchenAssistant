@@ -144,7 +144,7 @@ public class ProduktController {
 				produkt = ProduktAgent.getOrScrapProdukt(url);
 			} catch (ShopNotFoundException e) {
 				ArrayList<String> a=new ArrayList<String>();
-				a.add("URL "+e.getUrl()+" nie nale�y do �adnego ze znanych sklep�w");
+				a.add("URL "+e.getUrl()+" nie nale---y do ---adnego ze znanych sklep---w");
 				
 				ModelAndView mav=new ModelAndView("List");
 				mav.addObject("list", a);

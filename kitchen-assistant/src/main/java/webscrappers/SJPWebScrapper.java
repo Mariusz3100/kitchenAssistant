@@ -49,7 +49,7 @@ public class SJPWebScrapper {
 				response+=respLine;
 			}
 			
-			if(response.indexOf("Nie znaleziono ¿adnych wyników wyszukiwania")>-1)
+			if(response.indexOf("Nie znaleziono ---adnych wynik---w wyszukiwania")>-1)
 			{
 				retValue="";
 			}else{
@@ -130,6 +130,6 @@ public class SJPWebScrapper {
 	
 	
 	public static void main(String[] args){
-		scrapWord("³y¿eczki");
+		scrapWord("---y---eczki");
 	}
 }

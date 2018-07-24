@@ -19,7 +19,7 @@ public class Page404Exception extends Exception {
 
 
 	public Page404Exception(String url) {
-		super("Zwrócona strona nie zawiera ¿adnych informacji.");
+		super("Zwr---cona strona nie zawiera ---adnych informacji.");
 		this.url=url;
 	}
 

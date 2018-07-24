@@ -26,11 +26,11 @@ public class AbstractQuantityExtracter {
 		
 		
 		translations.put("l",new QuantityTranslation(AmountTypes.ml, 1000) );
-		translations.put("�y�eczka",new QuantityTranslation(AmountTypes.ml, 5) );
+		translations.put("---y---eczka",new QuantityTranslation(AmountTypes.ml, 5) );
 		translations.put("kropla",new QuantityTranslation(AmountTypes.ml, 0.1f) );
 		translations.put("l",new QuantityTranslation(AmountTypes.ml, 1000) );
-		translations.put("�y�ka",new QuantityTranslation(AmountTypes.ml, 15) );
-		translations.put("�y�ka sto�owa",new QuantityTranslation(AmountTypes.ml, 15) );
+		translations.put("---y---ka",new QuantityTranslation(AmountTypes.ml, 15) );
+		translations.put("---y---ka sto---owa",new QuantityTranslation(AmountTypes.ml, 15) );
 		translations.put("szklanka",new QuantityTranslation(AmountTypes.ml, 250) );
 		translations.put("mililitr",new QuantityTranslation(AmountTypes.ml, 1) );
 		translations.put("litr",new QuantityTranslation(AmountTypes.ml, 1000) );
@@ -46,7 +46,7 @@ public class AbstractQuantityExtracter {
 		ommissions=new ArrayList<String>();
 		
 		ommissions.add("ok.");
-		ommissions.add("oko�o");
+		ommissions.add("oko---o");
 		
 		
 		

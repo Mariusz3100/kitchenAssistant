@@ -107,9 +107,9 @@ public class SkladnikiExtractor extends AbstractQuantityExtracter {
 		}
 		
 		if(retValue.getAmount()==-1&&AmountTypes.szt.equals(retValue.getAmountType())){
-			ProblemLogger.logProblem("Nie uda�o si� wyekstrachowa� miary z "+searchPhrase+"|"+quantityPhrase);
+			ProblemLogger.logProblem("Nie uda---o si--- wyekstrachowa--- miary z "+searchPhrase+"|"+quantityPhrase);
 			retValue.setAmount(1);
-			//TODO zostawi� -1, by obs�uzy� gdzie indziej?
+			//TODO zostawi--- -1, by obs---uzy--- gdzie indziej?
 		}
 		
 		return retValue;

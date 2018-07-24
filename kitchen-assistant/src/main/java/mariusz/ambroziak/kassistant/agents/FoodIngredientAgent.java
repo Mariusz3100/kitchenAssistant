@@ -214,7 +214,7 @@ public class FoodIngredientAgent extends BaseAgent{
 			
 			if(!AmountTypes.mg.equals(value.getType())&&!AmountTypes.kalorie.equals(value.getType())){
 				ProblemLogger.logProblem(
-						"Pr�ba zapisywania w bazie innego typu ilo�ci sk�adnika od�ywczego ni� mg.");
+						"Proba zapisywania w bazie innego typu ilosci skladnika odzywczego niz mg.");
 			}else{
 				
 				

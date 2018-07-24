@@ -107,7 +107,7 @@ public class RecipeConstantNutrientsController {
 
 	private ModelAndView returnPageNotFoundRecipeForm(String url) {
 		ModelAndView mav=returnAgentSystemNotStartedPage();
-		mav.addObject("invalidUrlInformation","Url "+url+" nie prowadzi do strony �adnego przepisu");
+		mav.addObject("invalidUrlInformation","Url "+url+" nie prowadzi do strony ---adnego przepisu");
 		return mav;
 	}
 	

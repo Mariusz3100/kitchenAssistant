@@ -22,8 +22,8 @@ public class SkladnikiFinder {
 	}
 	
 	public static String getBaseName(String phrase){
-		//TODO jakaœ logika
-		//na razie sprowadzamy do formy bazowej pojedyncze s³owo
+		//TODO jaka--- logika
+		//na razie sprowadzamy do formy bazowej pojedyncze s---owo
 		if(phrase.contains(" "))
 			return phrase;
 		else

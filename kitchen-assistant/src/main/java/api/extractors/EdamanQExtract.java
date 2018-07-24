@@ -73,7 +73,7 @@ public class EdamanQExtract extends AbstractQuantityEngExtractor{
 
 
 	public static String correctText(String text) {
-		///TODO wykasowa�, powinno by� zast�pione r�cznym sprawdzaniem w bazie danych albo nawet niczym.
+		///TODO wykasowac, powinno byc zastąpione recznym sprawdzaniem w bazie danych albo nawet niczym.
 		if(text==null||text.equals(""))
 			return "";
 		
@@ -142,7 +142,7 @@ public class EdamanQExtract extends AbstractQuantityEngExtractor{
 				retValue.setType(at);
 			}
 		}
-		//TODO poprawi�
+		//TODO poprawic
 		
 		
 		

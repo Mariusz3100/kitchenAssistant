@@ -145,7 +145,7 @@ public class ProduktAgent extends BaseAgent{
 					}
 				}else if(jsonResponse.has(StringHolder.SINGLE_PRODUKT_ID_NAME))
 				{
-				//TODO co tu powinno by� w og�le?	
+				//TODO co tu powinno byc w ogole?	
 					produkt=processSingleIdStringMessage(jsonResponse, produktUrl,shortUrl);
 				}else{
 					ProblemLogger.logProblem("some weird message: "+jsonResponse+" in produktAgent");
