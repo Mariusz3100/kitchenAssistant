@@ -16,10 +16,10 @@ public class ShopRecognizer {
 	public static String getShortestWorkingUrl(String baseUrl){
 		Shops shop=recognizeShop(baseUrl);
 		
-//		if(shop==Shops.ShopCom)
-//		{
-//			return AuchanAbstractScrapper.getAuchanShortestWorkingUrl(baseUrl);
-//		}
+		if(shop==Shops.ShopCom)
+		{
+			return baseUrl;
+		}
 		
 		return "";
 	}

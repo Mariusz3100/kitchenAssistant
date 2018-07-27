@@ -50,7 +50,7 @@
 							varStatus="opcjaCount">
 							<input type="radio"
 								name="${skladnikName}${skladnikCount.count}_${skladnikRadioName}" value="${radioValuePrefix}${produkt.url}">	
-								- [${produkt.cena} $, ${produkt.recountedPrice}] ${produkt.nazwa} <u>${produkt.url}</u>
+								- [${produkt.cena} $, ${produkt.recountedPrice}] ${produkt.nazwa} <u>								<a href="${produkt.url}<%=mariusz.ambroziak.kassistant.Apiclients.shopcom.ShopComApiParameters.getQuestionMarkApikeyAndPerms()%>">${produkt.url}</a></u>
 						<br />
 						</c:forEach>
 					</c:when>

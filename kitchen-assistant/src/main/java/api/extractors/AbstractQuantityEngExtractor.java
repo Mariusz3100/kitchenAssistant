@@ -40,6 +40,7 @@ public class AbstractQuantityEngExtractor {
 		translations.put("spoon",new QuantityTranslation(AmountTypes.ml, 15) );
 		translations.put("spoons",new QuantityTranslation(AmountTypes.ml, 15) );
 		translations.put("tbsp",new QuantityTranslation(AmountTypes.ml, 15) );
+		translations.put("tbs",new QuantityTranslation(AmountTypes.ml, 15) );
 		translations.put("cup",new QuantityTranslation(AmountTypes.ml, 250) );
 		translations.put("cups",new QuantityTranslation(AmountTypes.ml, 250) );
 		translations.put("glass",new QuantityTranslation(AmountTypes.ml, 250) );

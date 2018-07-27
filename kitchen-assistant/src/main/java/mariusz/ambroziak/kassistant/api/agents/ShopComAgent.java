@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import madkit.message.StringMessage;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.RecipeData;
+import mariusz.ambroziak.kassistant.Apiclients.shopcom.ShopComApiParameters;
 import mariusz.ambroziak.kassistant.agents.BaseAgent;
 import mariusz.ambroziak.kassistant.agents.ProduktAgent;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
@@ -316,7 +317,7 @@ public class ShopComAgent extends BaseAgent {
 				ProduktDetails produktDetails = null;
 		//		try {
 					if(url!=null&&!url.equals(""))
-						produktDetails = null;//will it work??? AuchanParticular.getProduktDetails(url);
+						produktDetails = getProduktByUrl(url);//will it work??? AuchanParticular.getProduktDetails(url);
 
 		//		} catch (Page404Exception e) {
 			//		ProblemLogger.logProblem("404 page at "+url);
@@ -344,6 +345,13 @@ public class ShopComAgent extends BaseAgent {
 
 		}
 
+	}
+
+	private ProduktDetails getProduktByUrl(String url) {
+		String fullUrl=ShopComApiParameters.getUrlWithKeys(url);
+		Produkt produktByUrl = ShopComApiClientParticularProduct.getProduktByUrl(fullUrl);
+		ProduktDetails ret=new ProduktDetails(produktByUrl.getUrl(), produktByUrl.getNazwa(),produktByUrl.getCena() , produktByUrl.getOpis());
+		return ret;
 	}
 
 	@Override

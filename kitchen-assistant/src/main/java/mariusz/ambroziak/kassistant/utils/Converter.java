@@ -7,22 +7,17 @@ import java.util.regex.Pattern;
 
 public class Converter {
 	private static String[] converts=
-		{
-		"----\\$0142",
-		"----\\$0105",
-		",-\\$002C",
-		"----\\$017C",
-		"----\\$017A",
-		"----\\$0107",
-		"----\\$0144",
-		"----\\$00F3",
-		"----\\$0119",
-		" -\\$0020",
-		"----\\$015B",
-		"%-\\$0025",
-	 
-		
-		};
+			{
+				"ł-\\$0142",
+				"ą-\\$0105",
+				",-\\$002C",
+				"ż-\\$017C",
+				"ź-\\$017A",
+				"ć-\\$0107",
+				"ń-\\$0144",
+				"ó-\\$00F3",
+				" -\\$0020"
+			};
 	
 	private static String[] ommissions=
 		{
@@ -30,28 +25,28 @@ public class Converter {
 		"(",
 		"+",
 		};
-	private static String[] encodingConverts={
-	 "----&#260;",
-	 "----&#262;",
-	 "----&#280;",
-	 "----&#321;",
-	 "----&#323;",
-	 "----&#211;",
-	 "----&#346;",
-	 "----&#377;",
-	 "----&#379;",
-	 "----&#261;",
-	 "----&#263;",
-	 "----&#281;",
-	 "----&#322;",
-	 "----&#324;",
-	 "----&#243;",
-	 "----&#347;",
-	 "----&#378;",
-	 "----&#380;",
-		};
-	
-	
+//	private static String[] encodingConverts={
+//	 "----&#260;",
+//	 "----&#262;",
+//	 "----&#280;",
+//	 "----&#321;",
+//	 "----&#323;",
+//	 "----&#211;",
+//	 "----&#346;",
+//	 "----&#377;",
+//	 "----&#379;",
+//	 "----&#261;",
+//	 "----&#263;",
+//	 "----&#281;",
+//	 "----&#322;",
+//	 "----&#324;",
+//	 "----&#243;",
+//	 "----&#347;",
+//	 "----&#378;",
+//	 "----&#380;",
+//		};
+//	
+//	
 
 	public static String auchanConvertion(String input){
 		String result=input;
@@ -70,7 +65,7 @@ public class Converter {
 
 
 	public static String getOnlyLetters(String text){
-		return text.replaceAll("[^A-Za-z------------󜟿---ʣ---ӌ------]", "");
+		return text.replaceAll("[^A-Za-z]", "");
 	}
 
 
@@ -98,20 +93,20 @@ public class Converter {
 	
 	
 	
-	public static String temporaryConvertEncoding(String in){
-		if(in==null)
-			return null;
-		
-		String out=in;
-		
-		for(String change:encodingConverts){
-			String[] split=change.split("-");
-
-			out=out.replaceAll(split[1], split[0]);
-
-		}
-		return out;
-		
-		
-	}
+//	public static String temporaryConvertEncoding(String in){
+//		if(in==null)
+//			return null;
+//		
+//		String out=in;
+//		
+//		for(String change:encodingConverts){
+//			String[] split=change.split("-");
+//
+//			out=out.replaceAll(split[1], split[0]);
+//
+//		}
+//		return out;
+//		
+//		
+//	}
 }
