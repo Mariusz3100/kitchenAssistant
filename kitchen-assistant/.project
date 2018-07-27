@@ -3,6 +3,7 @@
 	<name>kitchen-assistant</name>
 	<comment></comment>
 	<projects>
+		<project>MaDKit</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
