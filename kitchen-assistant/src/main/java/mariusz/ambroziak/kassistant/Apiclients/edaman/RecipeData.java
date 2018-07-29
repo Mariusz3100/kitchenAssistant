@@ -19,9 +19,9 @@ public class RecipeData {
 	
 	public String getRecipeDetailsInApi() {
 		
-			return EdamanApiParameters.getBaseUrl()+
-					"?app_id="+EdamanApiParameters.getApp_id()
-					+"&app_key="+EdamanApiParameters.getApp_key()
+			return EdamanRecipeApiParameters.getBaseUrl()+
+					"?app_id="+EdamanRecipeApiParameters.getApp_id()
+					+"&app_key="+EdamanRecipeApiParameters.getApp_key()
 					+"&r="+getAdjustedEdamanId();
 			
 	}

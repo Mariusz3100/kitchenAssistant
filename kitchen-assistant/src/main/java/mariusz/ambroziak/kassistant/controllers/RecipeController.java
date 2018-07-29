@@ -23,7 +23,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import api.extractors.EdamanQExtract;
 import javassist.CodeConverter.ArrayAccessReplacementMethodNames;
-import mariusz.ambroziak.kassistant.Apiclients.edaman.EdamanRecipeApiClient;
+import mariusz.ambroziak.kassistant.Apiclients.edaman.UsdaNutrientApiClient;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.RecipeData;
 import mariusz.ambroziak.kassistant.agents.FoodIngredientAgent;
 import mariusz.ambroziak.kassistant.agents.ProduktAgent;
@@ -98,7 +98,8 @@ public class RecipeController {
 			}
 		}else{
 			results=new ArrayList<>();
-			results.add(EdamanRecipeApiClient.getSingleRecipe(recipeID));
+			//TODO after correcting the Reading
+			//			results.add(UsdaNutrientApiClient.getSingleRecipe(recipeID));
 		}
 		
 		
@@ -125,8 +126,9 @@ public class RecipeController {
 	public ModelAndView apiRecipeParsed(HttpServletRequest request) throws AgentSystemNotStartedException {
 		String recipeID=request.getParameter(JspStringHolder.recipeApiId);
 		List<Produkt> results;
-		
-		RecipeData singleRecipe = EdamanRecipeApiClient.getSingleRecipe(recipeID);
+		//TODO after correcting the Reading
+
+		RecipeData singleRecipe = null;//UsdaNutrientApiClient.getSingleRecipe(recipeID);
 		
 		
 		int liczbaSkladnikow=singleRecipe.getIngredients().size();

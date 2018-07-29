@@ -40,7 +40,7 @@ public class EdamanRecipeApiClient {
 
 	}
 
-	public static ArrayList<RecipeData> getRecipesByParameters(EdamanApiParameters eap){
+	public static ArrayList<RecipeData> getRecipesByParameters(EdamanRecipeApiParameters eap){
 		String response1 = getResponse(eap);
 
 		ArrayList<RecipeData> rdList = parseResponseIntoRecipes(response1);
@@ -52,7 +52,7 @@ public class EdamanRecipeApiClient {
 	}
 
 
-//	private static void extractRightRecipes(ArrayList<RecipeData> rdList, EdamanApiParameters eap) {
+//	private static void extractRightRecipes(ArrayList<RecipeData> rdList, EdamanRecipeApiParameters eap) {
 //		Iterator<RecipeData> iterator = rdList.iterator();
 //		while(iterator.hasNext()){
 //			RecipeData next = iterator.next();
@@ -109,15 +109,15 @@ public class EdamanRecipeApiClient {
 		cc.getProperties().put(ClientConfig.PROPERTY_FOLLOW_REDIRECTS, true);
 
 		Client c = Client.create();
-		WebResource resource = c.resource(EdamanApiParameters.getBaseUrl());
+		WebResource resource = c.resource(EdamanRecipeApiParameters.getBaseUrl());
 //
 		MultivaluedMap<String, String> queryParams = new MultivaluedMapImpl();
 		queryParams.add("r", urlID);//URLEncoder.encode(urlID="http://www.edamam.com/ontologies/edamam.owl#recipe_1f8a034117737c47cd89d227e67be98d");
-		queryParams.add("app_key",EdamanApiParameters.getApp_key());
+		queryParams.add("app_key",EdamanRecipeApiParameters.getApp_key());
 
 		//       queryParams.add("app_id", "af08be14");
 		MultivaluedMap<String, String> queryParams_appId = new MultivaluedMapImpl();
-		queryParams_appId.add("app_id",EdamanApiParameters.getApp_id());
+		queryParams_appId.add("app_id",EdamanRecipeApiParameters.getApp_id());
 
 
 
@@ -164,12 +164,12 @@ public class EdamanRecipeApiClient {
 	}
 
 	private static String getResponse(String phrase) {
-		EdamanApiParameters eap=new EdamanApiParameters();
+		EdamanRecipeApiParameters eap=new EdamanRecipeApiParameters();
 		eap.setPhrase(phrase);
 		return getResponse(eap);
 	}
 
-	private static String getResponse(EdamanApiParameters eap) {
+	private static String getResponse(EdamanRecipeApiParameters eap) {
 		ClientConfig cc = new DefaultClientConfig();
 		cc.getProperties().put(ClientConfig.PROPERTY_FOLLOW_REDIRECTS, true);
 
@@ -177,10 +177,10 @@ public class EdamanRecipeApiClient {
 		WebResource resource = c.resource("https://api.edamam.com/search");
 
 		MultivaluedMap<String, String> queryParams_appId = new MultivaluedMapImpl();
-		queryParams_appId.add("app_id",EdamanApiParameters.getApp_id());
+		queryParams_appId.add("app_id",EdamanRecipeApiParameters.getApp_id());
 
 		MultivaluedMap<String, String> queryParams = new MultivaluedMapImpl();
-		queryParams.add("app_key",EdamanApiParameters.getApp_key());
+		queryParams.add("app_key",EdamanRecipeApiParameters.getApp_key());
 		
 		queryParams.add("q", eap.getPhrase());
 		
@@ -199,9 +199,9 @@ public class EdamanRecipeApiClient {
 	}
 
 
-	private static String convertEapToLink(EdamanApiParameters eap) {
+	private static String convertEapToLink(EdamanRecipeApiParameters eap) {
 		String link="https://api.edamam.com/search?app_id="+eap.getApp_id()
-			+"&app_key="+EdamanApiParameters.getApp_key()
+			+"&app_key="+EdamanRecipeApiParameters.getApp_key()
 			+"&q="+eap.getPhrase();
 		
 		if(eap.getHealthLabels()!=null)
@@ -224,7 +224,7 @@ public class EdamanRecipeApiClient {
 //		System.out.println(getSingleRecipe("http://www.bonappetit.com/recipe/herbes-de-provence-rotisserie-chickens"));
 		
 //		System.out.println(getRecipesByPhrase("chicken"));
-		EdamanApiParameters eap=new EdamanApiParameters();
+		EdamanRecipeApiParameters eap=new EdamanRecipeApiParameters();
 		
 		eap.addHealthLabels(HealthLabels.Alcohol_free);
 		eap.setPhrase("cake");

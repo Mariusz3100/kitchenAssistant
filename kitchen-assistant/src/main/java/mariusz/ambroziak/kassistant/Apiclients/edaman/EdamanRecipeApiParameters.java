@@ -2,7 +2,7 @@ package mariusz.ambroziak.kassistant.Apiclients.edaman;
 
 import java.util.ArrayList;
 
-public class EdamanApiParameters {
+public class EdamanRecipeApiParameters {
 	public static String getApp_id() {
 		return app_id;
 	}
@@ -18,7 +18,7 @@ public class EdamanApiParameters {
 		return baseUrl;
 	}
 	public static void setBaseUrl(String baseUrl) {
-		EdamanApiParameters.baseUrl = baseUrl;
+		EdamanRecipeApiParameters.baseUrl = baseUrl;
 	}
 	public void setHealthLabels(ArrayList<HealthLabels> healthLabels) {
 		this.healthLabels = healthLabels;

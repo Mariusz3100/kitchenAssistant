@@ -8,6 +8,8 @@ import mariusz.ambroziak.kassistant.model.Produkt;
 
 public class ProduktWithBasicIngredients {
 	private ProduktDetails produkt;
+	
+	//kcal,proteins, fats and so on, from label
 	private ArrayList<BasicIngredientQuantity> basicsFromLabelTable;
 
 	public ProduktDetails getProdukt() {
