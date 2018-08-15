@@ -36,19 +36,20 @@ public class StringHolder {
 	public static final String ENCODING =java.nio.charset.StandardCharsets.UTF_8.toString();
 	public static final String googleCredentials="{\n" + 
 			"	\"web\": {\n" + 
-			"		\"client_id\": \"154940187807-pm1l0s790ftmvbk3sor55q7vhmmsf65i.apps.googleusercontent.com\",\n" + 
-			"		\"project_id\": \"fluted-curve-166814\",\n" + 
+			"		\"client_id\": \"835547712158-bep59luc1knfl3900qgndl9l6rs6rrda.apps.googleusercontent.com\",\n" + 
+			"		\"project_id\": \"kitchenassistantproject\",\n" + 
 			"		\"auth_uri\": \"https://accounts.google.com/o/oauth2/auth\",\n" + 
-			"		\"token_uri\": \"https://accounts.google.com/o/oauth2/token\",\n" + 
+			"		\"token_uri\": \"https://www.googleapis.com/oauth2/v3/token\",\n" + 
 			"		\"auth_provider_x509_cert_url\": \"https://www.googleapis.com/oauth2/v1/certs\",\n" + 
-			"		\"client_secret\": \"BbStqSTORTEQEwgp9sGPF6Dx\",\n" + 
+			"		\"client_secret\": \"gEOOYDYNxdGKip_ZGiHqeihM\",\n" + 
 			"		\"redirect_uris\": [\n" + 
-			"			\"http://localhost:50135/Callback\",\n" + 
-			"			\"http://localhost\",\n" + 
-			"			\"http://localhost/Callback\"\n" + 
+			"			\"http://localhost/oauth2callback\",\n" + 
+			"			\"http://localhost:8081/oauth2callback\",\n" + 
+			"			\"http://localhost:8081/kitchen-assistant/oauth2callback\"\n" + 
 			"		],\n" + 
 			"		\"javascript_origins\": [\n" + 
-			"			\"http://localhost:8000\"\n" + 
+			"			\"http://localhost\",\n" + 
+			"			\"http://localhost:8081\"\n" + 
 			"		]\n" + 
 			"	}\n" + 
 			"}";

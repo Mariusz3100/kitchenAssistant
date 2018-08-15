@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 
 import org.json.JSONObject;
+import org.mortbay.jetty.security.Credential;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -13,6 +14,8 @@ import madkit.message.StringMessage;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.DietLabels;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.HealthLabels;
 import mariusz.ambroziak.kassistant.Apiclients.google.GoogleDriveApiClient;
+import mariusz.ambroziak.kassistant.Apiclients.google.GoogleDriveApiClientCallbackController;
+import mariusz.ambroziak.kassistant.Apiclients.google.GoogleDriveApiClientController;
 import mariusz.ambroziak.kassistant.agents.BaseAgent;
 import mariusz.ambroziak.kassistant.utils.MessageTypes;
 import mariusz.ambroziak.kassistant.utils.ProblemLogger;
@@ -23,7 +26,8 @@ public class GoogleAccessAgent extends BaseAgent {
 	
 	static ArrayList<GoogleAccessAgent> agents;
 
-	
+	GoogleDriveApiClientCallbackController googleCallbackController;
+	GoogleDriveApiClientController googleController;
 	
 	@Override
 	protected void live() {
@@ -70,8 +74,16 @@ public class GoogleAccessAgent extends BaseAgent {
 		return null;
 	}
 
+	
+	public Credential getCredentials() {
+		googleController.doGet(request, response);
+		
+		return null;
+	}
+	
 	public static ArrayList<HealthLabels> getHealthLabels(){
 		try {
+			
 			return GoogleDriveApiClient.getHealthLimitations();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -116,6 +128,10 @@ public class GoogleAccessAgent extends BaseAgent {
 		agents.add(this);
 
 		setLogLevel(Level.FINEST);
+		
+		googleController=new GoogleDriveApiClientController();
+		googleCallbackController=new GoogleDriveApiClientCallbackController();
+		
 		super.activate();
 	}
 	
