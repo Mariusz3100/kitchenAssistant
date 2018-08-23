@@ -45,10 +45,9 @@ public class HomeController {
 	private Base_WordDAO base_wordDao;
 
 
-	@ResponseBody
 	@RequestMapping(value="/")
-	public String welcome() {
-		return "Welcome to kitchen assistant!";
+	public ModelAndView welcome() {
+		return new ModelAndView("homePage");
 	}
 	
 	

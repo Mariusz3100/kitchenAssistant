@@ -209,7 +209,7 @@ public class EdamanRecipeAgent extends BaseAgent{
 
 	private RecipeData fetchRecipe(String url) {
 
-		return UsdaNutrientApiClient.getSingleRecipe(url);
+		return null;// UsdaNutrientApiClient.getSingleRecipe(url);
 	}
 
 	private List<RecipeData> fetchRecipes(String searchPhrase) {
@@ -219,7 +219,7 @@ public class EdamanRecipeAgent extends BaseAgent{
 		eap.setDietLabels(GoogleAccessAgent.getDietLabels());
 		eap.setHealthLabels(GoogleAccessAgent.getHealthLabels());
 		eap.setPhrase(searchPhrase);
-		ArrayList<RecipeData> recipes = UsdaNutrientApiClient.getRecipesByParameters(eap);
+		ArrayList<RecipeData> recipes = null;//UsdaNutrientApiClient.getRecipesByParameters(eap);
 		return recipes;
 	}
 
@@ -560,3 +560,4 @@ public class EdamanRecipeAgent extends BaseAgent{
 		}
 	}
 }
+

@@ -1,4 +1,4 @@
-package mariusz.ambroziak.kassistant.Apiclients.google;
+package mariusz.ambroziak.kassistant.Apiclients.googleAuth;
 
 
 
@@ -19,6 +19,7 @@ import com.google.api.services.drive.model.*;
 
 import mariusz.ambroziak.kassistant.Apiclients.edaman.DietLabels;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.HealthLabels;
+import mariusz.ambroziak.kassistant.exceptions.GoogleDriveAccessNotAuthorisedException;
 import mariusz.ambroziak.kassistant.utils.StringHolder;
 
 import com.google.api.services.drive.Drive;
@@ -39,111 +40,60 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
-public class GoogleDriveApiClient {
-	/** Application name. */
-	private static final String APPLICATION_NAME =
-			"Kitchen Assistant";
-
-	/** Directory to store user credentials for this application. */
-	private static final java.io.File DATA_STORE_DIR = new java.io.File(
-			".credentials/drive-java-quickstart");
-
-	/** Global instance of the {@link FileDataStoreFactory}. */
-	private static FileDataStoreFactory DATA_STORE_FACTORY;
-
-	/** Global instance of the JSON factory. */
-	private static final JacksonFactory JSON_FACTORY =
-			JacksonFactory.getDefaultInstance();
-
-	/** Global instance of the HTTP transport. */
-	private static HttpTransport HTTP_TRANSPORT;
-
-	/** Global instance of the scopes required by this quickstart.
-	 *
-	 * If modifying these scopes, delete your previously saved credentials
-	 * at ~/.credentials/drive-java-quickstart
-	 */
-	private static final List<String> SCOPES =
-			//        Arrays.asList(DriveScopes.DRIVE_METADATA_READONLY);
-			Arrays.asList(DriveScopes.DRIVE_FILE,DriveScopes.DRIVE_SCRIPTS,
-					DriveScopes.DRIVE_APPDATA,DriveScopes.DRIVE);
-
-
-	static {
-		try {
-			HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-			DATA_STORE_FACTORY = new FileDataStoreFactory(DATA_STORE_DIR);
-		} catch (Throwable t) {
-			t.printStackTrace();
-			System.exit(1);
-		}
-	}
-
-	/**
-	 * Creates an authorized Credential object.
-	 * @return an authorized Credential object.
-	 * @throws IOException
-	 */
-	public static Credential authorize() throws IOException {
-		// Load client secrets.
-//		InputStream in =new FileInputStream("WEB-INF/resources/client_secret.json");
-//		            Quickstart.class.getResourceAsStream("/client_secret.json");
-//		new java.io.File("").getAbsolutePath();new java.io.File("WEB-INF").exists();.getAbsolutePath();
-		GoogleClientSecrets clientSecrets =
-				GoogleClientSecrets.load(JSON_FACTORY, new StringReader(StringHolder.googleCredentials));
-		// Build flow and trigger user authorization request.
-		GoogleAuthorizationCodeFlow flow =
-				new GoogleAuthorizationCodeFlow.Builder(
-						HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
-				.setDataStoreFactory(DATA_STORE_FACTORY)
-				.setAccessType("offline")
-				.build();
-		Credential credential = new AuthorizationCodeInstalledApp(
-				flow, new LocalServerReceiver()).authorize("user");
-		//new java.io.File("resources/client_secret.json").exists()
-		System.out.println(
-				"Credentials saved to " + DATA_STORE_DIR.getAbsolutePath());
-		return credential;
-//		return null;//new java.io.File(""); 
-		
-	}
+public class GoogleAuthApiClient {
 
 	/**
 	 * Build and return an authorized Drive client service.
 	 * @return an authorized Drive client service
 	 * @throws IOException
+	 * @throws GoogleDriveAccessNotAuthorisedException 
 	 */
-	public static Drive getDriveService() throws IOException {
-		Credential credential = authorize();//new java.io.File("").getAbsolutePath()
-		return new Drive.Builder(
-				HTTP_TRANSPORT, JSON_FACTORY, credential)
-				.setApplicationName(APPLICATION_NAME)
+	public static Drive getDriveService() throws IOException, GoogleDriveAccessNotAuthorisedException {
+		Credential credential = getCredential();//new java.io.File("").getAbsolutePath()
+		if(credential==null)
+			return null;
+		else
+			return new Drive.Builder(
+					GoogleAuthApiParameters.getHTTP_TRANSPORT(), GoogleAuthApiParameters.getJsonFactory(), credential)
+				.setApplicationName(GoogleAuthApiParameters.getApplicationName())
 				.build();
 	}
 
-	public static void main(String[] args) throws IOException {
+	private static Credential getCredential() throws GoogleDriveAccessNotAuthorisedException {
+		Map<String, Credential> authorisationMap = GoogleAuthApiClientCallbackController.authorisationMap;
+		
+		if(authorisationMap.isEmpty())
+			throw new GoogleDriveAccessNotAuthorisedException();
+		else
+			return authorisationMap.values().iterator().next();
+	}
+
+	public static void main(String[] args) throws IOException, GoogleDriveAccessNotAuthorisedException {
 		System.out.println(getDietLimitationsAsString());
 
 	}
 
 	public static void deleteCredentials(){
 		
-		if(DATA_STORE_DIR.isDirectory()){
-			for(java.io.File f:DATA_STORE_DIR.listFiles()){
+		if(GoogleAuthApiParameters.getDataStoreDir().isDirectory()){
+			for(java.io.File f:GoogleAuthApiParameters.getDataStoreDir().listFiles()){
 				f.delete();
 			}
 		}else{
-			DATA_STORE_DIR.delete();
+			GoogleAuthApiParameters.getDataStoreDir().delete();
 		}
 	}
 	
 	
-	public static ArrayList<HealthLabels> getHealthLimitations() throws IOException {
+	public static ArrayList<HealthLabels> getHealthLimitations() throws IOException, GoogleDriveAccessNotAuthorisedException {
 		ArrayList<HealthLabels> retValue=new ArrayList<>();
 		// Build a new authorized API client service.
 		Drive service = getDriveService();
 
+		if(service==null)
+			return retValue;
 		// Print the names and IDs for up to 10 files.
 		FileList result = service.files().list()
 				.setPageSize(10)
@@ -172,7 +122,7 @@ public class GoogleDriveApiClient {
 	}
 
 	
-	public static String getHealthLimitationsAsString() throws IOException {
+	public static String getHealthLimitationsAsString() throws IOException, GoogleDriveAccessNotAuthorisedException {
 		Drive service = getDriveService();
 
 		// Print the names and IDs for up to 10 files.
@@ -197,7 +147,7 @@ public class GoogleDriveApiClient {
 		return driveContent;
 	}
 	
-	public static ArrayList<DietLabels> getDietLimitations() throws IOException {
+	public static ArrayList<DietLabels> getDietLimitations() throws IOException, GoogleDriveAccessNotAuthorisedException {
 		ArrayList<DietLabels> retValue=new ArrayList<>();
 		// Build a new authorized API client service.
 		Drive service = getDriveService();
@@ -231,7 +181,7 @@ public class GoogleDriveApiClient {
 
 	
 	
-	public static String getDietLimitationsAsString() throws IOException {
+	public static String getDietLimitationsAsString() throws IOException, GoogleDriveAccessNotAuthorisedException {
 		Drive service = getDriveService();
 
 		FileList result = service.files().list()

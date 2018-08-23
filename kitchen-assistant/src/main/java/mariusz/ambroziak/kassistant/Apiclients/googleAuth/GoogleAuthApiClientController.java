@@ -1,4 +1,4 @@
-package mariusz.ambroziak.kassistant.Apiclients.google;
+package mariusz.ambroziak.kassistant.Apiclients.googleAuth;
 
 
 
@@ -48,7 +48,9 @@ import java.io.OutputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -58,56 +60,23 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-public class GoogleDriveApiClientController extends AbstractAuthorizationCodeServlet {
+public class GoogleAuthApiClientController extends AbstractAuthorizationCodeServlet {
 
-	private static final java.io.File DATA_STORE_DIR = new java.io.File(
-			".credentials/drive-java-quickstart");
-	
-	/** Global instance of the {@link FileDataStoreFactory}. */
-	private static FileDataStoreFactory DATA_STORE_FACTORY;
 
-	/** Global instance of the HTTP transport. */
-	private static HttpTransport HTTP_TRANSPORT;
-	
-	
-	/** Global instance of the JSON factory. */
-	private static final JacksonFactory JSON_FACTORY =
-			JacksonFactory.getDefaultInstance();
-	
-	private static final List<String> SCOPES =
-			//        Arrays.asList(DriveScopes.DRIVE_METADATA_READONLY);
-			Arrays.asList(DriveScopes.DRIVE_FILE,DriveScopes.DRIVE_SCRIPTS,
-					DriveScopes.DRIVE_APPDATA,DriveScopes.DRIVE);
-
-	
-	
-	static {
-		try {
-			HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-			DATA_STORE_FACTORY = new FileDataStoreFactory(DATA_STORE_DIR);
-		} catch (Throwable t) {
-			t.printStackTrace();
-			System.exit(1);
-		}
-	}
-
-	  @Override
-	  @RequestMapping(value="/google/test")
-	  protected void doGet(HttpServletRequest request, HttpServletResponse response)
+	  
+	  @RequestMapping(value="/google/authorise")
+	  protected void localDoGet(HttpServletRequest request, HttpServletResponse response)
 	      throws IOException, ServletException {
 	    // do stuff
 		  System.out.println("stuff");
 
 		  super.service(request, response);
-		  
-//			Credential credential = authorize();//new java.io.File("").getAbsolutePath()
-//			return new Drive.Builder(
-//					HTTP_TRANSPORT, JSON_FACTORY, credential)
-//					.setApplicationName(APPLICATION_NAME)
-//					.build();
+
 	  
 	  }
 
+
+	  
 	  @Override
 	  protected String getRedirectUri(HttpServletRequest req) throws ServletException, IOException {
 	    GenericUrl url = new GenericUrl(req.getRequestURL().toString());
@@ -118,32 +87,24 @@ public class GoogleDriveApiClientController extends AbstractAuthorizationCodeSer
 	  @Override
 	  protected AuthorizationCodeFlow initializeFlow() throws IOException {
 			GoogleClientSecrets clientSecrets =
-					GoogleClientSecrets.load(JSON_FACTORY, new StringReader(StringHolder.googleCredentials));
+					GoogleClientSecrets.load(GoogleAuthApiParameters.getJsonFactory(), new StringReader(StringHolder.googleCredentials));
 
 		  
 		  GoogleAuthorizationCodeFlow flow =
 					new GoogleAuthorizationCodeFlow.Builder(
-							HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
-					.setDataStoreFactory(DATA_STORE_FACTORY)
+							GoogleAuthApiParameters.getHTTP_TRANSPORT(), GoogleAuthApiParameters.getJsonFactory(), clientSecrets, GoogleAuthApiParameters.getScopes())
+					.setDataStoreFactory(GoogleAuthApiParameters.getDATA_STORE_FACTORY())
 					.setAccessType("offline")
 					.build();
 		  
 		  return flow;
-		  
-//		  return new AuthorizationCodeFlow.Builder(BearerToken.authorizationHeaderAccessMethod(),
-//				  HTTP_TRANSPORT,
-//	        new JacksonFactory(),
-//	        new GenericUrl("https://server.example.com/token"),
-//	        new BasicAuthentication("s6BhdRkqt3", "7Fjfp0ZBr1KtDRbnfVdmIw"),
-//	        "s6BhdRkqt3",
-//	        "https://server.example.com/authorize").setDataStoreFactory(DATA_STORE_FACTORY)
-//	        .build();
+
 	  }
 
 	  @Override
 	  protected String getUserId(HttpServletRequest req) throws ServletException, IOException {
 	    // return user ID
-		  return null;
+		  return req.getSession(true).getId(); 
 	  }
 	}
  

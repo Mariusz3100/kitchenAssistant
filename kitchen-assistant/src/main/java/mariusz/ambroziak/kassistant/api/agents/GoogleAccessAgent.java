@@ -7,16 +7,16 @@ import java.util.logging.Level;
 import org.json.JSONObject;
 import org.mortbay.jetty.security.Credential;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
+
 
 import madkit.message.StringMessage;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.DietLabels;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.HealthLabels;
-import mariusz.ambroziak.kassistant.Apiclients.google.GoogleDriveApiClient;
-import mariusz.ambroziak.kassistant.Apiclients.google.GoogleDriveApiClientCallbackController;
-import mariusz.ambroziak.kassistant.Apiclients.google.GoogleDriveApiClientController;
+import mariusz.ambroziak.kassistant.Apiclients.googleAuth.GoogleAuthApiClient;
+import mariusz.ambroziak.kassistant.Apiclients.googleAuth.GoogleAuthApiClientCallbackController;
+import mariusz.ambroziak.kassistant.Apiclients.googleAuth.GoogleAuthApiClientController;
 import mariusz.ambroziak.kassistant.agents.BaseAgent;
+import mariusz.ambroziak.kassistant.exceptions.GoogleDriveAccessNotAuthorisedException;
 import mariusz.ambroziak.kassistant.utils.MessageTypes;
 import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 import mariusz.ambroziak.kassistant.utils.StringHolder;
@@ -26,8 +26,8 @@ public class GoogleAccessAgent extends BaseAgent {
 	
 	static ArrayList<GoogleAccessAgent> agents;
 
-	GoogleDriveApiClientCallbackController googleCallbackController;
-	GoogleDriveApiClientController googleController;
+	GoogleAuthApiClientCallbackController googleCallbackController;
+	GoogleAuthApiClientController googleController;
 	
 	@Override
 	protected void live() {
@@ -66,17 +66,20 @@ public class GoogleAccessAgent extends BaseAgent {
 
 	public static ArrayList<DietLabels> getDietLabels(){
 		try {
-			return GoogleDriveApiClient.getDietLimitations();
+			return GoogleAuthApiClient.getDietLimitations();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (GoogleDriveAccessNotAuthorisedException e) {
+			// TODO Auto-generated catch block
+			//this means google account was not connected. We can ignore this.
 		}
 		return null;
 	}
 
 	
 	public Credential getCredentials() {
-		googleController.doGet(request, response);
+//		googleController.doGet(request, response);
 		
 		return null;
 	}
@@ -84,10 +87,13 @@ public class GoogleAccessAgent extends BaseAgent {
 	public static ArrayList<HealthLabels> getHealthLabels(){
 		try {
 			
-			return GoogleDriveApiClient.getHealthLimitations();
+			return GoogleAuthApiClient.getHealthLimitations();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (GoogleDriveAccessNotAuthorisedException e) {
+			// TODO Auto-generated catch block
+			//this means google account was not connected. We can ignore this.
 		}
 		return null;
 	}
@@ -96,11 +102,14 @@ public class GoogleAccessAgent extends BaseAgent {
 		String dietLimitationsAsString="";
 		String healthLimitationsAsString="";
 		try {
-			dietLimitationsAsString = GoogleDriveApiClient.getDietLimitationsAsString();
-			healthLimitationsAsString = GoogleDriveApiClient.getHealthLimitationsAsString();
+			dietLimitationsAsString = GoogleAuthApiClient.getDietLimitationsAsString();
+			healthLimitationsAsString = GoogleAuthApiClient.getHealthLimitationsAsString();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (GoogleDriveAccessNotAuthorisedException e) {
+			// TODO Auto-generated catch block
+			//this means google account was not connected. We can ignore this.
 		}
 		
 		JSONObject retValue=new JSONObject();
@@ -129,8 +138,8 @@ public class GoogleAccessAgent extends BaseAgent {
 
 		setLogLevel(Level.FINEST);
 		
-		googleController=new GoogleDriveApiClientController();
-		googleCallbackController=new GoogleDriveApiClientCallbackController();
+		googleController=new GoogleAuthApiClientController();
+		googleCallbackController=new GoogleAuthApiClientCallbackController();
 		
 		super.activate();
 	}

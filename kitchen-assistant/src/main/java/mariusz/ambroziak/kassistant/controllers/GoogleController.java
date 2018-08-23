@@ -15,11 +15,13 @@ import javax.servlet.http.HttpServletRequest;
 import madkit.kernel.Madkit;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.DietLabels;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.HealthLabels;
-import mariusz.ambroziak.kassistant.Apiclients.google.GoogleDriveApiClient;
+import mariusz.ambroziak.kassistant.Apiclients.googleAuth.GoogleAuthApiClient;
+import mariusz.ambroziak.kassistant.Apiclients.googleAuth.GoogleAuthApiParameters;
 import mariusz.ambroziak.kassistant.agents.ClockAgent;
 import mariusz.ambroziak.kassistant.agents.RecipeAgent;
 import mariusz.ambroziak.kassistant.agents.config.AgentsSystem;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
+import mariusz.ambroziak.kassistant.exceptions.GoogleDriveAccessNotAuthorisedException;
 import mariusz.ambroziak.kassistant.model.Problem;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.User;
@@ -54,21 +56,21 @@ import com.google.api.services.drive.DriveScopes;
 public class GoogleController extends AbstractAuthorizationCodeServlet{
 	private static final String APPLICATION_NAME =
 			"Kitchen Assistant";
-
-	/** Directory to store user credentials for this application. */
-	private static final java.io.File DATA_STORE_DIR = new java.io.File(
-			".credentials/drive-java-quickstart");
-
-	/** Global instance of the {@link FileDataStoreFactory}. */
-	private static FileDataStoreFactory DATA_STORE_FACTORY;
-
-	/** Global instance of the JSON factory. */
-	private static final JacksonFactory JSON_FACTORY =
-			JacksonFactory.getDefaultInstance();
-
-	/** Global instance of the HTTP transport. */
-	private static HttpTransport HTTP_TRANSPORT;
-
+//
+//	/** Directory to store user credentials for this application. */
+//	private static final java.io.File DATA_STORE_DIR = new java.io.File(
+//			".credentials/drive-java-quickstart");
+//
+//	/** Global instance of the {@link FileDataStoreFactory}. */
+//	private static FileDataStoreFactory DATA_STORE_FACTORY;
+//
+//	/** Global instance of the JSON factory. */
+//	private static final JacksonFactory JSON_FACTORY =
+//			JacksonFactory.getDefaultInstance();
+//
+//	/** Global instance of the HTTP transport. */
+//	private static HttpTransport HTTP_TRANSPORT;
+//
 	/** Global instance of the scopes required by this quickstart.
 	 *
 	 * If modifying these scopes, delete your previously saved credentials
@@ -79,15 +81,15 @@ public class GoogleController extends AbstractAuthorizationCodeServlet{
 			Arrays.asList(DriveScopes.DRIVE_FILE,DriveScopes.DRIVE_SCRIPTS,
 					DriveScopes.DRIVE_APPDATA,DriveScopes.DRIVE);
 	
-	static {
-		try {
-			HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-			DATA_STORE_FACTORY = new FileDataStoreFactory(DATA_STORE_DIR);
-		} catch (Throwable t) {
-			t.printStackTrace();
-			System.exit(1);
-		}
-	}
+//	static {
+//		try {
+//			HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+//			DATA_STORE_FACTORY = new FileDataStoreFactory(DATA_STORE_DIR);
+//		} catch (Throwable t) {
+//			t.printStackTrace();
+//			System.exit(1);
+//		}
+//	}
 	
 	public static String problems="";
 
@@ -96,13 +98,21 @@ public class GoogleController extends AbstractAuthorizationCodeServlet{
 
 	@RequestMapping(value="/google/health/get")
 	public ModelAndView problems1(HttpServletRequest request) throws IOException {
-		ArrayList<HealthLabels> healthLimittions = GoogleDriveApiClient.getHealthLimitations();
-		
+		ArrayList<HealthLabels> healthLimittions = null;
+
+		try {
+			healthLimittions = GoogleAuthApiClient.getHealthLimitations();
+		} catch (GoogleDriveAccessNotAuthorisedException e) {
+			return createGoogleAccessNotGrantedMav();
+		}
 		ModelAndView mav=new ModelAndView("List");
+
 		ArrayList<String> list=new ArrayList<String>();
+		
 
 		if(healthLimittions==null||healthLimittions.isEmpty())
-			list.add("Health labels for a user not implemented.");
+			list.add("Health labels for a were not found in his google drive.");
+
 		else{
 			list.add("Health labels for a user:");
 	
@@ -131,11 +141,27 @@ public class GoogleController extends AbstractAuthorizationCodeServlet{
 //		
 //		return mav;
 //	}
+
+
+	private ModelAndView createGoogleAccessNotGrantedMav() {
+		ArrayList<String> list=new ArrayList<String>();
+		ModelAndView mav=new ModelAndView("List");
+
+		list.add("Access to google drive was not authorised yet. Click <a href=\"/kitchen-assistant/google/authorise\">here</a> to authorise.");
+		mav.addObject("list",list);
+
+		return mav;
+	}
 	
 	
 	@RequestMapping(value="/google/diet/get")
 	public ModelAndView getDiet(HttpServletRequest request) throws IOException {
-		ArrayList<DietLabels> healthLimittions = GoogleDriveApiClient.getDietLimitations();
+		ArrayList<DietLabels> healthLimittions = null;
+		try {
+			healthLimittions = GoogleAuthApiClient.getDietLimitations();
+		} catch (GoogleDriveAccessNotAuthorisedException e) {
+			return createGoogleAccessNotGrantedMav();
+		}
 		
 		ModelAndView mav=new ModelAndView("List");
 		ArrayList<String> list=new ArrayList<String>();
@@ -159,10 +185,10 @@ public class GoogleController extends AbstractAuthorizationCodeServlet{
 	}
 	
 	
-	@RequestMapping(value="/google/health/renew")
+	@RequestMapping(value="/google/health/delete")
 	public ModelAndView googleDelete(HttpServletRequest request) throws IOException {
 		
-		GoogleDriveApiClient.deleteCredentials();
+		GoogleAuthApiClient.deleteCredentials();
 		
 		ModelAndView mav=new ModelAndView("List");
 		ArrayList<String> list=new ArrayList<String>();
@@ -189,12 +215,12 @@ public class GoogleController extends AbstractAuthorizationCodeServlet{
 	  @Override
 	  protected AuthorizationCodeFlow initializeFlow() throws IOException {
 		  GoogleClientSecrets clientSecrets =
-					GoogleClientSecrets.load(JSON_FACTORY, new StringReader(StringHolder.googleCredentials));
+					GoogleClientSecrets.load(GoogleAuthApiParameters.getJsonFactory(), new StringReader(StringHolder.googleCredentials));
 			// Build flow and trigger user authorization request.
 			GoogleAuthorizationCodeFlow flow =
 					new GoogleAuthorizationCodeFlow.Builder(
-							HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
-					.setDataStoreFactory(DATA_STORE_FACTORY)
+							GoogleAuthApiParameters.getHTTP_TRANSPORT(), GoogleAuthApiParameters.getJsonFactory(), clientSecrets, SCOPES)
+					.setDataStoreFactory(GoogleAuthApiParameters.getDATA_STORE_FACTORY())
 					.setAccessType("offline")
 					.build();
 			

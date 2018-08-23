@@ -12,11 +12,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import madkit.message.StringMessage;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.RecipeData;
-import mariusz.ambroziak.kassistant.Apiclients.google.GoogleDriveApiClient;
+import mariusz.ambroziak.kassistant.Apiclients.googleAuth.GoogleAuthApiClient;
 import mariusz.ambroziak.kassistant.agents.BaseAgent;
 import mariusz.ambroziak.kassistant.agents.ProduktAgent;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
 import mariusz.ambroziak.kassistant.exceptions.AgentSystemNotStartedException;
+import mariusz.ambroziak.kassistant.exceptions.GoogleDriveAccessNotAuthorisedException;
 import mariusz.ambroziak.kassistant.exceptions.Page404Exception;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.shopcom.ShopComApiClient;
@@ -84,11 +85,14 @@ public class GoogleAgent extends BaseAgent {
 		String dietLimitationsAsString="";
 		String healthLimitationsAsString="";
 		try {
-			dietLimitationsAsString = GoogleDriveApiClient.getDietLimitationsAsString();
-			healthLimitationsAsString = GoogleDriveApiClient.getHealthLimitationsAsString();
+			dietLimitationsAsString = GoogleAuthApiClient.getDietLimitationsAsString();
+			healthLimitationsAsString = GoogleAuthApiClient.getHealthLimitationsAsString();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (GoogleDriveAccessNotAuthorisedException e) {
+			// TODO Auto-generated catch block
+			//this means google account was not connected. We can ignore this.
 		}
 		
 		JSONObject retValue=new JSONObject();

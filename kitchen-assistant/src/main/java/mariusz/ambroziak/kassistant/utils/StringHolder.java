@@ -45,16 +45,22 @@ public class StringHolder {
 			"		\"redirect_uris\": [\n" + 
 			"			\"http://localhost/oauth2callback\",\n" + 
 			"			\"http://localhost:8081/oauth2callback\",\n" + 
-			"			\"http://localhost:8081/kitchen-assistant/oauth2callback\"\n" + 
+			"			\"http://localhost:8081/kitchen-assistant/oauth2callback\",\n" + 
+			"			\"http://kitchenassistant.com.pl:8081/oauth2callback\",\n" + 
+			"			\"http://kitchenassistant.com.pl:8081/kitchen-assistant/oauth2callback\"\n" + 
 			"		],\n" + 
 			"		\"javascript_origins\": [\n" + 
 			"			\"http://localhost\",\n" + 
-			"			\"http://localhost:8081\"\n" + 
+			"			\"http://localhost:8081\",\n" + 
+			"			\"http://kitchenassistant.com.pl:8081\"\n" + 
 			"		]\n" + 
 			"	}\n" + 
 			"}";
 	
 	public static final String SQPhrasesDivider="|"; 
+	
+	public static final String baseUrl="http://localhost:8081/kitchen-assistant";
+	
 	
 	static{
 		

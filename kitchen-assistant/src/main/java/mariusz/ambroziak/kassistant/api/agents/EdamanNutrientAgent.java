@@ -157,19 +157,19 @@ public class EdamanNutrientAgent extends BaseAgent{
 		Map<Basic_Ingredient,NotPreciseQuantity> retValue=new HashMap<Basic_Ingredient,NotPreciseQuantity>();
 		for( Entry<SingleProdukt_SearchResult, ProduktWithBasicIngredients> e:nutrients.entrySet()){
 			ProduktWithBasicIngredients value = e.getValue();
-			addBasicNutrientsToMap(value,retValue);
+//			addBasicNutrientsToMap(value,retValue);
 		}
-		return getBasicIngredientQuantityCollection(retValue);
+		return null;//getBasicIngredientQuantityCollection(retValue);
 	}
 
 	public static Collection<BasicIngredientQuantity> getSumOfAllBasicIngredients(Map<SingleProdukt_SearchResult, ProduktWithAllIngredients> nutrients) {
 		Map<Basic_Ingredient,NotPreciseQuantity> retValue=new HashMap<Basic_Ingredient,NotPreciseQuantity>();
 		for( Entry<SingleProdukt_SearchResult, ProduktWithAllIngredients> e:nutrients.entrySet()){
-			ProduktWithAllIngredients value = e.getValue();
-			ArrayList<BasicIngredientQuantity> allBasicIngredients = value.getProduktAsIngredient().getAllBasicIngredients();
-			addBasicNutrientsToMap(allBasicIngredients,retValue);
+	//		ProduktWithAllIngredients value = e.getValue();
+//			ArrayList<BasicIngredientQuantity> allBasicIngredients = value.getProduktAsIngredient().getAllBasicIngredients();
+//			addBasicNutrientsToMap(allBasicIngredients,retValue);
 		}
-		return getBasicIngredientQuantityCollection(retValue);
+		return null;//getBasicIngredientQuantityCollection(retValue);
 	}
 	
 //	private static void addBasicNutrientsToMap(ArrayList<BasicIngredientQuantity> allBasicIngredients,
