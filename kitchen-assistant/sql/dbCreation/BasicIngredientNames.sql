@@ -1,3 +1,4 @@
+BEGIN;
 CREATE TABLE Basic_Ingredient
 (
   bi_id serial not null,
@@ -33,5 +34,4 @@ CREATE UNIQUE INDEX Basic_Ingredient_Name_name_index
 CREATE UNIQUE INDEX Basic_Ingredient_name_index
  ON Basic_Ingredient
  ( name );
-
-
+Commit;
