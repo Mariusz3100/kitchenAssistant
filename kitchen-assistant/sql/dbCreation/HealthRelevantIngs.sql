@@ -1,4 +1,4 @@
-CREATE TABLE Nutrient
+﻿CREATE TABLE Nutrient
 (
   nu_id serial not null,
   name varchar(30),
@@ -27,5 +27,26 @@ ALTER TABLE Basic_Ingredient_Nutrient_amount ADD CONSTRAINT Basic_Ingredient_Hea
 FOREIGN KEY (bi_id)
 REFERENCES Basic_Ingredient (bi_id)
 ON DELETE cascade
+ON UPDATE NO ACTION
+NOT DEFERRABLE;
+
+
+
+
+
+CREATE TABLE Nutrient_Name
+(
+  nn_id serial not null,
+  possible_name varchar(100),
+  nu_id integer,
+
+  
+  CONSTRAINT Nutrient_Name_pk PRIMARY KEY (nn_id)
+);
+
+ALTER TABLE Nutrient_Name ADD CONSTRAINT Nutrient_names_fk
+FOREIGN KEY (nu_id)
+REFERENCES Nutrient (nu_id)
+ON DELETE NO ACTION
 ON UPDATE NO ACTION
 NOT DEFERRABLE;
