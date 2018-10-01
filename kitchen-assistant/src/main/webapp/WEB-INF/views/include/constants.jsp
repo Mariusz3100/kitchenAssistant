@@ -19,5 +19,7 @@
 <c:set var="radioValuePrefix" value="<%= mariusz.ambroziak.kassistant.utils.JspStringHolder.radioValuePrefix %>" scope="session"/>
 <c:set var="produktUrl_name" value="<%= mariusz.ambroziak.kassistant.utils.JspStringHolder.produktUrl_name%>" scope="session"/>
 <c:set var="recipeUrl_name" value="<%= mariusz.ambroziak.kassistant.utils.JspStringHolder.recipeUrl_name%>" scope="session"/>
+<c:set var="ndbno" value="<%= mariusz.ambroziak.kassistant.utils.JspStringHolder.ndbno%>" scope="session"/>
+<c:set var="foodName" value="<%= mariusz.ambroziak.kassistant.utils.JspStringHolder.foodName%>" scope="session"/>
 
 <c:set var="amountTypesWithoutCalories" value="<%= AmountTypes.valuesWithoutCalories()%>" scope="session"/>

@@ -17,7 +17,10 @@ public class JspStringHolder {
 	public static final String radioValuePrefix="_";
 	public static final String recipeUrl_name="recipeurl";
 	public static final String recipeApiId="recipeId";
+	public static final String ndbno="ndbno";
+	public static final String foodName="foodName";
 
+	
 	public static final String recipeId_name="recipeId";
 	public static final String produktUrl_name = "produktUrl";
 	public static final String QUANTITY_PHRASE_BORDER="_";

@@ -5,7 +5,7 @@ public class StringHolder {
 	public static String servletBasePath="";
 	public static String auchanFilename="auchanEntries.txt";
 	
-	public static final String currentAppName="/kitchen-assistant";
+	public static final String currentAppName="";
 	public static final String SEARCH4_NAME = "search4";
 	public static final String PRODUKT_URL_NAME = "produktUrl";
 	public static final String PRODUKT_IDS_NAME = "ids";
@@ -47,12 +47,15 @@ public class StringHolder {
 			"			\"http://localhost:8081/oauth2callback\",\n" + 
 			"			\"http://localhost:8081/kitchen-assistant/oauth2callback\",\n" + 
 			"			\"http://kitchenassistant.com.pl:8081/oauth2callback\",\n" + 
-			"			\"http://kitchenassistant.com.pl:8081/kitchen-assistant/oauth2callback\"\n" + 
+			"			\"http://kitchenassistant.com.pl:8081/kitchen-assistant/oauth2callback\",\n" + 
+			"			\"http://app.kitchenassistant.com.pl/kitchen-assistant/oauth2callback\",\n" + 
+			"			\"http://app.kitchenassistant.com.pl/oauth2callback\"\n" + 
 			"		],\n" + 
 			"		\"javascript_origins\": [\n" + 
 			"			\"http://localhost\",\n" + 
 			"			\"http://localhost:8081\",\n" + 
-			"			\"http://kitchenassistant.com.pl:8081\"\n" + 
+			"			\"http://kitchenassistant.com.pl:8081\",\n" + 
+			"			\"http://app.kitchenassistant.com.pl\"\n" + 
 			"		]\n" + 
 			"	}\n" + 
 			"}";
