@@ -117,7 +117,7 @@ public class GoogleAuthApiClientCallbackController extends AbstractAuthorization
 		authorisationMap.put(getUserId(req), credential);
 
 
-		resp.sendRedirect("/kitchen-assistant/google/authorise/successful");
+		resp.sendRedirect("/google/authorise/successful");
 	}
 
 
@@ -133,7 +133,7 @@ public class GoogleAuthApiClientCallbackController extends AbstractAuthorization
 	@Override
 	protected String getRedirectUri(HttpServletRequest req) throws ServletException, IOException {
 		GenericUrl url = new GenericUrl(req.getRequestURL().toString());
-		url.setRawPath("/kitchen-assistant/oauth2callback");
+		url.setRawPath("/oauth2callback");
 		return url.build();
 	}
 

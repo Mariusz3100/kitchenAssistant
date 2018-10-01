@@ -147,7 +147,7 @@ public class GoogleController extends AbstractAuthorizationCodeServlet{
 		ArrayList<String> list=new ArrayList<String>();
 		ModelAndView mav=new ModelAndView("List");
 
-		list.add("Access to google drive was not authorised yet. Click <a href=\"/kitchen-assistant/google/authorise\">here</a> to authorise.");
+		list.add("Access to google drive was not authorised yet. Click <a href=\"/google/authorise\">here</a> to authorise.");
 		mav.addObject("list",list);
 
 		return mav;
