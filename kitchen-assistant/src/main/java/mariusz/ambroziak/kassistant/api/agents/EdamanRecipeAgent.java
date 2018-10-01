@@ -41,9 +41,10 @@ import madkit.kernel.Agent;
 import madkit.kernel.AgentAddress;
 import madkit.kernel.Message;
 import madkit.message.StringMessage;
-import mariusz.ambroziak.kassistant.Apiclients.edaman.UsdaNutrientApiClient;
+import mariusz.ambroziak.kassistant.Apiclients.edaman.EdamanRecipeApiClient;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.EdamanRecipeApiParameters;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.RecipeData;
+import mariusz.ambroziak.kassistant.Apiclients.usda.UsdaNutrientApiClient;
 import mariusz.ambroziak.kassistant.agents.BaseAgent;
 import mariusz.ambroziak.kassistant.agents.ShopsListAgent;
 import mariusz.ambroziak.kassistant.dao.Base_WordDAOImpl;
@@ -209,7 +210,7 @@ public class EdamanRecipeAgent extends BaseAgent{
 
 	private RecipeData fetchRecipe(String url) {
 
-		return null;// UsdaNutrientApiClient.getSingleRecipe(url);
+		return EdamanRecipeApiClient.getSingleRecipe(url);
 	}
 
 	private List<RecipeData> fetchRecipes(String searchPhrase) {
@@ -219,7 +220,8 @@ public class EdamanRecipeAgent extends BaseAgent{
 		eap.setDietLabels(GoogleAccessAgent.getDietLabels());
 		eap.setHealthLabels(GoogleAccessAgent.getHealthLabels());
 		eap.setPhrase(searchPhrase);
-		ArrayList<RecipeData> recipes = null;//UsdaNutrientApiClient.getRecipesByParameters(eap);
+		ArrayList<RecipeData> recipes =  EdamanRecipeApiClient.getRecipesByParameters(eap);
+				//lol?: null;//UsdaNutrientApiClient.getRecipesByParameters(eap);
 		return recipes;
 	}
 

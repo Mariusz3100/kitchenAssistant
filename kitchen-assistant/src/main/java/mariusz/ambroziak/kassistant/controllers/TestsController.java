@@ -10,19 +10,25 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 
 import madkit.kernel.Madkit;
+import mariusz.ambroziak.kassistant.Apiclients.usda.UsdaNutrientApiClientParticularFood;
 import mariusz.ambroziak.kassistant.agents.ClockAgent;
 import mariusz.ambroziak.kassistant.agents.RecipeAgent;
 import mariusz.ambroziak.kassistant.agents.config.AgentsSystem;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
+import mariusz.ambroziak.kassistant.dao.Nutrient_NameDAO;
 import mariusz.ambroziak.kassistant.exceptions.AgentSystemNotStartedException;
 import mariusz.ambroziak.kassistant.exceptions.Page404Exception;
+import mariusz.ambroziak.kassistant.model.Nutrient;
+import mariusz.ambroziak.kassistant.model.Nutrient_Name;
 import mariusz.ambroziak.kassistant.model.Problem;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.User;
 import mariusz.ambroziak.kassistant.model.jsp.MultiProdukt_SearchResult;
+import mariusz.ambroziak.kassistant.model.quantity.PreciseQuantity;
 import mariusz.ambroziak.kassistant.utils.JspStringHolder;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -110,6 +116,43 @@ public class TestsController {
 
 		ModelAndView mav=new ModelAndView("test/test");
 		SkladnikiExtractor.main(null);
+
+		return mav;
+
+
+	}
+
+	
+	
+	@RequestMapping(value="/nutrientsTestLazy")
+	public ModelAndView nutrientsTest12
+	(HttpServletRequest request) {
+		Nutrient_NameDAO nutrientNameDao = DaoProvider.getInstance().getNutrientNameDao();
+		Nutrient_Name nutrient_Name = nutrientNameDao.list().get(0);
+		Nutrient base = nutrient_Name.getBase();
+		System.out.println(base.getName());
+		return null;
+	}
+	
+	
+	@RequestMapping(value="/nutrientsTest")
+	public ModelAndView nutrientsTest
+	(HttpServletRequest request) {
+		
+		
+		Nutrient_NameDAO nutrientNameDao = DaoProvider.getInstance().getNutrientNameDao();
+
+//		List<Nutrient_Name> nutList = nutrientNameDao.list();
+		Map<Nutrient, PreciseQuantity> nutrientDetailsForDbno = UsdaNutrientApiClientParticularFood.getNutrientDetailsForDbno("04542");
+
+		System.out.println("Details:");
+		
+		for(Nutrient n:nutrientDetailsForDbno.keySet()) {
+			System.out.println(n+"->"+nutrientDetailsForDbno.get(n));
+		}
+		
+		
+		ModelAndView mav=new ModelAndView("homePage");
 
 		return mav;
 

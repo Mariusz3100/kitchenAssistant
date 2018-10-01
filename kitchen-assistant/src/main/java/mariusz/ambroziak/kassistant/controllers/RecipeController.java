@@ -23,8 +23,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import api.extractors.EdamanQExtract;
 import javassist.CodeConverter.ArrayAccessReplacementMethodNames;
-import mariusz.ambroziak.kassistant.Apiclients.edaman.UsdaNutrientApiClient;
+import mariusz.ambroziak.kassistant.Apiclients.edaman.EdamanRecipeApiClient;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.RecipeData;
+import mariusz.ambroziak.kassistant.Apiclients.usda.UsdaNutrientApiClient;
 import mariusz.ambroziak.kassistant.agents.FoodIngredientAgent;
 import mariusz.ambroziak.kassistant.agents.ProduktAgent;
 import mariusz.ambroziak.kassistant.agents.RecipeAgent;
@@ -98,6 +99,8 @@ public class RecipeController {
 			}
 		}else{
 			results=new ArrayList<>();
+			results.add(EdamanRecipeApiClient.getSingleRecipe(recipeID));
+
 			//TODO after correcting the Reading
 			//			results.add(UsdaNutrientApiClient.getSingleRecipe(recipeID));
 		}
@@ -128,7 +131,7 @@ public class RecipeController {
 		List<Produkt> results;
 		//TODO after correcting the Reading
 
-		RecipeData singleRecipe = null;//UsdaNutrientApiClient.getSingleRecipe(recipeID);
+		RecipeData singleRecipe = EdamanRecipeApiClient.getSingleRecipe(recipeID);
 		
 		
 		int liczbaSkladnikow=singleRecipe.getIngredients().size();
@@ -637,7 +640,17 @@ public class RecipeController {
 	private Map<SingleProdukt_SearchResult, ProduktWithBasicIngredients> scrapNutrientValuesDataHandleUnlikelyExceptions(
 			GoodBadSkippedResults resultsHolder) throws AgentSystemNotStartedException, Page404Exception {
 		Map<SingleProdukt_SearchResult, ProduktWithBasicIngredients> retrievedBasicNutrientValues=null;
-
+		//TODO correct
+//				try {
+//		retrievedBasicNutrientValues = 
+//				ReadingAgent.retrieveOrScrapBasicNutrientValues(resultsHolder.getGoodResults());
+//	} catch (ShopNotFoundException e) {
+//		//pozostawione, nie powinno wyst---pi---
+//		e.printStackTrace();
+//	}
+	return retrievedBasicNutrientValues;
+		
+		
 		//TODO correct
 		//		try {
 //			retrievedBasicNutrientValues = 
@@ -646,7 +659,7 @@ public class RecipeController {
 //			//pozostawione, nie powinno wyst---pi---
 //			e.printStackTrace();
 //		}
-		return retrievedBasicNutrientValues;
+//		return retrievedBasicNutrientValues;
 	}
 
 
