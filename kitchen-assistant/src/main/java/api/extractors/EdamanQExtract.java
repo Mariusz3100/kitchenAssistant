@@ -166,7 +166,20 @@ public class EdamanQExtract extends AbstractQuantityEngExtractor{
 
 
 
-
+	public static QuantityTranslation getTranslationToBaseType(String amount) {
+		String temp=(amount==null?"":amount).toLowerCase().trim();
+		QuantityTranslation retValue=translations.get(temp);
+		
+		if(retValue==null) {
+			ProblemLogger.logProblem(amount+ " wasn't parsed properly");
+			retValue=new QuantityTranslation(AmountTypes.szt, 0);
+		}
+		
+		
+		return retValue;
+		
+		
+	}
 
 
 

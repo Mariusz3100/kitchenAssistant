@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import api.extractors.AbstractQuantityEngExtractor.QuantityTranslation;
 import mariusz.ambroziak.kassistant.model.quantity.AmountTypes;
+import mariusz.ambroziak.kassistant.model.quantity.PreciseQuantity;
 
 public class AbstractQuantityEngExtractor {
 	
@@ -16,6 +18,13 @@ public class AbstractQuantityEngExtractor {
 		
 		translations=new HashMap<String, QuantityTranslation>();
 		
+		translations.put("mg",new QuantityTranslation(AmountTypes.mg, 1) );
+		translations.put("ml",new QuantityTranslation(AmountTypes.ml, 1) );
+		translations.put("szt",new QuantityTranslation(AmountTypes.szt, 1) );
+		translations.put("kcal",new QuantityTranslation(AmountTypes.kalorie, 1) );
+
+		
+		translations.put("µg",new QuantityTranslation(AmountTypes.mg, 0.000001f) );
 		translations.put("g",new QuantityTranslation(AmountTypes.mg, 1000) );
 		translations.put("kg",new QuantityTranslation(AmountTypes.mg, 1000000) );
 		translations.put("pinch",new QuantityTranslation(AmountTypes.mg, 500) );
@@ -71,8 +80,8 @@ public class AbstractQuantityEngExtractor {
 	
 	
 	public static class QuantityTranslation{
-		private AmountTypes targetAmountType;
-		private float multiplier;
+		private AmountTypes targetAmountType=null;
+		private float multiplier=0;
 		
 		
 		public QuantityTranslation(AmountTypes targetAmountType, float multiplier) {
@@ -91,6 +100,18 @@ public class AbstractQuantityEngExtractor {
 		}
 		public void setMultiplier(float multiplier) {
 			this.multiplier = multiplier;
+		}
+		
+		
+		public PreciseQuantity getQuantity() {
+			return getQuantity(1);
+		}		
+		
+		public PreciseQuantity getQuantity(float multiplier) {
+			if(getMultiplier()>0.0&&getTargetAmountType()!=null)
+				return new PreciseQuantity(getMultiplier()*multiplier, getTargetAmountType());
+			else
+				return null;
 		}
 	}
 }

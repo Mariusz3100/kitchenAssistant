@@ -16,6 +16,13 @@ public class AbstractQuantityExtracter {
 		
 		
 		translations=new HashMap<String, QuantityTranslation>();
+		translations.put("mg",new QuantityTranslation(AmountTypes.mg, 1) );
+		translations.put("ml",new QuantityTranslation(AmountTypes.ml, 1) );
+		translations.put("szt",new QuantityTranslation(AmountTypes.szt, 1) );
+		translations.put("kcal",new QuantityTranslation(AmountTypes.kalorie, 1) );
+
+		
+		
 		
 		translations.put("g",new QuantityTranslation(AmountTypes.mg, 1000) );
 		translations.put("kg",new QuantityTranslation(AmountTypes.mg, 1000000) );
