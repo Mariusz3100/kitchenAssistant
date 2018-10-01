@@ -68,8 +68,9 @@ public class Nutrient {
 	}
 
 	
-	public String toString(){
-		return getName();
+	@Override
+	public String toString() {
+		return "Nutrient [nu_id=" + nu_id + ", name=" + name + "]";
 	}
 
 	
