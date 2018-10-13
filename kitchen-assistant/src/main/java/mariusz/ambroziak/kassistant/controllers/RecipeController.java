@@ -636,10 +636,12 @@ public class RecipeController {
 		return "We are really sorry, it seems url "+produktToBeChecked.getProdukt().getUrl()+" points to a produkt in our database, that is no longer avaible at the shop. Please, choose something else.";
 	}
 
-	
+	//well, right now there is no more point to divide nutrients into label nutrients and basic ones. 
+	//this method left for backard compatibility.
 	private Map<SingleProdukt_SearchResult, ProduktWithBasicIngredients> scrapNutrientValuesDataHandleUnlikelyExceptions(
 			GoodBadSkippedResults resultsHolder) throws AgentSystemNotStartedException, Page404Exception {
-		Map<SingleProdukt_SearchResult, ProduktWithBasicIngredients> retrievedBasicNutrientValues=null;
+		Map<SingleProdukt_SearchResult, ProduktWithBasicIngredients> retrievedBasicNutrientValues=
+				UsdaNutrientApiClient.searchForNutritionDetails(resultsHolder.getGoodResults());
 		//TODO correct
 //				try {
 //		retrievedBasicNutrientValues = 

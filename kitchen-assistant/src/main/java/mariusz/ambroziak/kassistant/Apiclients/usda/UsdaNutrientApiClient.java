@@ -3,6 +3,7 @@ package mariusz.ambroziak.kassistant.Apiclients.usda;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -21,9 +22,12 @@ import com.sun.jersey.core.util.MultivaluedMapImpl;
 import api.extractors.EdamanQExtract;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.UsdaApiParameters;
 import mariusz.ambroziak.kassistant.model.Nutrient;
+import mariusz.ambroziak.kassistant.model.Produkt;
+import mariusz.ambroziak.kassistant.model.jsp.SingleProdukt_SearchResult;
 import mariusz.ambroziak.kassistant.model.quantity.PreciseQuantity;
 import mariusz.ambroziak.kassistant.model.utils.ApiIngredientAmount;
 import mariusz.ambroziak.kassistant.model.utils.ProduktIngredientQuantity;
+import mariusz.ambroziak.kassistant.model.utils.ProduktWithBasicIngredients;
 
 
 
@@ -135,6 +139,22 @@ public class UsdaNutrientApiClient {
 		System.out.println("\nbest: "+best);
 		
 		
+	}
+
+
+	public static Map<SingleProdukt_SearchResult, ProduktWithBasicIngredients> searchForNutritionDetails(
+			ArrayList<SingleProdukt_SearchResult> goodResults) {
+		
+		Map<SingleProdukt_SearchResult, ProduktWithBasicIngredients> retValue=new HashMap<>();
+		
+		for(SingleProdukt_SearchResult sp_sr:goodResults) {
+			Produkt produkt=sp_sr.getProdukt();
+			UsdaFoodDetails searchForNutritionDetails = searchForNutritionDetails(produkt.getNazwa());
+			
+			
+		}
+		
+		return null;
 	}
 
 
