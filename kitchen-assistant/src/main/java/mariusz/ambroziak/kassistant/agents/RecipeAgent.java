@@ -65,8 +65,8 @@ public class RecipeAgent extends BaseAgent{
 	static ArrayList<RecipeAgent> agents;
 	@Autowired
 	private ProduktDAO produktDao;
-	
-	
+
+
 	public static final String PARSER_NAME = "recipeParser";
 
 	private static final long serialVersionUID = 1L;
@@ -76,7 +76,7 @@ public class RecipeAgent extends BaseAgent{
 
 	@Override
 	protected void live() {
-		
+
 		while(true){
 			pause(100000);
 		}
@@ -93,12 +93,12 @@ public class RecipeAgent extends BaseAgent{
 		if(!isGroup(AGENT_COMMUNITY,AGENT_GROUP)){
 			createGroup(AGENT_COMMUNITY,AGENT_GROUP);
 		}
-		
+
 		requestRole(AGENT_COMMUNITY, AGENT_GROUP, PARSER_NAME);
 
 		if(agents==null)agents=new ArrayList<RecipeAgent>();
 		agents.add(this);
-		
+
 		setLogLevel(Level.FINEST);
 		super.activate();
 	}
@@ -107,7 +107,7 @@ public class RecipeAgent extends BaseAgent{
 		super();
 		AGENT_COMMUNITY=StringHolder.AGENT_COMMUNITY;
 		AGENT_ROLE=PARSER_NAME;
-		
+
 	}
 
 
@@ -119,7 +119,7 @@ public class RecipeAgent extends BaseAgent{
 	public static ArrayList<MultiProdukt_SearchResult> getQuantitiesAndProduktsFromRecipeUrl(String url)
 			throws AgentSystemNotStartedException, Page404Exception{
 		RecipeAgent freeOne = getFreeAgent();
-		
+
 		if(freeOne!=null)
 		{
 			freeOne.setBusy(true);
@@ -128,13 +128,13 @@ public class RecipeAgent extends BaseAgent{
 			return result;
 		}else
 			return null;
-		
-	
+
+
 	}
 
 	public static ArrayList<SearchResult> getPhrasesAndQuantitiesFromRecipeUrl(String url) throws AgentSystemNotStartedException, Page404Exception{
 		RecipeAgent freeOne = getFreeAgent();
-		
+
 		if(freeOne!=null)
 		{
 			freeOne.setBusy(true);
@@ -144,11 +144,9 @@ public class RecipeAgent extends BaseAgent{
 			return result;
 		}else
 			return null;
-		
-	
 	}
-	
-	
+
+
 	public static List<Produkt> parseProdukt(String produktPhrase) throws AgentSystemNotStartedException{
 		RecipeAgent freeOne = getFreeAgent();
 		if(freeOne!=null)
@@ -160,7 +158,8 @@ public class RecipeAgent extends BaseAgent{
 		}else
 			return null;
 	}
-	
+
+
 	public static List<Produkt> searchForProdukt(String searchPhrase,String quantityPhrase) throws AgentSystemNotStartedException{
 		RecipeAgent freeOne = getFreeAgent();
 		if(freeOne==null){
@@ -178,42 +177,24 @@ public class RecipeAgent extends BaseAgent{
 	}
 
 
-	
-//	public static List<Produkt> findProduktByProduktPhrase(String produktPhrase) throws AgentSystemNotStartedException{
-//		RecipeAgent freeOne = getFreeAgent();
-//		if(freeOne==null){
-//			return null;
-//		}else{
-//			freeOne.setBusy(true);
-//			List<Produkt> result;
-//			try{
-//				result= freeOne.findSkladnik(produktPhrase);
-//			}finally{
-//				freeOne.setBusy(false);
-//			}
-//			return result;
-//		}
-//	}
-
-	
 	public Produkt getProduktFromDbByUrl(String produktUrl) {
 		return produktDao.getProduktsByURL(produktUrl);
 	}
 
+
 	private static RecipeAgent getFreeAgent() throws AgentSystemNotStartedException {
 		RecipeAgent freeOne=null;
-		
+
 		if(agents==null){
 			System.out.println("Agent system not started");
 			throw new AgentSystemNotStartedException();
 
-		}
-		else{
+		}else{
 			while(freeOne==null){
 				for(RecipeAgent ra:agents){
 					if(!ra.isBusy()){
 						freeOne=ra;
-	
+
 					}
 				}
 				if(freeOne==null){
@@ -225,7 +206,7 @@ public class RecipeAgent extends BaseAgent{
 					}
 				}
 			}
-	}
+		}
 		return freeOne;
 	}
 
@@ -234,7 +215,7 @@ public class RecipeAgent extends BaseAgent{
 		//For now I decided to leave it as it is, every time parse, 
 		//because I need to make sure if recipes remain the same 
 		Recipe recipeByURL = DaoProvider.getInstance().getRecipeDao().getRecipeByURL(url);
-		
+
 		if(recipeByURL==null)
 			return parseProduktsPhrasesAndQuantitiesFromRecipeUrl(url);
 		else
@@ -248,7 +229,6 @@ public class RecipeAgent extends BaseAgent{
 	}
 
 
-	
 	public ArrayList<MultiProdukt_SearchResult> parseProduktsPhrasesAndQuantitiesFromRecipeUrl(String url) throws Page404Exception{
 		ArrayList<MultiProdukt_SearchResult> retValue=new ArrayList<MultiProdukt_SearchResult>();
 		try{
@@ -260,15 +240,8 @@ public class RecipeAgent extends BaseAgent{
 				PreciseQuantityWithPhrase produktAndAmount=retrieveProduktAmountData(e);
 				MultiProdukt_SearchResult sr = parseSkladnik(ingredient, produktAndAmount);
 				retValue.add(sr);
-				
-				htmlLog("\n"+ingredient+"->\n");
-				
-				if(sr.getProdukts()!=null&&sr.getProdukts().size()>0)
-					for(Produkt p:sr.getProdukts()){
-						htmlLog(p.getUrl()+"\n");
-					}
-				else
-					htmlLog("Nothing Found\n");
+
+				htmlLogResults(ingredient, sr);
 			}
 		}catch( IOException e){
 			e.printStackTrace();
@@ -276,7 +249,19 @@ public class RecipeAgent extends BaseAgent{
 		return retValue;
 	}
 
-	
+
+	private void htmlLogResults(String ingredient, MultiProdukt_SearchResult sr) {
+		htmlLog("\n"+ingredient+"->\n");
+
+		if(sr.getProdukts()!=null&&sr.getProdukts().size()>0)
+			for(Produkt p:sr.getProdukts()){
+				htmlLog(p.getUrl()+"\n");
+			}
+		else
+			htmlLog("Nothing Found\n");
+	}
+
+
 	public ArrayList<SearchResult> parsePhrasesAndQuantitiesFromRecipeUrl(String url) throws Page404Exception{
 		ArrayList<SearchResult> retValue=new ArrayList<SearchResult>();
 		try{
@@ -289,7 +274,7 @@ public class RecipeAgent extends BaseAgent{
 				SearchResult sr =new SearchResult(ingredient,produktAndAmount.getProduktPhrase(),
 						produktAndAmount.getQuantityJspPhrase());
 				retValue.add(sr);
-				
+
 			}
 		}catch( IOException e){
 			e.printStackTrace();
@@ -304,13 +289,13 @@ public class RecipeAgent extends BaseAgent{
 		List<Produkt> potencjalneSkladniki = findSkladnik(qp.getProduktPhrase());
 		return new MultiProdukt_SearchResult(searchPhrase,qp.getProduktPhrase(),qp.getQuantityJspPhrase(),potencjalneSkladniki);
 	}
-	
+
 	public MultiProdukt_SearchResult parseSkladnik(String searchPhrase, PreciseQuantityWithPhrase qp) {
 		List<Produkt> potencjalneSkladniki = findSkladnik(qp.getProduktPhrase());
 		return new MultiProdukt_SearchResult(searchPhrase,qp.getProduktPhrase(),qp.getQuantityJspPhrase(),potencjalneSkladniki);
 	}
-	
-	
+
+
 	private PreciseQuantityWithPhrase retrieveProduktAmountData(Element e) {
 		String ingredient = e.text();
 		String quan =extractQuantity(e);
@@ -324,51 +309,23 @@ public class RecipeAgent extends BaseAgent{
 		PreciseQuantityWithPhrase retValue = SkladnikiExtractor.extract(ingredientPhrase, quantityPhrase);
 		return retValue;
 	}
-	
+
 	private String extractQuantity(Element e) {
-		
+
 		String quantity=e.select(".quantity").text();
-		
-		
+
+
 		if(quantity==null||quantity.equals(""))
 			quantity=e.parent().parent().select(".quantity").text();
 		return quantity;
 	}
 
-//	private static QuantityProdukt retrieveQuantity(String quantity) {
-//		return PrzepisyPLQExtract.extractQuantity(quantity);
-//		
-//		
-//		
-//	}
 
 
 	private List<Produkt> findSkladnik(String produktPhrase) {
 		List<Produkt> results;
-//		ArrayList<String> baseWords = null;
 		results=checkInDb(produktPhrase);
 
-//		if(results==null||results.size()<1){
-//			baseWords=getBaseWords(produktPhrase);
-//			
-//			baseWords=removeNiepoprawne(baseWords);
-//			
-//			if(baseWords.size()>0)
-//				results=checkInDb(baseWords);
-//		}
-
-		//if(results==null||results.size()<1){
-			
-//			if(baseWords==null)
-//				baseWords=getBaseWords(produktPhrase);
-			
-//			baseWords=removeNiepoprawne(baseWords);
-			
-	//		if(baseWords.size()>0)
-//				results=checkShops(produktPhrase);
-		//}
-		
-		
 		if(results==null||results.size()<1){
 			results=checkShops(produktPhrase);
 		}
@@ -386,23 +343,23 @@ public class RecipeAgent extends BaseAgent{
 
 		return retValue;
 	}
-	
+
 	private String removeNiepoprawne(String baseWords) {
 		return baseWords.replaceAll(Base_WordDAOImpl.niepoprawneSlowoBazowe, 
 				"");
 	}
 
 	private List<Produkt> checkShops(ArrayList<String> baseWords) {
-		
+
 		String baseWordsString="";
-		
-		
+
+
 		for(String x:baseWords){
 			if(!Base_WordDAOImpl.niepoprawneSlowoBazowe.equals(baseWordsString))
 				baseWordsString+=x+" ";
 		}
-		
-		
+
+
 		return checkShops(baseWordsString);
 	}
 
@@ -410,7 +367,7 @@ public class RecipeAgent extends BaseAgent{
 	private ArrayList<String> getBaseWords(String text) {
 		String[] words=text.split(" ");
 		ArrayList<String> wordsList=new ArrayList<String>();
-		
+
 		for(String x : words){
 			Base_Word base_Name = DaoProvider.getInstance().getVariantWordDao().getBase_Name(x.toLowerCase());
 			if(base_Name!=null){
@@ -420,7 +377,7 @@ public class RecipeAgent extends BaseAgent{
 			else
 				wordsList.add(SJPWebScrapper.getAndSaveNewRelation(x.toLowerCase()));
 		}
-		
+
 		return wordsList;
 	}
 
@@ -453,42 +410,48 @@ public class RecipeAgent extends BaseAgent{
 
 	private ArrayList<Produkt> checkShops(String text) {
 		if(checkShops&&text!=null){
-			JSONObject json = new JSONObject();
-			
-			json.put(StringHolder.SEARCH4_NAME, text.trim());
-			json.put(StringHolder.MESSAGE_CREATOR_NAME, PARSER_NAME);
-			json.put(StringHolder.MESSAGE_TYPE_NAME, MessageTypes.SearchFor);
-			
-			
+			JSONObject json = createSearchForMessage(text);
+
 			AgentAddress x=getAgentWithRole(StringHolder.AGENT_COMMUNITY, AGENT_GROUP, ShopsListAgent.SHOP_LIST_NAME);
-	
+
 			StringMessage messageToSend = new StringMessage(json.toString());
 			StringMessage response=(StringMessage) 
 					sendMessageWithRoleAndWaitForReplyKA(x, messageToSend,PARSER_NAME);
-			
-	
+
 			if(response.getContent().equals(""))
-					return null;
+				return null;
 			else{
 				JSONObject jsonObject = new JSONObject(response.getContent());
-				
-	//			Map y= factory.newJsonParser().parseJson(response.getContent());
-				ProduktDAO produktDao = DaoProvider.getInstance().getProduktDao();
-				
 				String ids=jsonObject.getString(StringHolder.PRODUKT_IDS_NAME);
-				
-				ArrayList<Produkt> retValue=new ArrayList<Produkt>();
-				
-				if(ids!=null&&!ids.equals(""))
-					for(String id:ids.split(" ")){
-						retValue.add(produktDao.getById(Long.parseLong(id)));
-					}
-				
-				return retValue;
+				return retrieveProducktsByIds(ids);
 			}
 		}else{
 			return null;
 		}
+	}
+
+
+	private ArrayList<Produkt> retrieveProducktsByIds(String ids) {
+		ProduktDAO produktDao = DaoProvider.getInstance().getProduktDao();
+
+		ArrayList<Produkt> retValue=new ArrayList<Produkt>();
+
+		if(ids!=null&&!ids.equals(""))
+			for(String id:ids.split(" ")){
+				retValue.add(produktDao.getById(Long.parseLong(id)));
+			}
+
+		return retValue;
+	}
+
+
+	private JSONObject createSearchForMessage(String text) {
+		JSONObject json = new JSONObject();
+
+		json.put(StringHolder.SEARCH4_NAME, text.trim());
+		json.put(StringHolder.MESSAGE_CREATOR_NAME, PARSER_NAME);
+		json.put(StringHolder.MESSAGE_TYPE_NAME, MessageTypes.SearchFor);
+		return json;
 	}
 
 	public void main(String[] args) throws AgentSystemNotStartedException, Page404Exception {
