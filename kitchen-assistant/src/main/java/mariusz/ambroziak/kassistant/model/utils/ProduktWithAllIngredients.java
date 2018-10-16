@@ -11,14 +11,6 @@ public class ProduktWithAllIngredients extends ProduktWithBasicIngredients{
 	
 	private CompoundIngredientQuantity ProduktAsIngredient;
 
-	
-
-
-
-
-
-
-
 	public ProduktWithAllIngredients(ProduktDetails produkt,
 			CompoundIngredientQuantity produktAsIngredient,
 			ArrayList<BasicIngredientQuantity> basicsFor100g) {

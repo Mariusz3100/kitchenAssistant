@@ -10,6 +10,10 @@ public class StringHolder {
 	public static final String PRODUKT_URL_NAME = "produktUrl";
 	public static final String PRODUKT_IDS_NAME = "ids";
 	public static final String SINGLE_PRODUKT_ID_NAME ="id";
+
+	public static final String EXCEPTION_MESSAGE_NAME="exception_name";
+	public static final String EXCEPTION_STACKTRACE_NAME="stacktrace";
+	
 	
 	public static final String SEARCH_PHRASE_BORDERS="_";
 	

@@ -1,5 +1,7 @@
 package mariusz.ambroziak.kassistant.agents;
 
+import static org.hamcrest.CoreMatchers.nullValue;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -58,6 +60,7 @@ import mariusz.ambroziak.kassistant.model.utils.PreciseQuantityWithPhrase;
 import mariusz.ambroziak.kassistant.utils.Converter;
 import mariusz.ambroziak.kassistant.utils.MessageTypes;
 import mariusz.ambroziak.kassistant.utils.ParameterHolder;
+import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 import mariusz.ambroziak.kassistant.utils.StringHolder;
 
 public class RecipeAgent extends BaseAgent{
@@ -344,47 +347,6 @@ public class RecipeAgent extends BaseAgent{
 		return retValue;
 	}
 
-	private String removeNiepoprawne(String baseWords) {
-		return baseWords.replaceAll(Base_WordDAOImpl.niepoprawneSlowoBazowe, 
-				"");
-	}
-
-	private List<Produkt> checkShops(ArrayList<String> baseWords) {
-
-		String baseWordsString="";
-
-
-		for(String x:baseWords){
-			if(!Base_WordDAOImpl.niepoprawneSlowoBazowe.equals(baseWordsString))
-				baseWordsString+=x+" ";
-		}
-
-
-		return checkShops(baseWordsString);
-	}
-
-
-	private ArrayList<String> getBaseWords(String text) {
-		String[] words=text.split(" ");
-		ArrayList<String> wordsList=new ArrayList<String>();
-
-		for(String x : words){
-			Base_Word base_Name = DaoProvider.getInstance().getVariantWordDao().getBase_Name(x.toLowerCase());
-			if(base_Name!=null){
-				if(!Base_WordDAOImpl.niepoprawneSlowoBazowe.equals(base_Name.getB_word()))
-					wordsList.add(base_Name.getB_word());
-			}
-			else
-				wordsList.add(SJPWebScrapper.getAndSaveNewRelation(x.toLowerCase()));
-		}
-
-		return wordsList;
-	}
-
-
-
-
-
 	private ArrayList<Produkt> checkInDb(String text) {
 		ArrayList<Produkt> retValue=new ArrayList<Produkt>();
 
@@ -422,8 +384,23 @@ public class RecipeAgent extends BaseAgent{
 				return null;
 			else{
 				JSONObject jsonObject = new JSONObject(response.getContent());
-				String ids=jsonObject.getString(StringHolder.PRODUKT_IDS_NAME);
-				return retrieveProducktsByIds(ids);
+
+				if(MessageTypes.ExceptionOccured.toString().equals(jsonObject.getString(StringHolder.MESSAGE_TYPE_NAME))){
+					String name=jsonObject.getString(StringHolder.EXCEPTION_MESSAGE_NAME);
+					String stackTrace=jsonObject.getString(StringHolder.EXCEPTION_STACKTRACE_NAME);
+
+					throw new RuntimeException("Exception was thrown in agent"+name+":\n"+stackTrace);
+				}else {
+					if(MessageTypes.SearchFor.toString().equals(jsonObject.getString(StringHolder.MESSAGE_TYPE_NAME))){
+						String ids=jsonObject.getString(StringHolder.PRODUKT_IDS_NAME);
+						return retrieveProducktsByIds(ids);	
+					}else {
+						ProblemLogger.logProblem("Unknown message type "+response.getContent());
+						return null;
+					}
+					
+				}
+
 			}
 		}else{
 			return null;

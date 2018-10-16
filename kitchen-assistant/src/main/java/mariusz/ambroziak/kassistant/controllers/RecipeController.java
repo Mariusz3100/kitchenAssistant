@@ -169,18 +169,6 @@ public class RecipeController {
 			return mav;
 		}
 
-
-		
-		
-		
-		
-		
-//		ModelAndView modelAndView = new ModelAndView("recipesFromApiList");
-//		
-//		modelAndView.addObject("recipeList", results);
-		
-//		return modelAndView;
-
 	}
 
 	
@@ -264,7 +252,7 @@ public class RecipeController {
 			if(produktQuan.getAmount()>=neededQuantity.getAmount()){
 				recountedPrice=produktQuan+"->"+p.getCena()+" "+curency;
 			}else{
-				int multiplier = getMultiplierOfProduktQuantityForNeededQuantity(neededQuantity, produktQuan);
+				int multiplier = neededQuantity.getMultiplierOfProduktQuantityForNeededQuantity( produktQuan);
 				recountedPrice=produktQuan+" x "+multiplier+" -> "
 						+p.getCena()+" x "+multiplier+" "+curency+"="+p.getCena()*multiplier+" "+curency;
 			}
@@ -275,19 +263,7 @@ public class RecipeController {
 		return retValue;
 	}
 
-	private int getMultiplierOfProduktQuantityForNeededQuantity(NotPreciseQuantity neededQuantity,
-			PreciseQuantity produktQuan) {
-		int multiplier=1;
 
-		if(!(neededQuantity instanceof PreciseQuantity)){
-			ProblemLogger.logProblem("Calculating coefficient for NotPreciseQuantity");
-		}
-		//raczej zawsze b---dzie PreciseQuantity dwa razy, ale zawsze lepiej wzi------ pod uwag--- max
-		while(produktQuan.getAmount()*multiplier<neededQuantity.getMaximalAmount()){
-			++multiplier;
-		}
-		return multiplier;
-	}
 
 	private PreciseQuantity extractQuantity(String quantityAmount, String quantityType) {
 		AmountTypes at=AmountTypes.valueOf(quantityType);
@@ -539,13 +515,22 @@ public class RecipeController {
 		PreciseQuantity produktAmount = e.getValue().getProdukt().getAmount();
 
 
-		int multiplier=getMultiplierOfProduktQuantityForNeededQuantity(PreciseQuantity.parseFromJspString(e.getKey().getQuantity()), produktAmount);
+		String quantityStringFromJsp = e.getKey().getQuantity();
+		int multiplier = getMultiplier(produktAmount, quantityStringFromJsp);
 
 		amountPer100gOfProdukt.multiplyBy(produktAmount.getFractionOf100g()*multiplier);
 
 		return amountPer100gOfProdukt;	
 
 
+	}
+
+	private int getMultiplier(PreciseQuantity produktAmount, String quantityStringFromJsp) {
+		PreciseQuantity parsedFromJspStringQuantity = PreciseQuantity.parseFromJspString(quantityStringFromJsp);
+		
+		int multiplier=parsedFromJspStringQuantity==null?
+				1:parsedFromJspStringQuantity.getMultiplierOfProduktQuantityForNeededQuantity(produktAmount);
+		return multiplier;
 	}
 
 
@@ -567,9 +552,8 @@ public class RecipeController {
 				NotPreciseQuantity ingredientAmountSoFar = produktNutrients.get(biq.getName());
 
 				NotPreciseQuantity amount = biq.getAmount();
-				amount.multiplyBy(
-						getMultiplierOfProduktQuantityForNeededQuantity(PreciseQuantity.parseFromJspString(e.getKey().getQuantity()),
-								e.getValue().getProdukt().getAmount()));;
+				
+				amount.multiplyBy(getMultiplier(e.getValue().getProdukt().getAmount(), e.getKey().getQuantity()));;
 
 								if(ingredientAmountSoFar==null){
 									ingredientAmountSoFar=amount;
@@ -637,7 +621,7 @@ public class RecipeController {
 	}
 
 	//well, right now there is no more point to divide nutrients into label nutrients and basic ones. 
-	//this method left for backard compatibility.
+	//this method left for backward compatibility.
 	private Map<SingleProdukt_SearchResult, ProduktWithBasicIngredients> scrapNutrientValuesDataHandleUnlikelyExceptions(
 			GoodBadSkippedResults resultsHolder) throws AgentSystemNotStartedException, Page404Exception {
 		Map<SingleProdukt_SearchResult, ProduktWithBasicIngredients> retrievedBasicNutrientValues=

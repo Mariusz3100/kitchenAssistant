@@ -23,6 +23,7 @@ import mariusz.ambroziak.kassistant.shopcom.ShopComApiClientParticularProduct;
 import mariusz.ambroziak.kassistant.utils.MessageTypes;
 import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 import mariusz.ambroziak.kassistant.utils.StringHolder;
+import mariusz.ambroziak.kassistant.utils.StringUtils;
 import webscrappers.auchan.GA_ProduktScrapped;
 import webscrappers.auchan.ProduktDetails;
 
@@ -152,7 +153,47 @@ public class ShopComAgent extends BaseAgent {
 
 	private void processSearchForMessage(StringMessage m) {
 		JSONObject json=new JSONObject(m.getContent());
+		StringMessage messageToSend=null;
+		
+		String ids = searchForCorrectHandleNulls(json);
+		
+		try{
+			messageToSend = createResponseMessage(ids);
+		}catch(Exception e) {
+			ProblemLogger.logProblem(e.toString());
+			ProblemLogger.logStackTrace(e.getStackTrace());
+			messageToSend=createExceptionResponseMessage(e);
+			
+			setBusy(false);
+		}
 
+		sendReplyWithRoleKA(m, messageToSend,AGENT_ROLE);
+	}
+
+	private StringMessage createExceptionResponseMessage(Exception e) {
+		JSONObject result=new JSONObject();
+
+		result.put(StringHolder.MESSAGE_TYPE_NAME, MessageTypes.ExceptionOccured);
+		result.put(StringHolder.MESSAGE_CREATOR_NAME, SHOP_COM_API_AGENT_NAME);
+		result.put(StringHolder.EXCEPTION_MESSAGE_NAME, e.toString());
+		result.put(StringHolder.EXCEPTION_STACKTRACE_NAME, StringUtils.stackTraceToString(e));
+		StringMessage messageToSend = new StringMessage(result.toString());
+
+		return messageToSend;
+	}
+
+	private StringMessage createResponseMessage(String ids) {
+		JSONObject result=new JSONObject();
+
+		result.put(StringHolder.PRODUKT_IDS_NAME, ids);
+		result.put(StringHolder.MESSAGE_TYPE_NAME, MessageTypes.SearchForResponse);
+		result.put(StringHolder.MESSAGE_CREATOR_NAME, SHOP_COM_API_AGENT_NAME);
+
+		StringMessage messageToSend = new StringMessage(result.toString());
+		return messageToSend;
+	}
+
+	private String searchForCorrectHandleNulls(JSONObject json) {
 		String searchForPhrase=(String) json.get(StringHolder.SEARCH4_NAME);
 
 		ArrayList<Produkt> produkts = searchForCorrect(searchForPhrase);
@@ -172,16 +213,7 @@ public class ShopComAgent extends BaseAgent {
 			ids=ids.replaceAll("null", "");
 			ids.replaceAll("  ", " ");
 		}
-		
-		JSONObject result=new JSONObject();
-
-		result.put(StringHolder.PRODUKT_IDS_NAME, ids);
-		result.put(StringHolder.MESSAGE_TYPE_NAME, MessageTypes.SearchForResponse);
-		result.put(StringHolder.MESSAGE_CREATOR_NAME, SHOP_COM_API_AGENT_NAME);
-
-		StringMessage messageToSend = new StringMessage(result.toString());
-
-		sendReplyWithRoleKA(m, messageToSend,AGENT_ROLE);
+		return ids;
 	}
 
 	private ArrayList<Produkt> getAndSaveDetails(ArrayList<Produkt> produkts) {
@@ -236,7 +268,21 @@ public class ShopComAgent extends BaseAgent {
 
 	public void processGetProduktByUrlMesage(StringMessage m) {
 		Produkt produkt = getOrParseProduktByUrl(m);
+		StringMessage messageToSend=null;
+		try {
+			messageToSend = createProduktByUrlResponse(produkt);
+		}catch(Exception e) {
+			ProblemLogger.logProblem(e.toString());
+			ProblemLogger.logStackTrace(e.getStackTrace());
+			messageToSend=createExceptionResponseMessage(e);
+			
+			setBusy(false);
+		}
+		
+		sendReplyWithRoleKA(m, messageToSend,AGENT_ROLE);
+	}
 
+	private StringMessage createProduktByUrlResponse(Produkt produkt) {
 		String id="";
 		if(produkt!=null){
 			id+=produkt.getP_id();
@@ -249,8 +295,7 @@ public class ShopComAgent extends BaseAgent {
 		result.put(StringHolder.MESSAGE_TYPE_NAME, MessageTypes.GetProduktDataResponse);
 
 		StringMessage messageToSend = new StringMessage(result.toString());
-
-		sendReplyWithRoleKA(m, messageToSend,AGENT_ROLE);
+		return messageToSend;
 	}
 
 

@@ -103,6 +103,20 @@ public class PreciseQuantity extends NotPreciseQuantity {
 		
 		
 	}
+	
+	
+	public int getMultiplierOfProduktQuantityForNeededQuantity(NotPreciseQuantity neededQuantity) {
+		int multiplier=1;
+
+		if(!(neededQuantity instanceof PreciseQuantity)){
+			ProblemLogger.logProblem("Calculating coefficient for NotPreciseQuantity");
+		}
+		//raczej zawsze b---dzie PreciseQuantity dwa razy, ale zawsze lepiej wzi------ pod uwag--- max
+		while(getAmount()*multiplier<neededQuantity.getMaximalAmount()){
+			++multiplier;
+		}
+		return multiplier;
+	}
 
 }
 

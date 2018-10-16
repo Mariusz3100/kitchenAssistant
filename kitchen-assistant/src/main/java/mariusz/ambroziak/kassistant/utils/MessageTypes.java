@@ -9,6 +9,8 @@ public enum MessageTypes {
 	GetProduktDataResponse,
 	
 	
-	GetLimitations
+	GetLimitations,
+	
+	ExceptionOccured
 	;
 }

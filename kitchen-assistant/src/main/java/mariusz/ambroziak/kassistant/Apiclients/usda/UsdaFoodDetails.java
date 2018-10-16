@@ -1,5 +1,6 @@
 package mariusz.ambroziak.kassistant.Apiclients.usda;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import mariusz.ambroziak.kassistant.model.Nutrient;
@@ -27,5 +28,8 @@ public class UsdaFoodDetails {
 		this.nutrietsMap = nutrietsMap;
 	}
 
+	public static UsdaFoodDetails getEmptyOne(){
+		return new UsdaFoodDetails(null, new HashMap<>());
+	}
 
 }
