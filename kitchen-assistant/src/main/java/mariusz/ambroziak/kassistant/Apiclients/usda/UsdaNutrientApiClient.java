@@ -157,31 +157,7 @@ public class UsdaNutrientApiClient {
 	}
 
 
-//	public static Map<SingleProdukt_SearchResult, ProduktWithBasicIngredients> searchForNutritionDetails(
-//			ArrayList<SingleProdukt_SearchResult> goodResults) {
-//
-//		Map<SingleProdukt_SearchResult, ProduktWithBasicIngredients> retValue=new HashMap<>();
-//		retrieveNutrientDataForProdukts
-//		ProduktWithBasicIngredients pwbi=new ProduktWithBasicIngredients(sp_sr.getProdukt(), searchForNutritionDetails(goodResults));
-//
-//
-//
-//		return null;
-//	}
 
-//	public static Map<SingleProdukt_SearchResult, ProduktWithBasicIngredients> searchForBasicNutrients(
-//			ArrayList<SingleProdukt_SearchResult> goodResults) {
-//
-//		Map<SingleProdukt_SearchResult, ProduktWithBasicIngredients> retValue=new HashMap<>();
-//
-//		for(SingleProdukt_SearchResult sp_sr:goodResults) {
-//			retrieveNutrientDataForProdukts(g)
-//			ProduktWithBasicIngredients pwbi=new ProduktWithBasicIngredients(sp_sr.getProdukt(), )
-//		}
-//
-//
-//		return null;
-//	}
 
 	public static Map<SingleProdukt_SearchResult, Map<Nutrient, PreciseQuantity>> retrieveNutrientDataForProdukts(ArrayList<SingleProdukt_SearchResult> goodResults) {
 		Map<SingleProdukt_SearchResult, Map<Nutrient,PreciseQuantity>> nutrientMap=new HashMap<SingleProdukt_SearchResult, Map<Nutrient,PreciseQuantity>>();
@@ -194,9 +170,20 @@ public class UsdaNutrientApiClient {
 				//TODO could be better right now we just assume produkt name is just search phrase with some unnecessary additives
 				searchForNutritionDetails = searchForNutritionDetails(sp_sr.getProduktPhrase());
 			}
-			nutrientMap.put(sp_sr, searchForNutritionDetails.getNutrietsMap());
+			addNutrientDetailsToResultMap(nutrientMap, sp_sr, searchForNutritionDetails);
 		}
 		return nutrientMap;
+	}
+
+
+	private static void addNutrientDetailsToResultMap(
+			Map<SingleProdukt_SearchResult, Map<Nutrient, PreciseQuantity>> nutrientMap,
+			SingleProdukt_SearchResult sp_sr, UsdaFoodDetails searchForNutritionDetails) {
+		
+		if(searchForNutritionDetails!=null&&searchForNutritionDetails.getNutrietsMap()!=null)
+			nutrientMap.put(sp_sr, searchForNutritionDetails.getNutrietsMap());
+		else
+			nutrientMap.put(sp_sr, new HashMap<Nutrient, PreciseQuantity>());
 	}
 
 

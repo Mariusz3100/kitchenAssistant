@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -12,12 +13,16 @@ import javassist.runtime.Inner;
 
 import java.util.Map.Entry;
 
+import mariusz.ambroziak.kassistant.Apiclients.usda.UsdaNutrientApiClient;
 import mariusz.ambroziak.kassistant.exceptions.IncopatibleAmountTypesException;
 import mariusz.ambroziak.kassistant.exceptions.InvalidArgumentException;
+import mariusz.ambroziak.kassistant.model.Nutrient;
 import mariusz.ambroziak.kassistant.model.jsp.SingleProdukt_SearchResult;
 import mariusz.ambroziak.kassistant.model.quantity.NotPreciseQuantity;
 import mariusz.ambroziak.kassistant.model.quantity.PreciseQuantity;
 import mariusz.ambroziak.kassistant.model.utils.BasicIngredientQuantity;
+import mariusz.ambroziak.kassistant.model.utils.GoodBadSkippedResults;
+import mariusz.ambroziak.kassistant.model.utils.ProduktWithAllNutrients;
 import mariusz.ambroziak.kassistant.model.utils.ProduktWithBasicIngredients;
 
 public class CompoundMapManipulator <OuterMapKey,InnerMapKey>{
@@ -122,5 +127,62 @@ public class CompoundMapManipulator <OuterMapKey,InnerMapKey>{
 		return amountsMap;
 	}
 
+	public static Map<String, Map<String, NotPreciseQuantity>> stringifyKeys(
+			Map<SingleProdukt_SearchResult, Map<Nutrient, PreciseQuantity>> retrievedNutrientDataForProdukts) {
+		Map<String, Map<String, NotPreciseQuantity>>  retValue=new HashMap<String, Map<String,NotPreciseQuantity>>();
+		
+		for(SingleProdukt_SearchResult sp_sr:retrievedNutrientDataForProdukts.keySet()) {
+			Map<Nutrient, PreciseQuantity> map = retrievedNutrientDataForProdukts.get(sp_sr);
+			Map<String, NotPreciseQuantity> transformedMap=new HashMap<String, NotPreciseQuantity>();
+			
+			for(Nutrient nutrient:map.keySet()) {
+				transformedMap.put(nutrient.getName(), map.get(nutrient));
+			}
+			retValue.put(sp_sr.getProdukt().getNazwa(), transformedMap);
+			
+			
+		}
+		
+		return retValue;
+	}
+	
+	public Map<String, Map<String, NotPreciseQuantity>> getSumOfNutrientsForWholeProdukt(
+			Map<SingleProdukt_SearchResult, ProduktWithAllNutrients> originalMap) {
+		//IngredientName->(FoodIngredientName->amount)
+		Map<String, Map<String, NotPreciseQuantity>> amountsMap=new HashMap<String, Map<String,NotPreciseQuantity>>();
+
+		Set<Entry<SingleProdukt_SearchResult, ProduktWithAllNutrients>> entrySet = originalMap.entrySet();
+		Iterator<Entry<SingleProdukt_SearchResult, ProduktWithAllNutrients>> iterator = entrySet.iterator();
+		while(iterator.hasNext()){
+			Entry<SingleProdukt_SearchResult, ProduktWithAllNutrients> entry = iterator.next();
+			Map<String, NotPreciseQuantity> nutrientsSum = amountsMap.get(entry.getKey().getProdukt().getNazwa());
+			nutrientsSum=initializeMapIfEmpty(nutrientsSum,amountsMap, entry.getKey());
+			
+			for(Entry<Nutrient,PreciseQuantity>nutrientAmount:originalMap.get(entry.getKey()).getBasicsFromLabelTable().entrySet()){
+				try {
+					nutrientsSum.get(nutrientAmount.getKey().getName()).add(nutrientAmount.getValue());
+				} catch (IncopatibleAmountTypesException | InvalidArgumentException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			
+		}
+		return amountsMap;
+	}
+
+	private Map<String, NotPreciseQuantity> initializeMapIfEmpty(Map<String, NotPreciseQuantity> produktNutrients,
+			Map<String, Map<String, NotPreciseQuantity>> amountsMap,
+			SingleProdukt_SearchResult key1) {
+		if(produktNutrients==null){
+			Map<String, NotPreciseQuantity> mapOutOfList = new HashMap<String, NotPreciseQuantity>();
+			amountsMap.put(key1.getProdukt().getNazwa(),mapOutOfList);
+			produktNutrients=mapOutOfList;
+		}
+		return produktNutrients;
+
+	}
+
+	
 	
 }

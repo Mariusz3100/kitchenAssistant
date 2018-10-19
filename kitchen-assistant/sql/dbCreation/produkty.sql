@@ -5,7 +5,7 @@ CREATE TABLE Produkt
   nazwa varchar(200),
   sklad varchar(2000),
   quantity_Phrase varchar(200),
-  opis varchar(2700),
+  opis varchar(5000),
   cena real,
   przetworzony boolean not null default false,
     
