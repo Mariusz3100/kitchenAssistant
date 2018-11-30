@@ -67,7 +67,8 @@ public class StringHolder {
 	public static final String SQPhrasesDivider="|"; 
 	
 	public static final String baseUrl="http://localhost:8081/kitchen-assistant";
-	
+
+	public static final String bootstrapFolder="bootstrap/";
 	
 	static{
 		
