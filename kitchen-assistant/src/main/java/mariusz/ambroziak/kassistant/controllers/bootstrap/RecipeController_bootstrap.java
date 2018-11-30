@@ -13,16 +13,22 @@ import mariusz.ambroziak.kassistant.utils.StringHolder;
 public class RecipeController_bootstrap {
 
 	
-	@RequestMapping(value="/btest")
-	public ModelAndView bhome() {
-		ModelAndView model = new ModelAndView("List");
-		ArrayList<String> list=new ArrayList<>();
-		list.add("hello world");
-		model.addObject("list",list);
+	@RequestMapping(value="/b_engRecipeForm")
+	public ModelAndView bForm() {
+		ModelAndView model = new ModelAndView(StringHolder.bootstrapFolder+"boot_recipeEngForm");
+
+		
 		
 		return model;
 	}
 
-	
+	@RequestMapping(value="/b_engRecipeUrlForm")
+	public ModelAndView bUrlForm() {
+		ModelAndView model = new ModelAndView(StringHolder.bootstrapFolder+"boot_recipeEngUrlForm");
+
+		
+		
+		return model;
+	}
 
 }
