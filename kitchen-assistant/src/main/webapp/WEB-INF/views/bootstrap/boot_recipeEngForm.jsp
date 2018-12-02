@@ -6,6 +6,8 @@
 <meta charset="utf-8">
 
 <jsp:include page="includes/headInclude.jsp" />
+<jsp:include page="includes/constants.jsp" />
+
 </head>
 
 <body>
@@ -17,9 +19,15 @@
 ============================-->
 	<section id="hero" class="wow fadeIn">
 	<div class="hero-container">
-		<h1>recipe eng search form</h1>
-
-		<a href="#get-started" class="btn-get-started scrollto">Go back to top</a>
+		<form action="b_apirecipes">
+			<h4>Search for:</h4>
+			<input type="text"
+				name="${recipeSearchPhrase_name}">
+			<button type="submit" class="btn btn-success">Search for recipes</button>
+				
+		</form>
+		<a href="#get-started" class="btn-get-started scrollto">Go back to
+			top</a>
 	</div>
 	</section>
 

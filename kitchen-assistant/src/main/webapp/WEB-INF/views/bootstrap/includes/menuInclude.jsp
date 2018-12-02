@@ -15,8 +15,8 @@
 				<li class="menu-active"><a href="#hero">Home</a></li>
 				<li><a class="menu-has-children">Parse Recipe</a>
 					<ul>
-						<li><a href="/b_engRecipeForm">By URL</a></li>
-						<li><a href="/b_engRecipeUrlForm">Search for a recipe</a></li>
+						<li><a href="/b_engRecipeUrlForm">By URL</a></li>
+						<li><a href="/b_engRecipeForm">Search for a recipe</a></li>
 					</ul>
 				</li>
 				<li><a href="#blog">Search for Produkts</a></li>

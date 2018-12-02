@@ -10,11 +10,11 @@
 	<font style="color: red;">${invalidUrlInformation}</font>
 	
 	<form action="correctQuantities">
-		Paste url:<br> ${recipeUrl_name}
-		<input type="text" name="${recipeUrl_name}">
+		Paste url:<br>
+		<input type="text" name="${recipeSearchPhrase_name}">
 	</form>
 	
 </body>
-<jsp:include page="include/constants.jsp" />
+<jsp:include page="bootstrap/includes/constants.jsp" />
 
 </html>

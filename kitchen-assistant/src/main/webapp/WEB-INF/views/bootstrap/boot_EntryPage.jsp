@@ -6,6 +6,8 @@
 	<meta charset="utf-8">
 	
 	<jsp:include page="includes/headInclude.jsp"/>
+	<jsp:include page="includes/constants.jsp" />
+	
 </head>
 
 <body>

@@ -11,12 +11,12 @@
 	
 	<form action="apirecipes">
 		Search for:<br>
-		<input type="text" name="searchPhrase">
+		<input type="text" name="${recipeSearchPhrase_name}">
 	</form>
 	
 	
 	
 </body>
-<jsp:include page="include/constants.jsp" />
+<jsp:include page="bootstrap/includes/constants.jsp" />
 
 </html>

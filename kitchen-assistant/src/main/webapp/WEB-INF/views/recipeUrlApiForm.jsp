@@ -15,6 +15,6 @@
 	</form>
 	
 </body>
-<jsp:include page="include/constants.jsp" />
+<jsp:include page="bootstrap/includes/constants.jsp" />
 
 </html>

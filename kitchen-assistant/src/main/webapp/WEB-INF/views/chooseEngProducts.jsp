@@ -7,7 +7,7 @@
 <head>
 
 <meta charset="UTF-8">
-<jsp:include page="include/constants.jsp" />
+<jsp:include page="bootstrap/includes/constants.jsp" />
 
 <title>Choose Products</title>
 </head>
