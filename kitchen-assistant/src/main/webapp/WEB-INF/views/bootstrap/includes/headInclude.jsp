@@ -23,7 +23,7 @@
 
 	<!-- Main Stylesheet File -->
 	<link href="static/css/style.css" rel="stylesheet">
-	<link href="kitchenStyle.css" rel="stylesheet">
+	<link href="css/kitchenStyle.css" rel="stylesheet">
 
 	<!-- =======================================================
       Theme Name: eStartup
