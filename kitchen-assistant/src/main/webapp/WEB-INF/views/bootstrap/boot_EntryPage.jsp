@@ -3,31 +3,33 @@
    "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 <head>
-	<meta charset="utf-8">
-	
-	<jsp:include page="includes/headInclude.jsp"/>
-	<jsp:include page="includes/constants.jsp" />
-	
+<meta charset="utf-8">
+
+<jsp:include page="includes/headInclude.jsp" />
+<jsp:include page="includes/constants.jsp" />
+
 </head>
 
 <body>
 
-	<jsp:include page="includes/menuInclude.jsp"/>
+	<jsp:include page="includes/menuInclude.jsp" />
 
-<!--==========================
+	<!--==========================
   Hero Section
 ============================-->
-<section id="hero" class="wow fadeIn">
+	<section id="hero" class="wow fadeIn">
 	<div class="hero-container">
 		<h1>Welcome to Kitchen Assistant</h1>
-		<a href="#get-started" class="btn-get-started scrollto">Get Started</a>
+		<a href="#get-started" class="btn-get-started scrollto">Get
+			Started</a>
 	</div>
-</section>
+	</section>
 
 
-	<jsp:include page="includes/footerInclude.jsp"/>
+	<jsp:include page="includes/footerInclude.jsp" />
 
-<a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
+	<a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
+	<jsp:include page="includes/bottomImports.jsp" />
 
 
 </body>
