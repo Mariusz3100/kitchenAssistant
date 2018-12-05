@@ -1,10 +1,12 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
    "http://www.w3.org/TR/html4/loose.dtd">
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <html lang="en">
 <head>
 <meta charset="utf-8">
-	<title>Kitchen Assistant Page</title>
+<title>Kitchen Assistant Page</title>
 
 <jsp:include page="includes/headInclude.jsp" />
 <jsp:include page="includes/constants.jsp" />
@@ -22,47 +24,35 @@
 
 
 		<div class="section-title text-center">
-			
-			<h3>Recipes found for 
-			"<%=pageContext.getRequest().getParameter(mariusz.ambroziak.kassistant.utils.JspStringHolder.recipeSearchPhrase_name)%>":</h3>
+
+			<h3>${fn:length(recipeList)>0}
+				<c:choose>
+					<c:when test="${fn:length(recipeList)>0}">
+						Recipes found for "<%=pageContext.getRequest().getParameter(mariusz.ambroziak.kassistant.utils.JspStringHolder.recipeSearchPhrase_name)%>":
+					</c:when>
+					<c:otherwise>
+						meh,No recipes found for phrase "<%=pageContext.getRequest().getParameter(mariusz.ambroziak.kassistant.utils.JspStringHolder.recipeSearchPhrase_name)%>":
+					</c:otherwise>
+				</c:choose>
+			</h3>
 		</div>
 	</div>
 
 	<div class="container">
 		<div class="owl-carousel owl-theme no-autoplay">
-
-			<div>
-				<img src="static/img/svg/cloud.svg" alt="img" class="img-fluid">
-				<h4>introducing whatsapp</h4>
-				<p>Lorem Ipsum is simply dummy text of the printing and
-					typesetting industry</p>
-				<a href="#">read more</a>
-			</div>
-			<div>
-				<img src="static/img/svg/planet.svg" alt="img" class="img-fluid">
-				<h4>user friendly interface</h4>
-				<p>Lorem Ipsum is simply dummy text of the printing and
-					typesetting industry</p>
-				<a href="#">read more</a>
-
-			</div>
-			<div>
-
-				<img src="static/img/svg/asteroid.svg" alt="img" class="img-fluid">
-				<h4>build the app everyone love</h4>
-				<p>Lorem Ipsum is simply dummy text of the printing and
-					typesetting industry</p>
-				<a href="#">read more</a>
-
-			</div>
-			<div>
-				<img src="static/img/screen/4.jpg" alt="img">
-			</div>
-			<div>
-				<img src="static/img/screen/5.jpg" alt="img">
-			</div>
-
-
+			<c:forEach var="recipe" items="${recipeList}" varStatus="">
+				
+				<div>
+					<img src="${recipe.imageUrl}" alt="img" class="img-fluid">
+					<h4>${recipe.label}</h4>
+					<p><a href="${recipe.url}">${recipe.url}</a></p>
+					<a href="${recipe.recipeDetailsInApi}">Details on Edaman api</a>
+					<p><a href="${recipe.parseUrl}">Parse</a></p>
+					
+				</div>
+			
+			
+			</c:forEach>
 		</div>
 	</div>
 
@@ -76,6 +66,6 @@
 
 	<a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
 
-	<jsp:include page="includes/bottomImports.jsp"/>
+	<jsp:include page="includes/bottomImports.jsp" />
 </body>
 </html>
