@@ -16,6 +16,7 @@ public class JspStringHolder {
 	public static final String liczbaSkladnikow="liczbaSkladnikow";
 	public static final String radioValuePrefix="_";
 	public static final String recipeUrl_name="recipeurl";
+	public static final String recipeSearchPhrase_name="recipeSearchPhrase_name";
 	public static final String recipeApiId="recipeId";
 	public static final String ndbno="ndbno";
 	public static final String foodName="foodName";
