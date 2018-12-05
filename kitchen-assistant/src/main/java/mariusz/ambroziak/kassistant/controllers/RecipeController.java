@@ -139,7 +139,7 @@ public class RecipeController {
 	@RequestMapping(value="/chooseProdukts")
 	public ModelAndView chooseProdukts(HttpServletRequest request) {
 		setEncoding(request);
-		String url=request.getParameter("recipeurl");
+		String url=request.getParameter(JspStringHolder.recipeUrl_name);
 
 		if(url==null){
 			return new ModelAndView("recipeForm");
