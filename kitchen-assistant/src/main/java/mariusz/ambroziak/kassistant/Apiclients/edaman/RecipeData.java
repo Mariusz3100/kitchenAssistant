@@ -14,7 +14,7 @@ public class RecipeData {
 	String label;
 	String imageUrl;
 	String edamanId;
-	String parseUrl;
+	String parseUrl="derived variable, will be updated in getter";
 	String recipeDetailsInApi;
 	
 	public String getRecipeDetailsInApi() {
