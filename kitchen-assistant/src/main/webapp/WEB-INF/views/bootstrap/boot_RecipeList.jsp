@@ -4,6 +4,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+	<title>Kitchen Assistant Page</title>
 
 <jsp:include page="includes/headInclude.jsp" />
 <jsp:include page="includes/constants.jsp" />
@@ -18,7 +19,10 @@
 	<section id="screenshots" class="padd-section text-center wow fadeInUp">
 
 	<div class="container">
+
+
 		<div class="section-title text-center">
+			
 			<h3>Recipes found for 
 			"<%=pageContext.getRequest().getParameter(mariusz.ambroziak.kassistant.utils.JspStringHolder.recipeSearchPhrase_name)%>":</h3>
 		</div>

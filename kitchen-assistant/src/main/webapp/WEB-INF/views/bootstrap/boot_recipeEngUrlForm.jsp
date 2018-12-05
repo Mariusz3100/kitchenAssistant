@@ -7,6 +7,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+	<title>Kitchen Assistant Page</title>
 
 <jsp:include page="includes/headInclude.jsp" />
 <jsp:include page="includes/constants.jsp" />
