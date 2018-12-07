@@ -7,3 +7,34 @@
     padding: 0;
 
 }
+
+.recipe-outline{
+    border: 10px solid #71dd8a;
+
+    display: inline-block;
+
+    padding: 5px;
+
+    margin: 1px;
+
+    border-radius: 25px;
+    
+    background-color: #ECFEF0;
+    
+}
+
+.recipe-link{
+    font-weight: bold;
+}
+
+.recipe-img{
+    height: 160px;
+    width: 160px;
+    margin-bottom: 10px;
+    border-radius: 25px;
+}
+
+.recipe-label{
+	min-height: 50px;
+	width:200px;
+}

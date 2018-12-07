@@ -25,13 +25,13 @@
 
 		<div class="section-title text-center">
 
-			<h3>${fn:length(recipeList)>0}
+			<h3>
 				<c:choose>
 					<c:when test="${fn:length(recipeList)>0}">
 						Recipes found for "<%=pageContext.getRequest().getParameter(mariusz.ambroziak.kassistant.utils.JspStringHolder.recipeSearchPhrase_name)%>":
 					</c:when>
 					<c:otherwise>
-						meh,No recipes found for phrase "<%=pageContext.getRequest().getParameter(mariusz.ambroziak.kassistant.utils.JspStringHolder.recipeSearchPhrase_name)%>":
+						No recipes found for phrase "<%=pageContext.getRequest().getParameter(mariusz.ambroziak.kassistant.utils.JspStringHolder.recipeSearchPhrase_name)%>":
 					</c:otherwise>
 				</c:choose>
 			</h3>
@@ -42,12 +42,12 @@
 		<div class="owl-carousel owl-theme no-autoplay">
 			<c:forEach var="recipe" items="${recipeList}" varStatus="">
 				
-				<div>
-					<img src="${recipe.imageUrl}" alt="img" class="img-fluid">
-					<h4>${recipe.label}</h4>
-					<p><a href="${recipe.url}">${recipe.url}</a></p>
-					<a href="${recipe.recipeDetailsInApi}">Details on Edaman api</a>
-					<p><a href="${recipe.parseUrl}">Parse</a></p>
+				<div class="recipe-outline">
+					<img src="${recipe.imageUrl}" alt="img" class="img-fluid recipe-img">
+					<div class="recipe-label"><h4>${recipe.label}</h4></div>
+					<p class="recipe-link"><a href="${recipe.url}">Details on Edaman page</a></p>
+					<p class="recipe-link"><a href="${recipe.recipeDetailsInApi}">Details on Edaman api</a></p>
+					<a class="btn btn-success" href="${recipe.parseUrl}">Parse</a>
 					
 				</div>
 			
