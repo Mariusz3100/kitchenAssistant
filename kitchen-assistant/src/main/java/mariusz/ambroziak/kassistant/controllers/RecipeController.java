@@ -76,7 +76,7 @@ public class RecipeController {
 		List<RecipeData> results;
 		
 		if(recipeID==null||recipeID.equals("")){
-			String phrase=request.getParameter(JspStringHolder.searchPhrase_name);
+			String phrase=request.getParameter(JspStringHolder.recipeSearchPhrase_name);
 			try{
 				results=EdamanRecipeAgent.searchForRecipe(phrase);
 			}catch (AgentSystemNotStartedException e) {
