@@ -4,6 +4,8 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<jsp:include page="bootstrap/includes/constants.jsp" />
+
 <title>Insert title here</title>
 </head>
 <body>
