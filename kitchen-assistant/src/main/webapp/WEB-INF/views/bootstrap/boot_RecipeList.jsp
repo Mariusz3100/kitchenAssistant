@@ -47,7 +47,7 @@
 					<div class="recipe-label"><h4>${recipe.label}</h4></div>
 					<p class="recipe-link"><a href="${recipe.url}">Details on Edaman page</a></p>
 					<p class="recipe-link"><a href="${recipe.recipeDetailsInApi}">Details on Edaman api</a></p>
-					<a class="btn btn-success" href="${recipe.parseUrl}">Parse</a>
+					<a class="btn btn-success" href="${recipe.bootstrap_parseUrl}">Parse</a>
 					
 				</div>
 			

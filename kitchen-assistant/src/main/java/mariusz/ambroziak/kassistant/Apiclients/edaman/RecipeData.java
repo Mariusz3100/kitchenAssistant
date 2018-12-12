@@ -15,7 +15,19 @@ public class RecipeData {
 	String imageUrl;
 	String edamanId;
 	String parseUrl="derived variable, will be updated in getter";
+	String bootstrap_parseUrl="derived variable, will be updated in getter";
+
 	String recipeDetailsInApi;
+	
+	public String getBootstrap_parseUrl() {
+		try {
+			return StringHolder.currentAppName+"/b_apiRecipeParsed?"+JspStringHolder.recipeApiId+"="+URLEncoder.encode(edamanId,StringHolder.ENCODING);
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return StringHolder.currentAppName+"/apiRecipeParsed?recipeId="+URLEncoder.encode(edamanId);
+	}
 	
 	public String getRecipeDetailsInApi() {
 		
@@ -42,6 +54,8 @@ public class RecipeData {
 		return StringHolder.currentAppName+"/apiRecipeParsed?recipeId="+URLEncoder.encode(edamanId);
 
 	}
+
+	
 	
 	public void setEdamanId(String shopId) {
 		this.edamanId = shopId;

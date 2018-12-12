@@ -44,21 +44,10 @@ public class RecipeController_bootstrap {
 	@RequestMapping(value="/b_apirecipes")
 	public ModelAndView b_apirecipes(HttpServletRequest request) {
 		String searchPhrase=request.getParameter(JspStringHolder.recipeSearchPhrase_name);
-
-		List<RecipeData> results;
-		
-
-		results=EdamanRecipeApiClient.getRecipesByPhrase(searchPhrase);
-		
-		
+		List<RecipeData> results=EdamanRecipeApiClient.getRecipesByPhrase(searchPhrase);
 		ModelAndView modelAndView = new ModelAndView(StringHolder.bootstrapFolder+"boot_RecipeList");
 		modelAndView.addObject("recipeList", results);
-		
-		
 		return modelAndView;
-
-		
-
 	}
 
 	
@@ -72,18 +61,14 @@ public class RecipeController_bootstrap {
 		return model;
 	}
 
-	@RequestMapping(value="/b_correctQuantities")
-	public ModelAndView b_correctQuantities(HttpServletRequest request) {
-		ModelAndView model = new ModelAndView(StringHolder.bootstrapFolder+"boot_recipeEngUrlForm");
-
+	@RequestMapping(value="/b_apiRecipeParsed")
+	public ModelAndView apiRecipeParsed(HttpServletRequest request) throws AgentSystemNotStartedException {
 		String recipeID=request.getParameter(JspStringHolder.recipeApiId);
-		List<Produkt> results;
 		RecipeData singleRecipe = EdamanRecipeApiClient.getSingleRecipe(recipeID);
 		int liczbaSkladnikow=singleRecipe.getIngredients().size();
 
 		Map<MultiProdukt_SearchResult,PreciseQuantity> result = new HashMap<MultiProdukt_SearchResult,PreciseQuantity>();
 
-		
 		for(int i=0;i<liczbaSkladnikow;i++){
 			ApiIngredientAmount aia=singleRecipe.getIngredients().get(i);
 			PreciseQuantity quantity=aia.getAmount();
@@ -114,8 +99,8 @@ public class RecipeController_bootstrap {
 			return mav;
 		}
 
-		
 	}
+
 
 	private List<Produkt> getProduktsWithRecountedPrice(List<Produkt> parseProdukt,
 			PreciseQuantity neededQuantity, String curency) {
