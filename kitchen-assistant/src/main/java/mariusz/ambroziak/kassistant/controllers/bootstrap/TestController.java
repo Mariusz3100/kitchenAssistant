@@ -23,6 +23,12 @@ public class TestController {
 		return model;
 	}
 
-	
+	@RequestMapping(value="/bradio")
+	public ModelAndView bradio() {
+		ModelAndView model = new ModelAndView(StringHolder.bootstrapFolder+"radioTest");
+		
+		
+		return model;
+	}
 
 }
