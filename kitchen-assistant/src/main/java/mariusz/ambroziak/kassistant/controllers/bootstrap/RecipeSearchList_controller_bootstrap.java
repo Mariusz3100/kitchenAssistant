@@ -28,7 +28,7 @@ import mariusz.ambroziak.kassistant.utils.StringHolder;
 
 
 @Controller
-public class RecipeController_bootstrap {
+public class RecipeSearchList_controller_bootstrap {
 
 	
 	@RequestMapping(value="/b_engRecipeForm")
