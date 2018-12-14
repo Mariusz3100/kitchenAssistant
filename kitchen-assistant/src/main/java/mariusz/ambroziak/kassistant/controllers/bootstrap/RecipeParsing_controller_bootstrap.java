@@ -61,7 +61,7 @@ public class RecipeParsing_controller_bootstrap {
 			return returnAgentSystemNotStartedPage();
 
 		}else{
-			ModelAndView mav=new ModelAndView("chooseEngProducts");
+			ModelAndView mav=new ModelAndView(StringHolder.bootstrapFolder+"boot_correctProducts");
 
 			mav.addObject("url",singleRecipe.getUrl());
 			mav.addObject("results",result);

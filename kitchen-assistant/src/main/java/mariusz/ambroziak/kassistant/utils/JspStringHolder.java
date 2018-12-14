@@ -10,9 +10,12 @@ public class JspStringHolder {
 	public static final String quantity_amount="quantityAmount";
 	public static final String quantity_type="quantityType";
 	public static final String innaOpcja_name="inny";
-	public static final String pominOpcja_name="pomin";
+	public static final String pominOpcja_name="skip";
 	public static final String innyUrl_name="innyUrl";
 	public static final String skladnikRadio_name="radio";
+	public static final String skipOptionSuffix="skip";
+	public static final String skladnikRadioIdPrefix="id_";
+
 	public static final String liczbaSkladnikow="liczbaSkladnikow";
 	public static final String radioValuePrefix="_";
 	public static final String recipeUrl_name="recipeurl";
@@ -26,5 +29,7 @@ public class JspStringHolder {
 	public static final String produktUrl_name = "produktUrl";
 	public static final String QUANTITY_PHRASE_BORDER="_";
 	public static final String QUANTITY_MULTIPLY_PREFIX_BORDER="x";
+	
+	public static final String SKIP_OPTION_TEXT="Skip this ingredient (for your own risk)";
 
 }
