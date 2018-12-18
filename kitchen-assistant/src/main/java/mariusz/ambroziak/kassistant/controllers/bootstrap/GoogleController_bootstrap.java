@@ -1,4 +1,4 @@
-package mariusz.ambroziak.kassistant.controllers;
+package mariusz.ambroziak.kassistant.controllers.bootstrap;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,6 +14,7 @@ import mariusz.ambroziak.kassistant.Apiclients.edaman.HealthLabels;
 import mariusz.ambroziak.kassistant.agents.ClockAgent;
 import mariusz.ambroziak.kassistant.agents.RecipeAgent;
 import mariusz.ambroziak.kassistant.agents.config.AgentsSystem;
+import mariusz.ambroziak.kassistant.controllers.GoogleControllerLogic;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
 import mariusz.ambroziak.kassistant.exceptions.GoogleDriveAccessNotAuthorisedException;
 import mariusz.ambroziak.kassistant.model.Problem;
@@ -41,10 +42,10 @@ import com.google.api.client.util.store.FileDataStoreFactory;
 //import database.holders.StringHolder;
 
 @Controller
-public class GoogleController extends GoogleControllerLogic{
+public class GoogleController_bootstrap extends GoogleControllerLogic{
 	
 
-	@RequestMapping(value="/google/health/get")
+	@RequestMapping(value="/bootstrap/google/health/get")
 	public ModelAndView problems1(HttpServletRequest request) throws IOException {
 		ArrayList<String> list=new ArrayList<>();
 		try {
@@ -72,7 +73,7 @@ public class GoogleController extends GoogleControllerLogic{
 	}
 
 
-	@RequestMapping(value="/google/diet/get")
+	@RequestMapping(value="/bootstrap/google/diet/get")
 	public ModelAndView getDiet(HttpServletRequest request) throws IOException {
 		ArrayList<String> list = null;
 		try {
@@ -88,7 +89,7 @@ public class GoogleController extends GoogleControllerLogic{
 
 
 	}
-	@RequestMapping(value="/google/delete")
+	@RequestMapping(value="/bootstrap/google/delete")
 	public ModelAndView googleDelete(HttpServletRequest request) throws IOException {
 
 		deleteLocalAuthorisationData();
