@@ -64,7 +64,7 @@ public class GoogleAuthApiClientController extends AbstractAuthorizationCodeServ
 
 
 	  
-	  @RequestMapping(value="/google/authorise")
+	  @RequestMapping(value=StringHolder.GOOGLE_AUTHORISATION_SUFFIX)
 	  protected void localDoGet(HttpServletRequest request, HttpServletResponse response)
 	      throws IOException, ServletException {
 	    // do stuff
