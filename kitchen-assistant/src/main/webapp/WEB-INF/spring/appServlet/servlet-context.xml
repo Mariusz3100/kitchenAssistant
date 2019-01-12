@@ -17,6 +17,7 @@
 		up static resources in the ${webappRoot}/resources directory -->
 	<mvc:resources mapping="/static/**" location="WEB-INF/views/bootstrap/static/" />
 	<mvc:resources mapping="/css/**" location="WEB-INF/views/bootstrap/css/" />
+	<mvc:resources mapping="/js/**" location="WEB-INF/views/bootstrap/js/" />
 
 	<context:component-scan base-package="mariusz.ambroziak.kassistant" />
 
