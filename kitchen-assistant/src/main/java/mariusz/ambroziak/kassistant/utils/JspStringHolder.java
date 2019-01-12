@@ -31,5 +31,10 @@ public class JspStringHolder {
 	public static final String QUANTITY_MULTIPLY_PREFIX_BORDER="x";
 	
 	public static final String SKIP_OPTION_TEXT="Skip this ingredient (for your own risk)";
+	public static final String GOOGLE_AUTHORISATION_SUFFIX;
 
+	
+	static {
+		GOOGLE_AUTHORISATION_SUFFIX=StringHolder.GOOGLE_AUTHORISATION_SUFFIX;
+	}
 }

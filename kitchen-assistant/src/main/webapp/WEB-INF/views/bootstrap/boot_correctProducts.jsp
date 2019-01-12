@@ -23,47 +23,34 @@
 	<section id="hero" class="wow fadeIn">
 	<div class="hero-container">
 
-		<div class="funkyradio">
 
 			<c:forEach var="result" items="${results}" varStatus="skladnikCount">
 
-				<br>
-				
-				<input type="hidden"
-							name="${skladnikName}${skladnikCount.count}_${quantityName}"
-							value="${result.key.quantity}">
-				<input type="hidden"
-							name="${skladnikName}${skladnikCount.count}_${produktPhraseName}"
-							value="${result.key.produktPhrase}">
-				<input type="hidden"
-							name="${skladnikName}${skladnikCount.count}_${searchPhraseName}"
-							value="${result.key.searchPhraseAnswered}">
-											
+				<div class="funkyradio">
+										
 				<c:choose>
 					<c:when test="${fn:length(result.key.produkts) gt 0}">
 						<b>For ingredient ${result.key.searchPhraseAnswered } [${result.value}] these products were found:</b>
 						<br>
 						
-   				 <div class="funkyradio">
 
 						<c:forEach var="produkt" items="${result.key.produkts}"
 							varStatus="opcjaCount">
-							
+							<c:if test="${opcjaCount.index<2}">
 							        <div class="funkyradio-success">
             							<input type="radio" name="${skladnikName}${skladnikCount.count}_${skladnikRadioName}"
-            							 id="${skladnikName}${skladnikCount.count}_${skladnikRadioName}"
+            							 id="${skladnikName}${skladnikCount.count}_${skladnikRadioName}_${opcjaCount.index}"
             							 value="${radioValuePrefix}${produkt.url}"
             							  />
-            							<label for="${skladnikName}${skladnikCount.count}_${skladnikRadioName}">[${produkt.cena} $, ${produkt.recountedPrice}] ${produkt.nazwa}</label>
+            							<label for="${skladnikName}${skladnikCount.count}_${skladnikRadioName}_${opcjaCount.index}">[${produkt.cena} $, ${produkt.recountedPrice}] ${produkt.nazwa}</label>
         							</div>
+        							
+        							</c:if>
 							
 						</c:forEach>
-					</div>
 					</c:when>
 					<c:otherwise>
 						<b>No products were found for ingredient ${result.key.searchPhraseAnswered }.</b>
-
-						<br />
 					</c:otherwise>
 
 
@@ -72,37 +59,37 @@
 				<div class="funkyradio-success">
 					<input type="radio"
 						name="${skladnikName}${skladnikCount.count}_${skladnikRadioName}"
-						id="${skladnikName}${skladnikCount.count}_${skladnikRadioName}"
-						value="${innaOpcjaName}">
-					<label for="${skladnikName}${skladnikCount.count}_${skladnikRadioName}">
+						id="${skladnikName}${skladnikCount.count}_${skladnikRadioName}_${innaOpcjaName}"
+						value="${innaOpcjaName}"  class="inny-radio-label">
+					<!-- class didn't connect with style from kitchenStyle.css for some reason. Lets fo for inline-->
+					<label for="${skladnikName}${skladnikCount.count}_${skladnikRadioName}_${innaOpcjaName}" 
+						class="inny-radio-label" style="width: 19%;"
+						
+					>
 						Other:
 					</label>
-					<input type="text" name="${skladnikName}${skladnikCount.count}_${innyUrlName}">
+					<input type="text"
+					name="${skladnikName}${skladnikCount.count}_${innyUrlName}"
+					id="${skladnikName}${skladnikCount.count}_${innyUrlName}"
+					class="inny-url"
+					>
 					
 				</div>
 
 				<div class="funkyradio-warning">
 
 					<input type="radio" name="${skladnikName}${skladnikCount.count}_${skladnikRadioName}"
+						id="${skladnikName}${skladnikCount.count}_${skladnikRadioName}_${pominOpcjaName}"
 						value="${pominOpcjaName}">
-					<label for="${skladnikName}${skladnikCount.count}_${skladnikRadioName}">
+					<label for="${skladnikName}${skladnikCount.count}_${skladnikRadioName}_${pominOpcjaName}">
 						
 						Skip this ingredient (for your own risk)
 					</label>
 				</div>
+									</div>
 				
 			</c:forEach>
 
-
-
-
-
-
-
-
-
-
-		</div>
 
 
 	</div>

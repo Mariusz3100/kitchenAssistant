@@ -23,5 +23,6 @@
 <c:set var="ndbno" value="<%= mariusz.ambroziak.kassistant.utils.JspStringHolder.ndbno%>" scope="session"/>
 <c:set var="foodName" value="<%= mariusz.ambroziak.kassistant.utils.JspStringHolder.foodName%>" scope="session"/>
 <c:set var="skipOptionText" value="<%= mariusz.ambroziak.kassistant.utils.JspStringHolder.SKIP_OPTION_TEXT%>" scope="session"/>
+<c:set var="googleAuthorisationSuffix" value="<%= mariusz.ambroziak.kassistant.utils.JspStringHolder.GOOGLE_AUTHORISATION_SUFFIX%>" scope="session"/>
 
 <c:set var="amountTypesWithoutCalories" value="<%= AmountTypes.valuesWithoutCalories()%>" scope="session"/>

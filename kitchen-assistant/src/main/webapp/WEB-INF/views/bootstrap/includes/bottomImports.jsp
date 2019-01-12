@@ -13,3 +13,4 @@
 
 <!-- Template Main Javascript File -->
 <script src="static/js/main.js"></script>
+<script src="js/kitchen.js"></script>

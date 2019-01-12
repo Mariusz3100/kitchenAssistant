@@ -33,6 +33,7 @@ public class StringHolder {
 	public static final String GUIDANCE_GROUP = AGENT_GROUP;//"guiders";
 	public static final String SERVLETS_GROUP = AGENT_GROUP;//"servlets";
 	public static final String AGENT_COMMUNITY ="kitchenAssistant";
+	public static final String GOOGLE_AUTHORISATION_SUFFIX ="/google/authorise";
 
 	public static final String SERVLET_RESPONSE_ENCODING ="ISO-8859-2";
 	public static final String user_name_value_suffix ="_users_value";

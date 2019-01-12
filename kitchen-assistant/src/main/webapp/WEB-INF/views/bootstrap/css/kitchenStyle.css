@@ -38,3 +38,21 @@
 	min-height: 50px;
 	width:200px;
 }
+
+.inny-url{
+    height: 40px;
+    width: 79%;
+    border-left-width: 35px;
+    border-left-color: #0f0;
+}
+
+/*this didn't connect for some reason*/
+.inny-radio-label{
+    width: 20%;
+}
+
+.funkyradio-success > label{
+    width: 12%;
+
+}
+
