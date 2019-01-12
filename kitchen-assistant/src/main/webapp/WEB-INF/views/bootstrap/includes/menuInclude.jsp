@@ -28,8 +28,11 @@
 				<li>
 				<li class="menu-has-children"><a href="">Google data</a>
 					<ul>
-						<li><a href="/google/authorise">Drop Down 1</a></li>
-						<li><a href="#">Drop Down 3</a></li>
+						<li><a href="${googleAuthorisationSuffix}">Authorise access to google drive</a></li>
+						<li><a href="/bootstrap/google/health/get">Get Health restrictions</a></li>
+						<li><a href="/bootstrap/google/diet/get">Get Diet restrictions</a></li>
+						<li><a href="/bootstrap/google/delete">Remove access to google drive</a></li>
+						
 					</ul></li>
 				<li>
 				<a href="#contact">Contact</a></li>
