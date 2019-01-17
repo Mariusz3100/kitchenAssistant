@@ -1,58 +1,73 @@
-.bootstrap_copyrights{
-    border-style: dashed;
-
+.bootstrap_copyrights {
+	border-style: dashed;
 }
 
-.footer{
-    padding: 0;
-
+.footer {
+	padding: 0;
 }
 
-.recipe-outline{
-    border: 10px solid #71dd8a;
-
-    display: inline-block;
-
-    padding: 5px;
-
-    margin: 1px;
-
-    border-radius: 25px;
-    
-    background-color: #ECFEF0;
-    
+.recipe-outline {
+	border: 10px solid #71dd8a;
+	display: inline-block;
+	padding: 5px;
+	margin: 1px;
+	border-radius: 25px;
+	background-color: #ECFEF0;
 }
 
-.recipe-link{
-    font-weight: bold;
+.recipe-link {
+	font-weight: bold;
 }
 
-.recipe-img{
-    height: 160px;
-    width: 160px;
-    margin-bottom: 10px;
-    border-radius: 25px;
+.recipe-img {
+	height: 160px;
+	width: 160px;
+	margin-bottom: 10px;
+	border-radius: 25px;
 }
 
-.recipe-label{
+.recipe-label {
 	min-height: 50px;
-	width:200px;
+	width: 200px;
 }
 
-.inny-url{
-    height: 40px;
-    width: 79%;
-    border-left-width: 35px;
-    border-left-color: #0f0;
+.inny-url {
+	height: 40px;
+	width: 80%;
+	border-left-width: 35px;
+	border-left-color: #0f0;
 }
 
 /*this didn't connect for some reason*/
-.inny-radio-label{
-    width: 20%;
+.inny-radio-label {
+	width: 20%;
 }
 
-.funkyradio-success > label{
-    width: 12%;
-
+.funkyradio-success>label {
+	width: 12%;
 }
 
+.ingredient-heading {
+	color: green;
+	margin:10px;
+}
+
+.ingredient-heading-not-found {
+	color: red;
+	margin:10px;
+}
+
+.single-ingredient-section {
+	border-bottom: double;
+	border-radius: 10px;
+	margin-bottom: 50px;
+	border-top: double;
+	border-radius: 10px;
+	margin-top: 50px;
+	max-height: 500px;
+}
+
+
+.ingredient-list{
+	margin-top:50px;
+}
