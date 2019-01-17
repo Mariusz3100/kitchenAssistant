@@ -29,5 +29,28 @@ jQuery(document).ready(function( ) {
             }
 
     });
+    
+ /*   
+      let list=$(".dynamic-size");
 
+    for (i = 0; i < list.length; i++) {
+        console.log("X");
+        let originalSize=$(list[i]).css("max-height");
+        let floatOriginalSize=parseFloat(originalSize.substr(0,originalSize.length-2));
+        let parent=list[i].parentNode;
+        let sizeRemoves=$(parent).find(".size-remove");
+
+        for (j = 0; j < sizeRemoves.length; j++) {
+            let removeOriginalSize=$(sizeRemoves[j]).css("height");
+            let aRemove=parseFloat(removeOriginalSize.substr(0,removeOriginalSize.length-2));
+			floatOriginalSize-=aRemove;
+        }
+
+
+        console.log(floatOriginalSize);
+        $(list[i]).css("max-height",floatOriginalSize);
+        console.log($(list[i]).css("max-height"));
+
+    }
+*/
 });
