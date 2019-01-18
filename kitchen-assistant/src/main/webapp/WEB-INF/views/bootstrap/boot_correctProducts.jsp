@@ -20,9 +20,14 @@
 	<jsp:include page="includes/menuInclude.jsp" />
 	<div class="ingredient-list">
 		<c:forEach var="result" items="${results}" varStatus="skladnikCount">
-			<section id="hero" class="wow fadeIn single-ingredient-section">
-			<div class="container">
-
+			<div class="section-shortcut" id="${skladnikName}${skladnikCount.count}_${skladnikSectionName}"></div>
+			<section  class="wow fadeIn single-ingredient-section">
+			<div class="container with-left-shortcuts">
+				<div class="shortcuts-on-the-left">
+					<c:forEach var="innerResult" items="${results}" varStatus="innerSkladnikCount">
+						<a href="#${skladnikName}${innerSkladnikCount.count}_${skladnikSectionName}">&#9636</a>
+					</c:forEach>
+				</div>
 				<div class="funkyradio">
 					<c:choose>
 							<c:when test="${fn:length(result.key.produkts) gt 0}">
