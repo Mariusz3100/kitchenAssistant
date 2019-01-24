@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 
 public enum AmountTypes {
-	ml("ml"),
-	mg("mg"),
-	szt("szt"),
-	kalorie("kcal");
+	ml("ml","ml"),
+	mg("mg","mg"),
+	szt("szt","pcs"),
+	kalorie("kcal","calories");
 	
 	
 	public String getType() {
@@ -19,13 +19,13 @@ public enum AmountTypes {
 		this.type = type;
 	}
 
-	String type;
-
-	private AmountTypes(String type){
-		this.type=type;
-		
-	}
 	
+	
+	private AmountTypes(String type, String engName) {
+		this.type = type;
+		this.engName = engName;
+	}
+
 	public  static AmountTypes retrieveTypeByName(String name){
 		for(AmountTypes at:AmountTypes.values()){
 			if(at.getType().equals(name)){
@@ -48,5 +48,11 @@ public enum AmountTypes {
 		return retValue.toArray(new AmountTypes[]{});
 	}
 	
+	public String toString() {
+		return engName;
+	}
+	
+	String type;
+	String engName;
 	
 }
