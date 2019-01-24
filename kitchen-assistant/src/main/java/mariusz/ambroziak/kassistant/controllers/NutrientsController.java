@@ -59,7 +59,7 @@ public class NutrientsController {
 			if(searchFor==null||searchFor.equals("")) {
 				return new ModelAndView("nutrientsForm");
 			}
-			UsdaFoodDetails nutrientDetails = UsdaNutrientApiClient.searchForNutritionDetails(searchFor);
+			UsdaFoodDetails nutrientDetails = UsdaNutrientApiClient.searchForNutritionDetailsOfAProdukt(searchFor);
 			return putIntoListMav(nutrientDetails);
 		}else {
 			Map<Nutrient, PreciseQuantity> nutrientDetailsForDbno = UsdaNutrientApiClientParticularFood.getNutrientDetailsForDbno(ndbno);
