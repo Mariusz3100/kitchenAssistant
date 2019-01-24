@@ -3,9 +3,11 @@ package mariusz.ambroziak.kassistant.Apiclients.usda;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.ws.rs.core.MultivaluedMap;
 
@@ -121,7 +123,7 @@ public class UsdaNutrientApiClient {
 	
 	
 	
-	public static UsdaFoodDetails searchForNutritionDetails(String foodName){
+	public static UsdaFoodDetails searchForNutritionDetailsOfAProdukt(String foodName){
 		String response=getResponse(foodName);
 
 		JSONObject root=new JSONObject(response);
@@ -138,6 +140,31 @@ public class UsdaNutrientApiClient {
 
 			return nutrientDetails;
 		}
+	}
+
+	public static ArrayList<UsdaFoodId> searchForProduktsInUsdaDb(String foodName){
+		String response=getResponse(foodName);
+
+		JSONObject root=new JSONObject(response);
+		if(root.has("errors")) {
+			ProblemLogger.logProblem("Error occured when searching for \""+foodName+": "+response);
+			return new ArrayList<>();
+		}else{
+			ArrayList<UsdaFoodId> parseIntoNutrientDetails = parseIntoNutrientDetails(response);
+
+			return parseIntoNutrientDetails;
+		}
+	}
+	
+	public static Collection<UsdaFoodId> searchForProduktsInUsdaDbSortByName(String foodName){
+		ArrayList<UsdaFoodId> searchForProduktsInUsdaDb = searchForProduktsInUsdaDb(foodName);
+		
+		TreeMap<UsdaFoodId, UsdaFoodId> map=new TreeMap<UsdaFoodId, UsdaFoodId>();
+		for(UsdaFoodId id:searchForProduktsInUsdaDb) {
+			map.put(id, id);
+		}
+		return map.values();
+		
 	}
 
 
@@ -165,10 +192,10 @@ public class UsdaNutrientApiClient {
 		
 		for(SingleProdukt_SearchResult sp_sr:goodResults) {
 			Produkt produkt=sp_sr.getProdukt();
-			UsdaFoodDetails searchForNutritionDetails = searchForNutritionDetails(produkt.getNazwa());
+			UsdaFoodDetails searchForNutritionDetails = searchForNutritionDetailsOfAProdukt(produkt.getNazwa());
 			if(searchForNutritionDetails.getId()==null) {
 				//TODO could be better right now we just assume produkt name is just search phrase with some unnecessary additives
-				searchForNutritionDetails = searchForNutritionDetails(sp_sr.getProduktPhrase());
+				searchForNutritionDetails = searchForNutritionDetailsOfAProdukt(sp_sr.getProduktPhrase());
 			}
 			addNutrientDetailsToResultMap(nutrientMap, sp_sr, searchForNutritionDetails);
 		}

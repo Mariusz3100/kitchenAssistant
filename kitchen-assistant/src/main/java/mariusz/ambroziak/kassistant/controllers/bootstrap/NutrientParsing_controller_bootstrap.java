@@ -40,19 +40,20 @@ public class NutrientParsing_controller_bootstrap {
 
 		if(ndbno==null||ndbno.equals(""))
 		{
-			return new ModelAndView("b_nutritientForNdbno");
+			return new ModelAndView(StringHolder.bootstrapFolder+"boot_foodSearch_byDbno");
 		}
 		else 
 		{
-			Map<Nutrient, PreciseQuantity> nutrientDetailsForDbno = UsdaNutrientApiClientParticularFood.getNutrientDetailsForDbno(ndbno);
+			Map<Nutrient, PreciseQuantity> nutrientDetailsForDbno = UsdaNutrientApiClientParticularFood.getNutrientDetailsForDbno("04542");
+			ModelAndView mav=new ModelAndView(StringHolder.bootstrapFolder+"boot_NutrientResultsForSingleFood");
+			mav.addObject("nutrients",nutrientDetailsForDbno);
+
+			return mav;
 
 		}
 
 
-		ModelAndView mav=new ModelAndView("List");
-		//StringHolder.bootstrapFolder+"boot_correctProducts");
 
-		return mav;
 
 
 	}
