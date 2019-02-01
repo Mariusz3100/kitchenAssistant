@@ -6,24 +6,24 @@ import mariusz.ambroziak.kassistant.utils.StringHolder;
 public class UsdaFoodId implements Comparable<UsdaFoodId> {
 	//private String group;
 	private String name;
-	private String dbno;
+	private String ndbno;
 	private String parseLink;
 	
 	
 
 	public String getParseLink() {
-		return StringHolder.currentAppName+"/b_nutritientForNdbno?"+JspStringHolder.ndbno+"="+getDbno();
+		return StringHolder.currentAppName+"/b_nutritientForNdbno?"+JspStringHolder.ndbno+"="+getNdbno();
 	}
 	
 	
 	@Override
 	public String toString() {
-		return "UsdaFoodId [name=\"" + name + "\", dbno=" + dbno + "]";
+		return "UsdaFoodId [name=\"" + name + "\", dbno=" + ndbno + "]";
 	}
 	public UsdaFoodId(String name, String dbno) {
 		super();
 		this.name = name;
-		this.dbno = dbno;
+		this.ndbno = dbno;
 	}
 	public String getName() {
 		return name;
@@ -31,11 +31,11 @@ public class UsdaFoodId implements Comparable<UsdaFoodId> {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public String getDbno() {
-		return dbno;
+	public String getNdbno() {
+		return ndbno;
 	}
-	public void setDbno(String dbno) {
-		this.dbno = dbno;
+	public void setNdbno(String dbno) {
+		this.ndbno = dbno;
 	}
 	@Override
 	public int compareTo(UsdaFoodId o) {
