@@ -24,6 +24,8 @@
 	<section id="hero" class="wow fadeIn">
 	<div class="container"
 		style="padding-top: 1px; overflow-y: auto; max-height: 90vh">
+
+		<h3 style="margin-top:2px">Results for <u>${productIdObject.name}</u> (ndbno ${productIdObject.ndbno}):</h3>
 		<table class="table table-striped">
 			<thead>
 				<tr class="table-success" style="position: sticky; top: 1px;">

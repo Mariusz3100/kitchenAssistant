@@ -60,7 +60,7 @@ public class UsdaNutrientApiClientParticularFood {
 	}
 
 
-	private static Map<Nutrient, PreciseQuantity> parseIntoNutrientDetails(String response,String ndbno) {
+	private static Map<Nutrient, PreciseQuantity> parseIntoNutrientDetailsMap(String response,String ndbno) {
 
 		Map<Nutrient,PreciseQuantity> retValueMap=null;
 		JSONObject root=new JSONObject(response);
@@ -73,12 +73,33 @@ public class UsdaNutrientApiClientParticularFood {
 			JSONObject items = (JSONObject) list_root.get(0);
 			JSONObject foodDetails = (JSONObject) items.get("food");
 			JSONArray nutrientList =  foodDetails.getJSONArray("nutrients");
-
+			
 			retValueMap=parseNutrientsList(nutrientList);
 			return retValueMap;
 		}
 	}
 
+	private static UsdaFoodDetails parseIntoNutrientDetailsObject(String response,String ndbno) {
+
+		Map<Nutrient,PreciseQuantity> retValueMap=null;
+		JSONObject root=new JSONObject(response);
+		JSONArray list_root = root.getJSONArray("foods");
+
+		if(list_root.length()!=1) {
+			ProblemLogger.logProblem("For ndbno="+ndbno+" returned more than one food");
+			return UsdaFoodDetails.getEmptyOne();
+		}else {
+			JSONObject items = (JSONObject) list_root.get(0);
+			JSONObject foodDetails = (JSONObject) items.get("food");
+			JSONArray nutrientList =  foodDetails.getJSONArray("nutrients");
+			JSONObject desc = (JSONObject)foodDetails.get("desc");
+			String productName=(String) desc.get("name");
+			
+			retValueMap=parseNutrientsList(nutrientList);
+			UsdaFoodDetails retValue=new UsdaFoodDetails(new UsdaFoodId(productName, ndbno),retValueMap);
+			return retValue;
+		}
+	}
 
 	private static List<Nutrient_Name> getListOfNutrients() {
 		return DaoProvider.getInstance().getNutrientNameDao().list();
@@ -117,15 +138,21 @@ public class UsdaNutrientApiClientParticularFood {
 
 	public static  Map<Nutrient, PreciseQuantity> getNutrientDetailsForDbno(String ndbno){
 		String response=getResponse(ndbno);
-		Map<Nutrient, PreciseQuantity> parseIntoNutrientDetails = parseIntoNutrientDetails(response, ndbno);
+		Map<Nutrient, PreciseQuantity> parseIntoNutrientDetails = parseIntoNutrientDetailsMap(response, ndbno);
 		return parseIntoNutrientDetails;
 	}
 
+	public static  UsdaFoodDetails getNutrientDetailObjectForDbno(String ndbno){
+		String response=getResponse(ndbno);
+		UsdaFoodDetails parseIntoNutrientDetails = parseIntoNutrientDetailsObject(response, ndbno);
+		return parseIntoNutrientDetails;
+	}
+	
 	public static  UsdaFoodDetails getNutrientDetails(UsdaFoodId id){
 		if(id==null) {
 			return null;
 		}else {
-			Map<Nutrient, PreciseQuantity> nutrientDetailsForDbno = getNutrientDetailsForDbno(id.getDbno());
+			Map<Nutrient, PreciseQuantity> nutrientDetailsForDbno = getNutrientDetailsForDbno(id.getNdbno());
 			return new UsdaFoodDetails(id,nutrientDetailsForDbno);
 		}
 	}

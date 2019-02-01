@@ -14,6 +14,8 @@ import org.springframework.web.servlet.ModelAndView;
 import api.extractors.EdamanQExtract;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.EdamanRecipeApiClient;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.RecipeData;
+import mariusz.ambroziak.kassistant.Apiclients.usda.UsdaFoodDetails;
+import mariusz.ambroziak.kassistant.Apiclients.usda.UsdaFoodId;
 import mariusz.ambroziak.kassistant.Apiclients.usda.UsdaNutrientApiClientParticularFood;
 import mariusz.ambroziak.kassistant.agents.RecipeAgent;
 import mariusz.ambroziak.kassistant.api.agents.EdamanRecipeAgent;
@@ -44,9 +46,11 @@ public class NutrientParsing_controller_bootstrap {
 		}
 		else 
 		{
-			Map<Nutrient, PreciseQuantity> nutrientDetailsForDbno = UsdaNutrientApiClientParticularFood.getNutrientDetailsForDbno("04542");
+			UsdaFoodDetails nutrientDetailsForDbno = UsdaNutrientApiClientParticularFood.getNutrientDetailObjectForDbno(ndbno);
 			ModelAndView mav=new ModelAndView(StringHolder.bootstrapFolder+"boot_NutrientResultsForSingleFood");
-			mav.addObject("nutrients",nutrientDetailsForDbno);
+			
+			mav.addObject("productIdObject",nutrientDetailsForDbno.getId());
+			mav.addObject("nutrients",nutrientDetailsForDbno.getNutrietsMap());
 
 			return mav;
 
