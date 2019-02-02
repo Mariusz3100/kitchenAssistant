@@ -56,6 +56,8 @@ public class AbstractQuantityEngExtractor {
 		translations.put("glasses",new QuantityTranslation(AmountTypes.ml, 250) );
 		translations.put("milliliter",new QuantityTranslation(AmountTypes.ml, 1) );
 		translations.put("liter",new QuantityTranslation(AmountTypes.ml, 1000) );
+		translations.put("ounce",new QuantityTranslation(AmountTypes.ml, 29.6f) );
+		translations.put("oz",new QuantityTranslation(AmountTypes.ml, 29.6f) );
 
 		translations.put("piece",new QuantityTranslation(AmountTypes.szt, 1) );
 		translations.put("pieces",new QuantityTranslation(AmountTypes.szt, 1) );
