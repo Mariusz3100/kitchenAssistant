@@ -40,22 +40,26 @@ public class ShopComApiClient {
 		queryParams.add("perPage","50");
 		queryParams.add("apikey", "l7xxeb4363ce0bcc441eb94134734dec9aed");
 		
-//https://api.shop.com/AffiliatePublisherNetwork/v1/products?apikey=l7xxeb4363ce0bcc441eb94134734dec9aed&publisherID=TEST&locale=en_US&categoryId=1-32806&perPage=50
 		String response1 ="";
-//		try{
+
+		try{
 			response1 = resource.queryParams(queryParams).accept("application/json").get(String.class);
-//		}catch( com.sun.jersey.api.client.UniformInterfaceException e){
-//			e.printStackTrace();
-//			sleep(2000);
-//			try{
-//				response1 = resource.queryParams(queryParams).accept("application/json").get(String.class);
-//				return response1;
-//
-//			}catch( com.sun.jersey.api.client.UniformInterfaceException ex){
-//				System.err.println("Double: "+ex);
-//				ex.printStackTrace();
-//			}
-//		}
+			return response1;
+
+		}catch( com.sun.jersey.api.client.UniformInterfaceException e){
+			ProblemLogger.logProblem("UniformInterfaceException for term: "+phrase+". Waiting and retrying");
+			sleep(2000);
+			try{
+				response1 = resource.queryParams(queryParams).accept("application/json").get(String.class);
+				return response1;
+
+			}catch( com.sun.jersey.api.client.UniformInterfaceException ex){
+				System.err.println("Double: "+ex);
+				ProblemLogger.logProblem("Double: "+ex);
+				ex.printStackTrace();
+			
+			}
+		}
 
 
 		return response1;
@@ -66,7 +70,7 @@ public class ShopComApiClient {
 		ArrayList<Produkt> retValue=new ArrayList<Produkt>();
 		
 		String response=getResponse(phrase);
-		sleep(2000);
+//		sleep(1000); //just to not exceed limit
 		JSONObject root=new JSONObject(response);
 		JSONArray produkts=((JSONArray)root.get("products"));
 		
