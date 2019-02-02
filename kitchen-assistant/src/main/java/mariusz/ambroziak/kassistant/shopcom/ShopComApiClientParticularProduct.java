@@ -53,6 +53,7 @@ public class ShopComApiClientParticularProduct {
 
 			}catch( com.sun.jersey.api.client.UniformInterfaceException ex){
 				System.err.println("Double: "+ex);
+				ProblemLogger.logProblem("Double: "+ex);
 				ex.printStackTrace();
 			
 			}
