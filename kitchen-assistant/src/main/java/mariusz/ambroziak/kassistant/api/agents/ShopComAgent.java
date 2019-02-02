@@ -117,7 +117,7 @@ public class ShopComAgent extends BaseAgent {
 		return freeOne;
 	}
 
-	
+
 	public static List<Produkt> searchForIngredient(String searchPhrase) throws AgentSystemNotStartedException{
 		ShopComAgent freeOne = getFreeAgent();
 		if(freeOne==null){
@@ -154,20 +154,62 @@ public class ShopComAgent extends BaseAgent {
 	private void processSearchForMessage(StringMessage m) {
 		JSONObject json=new JSONObject(m.getContent());
 		StringMessage messageToSend=null;
-		
-		String ids = searchForCorrectHandleNulls(json);
-		
+
+		String ids = searchForProductsInDbAndApiWithCaching(json);
+
 		try{
 			messageToSend = createResponseMessage(ids);
 		}catch(Exception e) {
 			ProblemLogger.logProblem(e.toString());
 			ProblemLogger.logStackTrace(e.getStackTrace());
 			messageToSend=createExceptionResponseMessage(e);
-			
+
 			setBusy(false);
 		}
 
 		sendReplyWithRoleKA(m, messageToSend,AGENT_ROLE);
+	}
+
+	private String searchForProductsInDbAndApiWithCaching(JSONObject json) {
+		if(json==null)
+			return "";
+		String searchForPhrase=(String) json.get(StringHolder.SEARCH4_NAME);
+
+		List<Produkt> produktsFound = fetchFromDbOrRetrieveFromApiWithSaving(searchForPhrase);
+		String ids = getJustIds(searchForPhrase, produktsFound);
+
+
+		return ids;
+	}
+
+	private String getJustIds(String searchForPhrase, List<Produkt> produktsFound) {
+		String ids="";
+		if(produktsFound.isEmpty()){
+			htmlLog("Not able to find produkt for:"+searchForPhrase+" in shop.com.\n");
+		}else{
+
+			for(Produkt p:produktsFound){
+				ids+=p.getP_id()+" ";
+			}
+			ids=ids.trim();
+		}
+
+		if(ids.indexOf("null")>0){
+			ids=ids.replaceAll("null", "");
+			ids.replaceAll("  ", " ");
+		}
+		return ids;
+	}
+
+	private List<Produkt> fetchFromDbOrRetrieveFromApiWithSaving(String searchForPhrase) {
+		List<Produkt> produktsFound = DaoProvider.getInstance().getProduktDao().getProduktsBySpacedName(searchForPhrase);
+		if(produktsFound==null||produktsFound.isEmpty())
+		{
+			produktsFound = searchForCorrect(searchForPhrase);
+			produktsFound = getAndSaveDetails(produktsFound);
+
+		}
+		return produktsFound;
 	}
 
 	private StringMessage createExceptionResponseMessage(Exception e) {
@@ -193,8 +235,8 @@ public class ShopComAgent extends BaseAgent {
 		return messageToSend;
 	}
 
-	private String searchForCorrectHandleNulls(JSONObject json) {
-		String searchForPhrase=(String) json.get(StringHolder.SEARCH4_NAME);
+	private String searchForCorrectWithChaching(String searchForPhrase) {
+
 
 		ArrayList<Produkt> produkts = searchForCorrect(searchForPhrase);
 		String ids="";
@@ -208,7 +250,7 @@ public class ShopComAgent extends BaseAgent {
 			}
 			ids=ids.trim();
 		}
-		
+
 		if(ids.indexOf("null")>0){
 			ids=ids.replaceAll("null", "");
 			ids.replaceAll("  ", " ");
@@ -216,7 +258,7 @@ public class ShopComAgent extends BaseAgent {
 		return ids;
 	}
 
-	private ArrayList<Produkt> getAndSaveDetails(ArrayList<Produkt> produkts) {
+	private ArrayList<Produkt> getAndSaveDetails(List<Produkt> produkts) {
 		ArrayList<Produkt> retValue=new ArrayList<Produkt>();
 
 		for(Produkt gaProdukt : produkts){
@@ -275,10 +317,10 @@ public class ShopComAgent extends BaseAgent {
 			ProblemLogger.logProblem(e.toString());
 			ProblemLogger.logStackTrace(e.getStackTrace());
 			messageToSend=createExceptionResponseMessage(e);
-			
+
 			setBusy(false);
 		}
-		
+
 		sendReplyWithRoleKA(m, messageToSend,AGENT_ROLE);
 	}
 
@@ -317,7 +359,7 @@ public class ShopComAgent extends BaseAgent {
 				//		try {
 				if(produktUrl!=null&&!produktUrl.equals(""))
 					foundProdukt = ShopComApiClientParticularProduct.getProduktByShopId(produktUrl);
-					DaoProvider.getInstance().getProduktDao().saveProdukt(foundProdukt);
+				DaoProvider.getInstance().getProduktDao().saveProdukt(foundProdukt);
 				//				} catch (Page404Exception e) {
 				//				ProblemLogger.logProblem("404 page at "+produktUrl);
 				//				ProblemLogger.logStackTrace(e.getStackTrace());
@@ -360,14 +402,14 @@ public class ShopComAgent extends BaseAgent {
 			}else{
 
 				ProduktDetails produktDetails = null;
-		//		try {
-					if(url!=null&&!url.equals(""))
-						produktDetails = getProduktByUrl(url);//will it work??? AuchanParticular.getProduktDetails(url);
+				//		try {
+				if(url!=null&&!url.equals(""))
+					produktDetails = getProduktByUrl(url);//will it work??? AuchanParticular.getProduktDetails(url);
 
-		//		} catch (Page404Exception e) {
-			//		ProblemLogger.logProblem("404 page at "+url);
-			//		ProblemLogger.logStackTrace(e.getStackTrace());
-		//		}
+				//		} catch (Page404Exception e) {
+				//		ProblemLogger.logProblem("404 page at "+url);
+				//		ProblemLogger.logStackTrace(e.getStackTrace());
+				//		}
 
 				if(produktDetails!=null){
 					foundProdukt=new Produkt();
@@ -416,7 +458,7 @@ public class ShopComAgent extends BaseAgent {
 		}
 		if(agents==null)agents=new ArrayList<ShopComAgent>();
 		agents.add(this);
-		
+
 		requestRole(AGENT_COMMUNITY,AGENT_GROUP, AGENT_ROLE);
 		super.activate();
 	}
