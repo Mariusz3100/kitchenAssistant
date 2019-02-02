@@ -32,4 +32,8 @@ public class UsdaFoodDetails {
 		return new UsdaFoodDetails(null, new HashMap<>());
 	}
 
+	public boolean isEmpty() {
+		return this.getId()==null&&(this.getNutrietsMap()==null||this.getNutrietsMap().size()==0);
+				
+	}
 }
