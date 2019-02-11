@@ -78,7 +78,7 @@ public class UsdaNutrientApiClientParticularFood {
 			return retValueMap;
 		}
 	}
-
+	//returns nutrient values per 100g of basic ingredient
 	private static UsdaFoodDetails parseIntoNutrientDetailsObject(String response,String ndbno) {
 
 		Map<Nutrient,PreciseQuantity> retValueMap=null;

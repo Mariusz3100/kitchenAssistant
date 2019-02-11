@@ -2,8 +2,10 @@ package mariusz.ambroziak.kassistant.Apiclients.usda;
 
 
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -24,6 +26,7 @@ import com.sun.jersey.core.util.MultivaluedMapImpl;
 import api.extractors.EdamanQExtract;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.UsdaApiParameters;
 import mariusz.ambroziak.kassistant.model.Nutrient;
+import mariusz.ambroziak.kassistant.model.Problem;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.jsp.SingleProdukt_SearchResult;
 import mariusz.ambroziak.kassistant.model.quantity.PreciseQuantity;
@@ -39,7 +42,7 @@ import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 public class UsdaNutrientApiClient {
 
 	private static String searchBaseUrl="https://api.nal.usda.gov/ndb/search";
-
+	private static int maxRows=20;
 
 	private static String getResponse(String searchPhrase) {
 		ClientConfig cc = new DefaultClientConfig();
@@ -53,6 +56,8 @@ public class UsdaNutrientApiClient {
 
 
 		queryParams_appId.add("q", searchPhrase);
+		queryParams_appId.add("max", Integer.toString(maxRows));
+
 		String response1 = resource.queryParams(queryParams_appId).accept("text/plain").get(String.class);
 		return response1;
 	}
@@ -124,6 +129,7 @@ public class UsdaNutrientApiClient {
 	
 	
 	public static UsdaFoodDetails searchForNutritionDetailsOfAProdukt(String foodName){
+		long start=System.currentTimeMillis();
 		String response=getResponse(foodName);
 
 		JSONObject root=new JSONObject(response);
@@ -138,11 +144,15 @@ public class UsdaNutrientApiClient {
 
 			UsdaFoodDetails nutrientDetails = UsdaNutrientApiClientParticularFood.getNutrientDetails(best);
 
+			ProblemLogger.logProblem("Getting data in searchForNutritionDetailsOfAProdukt from usda api took "+(System.currentTimeMillis()-start)+" miliseconds at "+ new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date()));
+			
 			return nutrientDetails;
 		}
 	}
 
 	public static ArrayList<UsdaFoodId> searchForProduktsInUsdaDb(String foodName){
+		long start=System.currentTimeMillis();
+
 		String response=getResponse(foodName);
 
 		JSONObject root=new JSONObject(response);
@@ -151,18 +161,23 @@ public class UsdaNutrientApiClient {
 			return new ArrayList<>();
 		}else{
 			ArrayList<UsdaFoodId> parseIntoNutrientDetails = parseIntoNutrientDetails(response);
+			ProblemLogger.logProblem("Getting data in searchForProduktsInUsdaDb from usda api took "+(System.currentTimeMillis()-start)+" miliseconds at "+ new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date()));
 
 			return parseIntoNutrientDetails;
 		}
 	}
 	
 	public static Collection<UsdaFoodId> searchForProduktsInUsdaDbSortByName(String foodName){
+		long start=System.currentTimeMillis();
+
 		ArrayList<UsdaFoodId> searchForProduktsInUsdaDb = searchForProduktsInUsdaDb(foodName);
 		
 		TreeMap<UsdaFoodId, UsdaFoodId> map=new TreeMap<UsdaFoodId, UsdaFoodId>();
 		for(UsdaFoodId id:searchForProduktsInUsdaDb) {
 			map.put(id, id);
 		}
+		ProblemLogger.logProblem("Getting data in searchForProduktsInUsdaDbSortByName from usda api took "+(System.currentTimeMillis()-start)+" miliseconds at"+ new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date()));
+
 		return map.values();
 		
 	}
