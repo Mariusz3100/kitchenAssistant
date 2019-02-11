@@ -14,12 +14,36 @@ import javax.validation.constraints.NotNull;
 public class Basic_Ingredient_Nutrient_amount {
 
 
-	public Basic_Ingredient_Nutrient_amount(Nutrient nutritient, Basic_Ingredient basicIngredient, float coefficient) {
+	@Override
+	public String toString() {
+		return "Basic_Ingredient_Nutrient_amount [binu_id=" + binu_id + ", nutritient=" + nutritient
+				+ ", basicIngredient=" + basicIngredient + ", coefficient=" + coefficient + "]";
+	}
+
+
+
+	public Basic_Ingredient_Nutrient_Data_Source getDataSource() {
+		return dataSource;
+	}
+
+
+
+	public void setDataSource(Basic_Ingredient_Nutrient_Data_Source dataSource) {
+		this.dataSource = dataSource;
+	}
+
+
+
+	public Basic_Ingredient_Nutrient_amount(Nutrient nutritient, Basic_Ingredient basicIngredient, float coefficient,
+			Basic_Ingredient_Nutrient_Data_Source dataSource) {
 		super();
 		this.nutritient = nutritient;
 		this.basicIngredient = basicIngredient;
 		this.coefficient = coefficient;
+		this.dataSource = dataSource;
 	}
+
+
 
 	public Basic_Ingredient_Nutrient_amount() {
 		// TODO Auto-generated constructor stub
@@ -66,6 +90,7 @@ public class Basic_Ingredient_Nutrient_amount {
 	@JoinColumn(name="nu_id")
 	private Nutrient nutritient;
 
+	
 	@NotNull
 	@ManyToOne
 	@JoinColumn(name="bi_id")
@@ -74,6 +99,9 @@ public class Basic_Ingredient_Nutrient_amount {
 	@NotNull
 	private float coefficient;
 
-	
+	@NotNull
+	@ManyToOne
+	@JoinColumn(name="binds_id")
+	private Basic_Ingredient_Nutrient_Data_Source dataSource;
 	
 }
