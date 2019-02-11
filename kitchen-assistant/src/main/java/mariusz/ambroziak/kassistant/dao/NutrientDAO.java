@@ -10,9 +10,9 @@ import mariusz.ambroziak.kassistant.model.quantity.PreciseQuantity;
 public interface NutrientDAO {
 	public List<Nutrient> list();
 	public Nutrient getNutrientByName(String name);
-	public Map<Nutrient, Float> getNutrientsOfBasicIngredient(Long basicIngredientId);
+	public Map<Nutrient, Float> getNutrientsForBasicIngredient(Long basicIngredientId);
 	public Nutrient getNutrientById(Long nutrientId);
-	public void saveNutrientData(Basic_Ingredient basicIngredient, Map<Nutrient, Float> nutrientsAmounts);
-	public boolean areNutrientsForBasicIngredient(Long basicIngredientId);
+//	public void saveNutrientData(Basic_Ingredient basicIngredient, Map<Nutrient, Float> nutrientsAmounts);
+//	public boolean areNutrientsForBasicIngredient(Long basicIngredientId);
 	
 }
