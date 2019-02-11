@@ -156,14 +156,24 @@ INSERT INTO public.nutrient_name(nn_id,nu_id, possible_name) VALUES (80, 6, 'Fat
 INSERT INTO public.nutrient_name(nn_id,nu_id, possible_name) VALUES (81, 7, 'Fatty acids, total polyunsaturated');
 INSERT INTO public.nutrient_name(nn_id,nu_id, possible_name) VALUES (82, 10, 'fibre');
 
-insert into Basic_Ingredient_Nutrient_amount (binu_id,nu_id,bi_id,coefficient) VALUES (1,1,1,1);
-insert into Basic_Ingredient_Nutrient_amount (binu_id,nu_id,bi_id,coefficient) VALUES (2,2,2,1);
-insert into Basic_Ingredient_Nutrient_amount (binu_id,nu_id,bi_id,coefficient) VALUES (3,3,3,1);
-insert into Basic_Ingredient_Nutrient_amount (binu_id,nu_id,bi_id,coefficient) VALUES (4,4,4,1);
-insert into Basic_Ingredient_Nutrient_amount (binu_id,nu_id,bi_id,coefficient) VALUES (5,5,5,1);
-insert into Basic_Ingredient_Nutrient_amount (binu_id,nu_id,bi_id,coefficient) VALUES (6,6,6,1);
-insert into Basic_Ingredient_Nutrient_amount (binu_id,nu_id,bi_id,coefficient) VALUES (7,7,7,1);
-insert into Basic_Ingredient_Nutrient_amount (binu_id,nu_id,bi_id,coefficient) VALUES (8,8,8,1);
+insert into Basic_Ingredient_Nutrient_Data_Source (binds_id,bi_id,data_source_url,id_in_api) VALUES (1,1,'-','-');
+insert into Basic_Ingredient_Nutrient_Data_Source (binds_id,bi_id,data_source_url,id_in_api) VALUES (2,2,'-','-');
+insert into Basic_Ingredient_Nutrient_Data_Source (binds_id,bi_id,data_source_url,id_in_api) VALUES (3,3,'-','-');
+insert into Basic_Ingredient_Nutrient_Data_Source (binds_id,bi_id,data_source_url,id_in_api) VALUES (4,4,'-','-');
+insert into Basic_Ingredient_Nutrient_Data_Source (binds_id,bi_id,data_source_url,id_in_api) VALUES (5,5,'-','-');
+insert into Basic_Ingredient_Nutrient_Data_Source (binds_id,bi_id,data_source_url,id_in_api) VALUES (6,6,'-','-');
+insert into Basic_Ingredient_Nutrient_Data_Source (binds_id,bi_id,data_source_url,id_in_api) VALUES (7,7,'-','-');
+insert into Basic_Ingredient_Nutrient_Data_Source (binds_id,bi_id,data_source_url,id_in_api) VALUES (8,8,'-','-');
+
+
+insert into Basic_Ingredient_Nutrient_amount (binu_id,nu_id,bi_id,binds_id,coefficient) VALUES (1,1,1,1,1);
+insert into Basic_Ingredient_Nutrient_amount (binu_id,nu_id,bi_id,binds_id,coefficient) VALUES (2,2,2,2,1);
+insert into Basic_Ingredient_Nutrient_amount (binu_id,nu_id,bi_id,binds_id,coefficient) VALUES (3,3,3,3,1);
+insert into Basic_Ingredient_Nutrient_amount (binu_id,nu_id,bi_id,binds_id,coefficient) VALUES (4,4,4,4,1);
+insert into Basic_Ingredient_Nutrient_amount (binu_id,nu_id,bi_id,binds_id,coefficient) VALUES (5,5,5,5,1);
+insert into Basic_Ingredient_Nutrient_amount (binu_id,nu_id,bi_id,binds_id,coefficient) VALUES (6,6,6,6,1);
+insert into Basic_Ingredient_Nutrient_amount (binu_id,nu_id,bi_id,binds_id,coefficient) VALUES (7,7,7,7,1);
+insert into Basic_Ingredient_Nutrient_amount (binu_id,nu_id,bi_id,binds_id,coefficient) VALUES (8,8,8,8,1);
 
 select setval('basic_ingredient_nutrient_amount_binu_id_seq',10);
 
