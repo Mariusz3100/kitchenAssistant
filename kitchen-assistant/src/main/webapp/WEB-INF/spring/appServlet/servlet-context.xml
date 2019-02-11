@@ -60,6 +60,19 @@
 		</constructor-arg>
 
 	</bean>
+	
+		<bean id="basic_ingredientNutrientAmountDAO"
+		class="mariusz.ambroziak.kassistant.dao.Basic_Ingredient_Nutrient_AmountDAOImpl">
+		<constructor-arg>
+			<ref bean="sessionFactory" />
+		</constructor-arg>
+		<constructor-arg>
+			<ref bean="nutrientDao" />
+		</constructor-arg>
+		<constructor-arg>
+			<ref bean="basic_ingredientDAO" />
+		</constructor-arg>
+	</bean>
 
 	<bean id="nutrientNameDAO"
 		class="mariusz.ambroziak.kassistant.dao.Nutrient_NameDAOImpl">
@@ -69,6 +82,13 @@
 
 	</bean>
 
+	<bean id="basicIngredientNutrientDataSourceDao"
+		class="mariusz.ambroziak.kassistant.dao.Basic_Ingredient_Nutrient_Data_SourceDAOImpl">
+		<constructor-arg>
+			<ref bean="sessionFactory" />
+		</constructor-arg>
+
+	</bean>
 
 	<bean id="basic_ingredientNameDAO"
 		class="mariusz.ambroziak.kassistant.dao.Basic_Ingredient_NameDAOImpl">
@@ -115,6 +135,7 @@
 			<ref bean="userDao" />
 		</constructor-arg>
 
+
 		<constructor-arg>
 			<ref bean="produktDao" />
 		</constructor-arg>
@@ -140,6 +161,10 @@
 		</constructor-arg>
 
 		<constructor-arg>
+			<ref bean="basic_ingredientNutrientAmountDAO" />
+		</constructor-arg>
+		
+		<constructor-arg>
 			<ref bean="basic_ingredientNameDAO" />
 		</constructor-arg>
 
@@ -150,6 +175,10 @@
 		<constructor-arg>
 			<ref bean="nutrientDao" />
 		</constructor-arg>
+		<constructor-arg>
+			<ref bean="basicIngredientNutrientDataSourceDao" />
+		</constructor-arg>
+
 
 
 	</bean>
