@@ -17,6 +17,11 @@ public class Basic_Ingredient {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long bi_id;
 
+	@Override
+	public String toString() {
+		return "Basic_Ingredient [bi_id=" + bi_id + ", name=" + name + "]";
+	}
+
 	@NotNull
 	private String name;
 
