@@ -53,7 +53,6 @@ public class Nutrient_NameDAOImpl implements Nutrient_NameDAO {
 		
 		Number x=(Number) (sessionFactory.getCurrentSession().createCriteria(Nutrient_Name.class)
                 .setProjection(Projections.rowCount()).uniqueResult());
-		System.out.println(x);
 		return x.longValue();
 	}
 
