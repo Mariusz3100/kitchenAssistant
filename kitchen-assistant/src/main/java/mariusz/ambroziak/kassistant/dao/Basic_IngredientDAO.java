@@ -13,5 +13,10 @@ public interface Basic_IngredientDAO {
 	public List<Basic_Ingredient> list();
 	public Basic_Ingredient getIngredientByName(String name);
 	public Basic_Ingredient getIngredientByAnyName(String name);
-	public void saveBasicIngredient(Basic_Ingredient ingredient); 
+	public Basic_Ingredient getIngredientById(Long id);
+	public List<Basic_Ingredient> getIngredientByNames(Collection<String> name);
+	public List<Basic_Ingredient> getIngredientBySpacedName(String phrase);
+	public boolean checkIfRecordExistsUpdateArgumentIfNeedBe(Basic_Ingredient bi);
+	public void saveBasicIngredient(Basic_Ingredient bi);
+	
 }
