@@ -17,6 +17,10 @@ public class DaoProvider {
 
 	private Basic_IngredientDAO basicIngredientDao;
 
+	private Basic_Ingredient_Nutrient_AmountDAO basicIngredientNutrientAmountDao;
+
+	private Basic_Ingredient_Nutrient_Data_SourceDAO basicIngredientNutrientDataSourceDao;
+
 	private Basic_Ingredient_NameDAO basicIngredientNameDao;
 
 	private NutrientDAO nutrientDao;
@@ -56,29 +60,45 @@ public class DaoProvider {
 		return produktDao;
 	}
 
-	public DaoProvider(Base_WordDAO baseWordDao,UserDAO userDao, ProduktDAO produktDao,
-			Variant_WordDAO variantWordDao,RecipeDAO recipeDao,ProblemDAO problemDao,
-			Basic_IngredientDAO basicIngredientDao, Basic_Ingredient_NameDAO basicIngredientNameDao,
-			NutrientDAO nutrientsDao, Nutrient_NameDAO nutrientNameDao)
-	{
+
+	
+	public Basic_Ingredient_Nutrient_AmountDAO getBasicIngredientNutrientAmountDao() {
+		return basicIngredientNutrientAmountDao;
+	}
+
+
+
+	
+	public DaoProvider(UserDAO userDao, ProduktDAO produktDao, Variant_WordDAO variantWordDao, Base_WordDAO baseWordDao,
+			RecipeDAO recipeDao, ProblemDAO problemDao, Basic_IngredientDAO basicIngredientDao,
+			Basic_Ingredient_Nutrient_AmountDAO basicIngredientNutrientAmountDao,
+			Basic_Ingredient_Nutrient_Data_SourceDAO basicIngredientNutrientDataSourceDao,
+			Basic_Ingredient_NameDAO basicIngredientNameDao, NutrientDAO nutrientDao,
+			Nutrient_NameDAO nutrientNameDao) {
 		super();
-		this.problemDao=problemDao;
 		this.userDao = userDao;
 		this.produktDao = produktDao;
-		this.variantWordDao=variantWordDao;
-		this.baseWordDao=baseWordDao;
-		this.recipeDao=recipeDao;
-		this.basicIngredientDao=basicIngredientDao;
-		this.basicIngredientNameDao=basicIngredientNameDao;
-		this.nutrientDao=nutrientsDao;
-		this.nutrientNameDao=nutrientNameDao;
+		this.variantWordDao = variantWordDao;
+		this.baseWordDao = baseWordDao;
+		this.recipeDao = recipeDao;
+		this.problemDao = problemDao;
+		this.basicIngredientDao = basicIngredientDao;
+		this.basicIngredientNutrientAmountDao = basicIngredientNutrientAmountDao;
+		this.basicIngredientNutrientDataSourceDao = basicIngredientNutrientDataSourceDao;
+		this.basicIngredientNameDao = basicIngredientNameDao;
+		this.nutrientDao = nutrientDao;
+		this.nutrientNameDao = nutrientNameDao;
 		
+
 		if(singleton==null)
 			singleton=this;
 		else
 			throw new IllegalStateException("two instances of daoProvider");
+
 	}
-	
+
+
+
 	public RecipeDAO getRecipeDao() {
 		return recipeDao;
 	}
@@ -87,6 +107,12 @@ public class DaoProvider {
 		return singleton;
 	}
 	
+	public Basic_Ingredient_Nutrient_Data_SourceDAO getBasicIngredientNutrientDataSourceDao() {
+		return basicIngredientNutrientDataSourceDao;
+	}
+
+
+
 	public Basic_Ingredient_NameDAO getBasicIngredientNameDao() {
 		return basicIngredientNameDao;
 	}

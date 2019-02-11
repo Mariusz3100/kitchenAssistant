@@ -18,6 +18,7 @@
 		<mapping class="mariusz.ambroziak.kassistant.model.Basic_Ingredient_Name" />
 		<mapping class="mariusz.ambroziak.kassistant.model.Nutrient" />
 		<mapping class="mariusz.ambroziak.kassistant.model.Basic_Ingredient_Nutrient_amount" />
+		<mapping class="mariusz.ambroziak.kassistant.model.Basic_Ingredient_Nutrient_Data_Source" />
 		<mapping class="mariusz.ambroziak.kassistant.model.Nutrient_Name" />
 		
 	</session-factory>
