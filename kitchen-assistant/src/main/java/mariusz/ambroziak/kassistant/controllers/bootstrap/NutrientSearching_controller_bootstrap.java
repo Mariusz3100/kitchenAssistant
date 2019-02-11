@@ -19,6 +19,7 @@ import mariusz.ambroziak.kassistant.Apiclients.usda.UsdaFoodDetails;
 import mariusz.ambroziak.kassistant.Apiclients.usda.UsdaFoodId;
 import mariusz.ambroziak.kassistant.Apiclients.usda.UsdaNutrientApiClient;
 import mariusz.ambroziak.kassistant.Apiclients.usda.UsdaNutrientApiClientParticularFood;
+import mariusz.ambroziak.kassistant.agents.ReadingNutritientsUsdaAgent;
 import mariusz.ambroziak.kassistant.agents.RecipeAgent;
 import mariusz.ambroziak.kassistant.api.agents.EdamanRecipeAgent;
 import mariusz.ambroziak.kassistant.exceptions.AgentSystemNotStartedException;
@@ -27,6 +28,7 @@ import mariusz.ambroziak.kassistant.model.jsp.MultiProdukt_SearchResult;
 import mariusz.ambroziak.kassistant.model.jsp.ProduktWithRecountedPrice;
 import mariusz.ambroziak.kassistant.model.quantity.PreciseQuantity;
 import mariusz.ambroziak.kassistant.model.utils.ApiIngredientAmount;
+import mariusz.ambroziak.kassistant.model.utils.NutrientDetailsOfBasicIngredient;
 import mariusz.ambroziak.kassistant.utils.JspStringHolder;
 import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 import mariusz.ambroziak.kassistant.utils.StringHolder;
@@ -36,15 +38,45 @@ import mariusz.ambroziak.kassistant.utils.StringHolder;
 public class NutrientSearching_controller_bootstrap {
 
 
+//	@RequestMapping(value="/b_nutritientForFoodName")
+//	public ModelAndView apiRecipeParsed(HttpServletRequest request) throws AgentSystemNotStartedException {
+//
+//		String foodName=request.getParameter(JspStringHolder.foodName);
+//
+//		if(foodName==null||foodName.equals("")) {
+//			return new ModelAndView(StringHolder.bootstrapFolder+"boot_foodSearch_byFoodName");
+//		}else {
+//			Collection<UsdaFoodId> searchForProduktsInUsdaDb = UsdaNutrientApiClient.searchForProduktsInUsdaDbSortByName(foodName);
+//			
+//			
+//			ModelAndView mav=new ModelAndView(StringHolder.bootstrapFolder+"boot_usdaProducts");
+//			
+//			mav.addObject("foodName",foodName);
+//			mav.addObject("usdaProducts",searchForProduktsInUsdaDb);
+//
+//			return mav;
+//		}
+//		
+//		
+//
+//	}
+	
+	
 	@RequestMapping(value="/b_nutritientForFoodName")
-	public ModelAndView apiRecipeParsed(HttpServletRequest request) throws AgentSystemNotStartedException {
+	public ModelAndView agentNutrientsParsed(HttpServletRequest request) {
 
 		String foodName=request.getParameter(JspStringHolder.foodName);
 
 		if(foodName==null||foodName.equals("")) {
 			return new ModelAndView(StringHolder.bootstrapFolder+"boot_foodSearch_byFoodName");
 		}else {
-			Collection<UsdaFoodId> searchForProduktsInUsdaDb = UsdaNutrientApiClient.searchForProduktsInUsdaDbSortByName(foodName);
+			Collection<UsdaFoodId> searchForProduktsInUsdaDb;
+			try {
+				searchForProduktsInUsdaDb = ReadingNutritientsUsdaAgent.searchForMultiProduct(foodName);
+			} catch (AgentSystemNotStartedException e) {
+				return new ModelAndView("agentSystemNotStarted");
+			} 
+					//UsdaNutrientApiClient.searchForProduktsInUsdaDbSortByName(foodName);
 			
 			
 			ModelAndView mav=new ModelAndView(StringHolder.bootstrapFolder+"boot_usdaProducts");
@@ -54,10 +86,8 @@ public class NutrientSearching_controller_bootstrap {
 
 			return mav;
 		}
-		
-		
-
 	}
+
 
 	private ModelAndView returnAgentSystemNotStartedPage() {
 		return new ModelAndView("agentSystemNotStarted");
