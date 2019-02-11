@@ -10,6 +10,8 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 
 import madkit.kernel.Madkit;
+import mariusz.ambroziak.kassistant.Apiclients.usda.UsdaFoodId;
+import mariusz.ambroziak.kassistant.Apiclients.usda.UsdaNutrientApiClient;
 import mariusz.ambroziak.kassistant.Apiclients.usda.UsdaNutrientApiClientParticularFood;
 import mariusz.ambroziak.kassistant.agents.ClockAgent;
 import mariusz.ambroziak.kassistant.agents.RecipeAgent;
@@ -18,6 +20,7 @@ import mariusz.ambroziak.kassistant.dao.DaoProvider;
 import mariusz.ambroziak.kassistant.dao.Nutrient_NameDAO;
 import mariusz.ambroziak.kassistant.exceptions.AgentSystemNotStartedException;
 import mariusz.ambroziak.kassistant.exceptions.Page404Exception;
+import mariusz.ambroziak.kassistant.model.Basic_Ingredient;
 import mariusz.ambroziak.kassistant.model.Nutrient;
 import mariusz.ambroziak.kassistant.model.Nutrient_Name;
 import mariusz.ambroziak.kassistant.model.Problem;
@@ -122,8 +125,8 @@ public class TestsController {
 
 	}
 
-	
-	
+
+
 	@RequestMapping(value="/nutrientsTestLazy")
 	public ModelAndView nutrientsTest12
 	(HttpServletRequest request) {
@@ -133,25 +136,25 @@ public class TestsController {
 		System.out.println(base.getName());
 		return null;
 	}
-	
-	
+
+
 	@RequestMapping(value="/nutrientsTest")
 	public ModelAndView nutrientsTest
 	(HttpServletRequest request) {
-		
-		
+
+
 		Nutrient_NameDAO nutrientNameDao = DaoProvider.getInstance().getNutrientNameDao();
 
-//		List<Nutrient_Name> nutList = nutrientNameDao.list();
+		//		List<Nutrient_Name> nutList = nutrientNameDao.list();
 		Map<Nutrient, PreciseQuantity> nutrientDetailsForDbno = UsdaNutrientApiClientParticularFood.getNutrientDetailsForDbno("04542");
 
 		System.out.println("Details:");
-		
+
 		for(Nutrient n:nutrientDetailsForDbno.keySet()) {
 			System.out.println(n+"->"+nutrientDetailsForDbno.get(n));
 		}
-		
-		
+
+
 		ModelAndView mav=new ModelAndView("homePage");
 
 		return mav;
@@ -159,6 +162,40 @@ public class TestsController {
 
 	}
 
+
+	@RequestMapping(value="/testDb")
+	public ModelAndView testdb(HttpServletRequest request) {
+		Map<Nutrient, Float> areNutrientsForBasicIngredient = DaoProvider.getInstance().getBasicIngredientNutrientAmountDao().getNutrientsForBasicIngredient(1l);
+		ModelAndView mav = new ModelAndView("List");
+		mav.addObject("list", areNutrientsForBasicIngredient);
+		return mav;
+	}
+
+	@RequestMapping(value="/testDb2")
+	public ModelAndView testdb2(HttpServletRequest request) {
+
+
+		Map<Nutrient, Float> areNutrientsForBasicIngredient = DaoProvider.getInstance().getBasicIngredientNutrientAmountDao().getNutrientsForBasicIngredient(1l);
+		ModelAndView mav = new ModelAndView("List");
+		mav.addObject("list", areNutrientsForBasicIngredient);
+		return mav;
+	}
+
+
+	@RequestMapping(value="/testDb3")
+	public ModelAndView testdb3(HttpServletRequest request) {
+		ModelAndView mav = new ModelAndView("List");
+
+		List<Basic_Ingredient> ingredientBySpacedName = DaoProvider.getInstance().getBasicIngredientDao().getIngredientBySpacedName("pork");
+		Basic_Ingredient bi= DaoProvider.getInstance().getBasicIngredientDao().getIngredientById(2l);
+
+		ArrayList<UsdaFoodId> searchForProduktsInUsdaDb = UsdaNutrientApiClient.searchForProduktsInUsdaDb("pork");
+
+
+
+
+		return mav;
+	}
 
 	@RequestMapping(value="/test2")
 	public ModelAndView test2(HttpServletRequest request) {
