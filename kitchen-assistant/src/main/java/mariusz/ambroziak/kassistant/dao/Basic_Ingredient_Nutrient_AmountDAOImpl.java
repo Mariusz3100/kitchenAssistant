@@ -29,6 +29,9 @@ public class Basic_Ingredient_Nutrient_AmountDAOImpl implements Basic_Ingredient
 	private SessionFactory sessionFactory;
 	private NutrientDAO nutrientDao;
 	private Basic_IngredientDAO basicIngredientDao;
+	private Basic_Ingredient_Nutrient_Data_SourceDAO basicIngredientNutrientDataSourceDao;
+
+
 
 	public static String getNutrientsForBasicIngredientIdQuery=
 			"select * from basic_ingredient_nutrient_amount inner join Nutrient on Nutrient.nu_id=basic_ingredient_nutrient_amount.nu_id "+
@@ -43,17 +46,19 @@ public class Basic_Ingredient_Nutrient_AmountDAOImpl implements Basic_Ingredient
 
 
 	public Basic_Ingredient_Nutrient_AmountDAOImpl(SessionFactory sessionFactory, NutrientDAO nutrientDao,
-			Basic_IngredientDAO basicIngredient) {
+			Basic_IngredientDAO basicIngredientDao,
+			Basic_Ingredient_Nutrient_Data_SourceDAO basicIngredientNutrientDataSourceDao) {
 		super();
 		this.sessionFactory = sessionFactory;
 		this.nutrientDao = nutrientDao;
-		this.basicIngredientDao = basicIngredient;
+		this.basicIngredientDao = basicIngredientDao;
+		this.basicIngredientNutrientDataSourceDao = basicIngredientNutrientDataSourceDao;
 	}
 
 	@Override
 	@Transactional
-	public void saveNutrientData(Basic_Ingredient basicIngredient, Map<Nutrient, Float> nutrientsAmounts) {
-		if(isAnyOfArgumentsEmpty(basicIngredient, nutrientsAmounts))
+	public void saveNutrientData(Basic_Ingredient basicIngredient,Basic_Ingredient_Nutrient_Data_Source binds, Map<Nutrient, Float> nutrientsAmounts) {
+		if(isAnyOfArgumentsEmpty(basicIngredient,binds,nutrientsAmounts))
 			return;
 		
 		boolean basicIngredientExistsInDb = this.basicIngredientDao.checkIfRecordExistsUpdateArgumentIfNeedBe(basicIngredient);
@@ -74,19 +79,25 @@ public class Basic_Ingredient_Nutrient_AmountDAOImpl implements Basic_Ingredient
 					basicIngredientNutritientAmount.setBasicIngredient(basicIngredient);
 					basicIngredientNutritientAmount.setNutritient(nutrient);
 					basicIngredientNutritientAmount.setCoefficient(e.getValue());
-					
+					//basicIngredientNutrientDataSourceDao.sa
+					basicIngredientNutritientAmount.setDataSource(binds);
+					this.basicIngredientNutrientDataSourceDao.saveDataSource(binds);
 					this.sessionFactory.getCurrentSession().save(basicIngredientNutritientAmount);
 				}
 			}
 		}
 	}
 
-	private boolean isAnyOfArgumentsEmpty(Basic_Ingredient basicIngredient, Map<Nutrient, Float> nutrientsAmounts) {
+	private boolean isAnyOfArgumentsEmpty(Basic_Ingredient basicIngredient, Basic_Ingredient_Nutrient_Data_Source binds, Map<Nutrient, Float> nutrientsAmounts) {
 		if(basicIngredient==null) {
 			ProblemLogger.logProblem("Trying to save nutrient data for empty basic ingredient");
 			return true;
 		}
 		if(nutrientsAmounts==null||nutrientsAmounts.isEmpty()) {
+			ProblemLogger.logProblem("Trying to save empty nutrient");
+			return true;
+		}
+		if(binds==null) {
 			ProblemLogger.logProblem("Trying to save empty nutrient data for basic ingredient: "+basicIngredient);
 			return true;
 		}
@@ -112,7 +123,7 @@ public class Basic_Ingredient_Nutrient_AmountDAOImpl implements Basic_Ingredient
 
 	@Override
 	@Transactional
-	public Map<Nutrient, Float> getNutrientsForBasicIngredient(Long basicIngredientId) {
+	public Map<Nutrient, Float> getNutrientsForBasicIngredientById(Long basicIngredientId) {
 		String sql=getNutrientsForBasicIngredientIdQuery.replaceAll("__bi_id__", Long.toString(basicIngredientId));
 		
 		@SuppressWarnings("unchecked")
@@ -137,8 +148,8 @@ public class Basic_Ingredient_Nutrient_AmountDAOImpl implements Basic_Ingredient
 	
 	@Override
 	@Transactional
-	public Map<Nutrient, Float> getNutrientsForBasicIngredient(String basicIngredientId) {
-		String sql=getNutrientsForBasicIngredientNameQuery.replaceAll("__name__", basicIngredientId);
+	public Map<Nutrient, Float> getNutrientsForBasicIngredientByName(String basicIngredientName) {
+		String sql=getNutrientsForBasicIngredientNameQuery.replaceAll("__name__", basicIngredientName);
 
 		@SuppressWarnings("unchecked")
 		List<Basic_Ingredient_Nutrient_amount> list = 
@@ -179,6 +190,16 @@ public class Basic_Ingredient_Nutrient_AmountDAOImpl implements Basic_Ingredient
         .uniqueResult() != null;
 		
 		
+	}
+
+	@Override
+	public List<Basic_Ingredient_Nutrient_amount> getNutrientsForDataSourceById(Long basicIngredientDataSourceId) {
+		@SuppressWarnings("unchecked")
+		List<Basic_Ingredient_Nutrient_amount> binas = (List<Basic_Ingredient_Nutrient_amount>) sessionFactory.getCurrentSession()
+				.createCriteria(Basic_Ingredient_Nutrient_amount.class)
+				.add(Restrictions.eq("binds_id", basicIngredientDataSourceId))
+				.list();
+		return binas;
 	}
 
 }
