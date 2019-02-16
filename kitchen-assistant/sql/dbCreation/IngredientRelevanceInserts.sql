@@ -165,6 +165,8 @@ insert into Basic_Ingredient_Nutrient_Data_Source (binds_id,bi_id,data_source_ur
 insert into Basic_Ingredient_Nutrient_Data_Source (binds_id,bi_id,data_source_url,id_in_api) VALUES (7,7,'-','-');
 insert into Basic_Ingredient_Nutrient_Data_Source (binds_id,bi_id,data_source_url,id_in_api) VALUES (8,8,'-','-');
 
+select setval('basic_ingredient_nutrient_data_source_binds_id_seq',10);
+
 
 insert into Basic_Ingredient_Nutrient_amount (binu_id,nu_id,bi_id,binds_id,coefficient) VALUES (1,1,1,1,1);
 insert into Basic_Ingredient_Nutrient_amount (binu_id,nu_id,bi_id,binds_id,coefficient) VALUES (2,2,2,2,1);
