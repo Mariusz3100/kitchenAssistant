@@ -21,6 +21,7 @@ import mariusz.ambroziak.kassistant.dao.Nutrient_NameDAO;
 import mariusz.ambroziak.kassistant.exceptions.AgentSystemNotStartedException;
 import mariusz.ambroziak.kassistant.exceptions.Page404Exception;
 import mariusz.ambroziak.kassistant.model.Basic_Ingredient;
+import mariusz.ambroziak.kassistant.model.Basic_Ingredient_Nutrient_Data_Source;
 import mariusz.ambroziak.kassistant.model.Nutrient;
 import mariusz.ambroziak.kassistant.model.Nutrient_Name;
 import mariusz.ambroziak.kassistant.model.Problem;
@@ -165,7 +166,7 @@ public class TestsController {
 
 	@RequestMapping(value="/testDb")
 	public ModelAndView testdb(HttpServletRequest request) {
-		Map<Nutrient, Float> areNutrientsForBasicIngredient = DaoProvider.getInstance().getBasicIngredientNutrientAmountDao().getNutrientsForBasicIngredient(1l);
+		Map<Nutrient, Float> areNutrientsForBasicIngredient = DaoProvider.getInstance().getBasicIngredientNutrientAmountDao().getNutrientsForBasicIngredientById(1l);
 		ModelAndView mav = new ModelAndView("List");
 		mav.addObject("list", areNutrientsForBasicIngredient);
 		return mav;
@@ -175,7 +176,7 @@ public class TestsController {
 	public ModelAndView testdb2(HttpServletRequest request) {
 
 
-		Map<Nutrient, Float> areNutrientsForBasicIngredient = DaoProvider.getInstance().getBasicIngredientNutrientAmountDao().getNutrientsForBasicIngredient(1l);
+		Map<Nutrient, Float> areNutrientsForBasicIngredient = DaoProvider.getInstance().getBasicIngredientNutrientAmountDao().getNutrientsForBasicIngredientById(1l);
 		ModelAndView mav = new ModelAndView("List");
 		mav.addObject("list", areNutrientsForBasicIngredient);
 		return mav;
@@ -286,5 +287,15 @@ public class TestsController {
 		}
 
 
+	}
+	
+	@RequestMapping(value="/dbRetrieval")
+	public ModelAndView testDifferentDbRetrieval(HttpServletRequest request) {
+		ModelAndView mav = new ModelAndView("List");
+		Nutrient nutrientByName = DaoProvider.getInstance().getNutrientDao().getNutrientByName("energy");
+		List<Basic_Ingredient_Nutrient_Data_Source> dataSourceBy_ApiId = DaoProvider.getInstance().getBasicIngredientNutrientDataSourceDao().getDataSourceBy_ApiId("07010");
+		
+		return mav;
+		
 	}
 }
