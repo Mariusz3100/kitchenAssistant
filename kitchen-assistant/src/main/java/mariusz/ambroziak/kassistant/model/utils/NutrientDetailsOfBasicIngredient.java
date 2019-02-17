@@ -29,11 +29,11 @@ public class NutrientDetailsOfBasicIngredient {
 		this.nutrientsMap = nutrientsMap;
 	}
 
-	public NutrientDetailsOfBasicIngredient(Basic_Ingredient basicIngredient) {
-		super();
-		this.basicIngredient = basicIngredient;
-	}
+
 	
+	public NutrientDetailsOfBasicIngredient() {
+		super();
+	}
 	public void setNutrientsMapFromMapWithPreciseQuantityValues(Map<Nutrient, PreciseQuantity> map) {
 		this.nutrientsMap=new HashMap<Nutrient, Float>();
 		if(map!=null&&!map.isEmpty())
