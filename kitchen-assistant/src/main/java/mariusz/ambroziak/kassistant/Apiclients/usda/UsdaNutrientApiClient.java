@@ -41,6 +41,9 @@ import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 
 public class UsdaNutrientApiClient {
 
+
+
+
 	private static String searchBaseUrl="https://api.nal.usda.gov/ndb/search";
 	private static int maxRows=20;
 
@@ -115,7 +118,7 @@ public class UsdaNutrientApiClient {
 			return false;
 		for(String x:searchPhraseSplitted) {
 			if(x!=null) {
-				if(id.getName()==null||!id.getName().toLowerCase().contains(x)) {
+				if(id.getName()==null||!id.getName().toLowerCase().contains(x.toLowerCase())) {
 					return false;
 				}
 			}
@@ -143,7 +146,7 @@ public class UsdaNutrientApiClient {
 			UsdaFoodId best = filterBest(parseIntoNutrientDetails,foodName);
 
 			UsdaFoodDetails nutrientDetails = UsdaNutrientApiClientParticularFood.getNutrientDetails(best);
-
+			
 			ProblemLogger.logProblem("Getting data in searchForNutritionDetailsOfAProdukt from usda api took "+(System.currentTimeMillis()-start)+" miliseconds at "+ new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date()));
 			
 			return nutrientDetails;
@@ -199,7 +202,9 @@ public class UsdaNutrientApiClient {
 	}
 
 
-
+	public static String getSearchBaseUrl() {
+		return searchBaseUrl;
+	}
 
 	public static Map<SingleProdukt_SearchResult, Map<Nutrient, PreciseQuantity>> retrieveNutrientDataForProdukts(ArrayList<SingleProdukt_SearchResult> goodResults) {
 		Map<SingleProdukt_SearchResult, Map<Nutrient,PreciseQuantity>> nutrientMap=new HashMap<SingleProdukt_SearchResult, Map<Nutrient,PreciseQuantity>>();
