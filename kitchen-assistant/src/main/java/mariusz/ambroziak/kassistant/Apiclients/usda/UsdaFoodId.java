@@ -7,6 +7,7 @@ public class UsdaFoodId implements Comparable<UsdaFoodId> {
 	//private String group;
 	private String name;
 	private String ndbno;
+	private String data_source_url;
 	private String parseLink;
 	
 	
@@ -27,6 +28,14 @@ public class UsdaFoodId implements Comparable<UsdaFoodId> {
 	}
 	public String getName() {
 		return name;
+	}
+	public String getData_source_url() {
+		return data_source_url;
+	}
+
+
+	public void setData_source_url(String data_source_url) {
+		this.data_source_url = data_source_url;
 	}
 	public void setName(String name) {
 		this.name = name;
