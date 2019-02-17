@@ -1,11 +1,15 @@
 package mariusz.ambroziak.kassistant.model;
 
+import java.util.Set;
+
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
@@ -13,13 +17,20 @@ import javax.validation.constraints.NotNull;
 @Entity
 public class Basic_Ingredient_Nutrient_Data_Source {
 
+	public Set<Basic_Ingredient_Nutrient_amount> getAmounts() {
+		return amounts;
+	}
+
+
+	public void setAmounts(Set<Basic_Ingredient_Nutrient_amount> amounts) {
+		this.amounts = amounts;
+	}
+
+
 	public Long getBinds_id() {
 		return binds_id;
 	}
 
-	public void setBinds_id(Long binds_id) {
-		this.binds_id = binds_id;
-	}
 
 	public Basic_Ingredient getBasicIngredient() {
 		return basicIngredient;
@@ -61,6 +72,7 @@ public class Basic_Ingredient_Nutrient_Data_Source {
 	@NotNull
 	private String 	id_in_api;
 
-
+	@OneToMany(fetch=FetchType.EAGER, mappedBy="dataSource")
+	private Set<Basic_Ingredient_Nutrient_amount> amounts;
 	
 }
