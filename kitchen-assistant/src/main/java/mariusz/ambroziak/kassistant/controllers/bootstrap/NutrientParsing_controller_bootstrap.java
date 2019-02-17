@@ -17,6 +17,7 @@ import mariusz.ambroziak.kassistant.Apiclients.edaman.RecipeData;
 import mariusz.ambroziak.kassistant.Apiclients.usda.UsdaFoodDetails;
 import mariusz.ambroziak.kassistant.Apiclients.usda.UsdaFoodId;
 import mariusz.ambroziak.kassistant.Apiclients.usda.UsdaNutrientApiClientParticularFood;
+import mariusz.ambroziak.kassistant.agents.ReadingNutritientsUsdaAgent;
 import mariusz.ambroziak.kassistant.agents.RecipeAgent;
 import mariusz.ambroziak.kassistant.api.agents.EdamanRecipeAgent;
 import mariusz.ambroziak.kassistant.exceptions.AgentSystemNotStartedException;
@@ -46,7 +47,9 @@ public class NutrientParsing_controller_bootstrap {
 		}
 		else 
 		{
-			UsdaFoodDetails nutrientDetailsForDbno = UsdaNutrientApiClientParticularFood.getNutrientDetailObjectForDbno(ndbno);
+			UsdaFoodDetails nutrientDetailsForDbno = ReadingNutritientsUsdaAgent.retrieveSingleProduct(ndbno);
+					
+					UsdaNutrientApiClientParticularFood.getNutrientDetailObjectForDbno(ndbno);
 			ModelAndView mav=new ModelAndView(StringHolder.bootstrapFolder+"boot_NutrientResultsForSingleFood");
 			
 			mav.addObject("productIdObject",nutrientDetailsForDbno.getId());
