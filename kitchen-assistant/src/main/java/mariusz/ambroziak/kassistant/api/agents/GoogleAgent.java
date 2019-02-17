@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import madkit.message.StringMessage;
-import mariusz.ambroziak.kassistant.Apiclients.edaman.RecipeData;
+import mariusz.ambroziak.kassistant.Apiclients.edaman.ParseableRecipeData;
 import mariusz.ambroziak.kassistant.Apiclients.googleAuth.GoogleAuthApiClient;
 import mariusz.ambroziak.kassistant.agents.BaseAgent;
 import mariusz.ambroziak.kassistant.agents.ProduktAgent;

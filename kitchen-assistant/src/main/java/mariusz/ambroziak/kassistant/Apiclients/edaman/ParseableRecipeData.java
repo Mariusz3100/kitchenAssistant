@@ -9,7 +9,7 @@ import mariusz.ambroziak.kassistant.model.utils.ProduktIngredientQuantity;
 import mariusz.ambroziak.kassistant.utils.JspStringHolder;
 import mariusz.ambroziak.kassistant.utils.StringHolder;
 
-public class RecipeData {
+public class ParseableRecipeData {
 	String url;
 	String label;
 	String imageUrl;

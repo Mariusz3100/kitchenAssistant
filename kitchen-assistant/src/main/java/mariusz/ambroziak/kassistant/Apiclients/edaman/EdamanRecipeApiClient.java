@@ -29,10 +29,10 @@ import mariusz.ambroziak.kassistant.model.utils.ProduktIngredientQuantity;
 public class EdamanRecipeApiClient {
 
 
-	public static ArrayList<RecipeData> getRecipesByPhrase(String phrase){
+	public static ArrayList<ParseableRecipeData> getRecipesByPhrase(String phrase){
 		String response1 = getResponse(phrase);
 
-		ArrayList<RecipeData> rdList = parseResponseIntoRecipes(response1);
+		ArrayList<ParseableRecipeData> rdList = parseResponseIntoRecipes(response1);
 		
 		
 		
@@ -40,10 +40,10 @@ public class EdamanRecipeApiClient {
 
 	}
 
-	public static ArrayList<RecipeData> getRecipesByParameters(EdamanRecipeApiParameters eap){
+	public static ArrayList<ParseableRecipeData> getRecipesByParameters(EdamanRecipeApiParameters eap){
 		String response1 = getResponse(eap);
 
-		ArrayList<RecipeData> rdList = parseResponseIntoRecipes(response1);
+		ArrayList<ParseableRecipeData> rdList = parseResponseIntoRecipes(response1);
 		
 //		extractRightRecipes(rdList,eap);
 		
@@ -61,14 +61,14 @@ public class EdamanRecipeApiClient {
 //		}
 //	}
 
-	private static ArrayList<RecipeData> parseResponseIntoRecipes(String response1) {
-		ArrayList<RecipeData> rdList=new ArrayList<>();
+	private static ArrayList<ParseableRecipeData> parseResponseIntoRecipes(String response1) {
+		ArrayList<ParseableRecipeData> rdList=new ArrayList<>();
 		
 		JSONObject root=new JSONObject(response1);
 		
 		JSONArray recipeHits = root.getJSONArray("hits");
 		for(int i=0;i<recipeHits.length();i++){
-			RecipeData rd=new RecipeData();
+			ParseableRecipeData rd=new ParseableRecipeData();
 
 			JSONObject recipeHit=(JSONObject) recipeHits.get(i);
 			JSONObject recipeUrlList=(JSONObject)recipeHit.get("recipe");
@@ -104,7 +104,7 @@ public class EdamanRecipeApiClient {
 
 
 
-	public static RecipeData getSingleRecipe(String urlID) {
+	public static ParseableRecipeData getSingleRecipe(String urlID) {
 		ClientConfig cc = new DefaultClientConfig();
 		cc.getProperties().put(ClientConfig.PROPERTY_FOLLOW_REDIRECTS, true);
 
@@ -153,7 +153,7 @@ public class EdamanRecipeApiClient {
 			
 			
 			
-			RecipeData rd=new RecipeData();
+			ParseableRecipeData rd=new ParseableRecipeData();
 			rd.setEdamanId(uri);
 			rd.setLabel(label);
 			rd.setUrl(recipeUrl);
@@ -228,7 +228,7 @@ public class EdamanRecipeApiClient {
 		
 		eap.addHealthLabels(HealthLabels.Alcohol_free);
 		eap.setPhrase("cake");
-		ArrayList<RecipeData> recipesByParameters = getRecipesByParameters(eap);
+		ArrayList<ParseableRecipeData> recipesByParameters = getRecipesByParameters(eap);
 		System.out.println(recipesByParameters);
 	}
 

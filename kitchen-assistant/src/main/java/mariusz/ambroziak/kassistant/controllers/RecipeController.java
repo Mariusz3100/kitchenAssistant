@@ -16,11 +16,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 import api.extractors.EdamanQExtract;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.EdamanRecipeApiClient;
-import mariusz.ambroziak.kassistant.Apiclients.edaman.RecipeData;
+import mariusz.ambroziak.kassistant.Apiclients.edaman.ParseableRecipeData;
 import mariusz.ambroziak.kassistant.Apiclients.usda.UsdaNutrientApiClient;
 import mariusz.ambroziak.kassistant.agents.ProduktAgent;
 import mariusz.ambroziak.kassistant.agents.RecipeAgent;
-import mariusz.ambroziak.kassistant.api.agents.EdamanRecipeAgent;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
 import mariusz.ambroziak.kassistant.exceptions.AgentSystemNotStartedException;
 import mariusz.ambroziak.kassistant.exceptions.Page404Exception;
@@ -73,12 +72,12 @@ public class RecipeController {
 	@RequestMapping(value="/apirecipes")
 	public ModelAndView recipeApiResult(HttpServletRequest request) throws AgentSystemNotStartedException {
 		String recipeID=request.getParameter(JspStringHolder.recipeApiId);
-		List<RecipeData> results;
+		List<ParseableRecipeData> results = null;
 		
 		if(recipeID==null||recipeID.equals("")){
 			String phrase=request.getParameter(JspStringHolder.recipeSearchPhrase_name);
 			try{
-				results=EdamanRecipeAgent.searchForRecipe(phrase);
+				results=mariusz.ambroziak.kassistant.agents.EdamanRecipeAgent.searchForRecipes(phrase);
 			}catch (AgentSystemNotStartedException e) {
 					return returnAgentSystemNotStartedPage();
 			}
@@ -98,7 +97,7 @@ public class RecipeController {
 	public ModelAndView apiRecipeParsed(HttpServletRequest request) throws AgentSystemNotStartedException {
 		String recipeID=request.getParameter(JspStringHolder.recipeApiId);
 		List<Produkt> results;
-		RecipeData singleRecipe = EdamanRecipeApiClient.getSingleRecipe(recipeID);
+		ParseableRecipeData singleRecipe = EdamanRecipeApiClient.getSingleRecipe(recipeID);
 		int liczbaSkladnikow=singleRecipe.getIngredients().size();
 
 		Map<MultiProdukt_SearchResult,PreciseQuantity> result = new HashMap<MultiProdukt_SearchResult,PreciseQuantity>();

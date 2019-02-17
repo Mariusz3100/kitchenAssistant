@@ -13,9 +13,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import api.extractors.EdamanQExtract;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.EdamanRecipeApiClient;
-import mariusz.ambroziak.kassistant.Apiclients.edaman.RecipeData;
+import mariusz.ambroziak.kassistant.Apiclients.edaman.ParseableRecipeData;
 import mariusz.ambroziak.kassistant.agents.RecipeAgent;
-import mariusz.ambroziak.kassistant.api.agents.EdamanRecipeAgent;
 import mariusz.ambroziak.kassistant.exceptions.AgentSystemNotStartedException;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.jsp.MultiProdukt_SearchResult;
@@ -34,7 +33,7 @@ public class RecipeParsing_controller_bootstrap {
 	@RequestMapping(value="/b_apiRecipeParsed")
 	public ModelAndView apiRecipeParsed(HttpServletRequest request) throws AgentSystemNotStartedException {
 		String recipeID=request.getParameter(JspStringHolder.recipeApiId);
-		RecipeData singleRecipe = EdamanRecipeApiClient.getSingleRecipe(recipeID);
+		ParseableRecipeData singleRecipe = EdamanRecipeApiClient.getSingleRecipe(recipeID);
 		int liczbaSkladnikow=singleRecipe.getIngredients().size();
 
 		Map<MultiProdukt_SearchResult,PreciseQuantity> result = new HashMap<MultiProdukt_SearchResult,PreciseQuantity>();

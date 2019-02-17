@@ -24,7 +24,7 @@ public class AgentsSystem {
 				"mariusz.ambroziak.kassistant.agents.ShopsListAgent,false,1;",
 				"mariusz.ambroziak.kassistant.agents.ProduktAgent,false,1;",
 				"mariusz.ambroziak.kassistant.agents.FoodIngredientAgent,false,1;",
-				"mariusz.ambroziak.kassistant.api.agents.EdamanRecipeAgent,false,1;",
+				"mariusz.ambroziak.kassistant.agents.EdamanRecipeAgent,false,1;",
 				"mariusz.ambroziak.kassistant.api.agents.ShopComAgent,false,1;",
 				"mariusz.ambroziak.kassistant.api.agents.GoogleAgent,false,1;",
 				"mariusz.ambroziak.kassistant.agents.ReadingNutritientsUsdaAgent,false,1"};
