@@ -3,12 +3,14 @@ package mariusz.ambroziak.kassistant.agents;
 import static org.hamcrest.CoreMatchers.nullValue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.logging.Level;
 
 import javax.persistence.Basic;
@@ -34,6 +36,7 @@ import mariusz.ambroziak.kassistant.exceptions.ShopNotFoundException;
 import mariusz.ambroziak.kassistant.model.Base_Word;
 import mariusz.ambroziak.kassistant.model.Basic_Ingredient;
 import mariusz.ambroziak.kassistant.model.Basic_Ingredient_Nutrient_Data_Source;
+import mariusz.ambroziak.kassistant.model.Basic_Ingredient_Nutrient_amount;
 import mariusz.ambroziak.kassistant.model.Nutrient;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.jsp.SingleProdukt_SearchResult;
@@ -58,6 +61,8 @@ import mariusz.ambroziak.kassistant.utils.StringUtils;
 import org.json.JSONObject;
 import org.jsoup.nodes.Element;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+
 import webscrappers.SJPWebScrapper;
 import webscrappers.przepisy.PrzepisyPLQExtract;
 
@@ -165,16 +170,74 @@ public class ReadingNutritientsUsdaAgent extends BaseAgent{
 		if(productDetails==null||productDetails.isEmpty()) {
 			UsdaFoodDetails usdaDetails = searchForCorrectInUsda(searchForPhrase);
 			Basic_Ingredient biFromDb = saveDetailsInDbCheckPrerequisites(usdaDetails);
-			
-			productDetails=new NutrientDetailsOfBasicIngredient(biFromDb);
+
+			productDetails=new NutrientDetailsOfBasicIngredient();
+			productDetails.setBasicIngredient(biFromDb);
 			productDetails.setNutrientsMapFromMapWithPreciseQuantityValues(usdaDetails.getNutrietsMap());
 		}
 		return productDetails;
 	}
 
 	private NutrientDetailsOfBasicIngredient searchForCorrectInDb(String searchForPhrase) {
-		// TODO write getting from db
-		return null;
+		NutrientDetailsOfBasicIngredient retValue=new NutrientDetailsOfBasicIngredient();
+
+		if(searchForPhrase==null||searchForPhrase.equals(""))
+		{
+			return retValue;
+		}else {
+			String[] split = searchForPhrase.split(" ");
+			Basic_Ingredient_Nutrient_Data_SourceDAO dsDao=DaoProvider.getInstance().getBasicIngredientNutrientDataSourceDao();
+			
+			List<String> spacedIngredientSearchPhrase = Arrays.asList(split);
+			List<Basic_Ingredient_Nutrient_Data_Source> dataSourcesByIngredientNames = dsDao.getDataSourcesByIngredientNames(spacedIngredientSearchPhrase);
+			Basic_Ingredient_Nutrient_Data_Source bestBasicIngredientDataSource = getBestBasicIngredientDataSource(spacedIngredientSearchPhrase, dataSourcesByIngredientNames);
+
+			if(bestBasicIngredientDataSource!=null) {
+				List<Basic_Ingredient_Nutrient_amount> nutrientsForDataSourceById 
+					= DaoProvider.getInstance().getBasicIngredientNutrientAmountDao().getNutrientsForDataSourceById(bestBasicIngredientDataSource.getBinds_id());
+				Map<Nutrient, PreciseQuantity> parseNutrientDataIntoMap = parseDatabaseObjectsIntoNutrientsPreciseMap(nutrientsForDataSourceById);
+				
+				retValue.setNutrientsMapFromMapWithPreciseQuantityValues(parseNutrientDataIntoMap);
+				retValue.setBasicIngredient(bestBasicIngredientDataSource.getBasicIngredient());
+				
+				
+			}
+			return retValue;
+		}
+	}
+
+	private Basic_Ingredient_Nutrient_Data_Source getBestBasicIngredientDataSource(List<String> spacedIngredientSearchPhrase,
+			List<Basic_Ingredient_Nutrient_Data_Source> dataSourcesByIngredientNames) {
+		if(dataSourcesByIngredientNames.size()==0)
+			return null;
+		
+		if(dataSourcesByIngredientNames.size()==1)
+			return dataSourcesByIngredientNames.get(0);
+		
+		Basic_Ingredient_Nutrient_Data_Source retValue = findDsForBiWithShortestNameContainingSearches(
+				spacedIngredientSearchPhrase, dataSourcesByIngredientNames);
+		return retValue;
+	}
+
+	private Basic_Ingredient_Nutrient_Data_Source findDsForBiWithShortestNameContainingSearches(
+			List<String> spacedIngredientSearchPhrase,
+			List<Basic_Ingredient_Nutrient_Data_Source> dataSourcesByIngredientNames) {
+		Basic_Ingredient_Nutrient_Data_Source retValue=null;
+		for(Basic_Ingredient_Nutrient_Data_Source binds:dataSourcesByIngredientNames) {
+			boolean thisBindsIsOk=true;
+			for(String searchPhrasePart:spacedIngredientSearchPhrase) {
+				if(!binds.getBasicIngredient().getName().contains(searchPhrasePart)) {
+					thisBindsIsOk=false;
+				}
+				if(thisBindsIsOk) {
+					if(retValue==null
+							||retValue.getBasicIngredient().getName().length()>binds.getBasicIngredient().getName().length()) {
+						retValue=binds;
+					}
+				}
+			}
+		}
+		return retValue;
 	}
 
 	private Basic_Ingredient saveDetailsInDbCheckPrerequisites(UsdaFoodDetails productDetails) {
@@ -194,10 +257,10 @@ public class ReadingNutritientsUsdaAgent extends BaseAgent{
 			if(fromDb!=null) 
 			{
 				boolean areNutrientsAlreadyInDb = DaoProvider.getInstance().getBasicIngredientNutrientAmountDao().areNutrientsForBasicIngredient(fromDb.getBi_id());
-				
+
 				if(areNutrientsAlreadyInDb) {
 					ProblemLogger.logProblem("Trying to save nutrient details for an ingredient, that has already details saved");
-					Map<Nutrient, Float> nutrientsForBasicIngredient = DaoProvider.getInstance().getBasicIngredientNutrientAmountDao().getNutrientsForBasicIngredient(fromDb.getBi_id());
+					Map<Nutrient, Float> nutrientsForBasicIngredient = DaoProvider.getInstance().getBasicIngredientNutrientAmountDao().getNutrientsForBasicIngredientById(fromDb.getBi_id());
 					if(checkIfTheseAreTheSameNutrients(productDetails.getNutrietsMap(),nutrientsForBasicIngredient)) {
 						return fromDb;
 					}else {
@@ -206,21 +269,78 @@ public class ReadingNutritientsUsdaAgent extends BaseAgent{
 					}
 				}else {
 					Map<Nutrient, Float> nutrietsMap=getRelativeAmountsFromPreciseQuantityFor100g(productDetails.getNutrietsMap());
-					
-					DaoProvider.getInstance().getBasicIngredientNutrientAmountDao().saveNutrientData(fromDb,nutrietsMap);
+					Basic_Ingredient_Nutrient_Data_Source binds = createDataSourceDbObject(productDetails, fromDb);
+					DaoProvider.getInstance().getBasicIngredientNutrientAmountDao().saveNutrientData(fromDb,binds,nutrietsMap);
 					return fromDb;
 				}
-				
+
 			}else {
 				Basic_Ingredient bi=new Basic_Ingredient();
 				bi.setName(name);
 				basicIngredientDao.saveBasicIngredient(bi);
+				Basic_Ingredient_Nutrient_Data_Source binds = createDataSourceDbObject(productDetails, fromDb);
+
 				Map<Nutrient, Float> nutrietsMap=getRelativeAmountsFromPreciseQuantityFor100g(productDetails.getNutrietsMap());
 				//below method should do the above anyway; code above is just in case		
-				DaoProvider.getInstance().getBasicIngredientNutrientAmountDao().saveNutrientData(bi,nutrietsMap);
+				DaoProvider.getInstance().getBasicIngredientNutrientAmountDao().saveNutrientData(bi,binds, nutrietsMap);
 				return fromDb;
 			}
 		}
+	}
+
+	private Basic_Ingredient saveDetailsInDbCheckPrerequisitesForExistingBasicIngredient(UsdaFoodDetails productDetails,Basic_Ingredient bi) {
+
+		if(productDetails==null
+				||productDetails.getId()==null
+				||productDetails.getId().getName()==null
+				||productDetails.getId().getName().equals(""))
+		{
+			ProblemLogger.logProblem("Trying to save an empty basic ingredient");
+			return null;
+		}else {
+			Basic_IngredientDAO basicIngredientDao = DaoProvider.getInstance().getBasicIngredientDao();
+			String name = productDetails.getId().getName();
+			if(bi!=null) 
+			{
+				boolean areNutrientsAlreadyInDb = DaoProvider.getInstance().getBasicIngredientNutrientAmountDao().areNutrientsForBasicIngredient(bi.getBi_id());
+
+				if(areNutrientsAlreadyInDb) {
+					ProblemLogger.logProblem("Trying to save nutrient details for an ingredient, that has already details saved");
+					Map<Nutrient, Float> nutrientsForBasicIngredient = DaoProvider.getInstance().getBasicIngredientNutrientAmountDao().getNutrientsForBasicIngredientById(bi.getBi_id());
+					if(checkIfTheseAreTheSameNutrients(productDetails.getNutrietsMap(),nutrientsForBasicIngredient)) {
+						return bi;
+					}else {
+						ProblemLogger.logProblem("Trying to save nutrient details for an ingredient, that has already details saved AND the nutrients do not match");
+						return null;
+					}
+				}else {
+					Map<Nutrient, Float> nutrietsMap=getRelativeAmountsFromPreciseQuantityFor100g(productDetails.getNutrietsMap());
+					Basic_Ingredient_Nutrient_Data_Source binds = createDataSourceDbObject(productDetails, bi);
+					DaoProvider.getInstance().getBasicIngredientNutrientAmountDao().saveNutrientData(bi,binds,nutrietsMap);
+					return bi;
+				}
+
+			}else {
+				bi=new Basic_Ingredient();
+				bi.setName(name);
+				basicIngredientDao.saveBasicIngredient(bi);
+				Basic_Ingredient_Nutrient_Data_Source binds = createDataSourceDbObject(productDetails, bi);
+
+				Map<Nutrient, Float> nutrietsMap=getRelativeAmountsFromPreciseQuantityFor100g(productDetails.getNutrietsMap());
+				//below method should do the above anyway; code above is just in case		
+				DaoProvider.getInstance().getBasicIngredientNutrientAmountDao().saveNutrientData(bi,binds, nutrietsMap);
+				return bi;
+			}
+		}
+	}
+
+	private Basic_Ingredient_Nutrient_Data_Source createDataSourceDbObject(UsdaFoodDetails productDetails,
+			Basic_Ingredient fromDb) {
+		Basic_Ingredient_Nutrient_Data_Source binds=new Basic_Ingredient_Nutrient_Data_Source();
+		binds.setBasicIngredient(fromDb);
+		binds.setId_in_api(productDetails.getId().getNdbno());
+		binds.setData_source_url(productDetails.getId().getData_source_url());
+		return binds;
 	}
 
 
@@ -234,9 +354,9 @@ public class ReadingNutritientsUsdaAgent extends BaseAgent{
 				Nutrient fromDbNutrient = e.getKey();
 				PreciseQuantity valueFromArgument=fromArgument.get(fromDbNutrient);
 				if(valueFromArgument==null
-					||fromDb.get(fromDbNutrient)==null
-					||fromDb.get(fromDbNutrient).floatValue()!=valueFromArgument.getAmount()) {
-						return false;
+						||fromDb.get(fromDbNutrient)==null
+						||fromDb.get(fromDbNutrient).floatValue()!=valueFromArgument.getAmount()) {
+					return false;
 				}
 			}
 			return true;
@@ -246,27 +366,27 @@ public class ReadingNutritientsUsdaAgent extends BaseAgent{
 	private HashMap<Nutrient, Float> getRelativeAmountsFromPreciseQuantityFor100g(
 			Map<Nutrient, PreciseQuantity> scrapedNutritientData) {
 		HashMap<Nutrient, Float> retValue=new HashMap<Nutrient, Float>();
-		
+
 		if(scrapedNutritientData==null||scrapedNutritientData.isEmpty())
 			return retValue;
-		
+
 		for(Entry<Nutrient, PreciseQuantity>  e:scrapedNutritientData.entrySet())
 		{
 			PreciseQuantity value = e.getValue();
-			
+
 			if(!AmountTypes.mg.equals(value.getType())&&!AmountTypes.kalorie.equals(value.getType())){
 				ProblemLogger.logProblem(
 						"Proba zapisywania w bazie innego typu ilosci skladnika odzywczego niz mg.");
 			}else{
-				
-				
+
+
 				float coefficient=value.getAmount()/(100*1000);
-				
+
 				retValue.put(e.getKey(), coefficient);
 			}
-			
+
 		}
-		
+
 		return retValue;
 	}
 	@Override
@@ -324,23 +444,25 @@ public class ReadingNutritientsUsdaAgent extends BaseAgent{
 	}
 
 
-	public static UsdaFoodDetails parseProduct(String usdaId)
-			throws AgentSystemNotStartedException, ShopNotFoundException, Page404Exception{
-		ReadingNutritientsUsdaAgent freeOne = getFreeAgent();
-		if(freeOne==null){
-			return null;
-		}else{
-			freeOne.setBusy(true);
-			UsdaFoodDetails result;
-			try{
-				result= freeOne.parseProductByNdbno(usdaId);
-			}finally{
-				freeOne.setBusy(false);
-			}
-			return result;
-		}
-	}
-	
+	//	public static UsdaFoodDetails parseProduct(String usdaId)
+	//			throws AgentSystemNotStartedException, ShopNotFoundException, Page404Exception{
+	//		ReadingNutritientsUsdaAgent freeOne = getFreeAgent();
+	//		if(freeOne==null){
+	//			return null;
+	//		}else{
+	//			freeOne.setBusy(true);
+	//			UsdaFoodDetails result;
+	//			try{
+	//				result= freeOne.parseProductByNdbno(usdaId);
+	//			}finally{
+	//				freeOne.setBusy(false);
+	//			}
+	//			return result;
+	//		}
+	//	}
+
+	/** Method for retrieving SINGLE object from db (if not found in db, searches in api and saves both basic ingredient and nutrients data to db).
+	 *  It tries to find the basic ingredient with shortest name, that contains all specified words.*/ 
 	public static NutrientDetailsOfBasicIngredient searchForSingleProduct(String searchPhrase)
 			throws AgentSystemNotStartedException{
 		ReadingNutritientsUsdaAgent freeOne = getFreeAgent();
@@ -358,7 +480,7 @@ public class ReadingNutritientsUsdaAgent extends BaseAgent{
 		}
 	}
 
-	
+
 
 
 	//	private ProduktWithAllIngredients getAllFoodIngredients(String shortUrl)
@@ -370,11 +492,88 @@ public class ReadingNutritientsUsdaAgent extends BaseAgent{
 	//	}
 
 
-	private UsdaFoodDetails parseProductByNdbno(String usdaId) {
+	private UsdaFoodDetails parseProductByNdbno(String ndbno) {
+		UsdaFoodDetails nutrientDetailObjectForDbno =null;
 
-		UsdaFoodDetails nutrientDetailObjectForDbno = UsdaNutrientApiClientParticularFood.getNutrientDetailObjectForDbno(usdaId);
+		Basic_Ingredient_Nutrient_Data_Source dataSource= getProperDataSourceObjectForNdbno(ndbno);
+
+		if(dataSource!=null) {
+			Set<Basic_Ingredient_Nutrient_amount> amounts = dataSource.getAmounts();
+			UsdaFoodId idFromDb=createUsdaFoodId(dataSource);
+			nutrientDetailObjectForDbno=parseDatabaseData(idFromDb,amounts);
+		}else {		
+			nutrientDetailObjectForDbno = UsdaNutrientApiClientParticularFood.getNutrientDetailObjectForDbno(ndbno);
+			saveDetailsInDbCheckPrerequisites(nutrientDetailObjectForDbno);
+		}
 		return nutrientDetailObjectForDbno;
 	}
+
+	private UsdaFoodId createUsdaFoodId(Basic_Ingredient_Nutrient_Data_Source dataSource) {
+		UsdaFoodId retValue=new UsdaFoodId(dataSource.getBasicIngredient().getName(), dataSource.getId_in_api());
+		return retValue;
+	}
+
+	private UsdaFoodDetails parseDatabaseData(UsdaFoodId idFromDb, Set<Basic_Ingredient_Nutrient_amount> amounts) {
+		Map<Nutrient, PreciseQuantity> retValueMap = parseDatabaseObjectsIntoNutrientsPreciseMap(amounts);
+		UsdaFoodDetails retValue=new UsdaFoodDetails(idFromDb, retValueMap);
+		return retValue;
+	}
+
+	private static Map<Nutrient, PreciseQuantity> parseDatabaseObjectsIntoNutrientsPreciseMap(Collection<Basic_Ingredient_Nutrient_amount> amounts) {
+		Map<Nutrient, PreciseQuantity> retValueMap=new HashMap<Nutrient, PreciseQuantity>();
+
+		for(Basic_Ingredient_Nutrient_amount bina:amounts) {
+			retValueMap.put(bina.getNutritient(), new PreciseQuantity(bina.getCoefficient(),AmountTypes.mg));
+		}
+		return retValueMap;
+	}
+
+//	private static Collection<Basic_Ingredient_Nutrient_amount> parseNutrientDataIntoDatabaseObjects(Map<Nutrient, PreciseQuantity>  amounts,Basic_Ingredient forBi,Basic_Ingredient_Nutrient_Data_Source forBinds) {
+//		Collection<Basic_Ingredient_Nutrient_amount> retValueMap=new ArrayList<>();
+//
+//		for(Entry<Nutrient, PreciseQuantity> bina:amounts.entrySet()) {
+//			if(AmountTypes.mg.equals(bina.getValue().getType())) {
+//				retValueMap.add(new Basic_Ingredient_Nutrient_amount(bina.getKey(),forBi,forBinds);	
+//			}else {
+//				ProblemLogger.logProblem(");
+//			}
+//			
+//		}
+//		return retValueMap;
+//	}
+	
+	private Basic_Ingredient_Nutrient_Data_Source getProperDataSourceObjectForNdbno(String ndbno) {
+		Basic_Ingredient_Nutrient_Data_SourceDAO basicIngredientNutrientDataSourceDao = DaoProvider.getInstance().getBasicIngredientNutrientDataSourceDao();
+		Basic_Ingredient_Nutrient_Data_Source retValue = null;
+		List<Basic_Ingredient_Nutrient_Data_Source> dataSourceBy_ApiId = basicIngredientNutrientDataSourceDao.getDataSourceBy_ApiId_sql(ndbno);
+		if(dataSourceBy_ApiId.size()==1) {
+			retValue = dataSourceBy_ApiId.get(0);
+		}else {
+			if(dataSourceBy_ApiId.size()>1) {
+				ProblemLogger.logProblem("More than one data source for api id: "+ndbno+". Possible, but should be aproached with care." );
+				Basic_Ingredient_Nutrient_Data_Source bestFound = null;
+				for(Basic_Ingredient_Nutrient_Data_Source binds:dataSourceBy_ApiId) {
+					if(checkIfBindsIsOfUsdaOrigin(binds)) {
+						bestFound=binds;
+					}else {
+						if(bestFound==null&&(binds.getData_source_url()==null||binds.getData_source_url().equals(""))){
+							bestFound=binds;
+						}
+					}
+					retValue=bestFound;
+				}
+			}
+
+		}
+		return retValue;
+
+
+	}
+
+	private boolean checkIfBindsIsOfUsdaOrigin(Basic_Ingredient_Nutrient_Data_Source binds) {
+		return binds.getData_source_url()!=null&&binds.getData_source_url().startsWith(UsdaNutrientApiClientParticularFood.productBaseUrl);
+	}
+
 
 	private static ReadingNutritientsUsdaAgent getFreeAgent() throws AgentSystemNotStartedException {
 		ReadingNutritientsUsdaAgent freeOne=null;
@@ -403,6 +602,8 @@ public class ReadingNutritientsUsdaAgent extends BaseAgent{
 		return freeOne;
 	}
 
+	/** Method for retrieving MANY objects from db (if 0 objects found in db, searches in api; it returns only identification data for ingredients, which is not saved to db).
+	 * This method is intended to show user set of ingredient to choose from before retrieving nutritient data.*/ 
 	public static Collection<UsdaFoodId> searchForMultiProduct(String foodName) throws AgentSystemNotStartedException{
 		ReadingNutritientsUsdaAgent freeOne = getFreeAgent();
 		if(freeOne==null){
@@ -418,15 +619,37 @@ public class ReadingNutritientsUsdaAgent extends BaseAgent{
 			return result;
 		}
 	}
+	/** Method for retrieving SINGLE object from db by its ndbno, which is id in usda API.
+	 *  If object is not found in db, searches in api and saves to db both ingredient and nutritional data.
+	 */ 
+
+	public static UsdaFoodDetails retrieveSingleProduct(String ndbno) throws AgentSystemNotStartedException{
+		ReadingNutritientsUsdaAgent freeOne = getFreeAgent();
+		if(freeOne==null){
+			return null;
+		}else{
+			freeOne.setBusy(true);
+			UsdaFoodDetails result = null;
+			try{
+				result= freeOne.parseProductByNdbno(ndbno);
+			}finally{
+				freeOne.setBusy(false);
+			}
+			return result;
+		}
+	}
 
 	private Collection<UsdaFoodId> searchForDetailsInDbAndApi_multiResult(String foodName) {
 		Collection<UsdaFoodId> productDetails = searchForManyCorrectInDb(foodName);
 
 		if(productDetails==null||productDetails.isEmpty())
+		{
+			//we do not save it, because there is no point to save just ids
 			productDetails=searchForManyResultsInApi(foodName);
-		
-		
-		// TODO Auto-generated method stub
+		}
+
+
+
 		return productDetails;
 	}
 
@@ -437,51 +660,78 @@ public class ReadingNutritientsUsdaAgent extends BaseAgent{
 
 	private Collection<UsdaFoodId> searchForManyCorrectInDb(String foodName) {
 		List<Basic_Ingredient> ingredientBySpacedName = DaoProvider.getInstance().getBasicIngredientDao().getIngredientBySpacedName(foodName);
-		
+
 		Collection<UsdaFoodId> retValue=new ArrayList<>();
-		
+
 		for(Basic_Ingredient bi:ingredientBySpacedName) {
-			retValue.add(getUsdaFoodId(bi));
+			UsdaFoodId usdaFoodId = getUsdaFoodId(bi);
+			if(usdaFoodId!=null) {
+				retValue.add(usdaFoodId);
+			}
 		}
-		
-		
+
+
 		// TODO Auto-generated method stub
 		return retValue;
 	}
 
 	private UsdaFoodId getUsdaFoodId(Basic_Ingredient bi) {
 		Basic_Ingredient_Nutrient_Data_SourceDAO basicIngredientNutrientDataSourceDao = DaoProvider.getInstance().getBasicIngredientNutrientDataSourceDao();
-		
+
 		Basic_Ingredient_Nutrient_Data_Source dataSourceByBasicIngredientId = basicIngredientNutrientDataSourceDao.getDataSourceByBasicIngredientId(bi);
-		UsdaFoodId retValue=new UsdaFoodId(bi.getName(), dataSourceByBasicIngredientId.getId_in_api());
+		UsdaFoodId retValue=null;
+		if(dataSourceByBasicIngredientId==null||dataSourceByBasicIngredientId.getId_in_api()==null||dataSourceByBasicIngredientId.getId_in_api().equals("")) {
+			//this should not be happening (basic ingredient existing in db should be parsed already).
+			//The best way to handle this is to try parse ingredient in api by its name.
+			retValue=getFromApiSaveInDbDetailsFor(bi);
+		}else {
+			retValue=new UsdaFoodId(bi.getName(), dataSourceByBasicIngredientId.getId_in_api());
+		}
 		return retValue;
+	}
+
+	private UsdaFoodId getFromApiSaveInDbDetailsFor(Basic_Ingredient bi) {
+		if(bi==null||bi.getName()==null||bi.getName().equals(""))
+			return null;
+		else {
+			UsdaFoodDetails resultsFound= UsdaNutrientApiClient.searchForNutritionDetailsOfAProdukt(bi.getName());
+
+			if(resultsFound!=null) {
+				saveDetailsInDbCheckPrerequisitesForExistingBasicIngredient(resultsFound,bi);
+				return resultsFound.getId();
+			}else {
+				return null;
+			}
+		}
+		
+		 
 	}
 
 	private Basic_Ingredient filterBestIngredientForName(List<Basic_Ingredient> ingredientBySpacedName, String foodName) {
 		String[] parts= {};
 		if(foodName==null||foodName.equals("")) {
-			 parts=foodName.split(" ");
+			parts=foodName.split(" ");
 		}
-		
+
 		Map<String, Basic_Ingredient> map=new HashMap<String, Basic_Ingredient>();
-        Collections.sort(ingredientBySpacedName,new CompareByName());
-        for(Basic_Ingredient bi:ingredientBySpacedName) {
+		Collections.sort(ingredientBySpacedName,new CompareByName());
+		for(Basic_Ingredient bi:ingredientBySpacedName) {
 			boolean allWordsMatchSoFar=true;
-        	for(int i=0;i<parts.length&&allWordsMatchSoFar;i++) {
-	        	if(bi.getName().indexOf(parts[i])<0) {
-	        		allWordsMatchSoFar=false;
-	        	}
+			for(int i=0;i<parts.length&&allWordsMatchSoFar;i++) {
+				if(bi.getName().indexOf(parts[i])<0) {
+					allWordsMatchSoFar=false;
+				}
 			}
-        	if(allWordsMatchSoFar) {
-        		return bi;
-        	}
-        	
+			if(allWordsMatchSoFar) {
+				return bi;
+			}
+
 		}
-        return new Basic_Ingredient();
-		
-		
+		return new Basic_Ingredient();
+
+
 	}
-	
+
 
 
 
