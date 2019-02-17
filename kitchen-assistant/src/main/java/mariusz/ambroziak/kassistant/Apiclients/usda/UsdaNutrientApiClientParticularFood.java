@@ -40,7 +40,7 @@ import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 public class UsdaNutrientApiClientParticularFood {
 
 
-	private static String productBaseUrl="https://api.nal.usda.gov/ndb/V2/reports";
+	public static String productBaseUrl="https://api.nal.usda.gov/ndb/V2/reports";
 
 
 	private static String getResponse(String ndbno) {
@@ -58,7 +58,11 @@ public class UsdaNutrientApiClientParticularFood {
 		String response1 = resource.queryParams(queryParams_appId).accept("text/plain").get(String.class);
 		return response1;
 	}
-
+	
+	private static String calculateSourceDataUrl(String ndbno) {
+		String retValue=productBaseUrl+"?api_key="+ndbno;
+		return retValue;
+	}
 
 	private static Map<Nutrient, PreciseQuantity> parseIntoNutrientDetailsMap(String response,String ndbno) {
 
@@ -153,6 +157,7 @@ public class UsdaNutrientApiClientParticularFood {
 			return null;
 		}else {
 			Map<Nutrient, PreciseQuantity> nutrientDetailsForDbno = getNutrientDetailsForDbno(id.getNdbno());
+			id.setData_source_url(calculateSourceDataUrl(id.getNdbno()));
 			return new UsdaFoodDetails(id,nutrientDetailsForDbno);
 		}
 	}
