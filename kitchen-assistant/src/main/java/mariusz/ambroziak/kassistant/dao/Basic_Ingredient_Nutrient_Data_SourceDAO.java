@@ -1,5 +1,6 @@
 package mariusz.ambroziak.kassistant.dao;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -12,5 +13,8 @@ public interface Basic_Ingredient_Nutrient_Data_SourceDAO {
 	public void saveDataSource(Basic_Ingredient_Nutrient_Data_Source dataSource);
 	public Basic_Ingredient_Nutrient_Data_Source getDataSource(Long Basic_Ingredient_Nutrient_Data_Source_id);
 	public Basic_Ingredient_Nutrient_Data_Source getDataSourceByBasicIngredientId(Basic_Ingredient Basic_Ingredient_id);
+	public List<Basic_Ingredient_Nutrient_Data_Source> getDataSourcesByIngredientNames(Collection<String> names);
+	public List<Basic_Ingredient_Nutrient_Data_Source> getDataSourceBy_ApiId(String apiId);
+	public List<Basic_Ingredient_Nutrient_Data_Source> getDataSourceBy_ApiId_sql(String apiId);
 	
 }
