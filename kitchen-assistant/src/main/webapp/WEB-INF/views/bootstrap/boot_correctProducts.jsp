@@ -18,30 +18,39 @@
 <body>
 
 	<jsp:include page="includes/menuInclude.jsp" />
-	<div class="ingredient-list">
-		<c:forEach var="result" items="${results}" varStatus="skladnikCount">
-			<div class="section-shortcut" id="${skladnikName}${skladnikCount.count}_${skladnikSectionName}"></div>
-			<section  class="wow fadeIn single-ingredient-section">
-			<div class="container with-left-shortcuts">
-				<div class="shortcuts-on-the-left">
-					<c:forEach var="innerResult" items="${results}" varStatus="innerSkladnikCount">
-						<a href="#${skladnikName}${innerSkladnikCount.count}_${skladnikSectionName}">&#9636</a>
-					</c:forEach>
-				</div>
-				<div class="funkyradio">
-					<c:choose>
-							<c:when test="${fn:length(result.key.produkts) gt 0}">
-								<h3 class="ingredient-heading">For ingredient "${result.key.searchPhraseAnswered }"
-								[${result.value}] these products were found:</h3>
-							</c:when>
-							<c:otherwise>
-								<h3 class="ingredient-heading">No products were found for
-									ingredient "${result.key.searchPhraseAnswered}".</h3>
-							</c:otherwise>
-						</c:choose>
-					
-					
-					<div class="dynamic-size" style="overflow-y:auto; max-height: 63vh">
+	<c:choose>
+		<c:when test="${fn:length(results) gt 0}">
+
+
+			<div class="ingredient-list">
+				<c:forEach var="result" items="${results}" varStatus="skladnikCount">
+					<div class="section-shortcut"
+						id="${skladnikName}${skladnikCount.count}_${skladnikSectionName}"></div>
+					<section class="wow fadeIn single-ingredient-section">
+					<div class="container with-left-shortcuts">
+						<div class="shortcuts-on-the-left">
+							<c:forEach var="innerResult" items="${results}"
+								varStatus="innerSkladnikCount">
+								<a
+									href="#${skladnikName}${innerSkladnikCount.count}_${skladnikSectionName}">&#9636</a>
+							</c:forEach>
+						</div>
+						<div class="funkyradio">
+							<c:choose>
+								<c:when test="${fn:length(result.key.produkts) gt 0}">
+									<h3 class="ingredient-heading">For ingredient
+										"${result.key.searchPhraseAnswered }" [${result.value}] these
+										products were found:</h3>
+								</c:when>
+								<c:otherwise>
+									<h3 class="ingredient-heading">No products were found for
+										ingredient "${result.key.searchPhraseAnswered}".</h3>
+								</c:otherwise>
+							</c:choose>
+
+
+							<div class="dynamic-size"
+								style="overflow-y: auto; max-height: 63vh">
 								<c:forEach var="produkt" items="${result.key.produkts}"
 									varStatus="opcjaCount">
 									<div class="funkyradio-success">
@@ -56,42 +65,49 @@
 
 								</c:forEach>
 
-						<div class="funkyradio-success">
-							<input type="radio"
-								name="${skladnikName}${skladnikCount.count}_${skladnikRadioName}"
-								id="${skladnikName}${skladnikCount.count}_${skladnikRadioName}_${innaOpcjaName}"
-								value="${innaOpcjaName}" class="inny-radio-label">
-							<!-- class didn't connect with style from kitchenStyle.css for some reason. Lets fo for inline-->
-							<label
-								for="${skladnikName}${skladnikCount.count}_${skladnikRadioName}_${innaOpcjaName}"
-								class="inny-radio-label" style="width: 19.6%;"> Other: </label>
-							<input type="text"
-								name="${skladnikName}${skladnikCount.count}_${innyUrlName}"
-								id="${skladnikName}${skladnikCount.count}_${innyUrlName}"
-								class="inny-url">
+								<div class="funkyradio-success">
+									<input type="radio"
+										name="${skladnikName}${skladnikCount.count}_${skladnikRadioName}"
+										id="${skladnikName}${skladnikCount.count}_${skladnikRadioName}_${innaOpcjaName}"
+										value="${innaOpcjaName}" class="inny-radio-label">
+									<!-- class didn't connect with style from kitchenStyle.css for some reason. Lets fo for inline-->
+									<label
+										for="${skladnikName}${skladnikCount.count}_${skladnikRadioName}_${innaOpcjaName}"
+										class="inny-radio-label" style="width: 19.6%;"> Other:
+									</label> <input type="text"
+										name="${skladnikName}${skladnikCount.count}_${innyUrlName}"
+										id="${skladnikName}${skladnikCount.count}_${innyUrlName}"
+										class="inny-url">
 
-						</div>
+								</div>
 
-						<div class="funkyradio-warning">
+								<div class="funkyradio-warning">
 
-							<input type="radio"
-								name="${skladnikName}${skladnikCount.count}_${skladnikRadioName}"
-								id="${skladnikName}${skladnikCount.count}_${skladnikRadioName}_${pominOpcjaName}"
-								value="${pominOpcjaName}"> <label
-								for="${skladnikName}${skladnikCount.count}_${skladnikRadioName}_${pominOpcjaName}">
+									<input type="radio"
+										name="${skladnikName}${skladnikCount.count}_${skladnikRadioName}"
+										id="${skladnikName}${skladnikCount.count}_${skladnikRadioName}_${pominOpcjaName}"
+										value="${pominOpcjaName}"> <label
+										for="${skladnikName}${skladnikCount.count}_${skladnikRadioName}_${pominOpcjaName}">
 
-								Skip this ingredient (for your own risk) </label>
+										Skip this ingredient (for your own risk) </label>
+								</div>
+							</div>
 						</div>
 					</div>
-				</div>
+
+
+					</section>
+				</c:forEach>
+
+
 			</div>
+		</c:when>
+		<c:otherwise>
+			<h3 class="empty-page-info">Url "<%= pageContext.getRequest().getParameter(mariusz.ambroziak.kassistant.utils.JspStringHolder.recipeApiId) %>"
+			was not recognized by any of the data sources</h3>
+		</c:otherwise>
 
-
-			</section>
-		</c:forEach>
-
-	</div>
-
+	</c:choose>
 
 
 	<jsp:include page="includes/footerInclude.jsp" />

@@ -14,8 +14,10 @@ import org.springframework.web.servlet.ModelAndView;
 import api.extractors.EdamanQExtract;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.EdamanRecipeApiClient;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.ParseableRecipeData;
+import mariusz.ambroziak.kassistant.agents.EdamanRecipeAgent;
 import mariusz.ambroziak.kassistant.agents.RecipeAgent;
 import mariusz.ambroziak.kassistant.exceptions.AgentSystemNotStartedException;
+import mariusz.ambroziak.kassistant.exceptions.Page404Exception;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.jsp.MultiProdukt_SearchResult;
 import mariusz.ambroziak.kassistant.model.jsp.ProduktWithRecountedPrice;
@@ -32,45 +34,68 @@ public class RecipeParsing_controller_bootstrap {
 
 	@RequestMapping(value="/b_apiRecipeParsed")
 	public ModelAndView apiRecipeParsed(HttpServletRequest request) throws AgentSystemNotStartedException {
-		String recipeID=request.getParameter(JspStringHolder.recipeApiId);
-		ParseableRecipeData singleRecipe = EdamanRecipeApiClient.getSingleRecipe(recipeID);
-		int liczbaSkladnikow=singleRecipe.getIngredients().size();
-
-		Map<MultiProdukt_SearchResult,PreciseQuantity> result = new HashMap<MultiProdukt_SearchResult,PreciseQuantity>();
-
-		for(int i=0;i<liczbaSkladnikow;i++){
-			ApiIngredientAmount aia=singleRecipe.getIngredients().get(i);
-			PreciseQuantity quantity=aia.getAmount();
-			String produktPhrase=EdamanQExtract.correctText(aia.getName()); //the same for precise quantity
-			
-			List<Produkt> possibleProdukts=null;
-			try {
-				possibleProdukts=getProduktsWithRecountedPrice(RecipeAgent.parseProdukt(produktPhrase),quantity,"$");
-			} catch (AgentSystemNotStartedException e) {
-				return returnAgentSystemNotStartedPage();
-			}
-
-			result.put(
-					new MultiProdukt_SearchResult(aia.getName(), produktPhrase, quantity.toJspString(), possibleProdukts)
-					,quantity);
-		}
-
-		if(result==null||result.isEmpty()){
-
-			return returnAgentSystemNotStartedPage();
-
-		}else{
-			ModelAndView mav=new ModelAndView(StringHolder.bootstrapFolder+"boot_correctProducts");
-
-			mav.addObject("url",singleRecipe.getUrl());
-			mav.addObject("results",result);
-
-			return mav;
-		}
+		return parseRecipe(request);
 
 	}
 
 
+//	private ModelAndView parseRecipe(HttpServletRequest request) {
+//		String recipeID=request.getParameter(JspStringHolder.recipeApiId);
+//		ParseableRecipeData singleRecipe = EdamanRecipeApiClient.getSingleRecipe(recipeID);
+//		int liczbaSkladnikow=singleRecipe.getIngredients().size();
+//
+//		Map<MultiProdukt_SearchResult,PreciseQuantity> result = new HashMap<MultiProdukt_SearchResult,PreciseQuantity>();
+//
+//		for(int i=0;i<liczbaSkladnikow;i++){
+//			ApiIngredientAmount aia=singleRecipe.getIngredients().get(i);
+//			PreciseQuantity quantity=aia.getAmount();
+//			String produktPhrase=EdamanQExtract.correctText(aia.getName()); //the same for precise quantity
+//			
+//			List<Produkt> possibleProdukts=null;
+//			try {
+//				possibleProdukts=getProduktsWithRecountedPrice(RecipeAgent.parseProdukt(produktPhrase),quantity,"$");
+//			} catch (AgentSystemNotStartedException e) {
+//				return returnAgentSystemNotStartedPage();
+//			}
+//
+//			result.put(
+//					new MultiProdukt_SearchResult(aia.getName(), produktPhrase, quantity.toJspString(), possibleProdukts)
+//					,quantity);
+//		}
+//
+//		if(result==null||result.isEmpty()){
+//
+//			return returnAgentSystemNotStartedPage();
+//
+//		}else{
+//			ModelAndView mav=new ModelAndView(StringHolder.bootstrapFolder+"boot_correctProducts");
+//
+//			mav.addObject("url",singleRecipe.getUrl());
+//			mav.addObject("results",result);
+//
+//			return mav;
+//		}
+//	}
+
+
+	private ModelAndView parseRecipe(HttpServletRequest request) {
+		String recipeID=request.getParameter(JspStringHolder.recipeApiId);
+		Map<MultiProdukt_SearchResult,PreciseQuantity> result=new HashMap<>(); 
+		ModelAndView mav=new ModelAndView(StringHolder.bootstrapFolder+"boot_correctProducts");
+
+		try {
+			result= EdamanRecipeAgent.parseSingleRecipe(recipeID);
+		} catch (AgentSystemNotStartedException e) {
+			return returnAgentSystemNotStartedPage();
+		} catch (Page404Exception e) {
+			mav.addObject("erroneusUrl",recipeID);
+		}
+		mav.addObject("url",recipeID);
+		mav.addObject("results",result);
+
+		return mav;
+	}
+	
 	private List<Produkt> getProduktsWithRecountedPrice(List<Produkt> parseProdukt,
 			PreciseQuantity neededQuantity, String curency) {
 

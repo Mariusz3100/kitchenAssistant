@@ -35,6 +35,7 @@ import org.jsoup.select.Elements;
 import org.postgresql.translation.messages_bg;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import api.extractors.EdamanQExtract;
 import webscrappers.SJPWebScrapper;
 import webscrappers.przepisy.PrzepisyPLQExtract;
 import webscrappers.przepisy.PrzepisyPlWebscrapper;
@@ -57,7 +58,10 @@ import mariusz.ambroziak.kassistant.model.Recipe;
 import mariusz.ambroziak.kassistant.model.Recipe_Ingredient;
 import mariusz.ambroziak.kassistant.model.Variant_Word;
 import mariusz.ambroziak.kassistant.model.jsp.MultiProdukt_SearchResult;
+import mariusz.ambroziak.kassistant.model.jsp.ProduktWithRecountedPrice;
 import mariusz.ambroziak.kassistant.model.jsp.SearchResult;
+import mariusz.ambroziak.kassistant.model.quantity.PreciseQuantity;
+import mariusz.ambroziak.kassistant.model.utils.ApiIngredientAmount;
 import mariusz.ambroziak.kassistant.model.utils.PreciseQuantityWithPhrase;
 import mariusz.ambroziak.kassistant.utils.Converter;
 import mariusz.ambroziak.kassistant.utils.MessageTypes;
@@ -175,13 +179,13 @@ public class EdamanRecipeAgent extends BaseAgent{
 		}
 	}
 	
-	public static ParseableRecipeData parseSingleRecipe(String urlId) throws AgentSystemNotStartedException, Page404Exception{
+	public static Map<MultiProdukt_SearchResult, PreciseQuantity> parseSingleRecipe(String urlId) throws AgentSystemNotStartedException, Page404Exception{
 		EdamanRecipeAgent freeOne = getFreeAgent();
 		if(freeOne==null){
 			return null;
 		}else{
 			freeOne.setBusy(true);
-			ParseableRecipeData result;
+			Map<MultiProdukt_SearchResult, PreciseQuantity> result;
 			try{
 				result= freeOne.parseRecipeOrRetrieveFromDb(urlId);
 			}finally{
@@ -191,14 +195,139 @@ public class EdamanRecipeAgent extends BaseAgent{
 		}
 	}
 
+	private List<Produkt> getProduktsWithRecountedPrice(List<Produkt> parseProdukt,
+			PreciseQuantity neededQuantity, String curency) {
+
+		List<Produkt> retValue=new ArrayList<Produkt>();
+		if(parseProdukt!=null){
+			for(Produkt p:parseProdukt){
+				ProduktWithRecountedPrice pRec=getProduktWithRecountedPrice(p,neededQuantity,curency);
+				retValue.add(pRec);
+			}
+		}
+
+		return retValue;
+	}
 	
-	private ParseableRecipeData parseRecipeOrRetrieveFromDb(String urlId) {
-		// TODO Auto-generated method stub
-		return null;
+	private Map<MultiProdukt_SearchResult, PreciseQuantity> parseRecipeOrRetrieveFromDb(String urlId) {
+		Map<MultiProdukt_SearchResult, PreciseQuantity> retValue=new HashMap<>();
+		ParseableRecipeData singleRecipe = EdamanRecipeApiClient.getSingleRecipe(urlId);
+
+		for(ApiIngredientAmount aia:singleRecipe.getIngredients()) {
+			String ingName=aia.getName();
+			String ingredientNameWithoutQuantities=EdamanQExtract.correctText(ingName);
+			ArrayList<Produkt> found=getFromDbOrApiSingleIngredient(ingredientNameWithoutQuantities);
+			List<Produkt> foundProductsWithRecountedPrices=getProduktsWithRecountedPrice(found, aia.getAmount(), "$");
+			MultiProdukt_SearchResult singleResult=
+					new MultiProdukt_SearchResult(ingName, ingredientNameWithoutQuantities,aia.getAmount().toJspString() , foundProductsWithRecountedPrices);
+			retValue.put(singleResult, aia.getAmount());
+		}
+		
+		return retValue;
+	}
+
+	
+
+	private ProduktWithRecountedPrice getProduktWithRecountedPrice(Produkt p, PreciseQuantity neededQuantity, String curency) {
+		String recountedPrice="";
+		PreciseQuantity produktQuan=PreciseQuantity.parseFromJspString(p.getQuantityPhrase());
+		if(produktQuan.getType()!=neededQuantity.getType()){
+			ProblemLogger.logProblem("Wielkości skladnika w przepisie+"+neededQuantity+" i w sklepie "+produktQuan+"nie są tego samego typu");
+		}else{
+			if(produktQuan.getAmount()>=neededQuantity.getAmount()){
+				recountedPrice=produktQuan+"->"+p.getCena()+" "+curency;
+			}else{
+				int multiplier = neededQuantity.getMultiplierOfProduktQuantityForNeededQuantity( produktQuan);
+				recountedPrice=produktQuan+" x "+multiplier+" -> "
+						+p.getCena()+" x "+multiplier+" "+curency+"="+p.getCena()*multiplier+" "+curency;
+			}
+		}
+		ProduktWithRecountedPrice retValue=new ProduktWithRecountedPrice(p, recountedPrice);
+		return retValue;
 	}
 
 
-	public static ArrayList<ParseableRecipeData> searchForRecipes(String searchPhrase) throws AgentSystemNotStartedException, Page404Exception{
+		
+	private ArrayList<Produkt> getFromDbOrApiSingleIngredient(String ingredientNameWithoutQuantities) {
+//		String parsedSearchPhrase=EdamanQExtract.correctText(ingredientNameWithoutQuantities);
+		ArrayList<Produkt> retValue=new ArrayList<>();
+		
+		
+		List<Produkt> produktsFromDb = DaoProvider.getInstance().getProduktDao().getProduktsBySpacedName(ingredientNameWithoutQuantities);
+		
+		if(produktsFromDb==null||produktsFromDb.isEmpty()) {
+			retValue=checkShops(ingredientNameWithoutQuantities);
+		}else {
+			retValue.addAll(produktsFromDb);
+		}
+		return retValue;
+
+		
+	}
+	
+	
+	
+	private ArrayList<Produkt> checkShops(String text) {
+		if(checkShops&&text!=null){
+			JSONObject json = createSearchForMessage(text);
+
+			AgentAddress x=getAgentWithRole(StringHolder.AGENT_COMMUNITY, AGENT_GROUP, ShopsListAgent.SHOP_LIST_NAME);
+
+			StringMessage messageToSend = new StringMessage(json.toString());
+			StringMessage response=(StringMessage) 
+					sendMessageWithRoleAndWaitForReplyKA(x, messageToSend,PARSER_NAME);
+
+			if(response.getContent().equals(""))
+				return null;
+			else{
+				JSONObject jsonObject = new JSONObject(response.getContent());
+
+				if(MessageTypes.ExceptionOccured.toString().equals(jsonObject.getString(StringHolder.MESSAGE_TYPE_NAME))){
+					String name=jsonObject.getString(StringHolder.EXCEPTION_MESSAGE_NAME);
+					String stackTrace=jsonObject.getString(StringHolder.EXCEPTION_STACKTRACE_NAME);
+
+					throw new RuntimeException("Exception was thrown in agent"+name+":\n"+stackTrace);
+				}else {
+					if(MessageTypes.SearchForResponse.toString().equals(jsonObject.getString(StringHolder.MESSAGE_TYPE_NAME))){
+						String ids=jsonObject.getString(StringHolder.PRODUKT_IDS_NAME);
+						return retrieveProducktsByIds(ids);	
+					}else {
+						ProblemLogger.logProblem("Received message of improper type "+response.getContent());
+						return null;
+					}
+					
+				}
+
+			}
+		}else{
+			return null;
+		}
+	}
+
+	private ArrayList<Produkt> retrieveProducktsByIds(String ids) {
+		ProduktDAO produktDao = DaoProvider.getInstance().getProduktDao();
+
+		ArrayList<Produkt> retValue=new ArrayList<Produkt>();
+
+		if(ids!=null&&!ids.equals(""))
+			for(String id:ids.split(" ")){
+				retValue.add(produktDao.getById(Long.parseLong(id)));
+			}
+
+		return retValue;
+	}
+
+	
+	private JSONObject createSearchForMessage(String text) {
+		JSONObject json = new JSONObject();
+
+		json.put(StringHolder.SEARCH4_NAME, text.trim());
+		json.put(StringHolder.MESSAGE_CREATOR_NAME, PARSER_NAME);
+		json.put(StringHolder.MESSAGE_TYPE_NAME, MessageTypes.SearchFor);
+		return json;
+	}
+
+	public static ArrayList<ParseableRecipeData> searchForRecipes(String searchPhrase) throws AgentSystemNotStartedException{
 		EdamanRecipeAgent freeOne = getFreeAgent();
 		if(freeOne==null){
 			return null;

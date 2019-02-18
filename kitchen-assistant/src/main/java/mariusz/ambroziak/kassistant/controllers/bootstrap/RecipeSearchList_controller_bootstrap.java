@@ -10,6 +10,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import mariusz.ambroziak.kassistant.Apiclients.edaman.EdamanRecipeApiClient;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.ParseableRecipeData;
+import mariusz.ambroziak.kassistant.agents.EdamanRecipeAgent;
+import mariusz.ambroziak.kassistant.exceptions.AgentSystemNotStartedException;
+import mariusz.ambroziak.kassistant.exceptions.Page404Exception;
 import mariusz.ambroziak.kassistant.utils.JspStringHolder;
 import mariusz.ambroziak.kassistant.utils.StringHolder;
 
@@ -32,7 +35,12 @@ public class RecipeSearchList_controller_bootstrap {
 	public ModelAndView b_apirecipes(HttpServletRequest request) {
 		String searchPhrase=request.getParameter(JspStringHolder.recipeSearchPhrase_name);
 		
-		List<ParseableRecipeData> results=EdamanRecipeApiClient.getRecipesByPhrase(searchPhrase);
+		List<ParseableRecipeData> results = null;
+		try {
+			results = EdamanRecipeAgent.searchForRecipes(searchPhrase);
+		} catch (AgentSystemNotStartedException e) {
+			return returnAgentSystemNotStartedPage();
+		} 
 		
 		ModelAndView modelAndView = new ModelAndView(StringHolder.bootstrapFolder+"boot_RecipeList");
 		modelAndView.addObject("recipeList", results);
