@@ -26,7 +26,7 @@ public class ParseableRecipeData {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return StringHolder.currentAppName+"/apiRecipeParsed?recipeId="+URLEncoder.encode(edamanId);
+		return StringHolder.currentAppName+"/apiRecipeParsed?"+JspStringHolder.recipeApiId+"="+URLEncoder.encode(edamanId);
 	}
 	
 	public String getRecipeDetailsInApi() {
