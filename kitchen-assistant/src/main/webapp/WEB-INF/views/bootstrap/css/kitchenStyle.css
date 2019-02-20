@@ -92,6 +92,11 @@
 
 .empty-page-info{
 	margin-top: 100px;
-	
-	
+}
+
+.recipe-parsed-submit{
+	position:fixed;
+	right:5px;
+	top:50%;
+	height:50px
 }
