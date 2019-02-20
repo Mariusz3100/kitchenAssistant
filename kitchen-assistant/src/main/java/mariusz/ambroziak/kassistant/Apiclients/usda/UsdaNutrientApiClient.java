@@ -133,6 +133,10 @@ public class UsdaNutrientApiClient {
 	
 	public static UsdaFoodDetails searchForNutritionDetailsOfAProdukt(String foodName){
 		long start=System.currentTimeMillis();
+		
+		if(foodName==null||foodName.equals(""))
+			return UsdaFoodDetails.getEmptyOne();
+		
 		String response=getResponse(foodName);
 
 		JSONObject root=new JSONObject(response);
