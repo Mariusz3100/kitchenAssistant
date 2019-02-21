@@ -19,28 +19,98 @@
 
 	<jsp:include page="includes/menuInclude.jsp" />
 
-	<form action="b_correctProducts">
+	<form action="b_productsChosen">
 		<input type="hidden" name="${liczbaSkladnikow}"
-			value="${fn:length(results)}"> <input type="hidden"
+			value="${fn:length(badResults)}"> <input type="hidden"
 			name="${recipeUrl_name}" value="${url}">
 
-		<c:choose>
-			<c:when test="${fn:length(results) gt 0}">
+
+		<div class="ingredient-list">
 
 
-				<div class="ingredient-list">
-					<c:forEach var="result" items="${results}"
+
+			<c:if test="${fn:length(correctResults) gt 0}">
+				<h3>Ingredients correctly chosen:</h3>
+				<c:forEach var="result" items="${correctResults}"
+					varStatus="skladnikCount">
+
+					<input type="hidden"
+						name="${skladnikName}${skladnikCount.count}_${quantityName}"
+						value="${result.quantity}">
+					<input type="hidden"
+						name="${skladnikName}${skladnikCount.count}_${produktPhraseName}"
+						value="${result.produktPhrase}">
+					<input type="hidden"
+						name="${skladnikName}${skladnikCount.count}_${searchPhraseName}"
+						value="${result.searchPhraseAnswered}">
+
+					<div class="section-shortcut" id="${properResultsSection_name}"></div>
+					<section class="wow fadeIn single-ingredient-section">
+					<div class="container with-left-shortcuts">
+						<div class="shortcuts-on-the-left">
+							<a href="#${properResultsSection_name}">&#9636</a>
+
+							<c:forEach var="innerResult" items="${results}"
+								varStatus="innerSkladnikCount">
+								<a
+									href="#${skladnikName}${innerSkladnikCount.count}_${skladnikSectionName}">&#9636</a>
+							</c:forEach>
+						</div>
+						<div class="funkyradio">
+							<h3 class="ingredient-heading">For ingredient
+								"${result.searchPhraseAnswered }" [${result.quantity}] this
+								products was found:</h3>
+
+							<div class="dynamic-size"
+								style="overflow-y: auto; max-height: 63vh">
+								<c:set var="produkt" value="${result.produkt}" />
+								<div class="funkyradio-success">
+									<input type="radio"
+										name="${skladnikName}${skladnikCount.count}_${skladnikRadioName}"
+										id="${skladnikName}${skladnikCount.count}_${skladnikRadioName}_${opcjaCount.index}"
+										value="${radioValuePrefix}${produkt.url}" /> <label
+										for="${skladnikName}${skladnikCount.count}_${skladnikRadioName}_${opcjaCount.index}">[${produkt.cena}
+										$, ${produkt.recountedPrice}] ${produkt.nazwa}</label>
+								</div>
+
+
+
+
+							</div>
+						</div>
+					</div>
+
+
+					</section>
+				</c:forEach>
+
+
+
+			</c:if>
+
+
+
+
+
+
+			<h3>Following products you specified were not found. Please try
+				again.</h3>
+
+
+			<c:choose>
+				<c:when test="${fn:length(badResults) gt 0}">
+					<c:forEach var="result" items="${badResults}"
 						varStatus="skladnikCount">
 
 						<input type="hidden"
 							name="${skladnikName}${skladnikCount.count}_${quantityName}"
-							value="${result.key.quantity}">
+							value="${result.quantity}">
 						<input type="hidden"
 							name="${skladnikName}${skladnikCount.count}_${produktPhraseName}"
-							value="${result.key.produktPhrase}">
+							value="${result.produktPhrase}">
 						<input type="hidden"
 							name="${skladnikName}${skladnikCount.count}_${searchPhraseName}"
-							value="${result.key.searchPhraseAnswered}">
+							value="${result.searchPhraseAnswered}">
 
 						<div class="section-shortcut"
 							id="${skladnikName}${skladnikCount.count}_${skladnikSectionName}"></div>
@@ -53,23 +123,25 @@
 										href="#${skladnikName}${innerSkladnikCount.count}_${skladnikSectionName}">&#9636</a>
 								</c:forEach>
 							</div>
+							<b>Ingredient ${result.searchPhraseAnswered } was not
+								properly chosen: ${result.invalidityReason} </b>
 							<div class="funkyradio">
 								<c:choose>
-									<c:when test="${fn:length(result.key.produkts) gt 0}">
+									<c:when test="${fn:length(result.produkts) gt 0}">
 										<h3 class="ingredient-heading">For ingredient
-											"${result.key.searchPhraseAnswered }" [${result.value}] these
+											"${result.searchPhraseAnswered }" [${result.value}] these
 											products were found:</h3>
 									</c:when>
 									<c:otherwise>
 										<h3 class="ingredient-heading">No products were found for
-											ingredient "${result.key.searchPhraseAnswered}".</h3>
+											ingredient "${result.searchPhraseAnswered}".</h3>
 									</c:otherwise>
 								</c:choose>
 
 
 								<div class="dynamic-size"
 									style="overflow-y: auto; max-height: 63vh">
-									<c:forEach var="produkt" items="${result.key.produkts}"
+									<c:forEach var="produkt" items="${result.produkts}"
 										varStatus="opcjaCount">
 										<div class="funkyradio-success">
 											<input type="radio"
@@ -118,17 +190,17 @@
 					</c:forEach>
 
 
-				</div>
-			</c:when>
-			<c:otherwise>
-				<h3 class="empty-page-info">
-					Url "<%=pageContext.getRequest()
+				</c:when>
+				<c:otherwise>
+					<h3 class="empty-page-info">
+						Url "<%=pageContext.getRequest()
 							.getParameter(mariusz.ambroziak.kassistant.utils.JspStringHolder.recipeApiId)%>"
-					was not recognized by any of the data sources
-				</h3>
-			</c:otherwise>
+						was not recognized by any of the data sources
+					</h3>
+				</c:otherwise>
 
-		</c:choose>
+			</c:choose>
+		</div>
 
 
 		<jsp:include page="includes/footerInclude.jsp" />

@@ -15,13 +15,16 @@ import api.extractors.EdamanQExtract;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.EdamanRecipeApiClient;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.ParseableRecipeData;
 import mariusz.ambroziak.kassistant.agents.EdamanRecipeAgent;
+import mariusz.ambroziak.kassistant.agents.ProduktAgent;
 import mariusz.ambroziak.kassistant.agents.RecipeAgent;
 import mariusz.ambroziak.kassistant.controllers.logic.RecipeLogic;
 import mariusz.ambroziak.kassistant.exceptions.AgentSystemNotStartedException;
 import mariusz.ambroziak.kassistant.exceptions.Page404Exception;
+import mariusz.ambroziak.kassistant.exceptions.ShopNotFoundException;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.jsp.MultiProdukt_SearchResult;
 import mariusz.ambroziak.kassistant.model.jsp.ProduktWithRecountedPrice;
+import mariusz.ambroziak.kassistant.model.jsp.SingleProdukt_SearchResult;
 import mariusz.ambroziak.kassistant.model.quantity.PreciseQuantity;
 import mariusz.ambroziak.kassistant.model.utils.ApiIngredientAmount;
 import mariusz.ambroziak.kassistant.model.utils.GoodBadSkippedResults;
@@ -69,7 +72,7 @@ public class RecipeParsing_controller_bootstrap extends RecipeLogic{
 	
 	
 	
-	@RequestMapping(value="/b_correctProducts")
+	@RequestMapping(value="/b_productsChosen")
 	public ModelAndView b_correctProducts(HttpServletRequest request) {
 		setEncoding(request);
 		String url=request.getParameter(JspStringHolder.recipeUrl_name);
@@ -87,7 +90,7 @@ public class RecipeParsing_controller_bootstrap extends RecipeLogic{
 			}else {
 					ModelAndView mav=new ModelAndView(StringHolder.bootstrapFolder+"boot_correctProducts");
 					mav.addObject("badResults",extractGoodBadSkippedResults.getUsersBadChoice());
-					mav.addObject("correctResults",extractGoodBadSkippedResults.getGoodResults());
+					mav.addObject("correctResults", extractGoodBadSkippedResults.getGoodResults());
 					mav.addObject("skippedResults",extractGoodBadSkippedResults.getSkippedResults());
 					return mav;
 				
@@ -100,6 +103,62 @@ public class RecipeParsing_controller_bootstrap extends RecipeLogic{
 
 		
 	}
+
+	@Override
+	protected Produkt retieveProdukts(String innyUrl, PreciseQuantity neededQuantity, String curency) throws ShopNotFoundException, AgentSystemNotStartedException {
+		Produkt orScrapProdukt = ProduktAgent.getOrScrapProdukt(innyUrl);
+		return retrieveProdukt(neededQuantity, curency, orScrapProdukt);
+	}
+
+
+
+
+	@Override
+	protected Produkt retrieveProdukt(PreciseQuantity neededQuantity, String curency, Produkt orScrapProdukt) {
+		if(orScrapProdukt==null||neededQuantity==null)
+			return null;
+		String recountedPrice="";
+		PreciseQuantity produktQuan=PreciseQuantity.parseFromJspString(orScrapProdukt.getQuantityPhrase());
+		if(produktQuan.getType()!=neededQuantity.getType()){
+			ProblemLogger.logProblem("Wielkości skladnika w przepisie+"+neededQuantity+" i w sklepie "+produktQuan+"nie są tego samego typu");
+		}else{
+			if(produktQuan.getAmount()>=neededQuantity.getAmount()){
+				recountedPrice=produktQuan+"->"+orScrapProdukt.getCena()+" "+curency;
+			}else{
+				int multiplier = neededQuantity.getMultiplierOfProduktQuantityForNeededQuantity( produktQuan);
+				recountedPrice=produktQuan+" x "+multiplier+" -> "
+						+orScrapProdukt.getCena()+" x "+multiplier+" "+curency+"="+orScrapProdukt.getCena()*multiplier+" "+curency;
+			}
+		}
+		
+		ProduktWithRecountedPrice recounted=new ProduktWithRecountedPrice(orScrapProdukt, recountedPrice);
+		return recounted;
+	}
+
+	@Override
+	protected List<Produkt> recountPrices(List<Produkt> searchResults, PreciseQuantity preciseQuantity, String currency) {
+		if(searchResults==null) {
+			return null;
+		}else {
+			List<Produkt> retValue=new ArrayList<>();
+			
+			for(Produkt p:searchResults) {
+				retValue.add(retrieveProdukt(preciseQuantity,currency,p));
+			}
+			return  retValue;
+					
+		}
+	}
+
+//	private void calculateRecountedPrices(GoodBadSkippedResults extractGoodBadSkippedResults) {
+//		if(extractGoodBadSkippedResults!=null) {
+//			ArrayList<SingleProdukt_SearchResult> goodResults = extractGoodBadSkippedResults.getGoodResults();
+//			if(goodResults!=null)
+//		
+//		
+//		}
+//		
+//	}
 	
 
 

@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.web.servlet.ModelAndView;
 
+import api.extractors.EdamanQExtract;
 import mariusz.ambroziak.kassistant.agents.ProduktAgent;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
 import mariusz.ambroziak.kassistant.exceptions.AgentSystemNotStartedException;
@@ -88,10 +89,8 @@ public class RecipeLogic {
 			if(JspStringHolder.innaOpcja_name.equals(wybranyProdukt)){
 				String innyUrl=request.getParameter(JspStringHolder.skladnik_name+i+"_"+JspStringHolder.innyUrl_name);
 				try {
-					produkt=ProduktAgent.getOrScrapProdukt(innyUrl);
+					produkt=retieveProdukts(innyUrl,PreciseQuantity.parseFromJspString(quantityPhrase),"$");
 					if(produkt!=null){
-						ArrayList<Produkt> produkts=new ArrayList<Produkt>();
-						produkts.add(produkt);
 						SingleProdukt_SearchResult sr=new SingleProdukt_SearchResult(searchPhrase,produktPhrase, quantityPhrase, produkt);
 						resultsHolder.addGoodResult(sr);
 					}else{
@@ -105,9 +104,13 @@ public class RecipeLogic {
 					//invalidShopUrls.put(produktPhrase,innyUrl);
 					List<Produkt> searchResults;
 					searchResults = ProduktAgent.searchForProdukt(produktPhrase);
+					searchResults =recountPrices(searchResults,PreciseQuantity.parseFromJspString(quantityPhrase),"$");
+					String invalidityReason = //PL:"Wygl---da na to, ---e url \""+innyUrl
+							//+"\" nie zosta--- rozpoznany jako pasuj---cy do ---adnego ze wspieranych sklep---w.";
+							"It seems url \""+innyUrl+" did not match any supported shops.";
+					
 					InvalidSearchResult isr=new InvalidSearchResult(searchPhrase,produktPhrase,quantityPhrase,searchResults,
-							"Wygl---da na to, ---e url \""+innyUrl
-							+"\" nie zosta--- rozpoznany jako pasuj---cy do ---adnego ze wspieranych sklep---w.");
+							invalidityReason);
 					resultsHolder.addUsersBadChoice(isr);
 
 				} 
@@ -134,6 +137,8 @@ public class RecipeLogic {
 					resultsHolder.addUsersBadChoice(isr);
 
 				}else{
+					produkt=retrieveProdukt(PreciseQuantity.parseFromJspString(quantityPhrase),"$",produkt);
+
 					SingleProdukt_SearchResult sr=new SingleProdukt_SearchResult(searchPhrase,produktPhrase, quantityPhrase, produkt);
 					resultsHolder.addGoodResult(sr);
 				}
@@ -141,6 +146,13 @@ public class RecipeLogic {
 
 		}
 		return resultsHolder;
+	}
+	protected List<Produkt> recountPrices(List<Produkt> searchResults, PreciseQuantity preciseQuantity, String string) {
+		return searchResults;
+	}
+	
+	protected Produkt retieveProdukts(String innyUrl, PreciseQuantity neededQuantity, String curency) throws ShopNotFoundException, AgentSystemNotStartedException {
+		return ProduktAgent.getOrScrapProdukt(innyUrl);
 	}
 
 
@@ -245,6 +257,9 @@ public class RecipeLogic {
 
 	protected ModelAndView returnAgentSystemNotStartedPage() {
 		return new ModelAndView("agentSystemNotStarted");
+	}
+	protected Produkt retrieveProdukt(PreciseQuantity neededQuantity, String curency, Produkt orScrapProdukt) {
+		return orScrapProdukt;
 	}
 
 }

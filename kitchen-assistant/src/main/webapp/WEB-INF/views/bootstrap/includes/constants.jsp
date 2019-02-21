@@ -26,5 +26,6 @@
 <c:set var="skipOptionText" value="<%= mariusz.ambroziak.kassistant.utils.JspStringHolder.SKIP_OPTION_TEXT%>" scope="session"/>
 <c:set var="googleAuthorisationSuffix" value="<%= mariusz.ambroziak.kassistant.utils.JspStringHolder.GOOGLE_AUTHORISATION_SUFFIX%>" scope="session"/>
 <c:set var="skladnikSectionName" value="<%= mariusz.ambroziak.kassistant.utils.JspStringHolder.skladnikSection_name %>" scope="session"/>
+<c:set var="skladnikSectionName" value="<%= mariusz.ambroziak.kassistant.utils.JspStringHolder.skladnikSection_name %>" scope="session"/>
 
 <c:set var="amountTypesWithoutCalories" value="<%= AmountTypes.valuesWithoutCalories()%>" scope="session"/>

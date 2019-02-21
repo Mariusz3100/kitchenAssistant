@@ -14,6 +14,8 @@ public class JspStringHolder {
 	public static final String innyUrl_name="innyUrl";
 	public static final String skladnikRadio_name="radio";
 	public static final String skladnikSection_name="section";
+	public static final String properResultsSection_name="properResultsSection";
+
 	public static final String skipOptionSuffix="skip";
 	public static final String skladnikRadioIdPrefix="id_";
 
