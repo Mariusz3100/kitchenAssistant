@@ -74,10 +74,12 @@
 
 .shortcuts-on-the-left {
 	position: absolute;
-	max-width: 1px;
+	max-width: 40px;
 	left: -2vw;
 	color: green;
 	font-size: 2vw;
+	overflow-y: scroll;
+	max-height: 97%;
 }
 
 .with-left-shortcuts{
@@ -99,4 +101,8 @@
 	right:5px;
 	top:50%;
 	height:50px
+}
+
+.left-align{
+	text-align: left !important;
 }
