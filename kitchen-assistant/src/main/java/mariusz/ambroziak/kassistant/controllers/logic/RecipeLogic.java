@@ -62,7 +62,7 @@ public class RecipeLogic {
 
 
 	protected String generateSorryProduktNotFoundInvalidityReason(SingleProdukt_SearchResult produktToBeChecked) {
-		return "We are really sorry, it seems url "+produktToBeChecked.getProdukt().getUrl()+" points to a produkt in our database, that is no longer avaible at the shop. Please, choose something else.";
+		return "We are really sorry, it seems url \""+produktToBeChecked.getProdukt().getUrl()+"\" points to a produkt in our database, that is no longer avaible at the shop. Please, choose something else.";
 	}
 
 

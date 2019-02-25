@@ -100,7 +100,9 @@ public class UsdaNutrientApiClientParticularFood {
 			String productName=(String) desc.get("name");
 			
 			retValueMap=parseNutrientsList(nutrientList);
-			UsdaFoodDetails retValue=new UsdaFoodDetails(new UsdaFoodId(productName, ndbno),retValueMap);
+			UsdaFoodId id = new UsdaFoodId(productName, ndbno);
+			id.setData_source_url(calculateSourceDataUrl(id.getNdbno()));
+			UsdaFoodDetails retValue=new UsdaFoodDetails(id,retValueMap);
 			return retValue;
 		}
 	}
