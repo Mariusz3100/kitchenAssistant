@@ -10,6 +10,9 @@ import madkit.kernel.Message;
 
 public class ClockAgent extends BaseAgent {
 
+	private static final String ClockAgentDescription = "Agent whose whole purpose is to measure time for other agents. "
+			+ "";
+
 	/**
 	 * 
 	 */
@@ -52,6 +55,8 @@ public class ClockAgent extends BaseAgent {
 	protected void activate() {
 //		timePassed=System.currentTimeMillis();
 		setLogLevel(Level.FINEST);
+		setDescription(ClockAgentDescription);
+
 
 	}
 

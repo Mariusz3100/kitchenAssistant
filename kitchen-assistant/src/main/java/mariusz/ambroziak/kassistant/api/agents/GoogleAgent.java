@@ -31,12 +31,13 @@ import webscrappers.auchan.ProduktDetails;
 public class GoogleAgent extends BaseAgent {
 	public static final String GOOGLE_API_AGENT_NAME = "googleApiAgent";
 
+	private static final String GoogleAgentDescription ="This agent can be used by users to search for products in the agent system";
+
 	static ArrayList<GoogleAgent> agents;
 	int tickets=0;
 	int lastCheckedClock=0;
 
 	public static boolean agentOn=true;
-	private static ArrayList<GA_ProduktScrapped> produktsToScrap;
 
 	public static String baseUrl="https://api.shop.com/stores/v1/products/";
 
@@ -130,7 +131,8 @@ public class GoogleAgent extends BaseAgent {
 		}
 		if(agents==null)agents=new ArrayList<GoogleAgent>();
 		agents.add(this);
-		
+		setDescription(GoogleAgentDescription);
+
 		requestRole(AGENT_COMMUNITY,AGENT_GROUP, AGENT_ROLE);
 		super.activate();
 	}

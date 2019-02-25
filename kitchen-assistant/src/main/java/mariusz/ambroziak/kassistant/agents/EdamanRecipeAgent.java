@@ -80,6 +80,9 @@ public class EdamanRecipeAgent extends BaseAgent{
 	public  static final boolean checkShops = true;
 
 
+	private static final String edamanAgentDescription = "Agent used by other agents (usually through ShopListAgent) to retrieve information." ;
+
+
 
 	@Override
 	protected void live() {
@@ -107,6 +110,8 @@ public class EdamanRecipeAgent extends BaseAgent{
 		agents.add(this);
 
 		setLogLevel(Level.FINEST);
+		setDescription(edamanAgentDescription);
+
 		super.activate();
 	}
 

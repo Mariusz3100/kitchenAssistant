@@ -76,6 +76,8 @@ public class ReadingNutritientsUsdaAgent extends BaseAgent{
 	private static final long serialVersionUID = 1L;
 	public  static final boolean checkShops = true;
 
+	private static final String usdaAgentDescription = "Agent used to retrieve data from USDA api.";
+
 
 	@Override
 	protected void live() {
@@ -278,12 +280,12 @@ public class ReadingNutritientsUsdaAgent extends BaseAgent{
 				Basic_Ingredient bi=new Basic_Ingredient();
 				bi.setName(name);
 				basicIngredientDao.saveBasicIngredient(bi);
-				Basic_Ingredient_Nutrient_Data_Source binds = createDataSourceDbObject(productDetails, fromDb);
+				Basic_Ingredient_Nutrient_Data_Source binds = createDataSourceDbObject(productDetails, bi);
 
 				Map<Nutrient, Float> nutrietsMap=getRelativeAmountsFromPreciseQuantityFor100g(productDetails.getNutrietsMap());
 				//below method should do the above anyway; code above is just in case		
 				DaoProvider.getInstance().getBasicIngredientNutrientAmountDao().saveNutrientData(bi,binds, nutrietsMap);
-				return fromDb;
+				return bi;
 			}
 		}
 	}
@@ -428,6 +430,7 @@ public class ReadingNutritientsUsdaAgent extends BaseAgent{
 		agents.add(this);
 
 		setLogLevel(Level.FINEST);
+		setDescription(usdaAgentDescription);
 		super.activate();
 	}
 

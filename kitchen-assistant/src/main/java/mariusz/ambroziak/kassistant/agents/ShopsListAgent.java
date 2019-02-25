@@ -29,6 +29,8 @@ public class ShopsListAgent extends BaseAgent {
 	 */
 	private static final long serialVersionUID = 1L;
 	public static final String SHOP_LIST_NAME = "shopsList";
+	private static final String shopListAgentDescription = "Agent serving as a hub for a list of shop agent."
+			+ "Agents for particular shops should never be queried directly.";
 
 	ArrayList<AgentAddress> adresses;
 
@@ -155,6 +157,7 @@ public class ShopsListAgent extends BaseAgent {
 
 		requestRole(AGENT_COMMUNITY, AGENT_GROUP, AGENT_ROLE);
 		setLogLevel(Level.FINEST);
+		setDescription(shopListAgentDescription);
 
 
 		if(instance==null)

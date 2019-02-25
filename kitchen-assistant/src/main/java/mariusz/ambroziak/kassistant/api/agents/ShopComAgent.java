@@ -29,7 +29,8 @@ import webscrappers.auchan.ProduktDetails;
 
 public class ShopComAgent extends BaseAgent {
 	public static final String SHOP_COM_API_AGENT_NAME = "shopComApiAgent";
-
+	private static final String shopComAgentDescription = "Agent used by other agents (usually through ShopListAgent) to retrieve information about products available in shop.com api.";
+	
 	static ArrayList<ShopComAgent> agents;
 	int tickets=0;
 	int lastCheckedClock=0;
@@ -460,6 +461,8 @@ public class ShopComAgent extends BaseAgent {
 		agents.add(this);
 
 		requestRole(AGENT_COMMUNITY,AGENT_GROUP, AGENT_ROLE);
+		setDescription(shopComAgentDescription);
+
 		super.activate();
 	}
 

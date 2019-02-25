@@ -32,6 +32,8 @@ public class ProduktAgent extends BaseAgent{
 	public static final String PARSER_NAME = "produktParser";
 	private static final long serialVersionUID = 1L;
 	
+	private static final String productAgentDescription="This agent can be used by users to search for products in the agent system";
+	
 	static ArrayList<ProduktAgent> agents;
 	public  static final boolean checkShops = true;
 
@@ -79,7 +81,7 @@ public class ProduktAgent extends BaseAgent{
 	public ProduktAgent() {
 		super();
 		AGENT_COMMUNITY=StringHolder.AGENT_COMMUNITY;
-	
+		setDescription(productAgentDescription);
 	}
 
 
