@@ -35,6 +35,7 @@ public class JspStringHolder {
 	
 	public static final String SKIP_OPTION_TEXT="Skip this ingredient (for your own risk)";
 	public static final String GOOGLE_AUTHORISATION_SUFFIX;
+	public static final String agentName="agentName";
 
 	
 	static {

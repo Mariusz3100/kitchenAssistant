@@ -1,6 +1,7 @@
 package mariusz.ambroziak.kassistant.agents;
 
 import java.util.HashMap;
+import java.util.TreeSet;
 
 import madkit.kernel.Agent;
 import madkit.kernel.AgentAddress;
@@ -24,9 +25,21 @@ public abstract class BaseAgent extends Agent {
 
 	public String AGENT_COMMUNITY = StringHolder.AGENT_COMMUNITY;
 
+	private  String description;
+	
+
+
+
 	protected NotConversationIDsFilter filterOfExpectedMessages;
 
-	
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
 	
 	
 	public Message sendMessageWithRoleAndWaitForReplyKA(AgentAddress receiver,
@@ -35,7 +48,7 @@ public abstract class BaseAgent extends Agent {
 
 		filterOfExpectedMessages.addIdToBeOmmitted(messageToSend.getConversationID());
 		
-		String data="{Agent \""+this.toString()+"\" sent message:\n ";
+		String data="\n{Agent \""+this.toString()+"\" sent message:\n ";
 
 		data+="id:"+messageToSend.getConversationID()+" content:<"+((StringMessage)messageToSend).getContent()+">\n";
 		data+="to agent \""+receiver.toString()+"\"\n ";
@@ -48,7 +61,11 @@ public abstract class BaseAgent extends Agent {
 				senderRole);
 	}
 
-
+	public Object[] getMyRolesKA() {
+		TreeSet<String> myRoles = this.getMyRoles(AGENT_COMMUNITY, AGENT_GROUP);
+		return myRoles.toArray();
+	}
+	
 	public ReturnCode sendReplyWithRoleKA(Message messageToReplyTo,
 			Message reply, String senderRole) {
 //		addMessageToList(reply);
@@ -105,6 +122,15 @@ public abstract class BaseAgent extends Agent {
 	}
 	
 	public String AGENT_ROLE;
+
+	public String getAGENT_ROLE() {
+		return AGENT_ROLE;
+	}
+
+
+	public void setAGENT_ROLE(String aGENT_ROLE) {
+		AGENT_ROLE = aGENT_ROLE;
+	}
 
 	private static HashMap<String,BaseAgent> extent;
 	
