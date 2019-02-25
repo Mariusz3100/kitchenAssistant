@@ -30,59 +30,57 @@
 
 
 			<c:if test="${fn:length(correctResults) gt 0}">
-				<h3>Ingredients correctly chosen:</h3>
-				<c:forEach var="result" items="${correctResults}"
-					varStatus="skladnikCount">
+				<div class="section-shortcut" id="${properResultsSection_name}"></div>
 
-					<input type="hidden"
-						name="${skladnikName}${skladnikCount.count}_${quantityName}"
-						value="${result.quantity}">
-					<input type="hidden"
-						name="${skladnikName}${skladnikCount.count}_${produktPhraseName}"
-						value="${result.produktPhrase}">
-					<input type="hidden"
-						name="${skladnikName}${skladnikCount.count}_${searchPhraseName}"
-						value="${result.searchPhraseAnswered}">
+				<h3 class="ingredient-heading">Ingredients correctly chosen:</h3>
+				<section class="wow fadeIn single-ingredient-section">
+				<div class="container with-left-shortcuts">
+					<div class="shortcuts-on-the-left">
+						<a href="#${properResultsSection_name}">&#9636</a>
 
-					<div class="section-shortcut" id="${properResultsSection_name}"></div>
-					<section class="wow fadeIn single-ingredient-section">
-					<div class="container with-left-shortcuts">
-						<div class="shortcuts-on-the-left">
-							<a href="#${properResultsSection_name}">&#9636</a>
-
-							<c:forEach var="innerResult" items="${results}"
-								varStatus="innerSkladnikCount">
-								<a
-									href="#${skladnikName}${innerSkladnikCount.count}_${skladnikSectionName}">&#9636</a>
-							</c:forEach>
-						</div>
-						<div class="funkyradio">
-							<h3 class="ingredient-heading">For ingredient
-								"${result.searchPhraseAnswered }" [${result.quantity}] this
-								products was found:</h3>
-
-							<div class="dynamic-size"
+						<c:forEach var="shortcut" items="${badResults}"
+							varStatus="shortcutCount">
+							<a
+								href="#${skladnikName}${shortcutCount.count}_${skladnikSectionName}">&#9636</a>
+						</c:forEach>
+					</div>
+<div class="dynamic-size"
 								style="overflow-y: auto; max-height: 63vh">
-								<c:set var="produkt" value="${result.produkt}" />
+
+
+					<c:forEach var="result" items="${correctResults}"
+						varStatus="skladnikCount">
+
+						<input type="hidden"
+							name="${skladnikName}${skladnikCount.count}_${quantityName}"
+							value="${result.quantity}">
+						<input type="hidden"
+							name="${skladnikName}${skladnikCount.count}_${produktPhraseName}"
+							value="${result.produktPhrase}">
+						<input type="hidden"
+							name="${skladnikName}${skladnikCount.count}_${searchPhraseName}"
+							value="${result.searchPhraseAnswered}">
+
+						<div class="funkyradio">
+							<h6>${result.searchPhraseAnswered } [${result.quantity}]</h6>
+
+							<c:set var="produkt" value="${result.produkt}" />
 								<div class="funkyradio-success">
-									<input type="radio"
+									<input type="radio" checked="checked"
 										name="${skladnikName}${skladnikCount.count}_${skladnikRadioName}"
 										id="${skladnikName}${skladnikCount.count}_${skladnikRadioName}_${opcjaCount.index}"
 										value="${radioValuePrefix}${produkt.url}" /> <label
 										for="${skladnikName}${skladnikCount.count}_${skladnikRadioName}_${opcjaCount.index}">[${produkt.cena}
 										$, ${produkt.recountedPrice}] ${produkt.nazwa}</label>
 								</div>
-
-
-
-
-							</div>
+							
 						</div>
+
+
+					</c:forEach>
 					</div>
-
-
-					</section>
-				</c:forEach>
+				</div>
+				</section>
 
 
 
@@ -93,8 +91,8 @@
 
 
 
-			<h3>Following products you specified were not found. Please try
-				again.</h3>
+			<h3 class="ingredient-heading">Following products you specified
+				were not found. Please try again.</h3>
 
 
 			<c:choose>
@@ -117,24 +115,35 @@
 						<section class="wow fadeIn single-ingredient-section">
 						<div class="container with-left-shortcuts">
 							<div class="shortcuts-on-the-left">
+									<a href="#${properResultsSection_name}">&#9636</a>
+
+									<c:forEach var="shortcut" items="${badResults}"
+										varStatus="shortcutCount">
+										<a
+											href="#${skladnikName}${shortcutCount.count}_${skladnikSectionName}">&#9636</a>
+									</c:forEach>
+								</div>
+
 								<c:forEach var="innerResult" items="${results}"
 									varStatus="innerSkladnikCount">
 									<a
 										href="#${skladnikName}${innerSkladnikCount.count}_${skladnikSectionName}">&#9636</a>
 								</c:forEach>
 							</div>
-							<b>Ingredient ${result.searchPhraseAnswered } was not
-								properly chosen: ${result.invalidityReason} </b>
+							<h3 class="ingredient-heading" style="color: brown">
+								Ingredient ${result.searchPhraseAnswered } was not properly
+								chosen:<br> ${result.invalidityReason}
+							</h3>
 							<div class="funkyradio">
 								<c:choose>
 									<c:when test="${fn:length(result.produkts) gt 0}">
-										<h3 class="ingredient-heading">For ingredient
+										<h6 class="ingredient-heading">For ingredient
 											"${result.searchPhraseAnswered }" [${result.value}] these
-											products were found:</h3>
+											products were found:</h6>
 									</c:when>
 									<c:otherwise>
-										<h3 class="ingredient-heading">No products were found for
-											ingredient "${result.searchPhraseAnswered}".</h3>
+										<h6 class="ingredient-heading">No products were found for
+											ingredient "${result.searchPhraseAnswered}".</h6>
 									</c:otherwise>
 								</c:choose>
 
@@ -183,7 +192,7 @@
 									</div>
 								</div>
 							</div>
-						</div>
+						
 
 
 						</section>
