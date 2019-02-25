@@ -19,7 +19,7 @@ public class NutrientParsing_controller_bootstrap {
 
 
 	@RequestMapping(value="/b_nutritientForNdbno")
-	public ModelAndView apiRecipeParsed(HttpServletRequest request) throws AgentSystemNotStartedException {
+	public ModelAndView apiRecipeParsed(HttpServletRequest request) {
 		String ndbno=request.getParameter(JspStringHolder.ndbno);
 		//04542
 
@@ -29,7 +29,12 @@ public class NutrientParsing_controller_bootstrap {
 		}
 		else 
 		{
-			UsdaFoodDetails nutrientDetailsForDbno = ReadingNutritientsUsdaAgent.retrieveSingleProduct(ndbno);
+			UsdaFoodDetails nutrientDetailsForDbno;
+			try {
+				nutrientDetailsForDbno = ReadingNutritientsUsdaAgent.retrieveSingleProduct(ndbno);
+			} catch (AgentSystemNotStartedException e) {
+					return returnAgentSystemNotStartedPage();
+			}
 					
 					UsdaNutrientApiClientParticularFood.getNutrientDetailObjectForDbno(ndbno);
 			ModelAndView mav=new ModelAndView(StringHolder.bootstrapFolder+"boot_NutrientResultsForSingleFood");
@@ -46,8 +51,6 @@ public class NutrientParsing_controller_bootstrap {
 
 
 	}
-
-	private ModelAndView returnAgentSystemNotStartedPage() {
-		return new ModelAndView("agentSystemNotStarted");
-	}
-}
+	protected ModelAndView returnAgentSystemNotStartedPage() {
+		return new ModelAndView(StringHolder.bootstrapFolder+"boot_agentSystemNotStarted");
+	}}

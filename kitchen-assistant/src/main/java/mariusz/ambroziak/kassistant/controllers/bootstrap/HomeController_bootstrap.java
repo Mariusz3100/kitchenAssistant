@@ -20,6 +20,8 @@ public class HomeController_bootstrap {
 		return model;
 	}
 	
-	
+	protected ModelAndView returnAgentSystemNotStartedPage() {
+		return new ModelAndView(StringHolder.bootstrapFolder+"boot_agentSystemNotStarted");
+	}
 
 }

@@ -60,7 +60,7 @@ public class RecipeSearchList_controller_bootstrap {
 
 
 
-	private ModelAndView returnAgentSystemNotStartedPage() {
-		return new ModelAndView("agentSystemNotStarted");
+	protected ModelAndView returnAgentSystemNotStartedPage() {
+		return new ModelAndView(StringHolder.bootstrapFolder+"boot_agentSystemNotStarted");
 	}
 }

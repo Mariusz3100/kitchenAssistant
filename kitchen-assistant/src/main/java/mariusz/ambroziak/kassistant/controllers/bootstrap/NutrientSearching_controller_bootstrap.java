@@ -55,7 +55,7 @@ public class NutrientSearching_controller_bootstrap {
 			try {
 				searchForProduktsInUsdaDb = ReadingNutritientsUsdaAgent.searchForMultiProduct(foodName);
 			} catch (AgentSystemNotStartedException e) {
-				return new ModelAndView("agentSystemNotStarted");
+				return returnAgentSystemNotStartedPage();
 			} 
 					//UsdaNutrientApiClient.searchForProduktsInUsdaDbSortByName(foodName);
 			
@@ -68,9 +68,9 @@ public class NutrientSearching_controller_bootstrap {
 			return mav;
 		}
 	}
-
-
-	private ModelAndView returnAgentSystemNotStartedPage() {
-		return new ModelAndView("agentSystemNotStarted");
+	protected ModelAndView returnAgentSystemNotStartedPage() {
+		return new ModelAndView(StringHolder.bootstrapFolder+"boot_agentSystemNotStarted");
 	}
+
+
 }
