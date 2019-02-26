@@ -194,12 +194,7 @@ public class FoodIngredientAgent extends BaseAgent{
 		return retValue;
 	}
 
-	private void saveInDb(Basic_Ingredient basicIngredientFromDb, HashMap<Nutrient, PreciseQuantity> scrapedNutritientData) {
-		HashMap<Nutrient, Float> percentageAmounts=getRelativeAmountsFromPreciseQuantityFor100g(scrapedNutritientData);
-		
-		//DaoProvider.getInstance().getNutrientDao().saveNutrientData(basicIngredientFromDb, percentageAmounts);
-		DaoProvider.getInstance().getBasicIngredientNutrientAmountDao().saveNutrientData(basicIngredientFromDb, percentageAmounts);
-	}
+
 
 	private HashMap<Nutrient, Float> getRelativeAmountsFromPreciseQuantityFor100g(
 			HashMap<Nutrient, PreciseQuantity> scrapedNutritientData) {
