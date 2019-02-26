@@ -32,8 +32,21 @@ public abstract class GoogleControllerLogic extends AbstractAuthorizationCodeSer
 	public GoogleControllerLogic() {
 		super();
 	}
+	protected ArrayList<String> getHealthLimitations() throws IOException, GoogleDriveAccessNotAuthorisedException {
+		ArrayList<HealthLabels> healthLimittions;
+		healthLimittions = GoogleAuthApiClient.getHealthLimitations();
+		ArrayList<String> list=new ArrayList<String>();
+		if(healthLimittions!=null&&!healthLimittions.isEmpty())
+		{
+			for(HealthLabels s:healthLimittions)
+			{	
+				list.add(s.getParameterName());
+			}
+		}
+		return list;
+	}
 
-	protected ArrayList<String> getHealthLimitationLogic() throws IOException, GoogleDriveAccessNotAuthorisedException {
+	protected ArrayList<String> getHealthLimitationWithComments() throws IOException, GoogleDriveAccessNotAuthorisedException {
 		ArrayList<HealthLabels> healthLimittions;
 		healthLimittions = GoogleAuthApiClient.getHealthLimitations();
 	
@@ -43,7 +56,6 @@ public abstract class GoogleControllerLogic extends AbstractAuthorizationCodeSer
 	
 		if(healthLimittions==null||healthLimittions.isEmpty())
 			list.add("Health labels for a were not found in his google drive.");
-	
 		else{
 			list.add("Health labels for a user:");
 	
@@ -55,7 +67,7 @@ public abstract class GoogleControllerLogic extends AbstractAuthorizationCodeSer
 		return list;
 	}
 
-	protected ArrayList<String> getDietLimitationsLogic() throws IOException, GoogleDriveAccessNotAuthorisedException {
+	protected ArrayList<String> getDietLimitationsWithComments() throws IOException, GoogleDriveAccessNotAuthorisedException {
 		ArrayList<DietLabels> healthLimittions;
 		healthLimittions = GoogleAuthApiClient.getDietLimitations();
 	
@@ -68,6 +80,22 @@ public abstract class GoogleControllerLogic extends AbstractAuthorizationCodeSer
 			list.add("Diet labels for a user:");
 	
 			for(DietLabels s:healthLimittions)
+			{	
+				list.add(s.getParameterName());
+			}
+		}
+		return list;
+	}
+	protected ArrayList<String> getDietLimitations() throws IOException, GoogleDriveAccessNotAuthorisedException {
+		ArrayList<DietLabels> dietLimittions;
+		dietLimittions = GoogleAuthApiClient.getDietLimitations();
+	
+	
+		ArrayList<String> list=new ArrayList<String>();
+	
+		if(dietLimittions!=null&&!dietLimittions.isEmpty())
+		{
+			for(DietLabels s:dietLimittions)
 			{	
 				list.add(s.getParameterName());
 			}

@@ -22,8 +22,8 @@
 				<li><a href="#blog">Search for Produkts</a></li>
 				<li class="menu-has-children"><a href="">Agents</a>
 					<ul>
-						<li><a href="#">Drop Down 1</a></li>
-						<li><a href="#">Drop Down 3</a></li>
+						<li><a href="/b_startSystem">Start Agent System</a></li>
+						<li><a href="/b_agentList">List of all agents in the system</a></li>
 					</ul></li>
 				<li>
 				<li class="menu-has-children"><a href="">Google data</a>

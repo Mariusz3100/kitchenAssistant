@@ -21,6 +21,7 @@ import mariusz.ambroziak.kassistant.model.Problem;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.User;
 import mariusz.ambroziak.kassistant.model.jsp.MultiProdukt_SearchResult;
+import mariusz.ambroziak.kassistant.utils.StringHolder;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -45,17 +46,21 @@ import com.google.api.client.util.store.FileDataStoreFactory;
 public class GoogleController_bootstrap extends GoogleControllerLogic{
 	
 
-	@RequestMapping(value="/bootstrap/google/health/get")
+	@RequestMapping(value="/b_getGoogleData")
 	public ModelAndView problems1(HttpServletRequest request) throws IOException {
-		ArrayList<String> list=new ArrayList<>();
+		ArrayList<String> dietList=new ArrayList<>();
+		ArrayList<String> healthList=new ArrayList<>();
+
 		try {
-			list = getHealthLimitationLogic();
+			dietList = getDietLimitations();
+			healthList=getHealthLimitations();
 		} catch (GoogleDriveAccessNotAuthorisedException e) {
 			return createGoogleAccessNotGrantedMav();
 		}
-		ModelAndView mav=new ModelAndView("List");
+		ModelAndView mav=new ModelAndView(StringHolder.bootstrapFolder+"boot_GoogleData");
 
-		mav.addObject("list",list);
+		mav.addObject("healthLabels",healthList);
+		mav.addObject("dietLabels",dietList);
 
 		return mav;
 
@@ -63,12 +68,7 @@ public class GoogleController_bootstrap extends GoogleControllerLogic{
 	}
 
 	private ModelAndView createGoogleAccessNotGrantedMav() {
-		ArrayList<String> list=new ArrayList<String>();
-		ModelAndView mav=new ModelAndView("List");
-
-		list.add("Access to google drive was not authorised yet. Click <a href=\"/google/authorise\">here</a> to authorise.");
-		mav.addObject("list",list);
-
+		ModelAndView mav=new ModelAndView(StringHolder.bootstrapFolder+"boot_GoogleDataAccessDeleted");
 		return mav;
 	}
 
@@ -77,7 +77,7 @@ public class GoogleController_bootstrap extends GoogleControllerLogic{
 	public ModelAndView getDiet(HttpServletRequest request) throws IOException {
 		ArrayList<String> list = null;
 		try {
-			list = getDietLimitationsLogic();
+			list = getDietLimitationsWithComments();
 		} catch (GoogleDriveAccessNotAuthorisedException e) {
 			return createGoogleAccessNotGrantedMav();
 		}
@@ -86,25 +86,31 @@ public class GoogleController_bootstrap extends GoogleControllerLogic{
 		mav.addObject("list",list);
 
 		return mav;
-
-
 	}
+	
 	@RequestMapping(value="/bootstrap/google/delete")
 	public ModelAndView googleDelete(HttpServletRequest request) throws IOException {
 
 		deleteLocalAuthorisationData();
 
-		ModelAndView mav=new ModelAndView("List");
-		ArrayList<String> list=new ArrayList<String>();
-
-		list.add("renewed");
-
-		mav.addObject("list",list);
+		ModelAndView mav=new ModelAndView(StringHolder.bootstrapFolder+"boot_GoogleData");
+		mav.addObject("deleted",true);
 		return mav;
 
 
 	}
 
+	@RequestMapping(value="/b_googleDelete")
+	public ModelAndView b_googleDelete(HttpServletRequest request) throws IOException {
+
+		deleteLocalAuthorisationData();
+
+		ModelAndView mav=new ModelAndView(StringHolder.bootstrapFolder+"boot_GoogleData");
+		mav.addObject("deleted",true);
+		return mav;
+
+
+	}
 
 	@Override
 	protected String getRedirectUri(HttpServletRequest req) throws ServletException, IOException {

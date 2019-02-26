@@ -48,7 +48,7 @@ public class GoogleController extends GoogleControllerLogic{
 	public ModelAndView problems1(HttpServletRequest request) throws IOException {
 		ArrayList<String> list=new ArrayList<>();
 		try {
-			list = getHealthLimitationLogic();
+			list = getHealthLimitationWithComments();
 		} catch (GoogleDriveAccessNotAuthorisedException e) {
 			return createGoogleAccessNotGrantedMav();
 		}
@@ -76,7 +76,7 @@ public class GoogleController extends GoogleControllerLogic{
 	public ModelAndView getDiet(HttpServletRequest request) throws IOException {
 		ArrayList<String> list = null;
 		try {
-			list = getDietLimitationsLogic();
+			list = getDietLimitationsWithComments();
 		} catch (GoogleDriveAccessNotAuthorisedException e) {
 			return createGoogleAccessNotGrantedMav();
 		}
