@@ -20,8 +20,12 @@
 ============================-->
 	<section id="hero" class="wow fadeIn">
 	<div class="hero-container">
-		<h3 class="ingredient-heading">Agent System was not started</h3>
-		<h4>Start the agent system <a href="${startAgentSystemSuffix}">here</a></h4>
+		
+		<h1>Access to google data was granted</h1>
+		
+		
+		<h2>Click <a href="${googleGetDataSuffix}">here</a> to see results.</h2>
+
 	</div>
 	</section>
 
@@ -29,7 +33,7 @@
 	<jsp:include page="includes/footerInclude.jsp" />
 
 	<a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
-	<jsp:include page="includes/bottomImports.jsp"/>
+	<jsp:include page="includes/bottomImports.jsp" />
 
 
 </body>

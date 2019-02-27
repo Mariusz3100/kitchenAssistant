@@ -24,6 +24,7 @@ import mariusz.ambroziak.kassistant.model.Problem;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.User;
 import mariusz.ambroziak.kassistant.model.jsp.MultiProdukt_SearchResult;
+import mariusz.ambroziak.kassistant.utils.JspStringHolder;
 import mariusz.ambroziak.kassistant.utils.StringHolder;
 
 import org.springframework.stereotype.Controller;
@@ -49,8 +50,8 @@ import com.google.api.client.util.store.FileDataStoreFactory;
 public class GoogleController_bootstrap{
 	
 
-	@RequestMapping(value="/b_getGoogleData")
-	public ModelAndView problems1(HttpServletRequest request) {
+	@RequestMapping(value=JspStringHolder.GOOGLE_GET_DATA_SUFFIX)
+	public ModelAndView getGoogleData(HttpServletRequest request) {
 		ArrayList<String> dietList=new ArrayList<>();
 		ArrayList<String> healthList=new ArrayList<>();
 
@@ -100,13 +101,22 @@ public class GoogleController_bootstrap{
 	}
 
 
-	
-	@RequestMapping(value="/b_googleDelete")
+	@RequestMapping(value=JspStringHolder.GOOGLE_AUTHORISATION_SUCCESSFUL_SUFFIX)
+	public ModelAndView b_googleAuthorized(HttpServletRequest request) throws IOException {
+
+		deleteLocalAuthorisationData();
+
+		ModelAndView mav=new ModelAndView(StringHolder.bootstrapFolder+"boot_GoogleDataAccessGranted");
+		return mav;
+
+
+	}
+	@RequestMapping(value=JspStringHolder.GOOGLE_DELETION_SUFFIX)
 	public ModelAndView b_googleDelete(HttpServletRequest request) throws IOException {
 
 		deleteLocalAuthorisationData();
 
-		ModelAndView mav=new ModelAndView(StringHolder.bootstrapFolder+"boot_GoogleData");
+		ModelAndView mav=new ModelAndView(StringHolder.bootstrapFolder+"boot_GoogleDataAccessDeleted");
 		mav.addObject("deleted",true);
 		return mav;
 

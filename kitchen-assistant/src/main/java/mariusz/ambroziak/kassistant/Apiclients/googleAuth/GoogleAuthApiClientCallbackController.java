@@ -27,6 +27,7 @@ import mariusz.ambroziak.kassistant.model.Problem;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.User;
 import mariusz.ambroziak.kassistant.model.jsp.MultiProdukt_SearchResult;
+import mariusz.ambroziak.kassistant.utils.JspStringHolder;
 import mariusz.ambroziak.kassistant.utils.StringHolder;
 
 import org.springframework.stereotype.Controller;
@@ -81,13 +82,16 @@ public class GoogleAuthApiClientCallbackController extends AbstractAuthorization
 	@RequestMapping(value="/google/authorise/successful")
 	public ModelAndView authoriseSuccessfull(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		ModelAndView model = new ModelAndView("List");
-
-		ArrayList<String> strings=new ArrayList<String>();
-		strings.add("Authorisation was successful and saved. "
-				+"Now your recipe results will be different");
-
-		model.addObject("list",strings);
+//		ModelAndView model = new ModelAndView("List");
+//
+//		ArrayList<String> strings=new ArrayList<String>();
+//		strings.add("Authorisation was successful and saved. "
+//				+"Now your recipe results will be different");
+//
+//		model.addObject("list",strings);
+		ModelAndView model = new ModelAndView(StringHolder.bootstrapFolder+"boot_GoogleData");
+		
+		
 		return model;
 	}
 
@@ -117,7 +121,7 @@ public class GoogleAuthApiClientCallbackController extends AbstractAuthorization
 		authorisationMap.put(getUserId(req), credential);
 
 
-		resp.sendRedirect("/google/authorise/successful");
+		resp.sendRedirect(JspStringHolder.GOOGLE_AUTHORISATION_SUCCESSFUL_SUFFIX);
 	}
 
 

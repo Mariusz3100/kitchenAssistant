@@ -22,16 +22,15 @@
 				<li><a href="#blog">Search for Produkts</a></li>
 				<li class="menu-has-children"><a href="">Agents</a>
 					<ul>
-						<li><a href="/b_startSystem">Start Agent System</a></li>
+						<li><a href="${startAgentSystemSuffix}">Start Agent System</a></li>
 						<li><a href="/b_agentList">List of all agents in the system</a></li>
 					</ul></li>
 				<li>
 				<li class="menu-has-children"><a href="">Google data</a>
 					<ul>
 						<li><a href="${googleAuthorisationSuffix}">Authorise access to google drive</a></li>
-						<li><a href="/bootstrap/google/health/get">Get Health restrictions</a></li>
-						<li><a href="/bootstrap/google/diet/get">Get Diet restrictions</a></li>
-						<li><a href="/bootstrap/google/delete">Remove access to google drive</a></li>
+						<li><a href="${googleDeleteSuffix}">Remove access to google drive</a></li>
+						<li><a href="${googleGetDataSuffix}">Get Diet and Health restrictions</a></li>
 						
 					</ul></li>
 				<li>

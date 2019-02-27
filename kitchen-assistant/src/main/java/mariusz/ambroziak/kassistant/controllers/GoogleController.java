@@ -111,20 +111,6 @@ public class GoogleController extends GoogleControllerLogic{
 	}
 
 
-	@Override
-	protected String getRedirectUri(HttpServletRequest req) throws ServletException, IOException {
-		GenericUrl url = new GenericUrl(req.getRequestURL().toString());
-		url.setRawPath("/oauth2callback");
-		return url.build();
-	}
-
-
-	private int i=0;
-	@Override
-	protected String getUserId(HttpServletRequest req) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		return Integer.toString(i);
-	}
 
 
 	protected ModelAndView returnAgentSystemNotStartedPage() {

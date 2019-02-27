@@ -21,7 +21,7 @@ import mariusz.ambroziak.kassistant.exceptions.AgentSystemNotStartedException;
 import mariusz.ambroziak.kassistant.exceptions.GoogleDriveAccessNotAuthorisedException;
 import mariusz.ambroziak.kassistant.utils.StringHolder;
 
-public abstract class GoogleControllerLogic extends AbstractAuthorizationCodeServlet {
+public abstract class GoogleControllerLogic {
 
 	/** Global instance of the scopes required by this quickstart.
 	 *
@@ -108,31 +108,31 @@ public abstract class GoogleControllerLogic extends AbstractAuthorizationCodeSer
 	protected void deleteLocalAuthorisationData() {
 		GoogleAuthApiClient.deleteCredentials();
 	}
-
-	@Override
-	protected AuthorizationCodeFlow initializeFlow() throws IOException {
-		GoogleClientSecrets clientSecrets =
-				GoogleClientSecrets.load(GoogleAuthApiParameters.getJsonFactory(), new StringReader(StringHolder.googleCredentials));
-		// Build flow and trigger user authorization request.
-		GoogleAuthorizationCodeFlow flow =
-				new GoogleAuthorizationCodeFlow.Builder(
-						GoogleAuthApiParameters.getHTTP_TRANSPORT(), GoogleAuthApiParameters.getJsonFactory(), clientSecrets, SCOPES)
-				.setDataStoreFactory(GoogleAuthApiParameters.getDATA_STORE_FACTORY())
-				.setAccessType("offline")
-				.build();
-	
-		return flow;
-	
-		//		  return new AuthorizationCodeFlow.Builder(BearerToken.authorizationHeaderAccessMethod(),
-		//	        HTTP_TRANSPORT,
-		//	        new JacksonFactory(),
-		//	        new GenericUrl("https://server.example.com/token"),
-		//	        new BasicAuthentication("s6BhdRkqt3", "7Fjfp0ZBr1KtDRbnfVdmIw"),
-		//	        "s6BhdRkqt3",
-		//	        "https://server.example.com/authorize").setDataStoreFactory(
-		//	        DATA_STORE_FACTORY)
-		//	        .build();
-	}
+//
+//	@Override
+//	protected AuthorizationCodeFlow initializeFlow() throws IOException {
+//		GoogleClientSecrets clientSecrets =
+//				GoogleClientSecrets.load(GoogleAuthApiParameters.getJsonFactory(), new StringReader(StringHolder.googleCredentials));
+//		// Build flow and trigger user authorization request.
+//		GoogleAuthorizationCodeFlow flow =
+//				new GoogleAuthorizationCodeFlow.Builder(
+//						GoogleAuthApiParameters.getHTTP_TRANSPORT(), GoogleAuthApiParameters.getJsonFactory(), clientSecrets, SCOPES)
+//				.setDataStoreFactory(GoogleAuthApiParameters.getDATA_STORE_FACTORY())
+//				.setAccessType("offline")
+//				.build();
+//	
+//		return flow;
+//	
+//		//		  return new AuthorizationCodeFlow.Builder(BearerToken.authorizationHeaderAccessMethod(),
+//		//	        HTTP_TRANSPORT,
+//		//	        new JacksonFactory(),
+//		//	        new GenericUrl("https://server.example.com/token"),
+//		//	        new BasicAuthentication("s6BhdRkqt3", "7Fjfp0ZBr1KtDRbnfVdmIw"),
+//		//	        "s6BhdRkqt3",
+//		//	        "https://server.example.com/authorize").setDataStoreFactory(
+//		//	        DATA_STORE_FACTORY)
+//		//	        .build();
+//	}
 
 	
 }

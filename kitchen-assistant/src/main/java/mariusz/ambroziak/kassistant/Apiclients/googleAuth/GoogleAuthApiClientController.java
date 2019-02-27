@@ -29,6 +29,7 @@ import com.google.api.services.drive.model.*;
 
 import mariusz.ambroziak.kassistant.Apiclients.edaman.DietLabels;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.HealthLabels;
+import mariusz.ambroziak.kassistant.utils.JspStringHolder;
 import mariusz.ambroziak.kassistant.utils.StringHolder;
 
 import com.google.api.services.drive.Drive;
@@ -64,7 +65,7 @@ public class GoogleAuthApiClientController extends AbstractAuthorizationCodeServ
 
 
 	  
-	  @RequestMapping(value=StringHolder.GOOGLE_AUTHORISATION_SUFFIX)
+	  @RequestMapping(value=JspStringHolder.GOOGLE_AUTHORISATION_SUFFIX)
 	  protected void localDoGet(HttpServletRequest request, HttpServletResponse response)
 	      throws IOException, ServletException {
 	    // do stuff

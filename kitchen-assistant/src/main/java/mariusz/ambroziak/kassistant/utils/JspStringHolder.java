@@ -34,11 +34,19 @@ public class JspStringHolder {
 	public static final String QUANTITY_MULTIPLY_PREFIX_BORDER="x";
 	
 	public static final String SKIP_OPTION_TEXT="Skip this ingredient (for your own risk)";
-	public static final String GOOGLE_AUTHORISATION_SUFFIX;
-	public static final String agentName="agentName";
+	public static final String GOOGLE_DELETION_SUFFIX="b_googleDelete";
+	public static final String GOOGLE_GET_DATA_SUFFIX="b_getGoogleData";
 
 	
+	
+	public static final String START_AGENT_SYSTEM_SUFFIX="b_startSystem";
+
+	
+	public static final String agentName="agentName";
+	public static final String GOOGLE_AUTHORISATION_SUFFIX ="/b_google_authorise";
+	public static final String GOOGLE_AUTHORISATION_SUCCESSFUL_SUFFIX ="/b_google_authorisation_success";
+
 	static {
-		GOOGLE_AUTHORISATION_SUFFIX=StringHolder.GOOGLE_AUTHORISATION_SUFFIX;
+//		GOOGLE_AUTHORISATION_SUFFIX=StringHolder.GOOGLE_AUTHORISATION_SUFFIX;
 	}
 }
