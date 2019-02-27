@@ -16,19 +16,20 @@ import mariusz.ambroziak.kassistant.Apiclients.googleAuth.GoogleAuthApiClient;
 import mariusz.ambroziak.kassistant.Apiclients.googleAuth.GoogleAuthApiClientCallbackController;
 import mariusz.ambroziak.kassistant.Apiclients.googleAuth.GoogleAuthApiClientController;
 import mariusz.ambroziak.kassistant.agents.BaseAgent;
+import mariusz.ambroziak.kassistant.exceptions.AgentSystemNotStartedException;
 import mariusz.ambroziak.kassistant.exceptions.GoogleDriveAccessNotAuthorisedException;
+import mariusz.ambroziak.kassistant.model.jsp.MultiProdukt_SearchResult;
 import mariusz.ambroziak.kassistant.utils.MessageTypes;
 import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 import mariusz.ambroziak.kassistant.utils.StringHolder;
 
 public class GoogleAccessAgent extends BaseAgent {
 	public static String AGENT_NAME="Google_agent";
-	
-	static ArrayList<GoogleAccessAgent> agents;
+
+	private static ArrayList<GoogleAccessAgent> agents;
 
 	GoogleAuthApiClientCallbackController googleCallbackController;
-	GoogleAuthApiClientController googleController;
-	
+
 	@Override
 	protected void live() {
 		//		super.live();
@@ -39,21 +40,49 @@ public class GoogleAccessAgent extends BaseAgent {
 			m = nextMessageKA();
 			if(m!=null)
 				processMessage(m);
-			
-				
+
+
 		}
 	}
 
 
+	private static GoogleAccessAgent getFreeAgent() throws AgentSystemNotStartedException {
+		GoogleAccessAgent freeOne=null;
+
+		if(agents==null){
+			System.out.println("Agent system not started");
+			throw new AgentSystemNotStartedException();
+
+		}
+		else{
+			while(freeOne==null){
+				for(GoogleAccessAgent ra:agents){
+					if(!ra.isBusy()){
+						freeOne=ra;
+
+					}
+				}
+				if(freeOne==null){
+					try {
+						System.out.println("Free RecipeParser Not Found");
+						Thread.sleep(2000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+		return freeOne;
+	}
 
 
 	private void processMessage(StringMessage m) {
-		
-		
+
+
 		if(m!=null){
 			String content=((StringMessage)m).getContent();
 			JSONObject json=new JSONObject(content);
-			
+
 			if(json.get(StringHolder.MESSAGE_TYPE_NAME)==null
 					||json.get(StringHolder.MESSAGE_TYPE_NAME).equals("")){
 				ProblemLogger.logProblem("Message has no type (in Google agent): "+content);
@@ -64,40 +93,64 @@ public class GoogleAccessAgent extends BaseAgent {
 	}
 
 
-	public static ArrayList<DietLabels> getDietLabels(){
+	public static ArrayList<DietLabels> getDietLimitations() throws AgentSystemNotStartedException, GoogleDriveAccessNotAuthorisedException{
 		try {
-			return GoogleAuthApiClient.getDietLimitations();
+			GoogleAccessAgent freeAgent = getFreeAgent();
+			return freeAgent.getDietLimitationsPrivately();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			ProblemLogger.logProblem("Exception thrown during retrieving diet data from google drive");
+			ProblemLogger.logStackTrace(e.getStackTrace());
+			ArrayList<DietLabels> arrayList = new ArrayList<DietLabels>();
 			e.printStackTrace();
-		} catch (GoogleDriveAccessNotAuthorisedException e) {
-			// TODO Auto-generated catch block
-			//this means google account was not connected. We can ignore this.
+			return arrayList;
 		}
-		return null;
+
 	}
 
-	
-	public Credential getCredentials() {
-//		googleController.doGet(request, response);
-		
-		return null;
-	}
-	
-	public static ArrayList<HealthLabels> getHealthLabels(){
-		try {
-			
-			return GoogleAuthApiClient.getHealthLimitations();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (GoogleDriveAccessNotAuthorisedException e) {
-			// TODO Auto-generated catch block
-			//this means google account was not connected. We can ignore this.
+	public static void deleteGoogleAuthorisationData() throws AgentSystemNotStartedException, GoogleDriveAccessNotAuthorisedException{
+
+		GoogleAccessAgent freeOne = getFreeAgent();
+		if(freeOne!=null)
+		{
+			freeOne.setBusy(true);
+			freeOne.deleteAuthorisationData();
+			freeOne.setBusy(false);
 		}
-		return null;
 	}
-	
+
+
+	private void deleteAuthorisationData() {
+		GoogleAuthApiClient.deleteCredentials();
+	}
+
+
+	private ArrayList<DietLabels> getDietLimitationsPrivately() throws IOException, GoogleDriveAccessNotAuthorisedException {
+		return GoogleAuthApiClient.getDietLimitations();
+	}
+
+	private ArrayList<HealthLabels> getHealthLimitationsPrivately() throws IOException, GoogleDriveAccessNotAuthorisedException {
+		return GoogleAuthApiClient.getHealthLimitations();
+	}
+	//
+	//	public Credential getCredentials() {
+	////		googleController.doGet(request, response);
+	//		
+	//		return null;
+	//	}
+	//	
+	public static ArrayList<HealthLabels> getHealthLimitations() throws AgentSystemNotStartedException, GoogleDriveAccessNotAuthorisedException{
+		try {
+			GoogleAccessAgent freeAgent = getFreeAgent();
+			return freeAgent.getHealthLimitationsPrivately();
+		} catch (IOException e) {
+			ProblemLogger.logProblem("Exception thrown during retrieving diet data from google drive");
+			ProblemLogger.logStackTrace(e.getStackTrace());
+			ArrayList<HealthLabels> arrayList = new ArrayList<HealthLabels>();
+			e.printStackTrace();
+			return arrayList;
+		}
+	}
+
 	private void processgetLimitationsMessage(StringMessage m) {
 		String dietLimitationsAsString="";
 		String healthLimitationsAsString="";
@@ -111,20 +164,20 @@ public class GoogleAccessAgent extends BaseAgent {
 			// TODO Auto-generated catch block
 			//this means google account was not connected. We can ignore this.
 		}
-		
+
 		JSONObject retValue=new JSONObject();
 		retValue.put("health",healthLimitationsAsString);
 		retValue.put("diet",dietLimitationsAsString);
-		
-		
+
+
 		StringMessage messageToSend = new StringMessage(retValue.toString());
 
 		sendReplyWithRoleKA(m, messageToSend,AGENT_NAME);
-		
-		
+
+
 	}
-	
-	
+
+
 	@Override
 	protected void activate() {
 		if(!isGroup(AGENT_COMMUNITY,AGENT_GROUP)){
@@ -137,13 +190,12 @@ public class GoogleAccessAgent extends BaseAgent {
 		agents.add(this);
 
 		setLogLevel(Level.FINEST);
-		
-		googleController=new GoogleAuthApiClientController();
+
 		googleCallbackController=new GoogleAuthApiClientCallbackController();
-		
+
 		super.activate();
 	}
-	
+
 	public GoogleAccessAgent() {
 		super();
 		AGENT_COMMUNITY=StringHolder.AGENT_COMMUNITY;

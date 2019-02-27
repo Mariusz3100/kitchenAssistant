@@ -24,12 +24,12 @@
 	<div class="hero-container">
 		<h3 class="ingredient-heading">Agent System just started. Agents
 			added to system are:</h3>
-<ul>
-		<c:forEach var="line" items="${agents}" varStatus="status">
- 				<li>${line }</li>
- 				
-		</c:forEach>
-</ul>
+		<ul>
+			<c:forEach var="line" items="${agents}" varStatus="status">
+				<li>${line }</li>
+
+			</c:forEach>
+		</ul>
 	</div>
 	</section>
 

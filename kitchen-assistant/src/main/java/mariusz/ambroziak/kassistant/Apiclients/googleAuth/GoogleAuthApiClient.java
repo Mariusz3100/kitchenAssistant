@@ -20,6 +20,7 @@ import com.google.api.services.drive.model.*;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.DietLabels;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.HealthLabels;
 import mariusz.ambroziak.kassistant.exceptions.GoogleDriveAccessNotAuthorisedException;
+import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 import mariusz.ambroziak.kassistant.utils.StringHolder;
 
 import com.google.api.services.drive.Drive;
@@ -76,13 +77,17 @@ public class GoogleAuthApiClient {
 	}
 
 	public static void deleteCredentials(){
-		
+		try {
 		if(GoogleAuthApiParameters.getDataStoreDir().isDirectory()){
 			for(java.io.File f:GoogleAuthApiParameters.getDataStoreDir().listFiles()){
 				f.delete();
 			}
 		}else{
 			GoogleAuthApiParameters.getDataStoreDir().delete();
+		}
+		}catch (Exception e) {
+			ProblemLogger.logProblem("Some (probably runtime) exception during deleting the google authorisation data");
+			ProblemLogger.logStackTrace(e.getStackTrace());
 		}
 	}
 	

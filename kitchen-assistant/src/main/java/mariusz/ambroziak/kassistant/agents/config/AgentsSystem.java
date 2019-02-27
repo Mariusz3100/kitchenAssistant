@@ -16,7 +16,7 @@ public class AgentsSystem {
 			"mariusz.ambroziak.kassistant.agents.FoodIngredientAgent,false,1;",
 			"mariusz.ambroziak.kassistant.agents.EdamanRecipeAgent,false,1;",
 			"mariusz.ambroziak.kassistant.api.agents.ShopComAgent,false,1;",
-			"mariusz.ambroziak.kassistant.api.agents.GoogleAgent,false,1;",
+			"mariusz.ambroziak.kassistant.api.agents.GoogleAccessAgent,false,1;",
 			"mariusz.ambroziak.kassistant.agents.ReadingNutritientsUsdaAgent,false,1"};
 
 	public static String startSystem(){

@@ -53,4 +53,5 @@ public class NutrientParsing_controller_bootstrap {
 	}
 	protected ModelAndView returnAgentSystemNotStartedPage() {
 		return new ModelAndView(StringHolder.bootstrapFolder+"boot_agentSystemNotStarted");
-	}}
+	}
+}

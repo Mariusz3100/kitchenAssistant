@@ -15,11 +15,13 @@ import mariusz.ambroziak.kassistant.agents.ClockAgent;
 import mariusz.ambroziak.kassistant.agents.RecipeAgent;
 import mariusz.ambroziak.kassistant.agents.config.AgentsSystem;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
+import mariusz.ambroziak.kassistant.exceptions.AgentSystemNotStartedException;
 import mariusz.ambroziak.kassistant.exceptions.GoogleDriveAccessNotAuthorisedException;
 import mariusz.ambroziak.kassistant.model.Problem;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.User;
 import mariusz.ambroziak.kassistant.model.jsp.MultiProdukt_SearchResult;
+import mariusz.ambroziak.kassistant.utils.StringHolder;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -51,6 +53,8 @@ public class GoogleController extends GoogleControllerLogic{
 			list = getHealthLimitationWithComments();
 		} catch (GoogleDriveAccessNotAuthorisedException e) {
 			return createGoogleAccessNotGrantedMav();
+		} catch (AgentSystemNotStartedException e) {
+			return returnAgentSystemNotStartedPage();
 		}
 		ModelAndView mav=new ModelAndView("List");
 
@@ -79,6 +83,8 @@ public class GoogleController extends GoogleControllerLogic{
 			list = getDietLimitationsWithComments();
 		} catch (GoogleDriveAccessNotAuthorisedException e) {
 			return createGoogleAccessNotGrantedMav();
+		} catch (AgentSystemNotStartedException e) {
+			return returnAgentSystemNotStartedPage();
 		}
 		ModelAndView mav=new ModelAndView("List");
 
@@ -121,5 +127,7 @@ public class GoogleController extends GoogleControllerLogic{
 	}
 
 
-
+	protected ModelAndView returnAgentSystemNotStartedPage() {
+		return new ModelAndView(StringHolder.bootstrapFolder+"boot_agentSystemNotStarted");
+	}
 }

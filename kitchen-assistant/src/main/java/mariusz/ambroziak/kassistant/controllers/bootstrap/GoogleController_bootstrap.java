@@ -10,12 +10,15 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import madkit.kernel.Madkit;
+import mariusz.ambroziak.kassistant.Apiclients.edaman.DietLabels;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.HealthLabels;
 import mariusz.ambroziak.kassistant.agents.ClockAgent;
 import mariusz.ambroziak.kassistant.agents.RecipeAgent;
 import mariusz.ambroziak.kassistant.agents.config.AgentsSystem;
+import mariusz.ambroziak.kassistant.api.agents.GoogleAccessAgent;
 import mariusz.ambroziak.kassistant.controllers.GoogleControllerLogic;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
+import mariusz.ambroziak.kassistant.exceptions.AgentSystemNotStartedException;
 import mariusz.ambroziak.kassistant.exceptions.GoogleDriveAccessNotAuthorisedException;
 import mariusz.ambroziak.kassistant.model.Problem;
 import mariusz.ambroziak.kassistant.model.Produkt;
@@ -43,19 +46,21 @@ import com.google.api.client.util.store.FileDataStoreFactory;
 //import database.holders.StringHolder;
 
 @Controller
-public class GoogleController_bootstrap extends GoogleControllerLogic{
+public class GoogleController_bootstrap{
 	
 
 	@RequestMapping(value="/b_getGoogleData")
-	public ModelAndView problems1(HttpServletRequest request) throws IOException {
+	public ModelAndView problems1(HttpServletRequest request) {
 		ArrayList<String> dietList=new ArrayList<>();
 		ArrayList<String> healthList=new ArrayList<>();
 
 		try {
-			dietList = getDietLimitations();
-			healthList=getHealthLimitations();
+			dietList = getHealthLimitations();
+			healthList=getDietLimitations();
 		} catch (GoogleDriveAccessNotAuthorisedException e) {
 			return createGoogleAccessNotGrantedMav();
+		} catch (AgentSystemNotStartedException e) {
+			return returnAgentSystemNotStartedPage();
 		}
 		ModelAndView mav=new ModelAndView(StringHolder.bootstrapFolder+"boot_GoogleData");
 
@@ -67,39 +72,35 @@ public class GoogleController_bootstrap extends GoogleControllerLogic{
 
 	}
 
+	protected ModelAndView returnAgentSystemNotStartedPage() {
+		return new ModelAndView(StringHolder.bootstrapFolder+"boot_agentSystemNotStarted");
+	}
+	
+	private ArrayList<String> getDietLimitations() throws AgentSystemNotStartedException, GoogleDriveAccessNotAuthorisedException {
+		ArrayList<DietLabels> dietLimitations = GoogleAccessAgent.getDietLimitations();
+		ArrayList<String> retValue=new ArrayList<>();
+		for(DietLabels dl:dietLimitations) {
+			retValue.add(dl.getParameterName());
+		}
+		return retValue;
+	}
+
+	private ArrayList<String> getHealthLimitations() throws AgentSystemNotStartedException, GoogleDriveAccessNotAuthorisedException {
+		ArrayList<HealthLabels> healthLimitations = GoogleAccessAgent.getHealthLimitations();
+		ArrayList<String> retValue=new ArrayList<>();
+		for(HealthLabels hl:healthLimitations) {
+			retValue.add(hl.getParameterName());
+		}
+		return retValue;
+	}
+
 	private ModelAndView createGoogleAccessNotGrantedMav() {
 		ModelAndView mav=new ModelAndView(StringHolder.bootstrapFolder+"boot_GoogleDataAccessDeleted");
 		return mav;
 	}
 
 
-	@RequestMapping(value="/bootstrap/google/diet/get")
-	public ModelAndView getDiet(HttpServletRequest request) throws IOException {
-		ArrayList<String> list = null;
-		try {
-			list = getDietLimitationsWithComments();
-		} catch (GoogleDriveAccessNotAuthorisedException e) {
-			return createGoogleAccessNotGrantedMav();
-		}
-		ModelAndView mav=new ModelAndView("List");
-
-		mav.addObject("list",list);
-
-		return mav;
-	}
 	
-	@RequestMapping(value="/bootstrap/google/delete")
-	public ModelAndView googleDelete(HttpServletRequest request) throws IOException {
-
-		deleteLocalAuthorisationData();
-
-		ModelAndView mav=new ModelAndView(StringHolder.bootstrapFolder+"boot_GoogleData");
-		mav.addObject("deleted",true);
-		return mav;
-
-
-	}
-
 	@RequestMapping(value="/b_googleDelete")
 	public ModelAndView b_googleDelete(HttpServletRequest request) throws IOException {
 
@@ -112,20 +113,25 @@ public class GoogleController_bootstrap extends GoogleControllerLogic{
 
 	}
 
-	@Override
-	protected String getRedirectUri(HttpServletRequest req) throws ServletException, IOException {
-		GenericUrl url = new GenericUrl(req.getRequestURL().toString());
-		url.setRawPath("/oauth2callback");
-		return url.build();
-	}
-
-
-	private int i=0;
-	@Override
-	protected String getUserId(HttpServletRequest req) throws ServletException, IOException {
+	private void deleteLocalAuthorisationData() {
 		// TODO Auto-generated method stub
-		return Integer.toString(i);
+		
 	}
+
+//	
+//	protected String getRedirectUri(HttpServletRequest req) throws ServletException, IOException {
+//		GenericUrl url = new GenericUrl(req.getRequestURL().toString());
+//		url.setRawPath("/oauth2callback");
+//		return url.build();
+//	}
+
+//
+//	private int i=0;
+//	@Override
+//	protected String getUserId(HttpServletRequest req) throws ServletException, IOException {
+//		// TODO Auto-generated method stub
+//		return Integer.toString(i);
+//	}
 
 
 

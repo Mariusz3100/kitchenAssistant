@@ -16,6 +16,8 @@ import mariusz.ambroziak.kassistant.Apiclients.edaman.DietLabels;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.HealthLabels;
 import mariusz.ambroziak.kassistant.Apiclients.googleAuth.GoogleAuthApiClient;
 import mariusz.ambroziak.kassistant.Apiclients.googleAuth.GoogleAuthApiParameters;
+import mariusz.ambroziak.kassistant.api.agents.GoogleAccessAgent;
+import mariusz.ambroziak.kassistant.exceptions.AgentSystemNotStartedException;
 import mariusz.ambroziak.kassistant.exceptions.GoogleDriveAccessNotAuthorisedException;
 import mariusz.ambroziak.kassistant.utils.StringHolder;
 
@@ -46,16 +48,16 @@ public abstract class GoogleControllerLogic extends AbstractAuthorizationCodeSer
 		return list;
 	}
 
-	protected ArrayList<String> getHealthLimitationWithComments() throws IOException, GoogleDriveAccessNotAuthorisedException {
+	protected ArrayList<String> getHealthLimitationWithComments() throws IOException, GoogleDriveAccessNotAuthorisedException, AgentSystemNotStartedException {
 		ArrayList<HealthLabels> healthLimittions;
-		healthLimittions = GoogleAuthApiClient.getHealthLimitations();
+		healthLimittions = GoogleAccessAgent.getHealthLimitations();
 	
 	
 		ArrayList<String> list=new ArrayList<String>();
 		
 	
 		if(healthLimittions==null||healthLimittions.isEmpty())
-			list.add("Health labels for a were not found in his google drive.");
+			list.add("Health labels for this user were not found in his google drive.");
 		else{
 			list.add("Health labels for a user:");
 	
@@ -67,9 +69,9 @@ public abstract class GoogleControllerLogic extends AbstractAuthorizationCodeSer
 		return list;
 	}
 
-	protected ArrayList<String> getDietLimitationsWithComments() throws IOException, GoogleDriveAccessNotAuthorisedException {
+	protected ArrayList<String> getDietLimitationsWithComments() throws IOException, GoogleDriveAccessNotAuthorisedException, AgentSystemNotStartedException {
 		ArrayList<DietLabels> healthLimittions;
-		healthLimittions = GoogleAuthApiClient.getDietLimitations();
+		healthLimittions = GoogleAccessAgent.getDietLimitations();
 	
 	
 		ArrayList<String> list=new ArrayList<String>();
@@ -132,4 +134,5 @@ public abstract class GoogleControllerLogic extends AbstractAuthorizationCodeSer
 		//	        .build();
 	}
 
+	
 }
