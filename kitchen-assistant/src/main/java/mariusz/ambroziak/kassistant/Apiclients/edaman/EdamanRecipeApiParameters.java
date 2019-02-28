@@ -1,6 +1,7 @@
 package mariusz.ambroziak.kassistant.Apiclients.edaman;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class EdamanRecipeApiParameters {
 	public static String getApp_id() {
@@ -20,28 +21,30 @@ public class EdamanRecipeApiParameters {
 	public static void setBaseUrl(String baseUrl) {
 		EdamanRecipeApiParameters.baseUrl = baseUrl;
 	}
-	public void setHealthLabels(ArrayList<HealthLabels> healthLabels) {
+	public void setHealthLabels(List<HealthLabels> healthLabels) {
 		this.healthLabels = healthLabels;
 	}
-	public void setDietLabels(ArrayList<DietLabels> dietLabels) {
+	public void setDietLabels(List<DietLabels> dietLabels) {
 		this.dietLabels = dietLabels;
 	}
 	private String phrase;
-	private ArrayList<HealthLabels> healthLabels=new ArrayList<>();
-	private ArrayList<DietLabels> dietLabels=new ArrayList<>();
+	private List<HealthLabels> healthLabels=new ArrayList<>();
+	private List<DietLabels> dietLabels=new ArrayList<>();
 	public String getPhrase() {
 		return phrase;
 	}
 	public void setPhrase(String phrase) {
 		this.phrase = phrase;
 	}
-	public ArrayList<HealthLabels> getHealthLabels() {
+	public List<HealthLabels> getHealthLabels() {
+		if(healthLabels==null)return new ArrayList<>();
 		return healthLabels;
 	}
 	public void addHealthLabels(HealthLabels healthLabel) {
 		this.healthLabels.add(healthLabel);
 	}
-	public ArrayList<DietLabels> getDietLabels() {
+	public List<DietLabels> getDietLabels() {
+		if(dietLabels==null)return new ArrayList<>();
 		return dietLabels;
 	}
 	public void addDietLabel(DietLabels dietLabel) {

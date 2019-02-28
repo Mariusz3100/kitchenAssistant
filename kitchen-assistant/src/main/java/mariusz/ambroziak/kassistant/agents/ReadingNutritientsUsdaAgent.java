@@ -102,15 +102,19 @@ public class ReadingNutritientsUsdaAgent extends BaseAgent{
 		if(m!=null){
 			String content=((StringMessage)m).getContent();
 			JSONObject json=new JSONObject(content);
-
-			if(json.get(StringHolder.MESSAGE_TYPE_NAME)==null
-					||json.get(StringHolder.MESSAGE_TYPE_NAME).equals("")){
-				ProblemLogger.logProblem("Message has no type (in Shop.com agent): "+content);
-			}else if(json.get(StringHolder.MESSAGE_TYPE_NAME).equals(MessageTypes.SearchFor.toString())){
-				processSearchForMessage(m);
-			}else if(json.get(StringHolder.MESSAGE_TYPE_NAME).equals(MessageTypes.GetProduktData.toString())){
-				processGetProduktByNdbno(m);
-
+			if(!json.has(StringHolder.MESSAGE_TYPE_NAME))
+			{
+				ProblemLogger.logProblem("Received message without type "+content+" at "+getName());
+			}else {
+				if(json.get(StringHolder.MESSAGE_TYPE_NAME)==null
+						||json.get(StringHolder.MESSAGE_TYPE_NAME).equals("")){
+					ProblemLogger.logProblem("Message has no type (in Shop.com agent): "+content);
+				}else if(json.get(StringHolder.MESSAGE_TYPE_NAME).equals(MessageTypes.SearchFor.toString())){
+					processSearchForMessage(m);
+				}else if(json.get(StringHolder.MESSAGE_TYPE_NAME).equals(MessageTypes.GetProduktData.toString())){
+					processGetProduktByNdbno(m);
+	
+				}
 			}
 		}
 

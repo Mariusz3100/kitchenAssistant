@@ -1,5 +1,8 @@
 package mariusz.ambroziak.kassistant.Apiclients.edaman;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import mariusz.ambroziak.kassistant.model.quantity.AmountTypes;
 import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 
@@ -69,10 +72,10 @@ public enum HealthLabels {
 		return parameterName;
 	}
 	
-	public  static HealthLabels retrieveByName(String name){
+	public  static HealthLabels retrieveByParameterName(String name){
 		if(name==null)return null;
 		for(HealthLabels at:HealthLabels.values()){
-			if(at.getLabel().toLowerCase().equals(name.toLowerCase())||
+			if(at.getParameterName().toLowerCase().equals(name.toLowerCase())||
 					at.getParameterName().toLowerCase().equals(name.toLowerCase())){
 				return at;
 			}
@@ -82,4 +85,58 @@ public enum HealthLabels {
 		
 	}
 	
+	public  static List<HealthLabels> retrieveByParameterName(List<String> list){
+		if(list==null)
+			return null;
+
+		List<HealthLabels> retValue=new ArrayList<>();
+		
+		for(String label:list) {
+			HealthLabels hl=retrieveByParameterName(label);
+			if(hl!=null)
+				retValue.add(hl);
+		}
+		
+		return retValue;
+	}
+	
+	public  static HealthLabels tryRetrieving(String name){
+		if(name==null)
+			return null;
+		
+		HealthLabels retrieveByLabel = retrieveByParameterName(name);
+		if(retrieveByLabel==null) {
+			retrieveByLabel=retrieveByLabel(name);
+		}
+		return retrieveByLabel;
+	}
+	
+	
+	public  static HealthLabels retrieveByLabel(String name){
+		if(name==null)return null;
+		for(HealthLabels at:HealthLabels.values()){
+			if(at.getLabel().toLowerCase().equals(name.toLowerCase())||
+					at.getLabel().toLowerCase().equals(name.toLowerCase())){
+				return at;
+			}
+		}
+		ProblemLogger.logProblem("unparsable health label: "+name);
+		return null;
+		
+	}
+	
+	public  static List<HealthLabels> retrieveByLabel(List<String> list){
+		if(list==null)
+			return null;
+
+		List<HealthLabels> retValue=new ArrayList<>();
+		
+		for(String label:list) {
+			HealthLabels hl=retrieveByLabel(label);
+			if(hl!=null)
+				retValue.add(hl);
+		}
+		
+		return retValue;
+	}
 }

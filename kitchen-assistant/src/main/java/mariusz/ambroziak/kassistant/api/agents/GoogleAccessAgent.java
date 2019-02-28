@@ -24,7 +24,7 @@ import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 import mariusz.ambroziak.kassistant.utils.StringHolder;
 
 public class GoogleAccessAgent extends BaseAgent {
-	public static String AGENT_NAME="Google_agent";
+	public static String GOOGLE_AGENT_NAME="Google_agent";
 
 	private static ArrayList<GoogleAccessAgent> agents;
 
@@ -83,7 +83,7 @@ public class GoogleAccessAgent extends BaseAgent {
 			String content=((StringMessage)m).getContent();
 			JSONObject json=new JSONObject(content);
 
-			if(json.get(StringHolder.MESSAGE_TYPE_NAME)==null
+			if(!json.has(StringHolder.MESSAGE_TYPE_NAME)||json.get(StringHolder.MESSAGE_TYPE_NAME)==null
 					||json.get(StringHolder.MESSAGE_TYPE_NAME).equals("")){
 				ProblemLogger.logProblem("Message has no type (in Google agent): "+content);
 			}else if(json.get(StringHolder.MESSAGE_TYPE_NAME).equals(MessageTypes.GetLimitations.toString())){
@@ -107,7 +107,7 @@ public class GoogleAccessAgent extends BaseAgent {
 
 	}
 
-	public static void deleteGoogleAuthorisationData() throws AgentSystemNotStartedException, GoogleDriveAccessNotAuthorisedException{
+	public static void deleteGoogleAuthorisationData() throws AgentSystemNotStartedException{
 
 		GoogleAccessAgent freeOne = getFreeAgent();
 		if(freeOne!=null)
@@ -120,7 +120,9 @@ public class GoogleAccessAgent extends BaseAgent {
 
 
 	private void deleteAuthorisationData() {
+		GoogleAuthApiClientCallbackController.authorisationMap.clear();
 		GoogleAuthApiClient.deleteCredentials();
+		GoogleAuthApiClientController.deletionCounter++;
 	}
 
 
@@ -152,6 +154,8 @@ public class GoogleAccessAgent extends BaseAgent {
 	}
 
 	private void processgetLimitationsMessage(StringMessage m) {
+		JSONObject retValue=new JSONObject();
+
 		String dietLimitationsAsString="";
 		String healthLimitationsAsString="";
 		try {
@@ -161,18 +165,19 @@ public class GoogleAccessAgent extends BaseAgent {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (GoogleDriveAccessNotAuthorisedException e) {
-			// TODO Auto-generated catch block
-			//this means google account was not connected. We can ignore this.
-		}
+			retValue.put(StringHolder.MESSAGE_TYPE_NAME, MessageTypes.GetLimitationsResponseNotAuthorised);
 
-		JSONObject retValue=new JSONObject();
-		retValue.put("health",healthLimitationsAsString);
-		retValue.put("diet",dietLimitationsAsString);
+		}
+		
+		retValue.put(StringHolder.MESSAGE_TYPE_NAME, MessageTypes.GetLimitationsResponse);
+
+		retValue.put(StringHolder.HEALTH_LIMITATIONS_NAME,healthLimitationsAsString);
+		retValue.put(StringHolder.DIET_LIMITATIONS_NAME,dietLimitationsAsString);
 
 
 		StringMessage messageToSend = new StringMessage(retValue.toString());
 
-		sendReplyWithRoleKA(m, messageToSend,AGENT_NAME);
+		sendReplyWithRoleKA(m, messageToSend,GOOGLE_AGENT_NAME);
 
 
 	}
@@ -184,7 +189,7 @@ public class GoogleAccessAgent extends BaseAgent {
 			createGroup(AGENT_COMMUNITY,AGENT_GROUP);
 		}
 
-		requestRole(AGENT_COMMUNITY, AGENT_GROUP, AGENT_NAME);
+		requestRole(AGENT_COMMUNITY, AGENT_GROUP, GOOGLE_AGENT_NAME);
 
 		if(agents==null)agents=new ArrayList<GoogleAccessAgent>();
 		agents.add(this);
@@ -199,7 +204,7 @@ public class GoogleAccessAgent extends BaseAgent {
 	public GoogleAccessAgent() {
 		super();
 		AGENT_COMMUNITY=StringHolder.AGENT_COMMUNITY;
-		AGENT_ROLE=AGENT_NAME;
+		AGENT_ROLE=GOOGLE_AGENT_NAME;
 
 	}
 }

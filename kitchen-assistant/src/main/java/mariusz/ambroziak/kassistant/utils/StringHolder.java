@@ -9,6 +9,10 @@ public class StringHolder {
 	public static final String SEARCH4_NAME = "search4";
 	public static final String PRODUKT_URL_NAME = "produktUrl";
 	public static final String PRODUKT_IDS_NAME = "ids";
+	public static final String HEALTH_LIMITATIONS_NAME = "healthLimitations";
+	public static final String DIET_LIMITATIONS_NAME = "dietLimitations";
+
+	
 	public static final String SINGLE_PRODUKT_ID_NAME ="id";
 
 	public static final String EXCEPTION_MESSAGE_NAME="exception_name";

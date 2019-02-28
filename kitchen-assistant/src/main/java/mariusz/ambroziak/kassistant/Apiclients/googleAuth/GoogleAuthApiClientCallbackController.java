@@ -145,7 +145,7 @@ public class GoogleAuthApiClientCallbackController extends AbstractAuthorization
 	@Override
 	protected String getUserId(HttpServletRequest req) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		return req.getSession(true).getId(); 
+		return req.getSession(true).getId()+GoogleAuthApiClientController.deletionCounter; 
 	}
 
 

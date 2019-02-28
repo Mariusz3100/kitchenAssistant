@@ -42,7 +42,7 @@ public class EdamanRecipeApiClient {
 
 	public static ArrayList<ParseableRecipeData> getRecipesByParameters(EdamanRecipeApiParameters eap){
 		String response1 = getResponse(eap);
-
+		convertEapToLink(eap);
 		ArrayList<ParseableRecipeData> rdList = parseResponseIntoRecipes(response1);
 		
 //		extractRightRecipes(rdList,eap);
@@ -84,7 +84,7 @@ public class EdamanRecipeApiClient {
 			rd.setUrl(url);
 			rd.setImageUrl(imgUrl);
 			for(int j=0;j<healthLabels.length();j++){
-				HealthLabels retrievedHL = HealthLabels.retrieveByName((String) healthLabels.get(j));
+				HealthLabels retrievedHL = HealthLabels.retrieveByLabel((String) healthLabels.get(j));
 				if(retrievedHL!=null)
 					rd.addHealthLabels(retrievedHL);
 			}
@@ -92,7 +92,7 @@ public class EdamanRecipeApiClient {
 			JSONArray dietLabels=(JSONArray)recipeUrlList.getJSONArray("dietLabels");
 
 			for(int j=0;j<dietLabels.length();j++){
-				DietLabels retrievedDL = DietLabels.retrieveByName((String) dietLabels.get(j));
+				DietLabels retrievedDL = DietLabels.retrieveByLabel((String) dietLabels.get(j));
 				if(retrievedDL!=null)
 					rd.addDietLabel(retrievedDL);
 			}

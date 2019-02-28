@@ -64,7 +64,7 @@ public class ShopsListAgent extends BaseAgent {
 			String content=((StringMessage)m).getContent();
 			JSONObject json=new JSONObject(content);
 
-			if(json.get(StringHolder.MESSAGE_TYPE_NAME)==null
+			if(!json.has(StringHolder.MESSAGE_TYPE_NAME)||json.get(StringHolder.MESSAGE_TYPE_NAME)==null
 					||json.get(StringHolder.MESSAGE_TYPE_NAME).equals("")){
 				ProblemLogger.logProblem("Message has no type: "+content);
 			}else if(json.get(StringHolder.MESSAGE_TYPE_NAME).equals(MessageTypes.SearchFor.toString())){

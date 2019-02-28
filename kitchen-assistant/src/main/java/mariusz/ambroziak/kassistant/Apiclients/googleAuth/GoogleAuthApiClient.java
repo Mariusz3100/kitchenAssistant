@@ -31,6 +31,7 @@ import static org.hamcrest.CoreMatchers.containsString;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -79,7 +80,8 @@ public class GoogleAuthApiClient {
 	public static void deleteCredentials(){
 		try {
 		if(GoogleAuthApiParameters.getDataStoreDir().isDirectory()){
-			for(java.io.File f:GoogleAuthApiParameters.getDataStoreDir().listFiles()){
+			File[] listFiles = GoogleAuthApiParameters.getDataStoreDir().listFiles();
+			for(java.io.File f:listFiles){
 				f.delete();
 			}
 		}else{
@@ -118,9 +120,16 @@ public class GoogleAuthApiClient {
 		.executeMediaAndDownloadTo(outputStream);
 		String driveContent=outputStream.toString();
 		
-		String[] labels=driveContent.split("\r\n");
-		for(String lab:labels){
-			retValue.add(HealthLabels.retrieveByName(lab));
+		if(driveContent!=null&&!driveContent.equals(""))
+		{
+			String[] labels=driveContent.split("\r\n");
+			for(String lab:labels){
+				HealthLabels retrievedByName = HealthLabels.tryRetrieving(lab);
+	
+				if(retrievedByName!=null&&!retrievedByName.equals("")) {
+					retValue.add(retrievedByName);
+				}
+			}
 		}
 
 		return retValue;
@@ -177,8 +186,15 @@ public class GoogleAuthApiClient {
 		String driveContent=outputStream.toString();
 		
 		String[] labels=driveContent.split("\r\n");
-		for(String lab:labels){
-			retValue.add(DietLabels.retrieveByName(lab));
+		if(driveContent!=null&&!driveContent.equals(""))
+		{
+			for(String lab:labels){
+				DietLabels retrievedByName = DietLabels.tryRetrieving(lab);
+	
+				if(retrievedByName!=null) {
+					retValue.add(retrievedByName);
+				}
+			}
 		}
 
 		return retValue;

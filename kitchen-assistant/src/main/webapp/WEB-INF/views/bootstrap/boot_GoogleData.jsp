@@ -62,7 +62,7 @@
 						</div>
 					</c:when>
 					<c:otherwise>
-						<h5>No diet labels found in your google drive</h5>
+						<h3 class="ingredient-heading">No health labels found in your google drive</h3>
 
 					</c:otherwise>
 				</c:choose>

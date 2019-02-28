@@ -1,5 +1,8 @@
 package mariusz.ambroziak.kassistant.Apiclients.edaman;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 
 public enum DietLabels {
@@ -43,16 +46,73 @@ public enum DietLabels {
 		return parameterName;
 	}
 	
-	public  static DietLabels retrieveByName(String name){
+	public  static DietLabels retrieveByParameterName(String name){
 		if(name==null)return null;
 		for(DietLabels at:DietLabels.values()){
-			if(at.getLabel().toLowerCase().equals(name.toLowerCase())||
+			if(at.getParameterName().toLowerCase().equals(name.toLowerCase())||
 					at.getParameterName().toLowerCase().equals(name.toLowerCase())){
 				return at;
 			}
 		}
-		ProblemLogger.logProblem("unparsable Diet label: "+name);
 		return null;
-		
 	}
+	
+	
+	public  static DietLabels tryRetrieving(String name){
+		if(name==null)
+			return null;
+		
+		DietLabels retrieved = retrieveByParameterName(name);
+		if(retrieved==null) {
+			retrieved=retrieveByLabel(name);
+		}
+		if(retrieved==null) {
+			ProblemLogger.logProblem("unparsable Diet label: "+name);
+		}
+		return retrieved;
+	}
+	
+	
+	public  static List<DietLabels> retrieveByName(List<String> list){
+		if(list==null)
+			return null;
+
+		List<DietLabels> retValue=new ArrayList<>();
+		
+		for(String label:list) {
+			DietLabels dl=retrieveByParameterName(label);
+			if(dl!=null)
+				retValue.add(dl);
+		}
+		
+		return retValue;
+	}
+	
+	
+	public  static DietLabels retrieveByLabel(String name){
+		if(name==null)return null;
+		for(DietLabels at:DietLabels.values()){
+			if(at.getLabel().toLowerCase().equals(name.toLowerCase())||
+					at.getLabel().toLowerCase().equals(name.toLowerCase())){
+				return at;
+			}
+		}
+		return null;
+	}
+	
+	public  static List<DietLabels> retrieveByLabel(List<String> list){
+		if(list==null)
+			return null;
+
+		List<DietLabels> retValue=new ArrayList<>();
+		
+		for(String label:list) {
+			DietLabels dl=retrieveByLabel(label);
+			if(dl!=null)
+				retValue.add(dl);
+		}
+		
+		return retValue;
+	}
+	
 }

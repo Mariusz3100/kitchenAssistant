@@ -62,7 +62,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 public class GoogleAuthApiClientController extends AbstractAuthorizationCodeServlet {
-
+		public static float deletionCounter=1;
 
 	  
 	  @RequestMapping(value=JspStringHolder.GOOGLE_AUTHORISATION_SUFFIX)
@@ -105,7 +105,7 @@ public class GoogleAuthApiClientController extends AbstractAuthorizationCodeServ
 	  @Override
 	  protected String getUserId(HttpServletRequest req) throws ServletException, IOException {
 	    // return user ID
-		  return req.getSession(true).getId(); 
+		  return req.getSession(true).getId()+deletionCounter; 
 	  }
 	}
  

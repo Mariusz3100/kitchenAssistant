@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import madkit.message.StringMessage;
+import mariusz.ambroziak.kassistant.Apiclients.edaman.HealthAndDietLimitations;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.ParseableRecipeData;
 import mariusz.ambroziak.kassistant.Apiclients.shopcom.ShopComApiParameters;
 import mariusz.ambroziak.kassistant.agents.BaseAgent;
@@ -30,7 +31,7 @@ import webscrappers.auchan.ProduktDetails;
 public class ShopComAgent extends BaseAgent {
 	public static final String SHOP_COM_API_AGENT_NAME = "shopComApiAgent";
 	private static final String shopComAgentDescription = "Agent used by other agents (usually through ShopListAgent) to retrieve information about products available in shop.com api.";
-	
+
 	static ArrayList<ShopComAgent> agents;
 	int tickets=0;
 	int lastCheckedClock=0;
@@ -140,14 +141,20 @@ public class ShopComAgent extends BaseAgent {
 			String content=((StringMessage)m).getContent();
 			JSONObject json=new JSONObject(content);
 
-			if(json.get(StringHolder.MESSAGE_TYPE_NAME)==null
-					||json.get(StringHolder.MESSAGE_TYPE_NAME).equals("")){
-				ProblemLogger.logProblem("Message has no type (in Shop.com agent): "+content);
-			}else if(json.get(StringHolder.MESSAGE_TYPE_NAME).equals(MessageTypes.SearchFor.toString())){
-				processSearchForMessage(m);
-			}else if(json.get(StringHolder.MESSAGE_TYPE_NAME).equals(MessageTypes.GetProduktData.toString())){
-				processGetProduktByUrlMesage(m);
+			if(!json.has(StringHolder.MESSAGE_TYPE_NAME))
+			{
+				ProblemLogger.logProblem("Received message without type "+content+" at "+getName());
+			}else {
 
+				if(!json.has(StringHolder.MESSAGE_TYPE_NAME)||json.get(StringHolder.MESSAGE_TYPE_NAME)==null
+						||json.get(StringHolder.MESSAGE_TYPE_NAME).equals("")){
+					ProblemLogger.logProblem("Message has no type (in Shop.com agent): "+content);
+				}else if(json.get(StringHolder.MESSAGE_TYPE_NAME).equals(MessageTypes.SearchFor.toString())){
+					processSearchForMessage(m);
+				}else if(json.get(StringHolder.MESSAGE_TYPE_NAME).equals(MessageTypes.GetProduktData.toString())){
+					processGetProduktByUrlMesage(m);
+
+				}
 			}
 		}
 	}

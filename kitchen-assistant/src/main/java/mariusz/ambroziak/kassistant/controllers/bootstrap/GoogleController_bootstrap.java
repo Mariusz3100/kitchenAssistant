@@ -103,9 +103,6 @@ public class GoogleController_bootstrap{
 
 	@RequestMapping(value=JspStringHolder.GOOGLE_AUTHORISATION_SUCCESSFUL_SUFFIX)
 	public ModelAndView b_googleAuthorized(HttpServletRequest request) throws IOException {
-
-		deleteLocalAuthorisationData();
-
 		ModelAndView mav=new ModelAndView(StringHolder.bootstrapFolder+"boot_GoogleDataAccessGranted");
 		return mav;
 
@@ -114,7 +111,12 @@ public class GoogleController_bootstrap{
 	@RequestMapping(value=JspStringHolder.GOOGLE_DELETION_SUFFIX)
 	public ModelAndView b_googleDelete(HttpServletRequest request) throws IOException {
 
-		deleteLocalAuthorisationData();
+		try {
+			deleteLocalAuthorisationData();
+		} catch (AgentSystemNotStartedException e) {
+			// TODO Auto-generated catch block
+			return returnAgentSystemNotStartedPage();
+		}
 
 		ModelAndView mav=new ModelAndView(StringHolder.bootstrapFolder+"boot_GoogleDataAccessDeleted");
 		mav.addObject("deleted",true);
@@ -123,8 +125,8 @@ public class GoogleController_bootstrap{
 
 	}
 
-	private void deleteLocalAuthorisationData() {
-		// TODO Auto-generated method stub
+	private void deleteLocalAuthorisationData() throws AgentSystemNotStartedException {
+		GoogleAccessAgent.deleteGoogleAuthorisationData();
 		
 	}
 

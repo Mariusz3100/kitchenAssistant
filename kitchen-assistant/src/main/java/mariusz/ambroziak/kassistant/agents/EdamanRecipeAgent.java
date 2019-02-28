@@ -14,6 +14,7 @@ import java.net.URLConnection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -35,6 +36,8 @@ import org.jsoup.select.Elements;
 import org.postgresql.translation.messages_bg;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.sun.jersey.api.client.UniformInterfaceException;
+
 import api.extractors.EdamanQExtract;
 import webscrappers.SJPWebScrapper;
 import webscrappers.przepisy.PrzepisyPLQExtract;
@@ -44,13 +47,19 @@ import madkit.kernel.Agent;
 import madkit.kernel.AgentAddress;
 import madkit.kernel.Message;
 import madkit.message.StringMessage;
+import mariusz.ambroziak.kassistant.Apiclients.edaman.DietLabels;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.EdamanRecipeApiClient;
+import mariusz.ambroziak.kassistant.Apiclients.edaman.EdamanRecipeApiParameters;
+import mariusz.ambroziak.kassistant.Apiclients.edaman.HealthAndDietLimitations;
+import mariusz.ambroziak.kassistant.Apiclients.edaman.HealthLabels;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.ParseableRecipeData;
+import mariusz.ambroziak.kassistant.api.agents.GoogleAccessAgent;
 import mariusz.ambroziak.kassistant.dao.Base_WordDAOImpl;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
 import mariusz.ambroziak.kassistant.dao.ProduktDAO;
 import mariusz.ambroziak.kassistant.dao.Variant_WordDAOImpl;
 import mariusz.ambroziak.kassistant.exceptions.AgentSystemNotStartedException;
+import mariusz.ambroziak.kassistant.exceptions.GoogleDriveAccessNotAuthorisedException;
 import mariusz.ambroziak.kassistant.exceptions.Page404Exception;
 import mariusz.ambroziak.kassistant.model.Base_Word;
 import mariusz.ambroziak.kassistant.model.Produkt;
@@ -128,7 +137,7 @@ public class EdamanRecipeAgent extends BaseAgent{
 		super.end();
 	}
 
-	
+
 
 
 
@@ -161,12 +170,12 @@ public class EdamanRecipeAgent extends BaseAgent{
 		return freeOne;
 	}
 
-	
-	
-	
-//----------------------------------------------------------------	
-	
-	
+
+
+
+	//----------------------------------------------------------------	
+
+
 
 	public static ParseableRecipeData retrieveSingleRecipeHeaderById(String urlId) throws AgentSystemNotStartedException, Page404Exception{
 		EdamanRecipeAgent freeOne = getFreeAgent();
@@ -183,7 +192,7 @@ public class EdamanRecipeAgent extends BaseAgent{
 			return result;
 		}
 	}
-	
+
 	public static Map<MultiProdukt_SearchResult, PreciseQuantity> parseSingleRecipe(String urlId) throws AgentSystemNotStartedException, Page404Exception{
 		EdamanRecipeAgent freeOne = getFreeAgent();
 		if(freeOne==null){
@@ -213,7 +222,7 @@ public class EdamanRecipeAgent extends BaseAgent{
 
 		return retValue;
 	}
-	
+
 	private Map<MultiProdukt_SearchResult, PreciseQuantity> parseRecipeOrRetrieveFromDb(String urlId) {
 		Map<MultiProdukt_SearchResult, PreciseQuantity> retValue=new HashMap<>();
 		ParseableRecipeData singleRecipe = EdamanRecipeApiClient.getSingleRecipe(urlId);
@@ -227,11 +236,11 @@ public class EdamanRecipeAgent extends BaseAgent{
 					new MultiProdukt_SearchResult(ingName, ingredientNameWithoutQuantities,aia.getAmount().toJspString() , foundProductsWithRecountedPrices);
 			retValue.put(singleResult, aia.getAmount());
 		}
-		
+
 		return retValue;
 	}
 
-	
+
 
 	private ProduktWithRecountedPrice getProduktWithRecountedPrice(Produkt p, PreciseQuantity neededQuantity, String curency) {
 		String recountedPrice="";
@@ -252,14 +261,14 @@ public class EdamanRecipeAgent extends BaseAgent{
 	}
 
 
-		
+
 	private ArrayList<Produkt> getFromDbOrApiSingleIngredient(String ingredientNameWithoutQuantities) {
-//		String parsedSearchPhrase=EdamanQExtract.correctText(ingredientNameWithoutQuantities);
+		//		String parsedSearchPhrase=EdamanQExtract.correctText(ingredientNameWithoutQuantities);
 		ArrayList<Produkt> retValue=new ArrayList<>();
-		
-		
+
+
 		List<Produkt> produktsFromDb = DaoProvider.getInstance().getProduktDao().getProduktsBySpacedName(ingredientNameWithoutQuantities);
-		
+
 		if(produktsFromDb==null||produktsFromDb.isEmpty()) {
 			retValue=checkShops(ingredientNameWithoutQuantities);
 		}else {
@@ -267,11 +276,11 @@ public class EdamanRecipeAgent extends BaseAgent{
 		}
 		return retValue;
 
-		
+
 	}
-	
-	
-	
+
+
+
 	private ArrayList<Produkt> checkShops(String text) {
 		if(checkShops&&text!=null){
 			JSONObject json = createSearchForMessage(text);
@@ -300,7 +309,7 @@ public class EdamanRecipeAgent extends BaseAgent{
 						ProblemLogger.logProblem("Received message of improper type "+response.getContent());
 						return null;
 					}
-					
+
 				}
 
 			}
@@ -322,7 +331,7 @@ public class EdamanRecipeAgent extends BaseAgent{
 		return retValue;
 	}
 
-	
+
 	private JSONObject createSearchForMessage(String text) {
 		JSONObject json = new JSONObject();
 
@@ -347,23 +356,132 @@ public class EdamanRecipeAgent extends BaseAgent{
 			return result;
 		}
 	}	
-	
+
 	private ArrayList<ParseableRecipeData> searchForRecipesByPhrase(String searchPhrase) {
+		HealthAndDietLimitations recipeLimitations;
+		try {
+			recipeLimitations = getRecipeLimitations();
+		} catch (GoogleDriveAccessNotAuthorisedException e) {
+			return EdamanRecipeApiClient.getRecipesByPhrase(searchPhrase);
+
+		}
+		EdamanRecipeApiParameters eap = packToEap(searchPhrase, recipeLimitations);
+		return getAndCheckRecipesByEap(eap);
+	}
+
+//[Peanuts, Vegan, No_sugar]
+	private ArrayList<ParseableRecipeData> getAndCheckRecipesByEap(EdamanRecipeApiParameters eap) {
+		ArrayList<ParseableRecipeData> recipesByParameters=null;
+		try {
+			recipesByParameters = EdamanRecipeApiClient.getRecipesByParameters(eap);
+		}catch (UniformInterfaceException e) {
+			recipesByParameters = EdamanRecipeApiClient.getRecipesByPhrase(eap.getPhrase());
+		}
 		
-		return EdamanRecipeApiClient.getRecipesByPhrase(searchPhrase);
+		ArrayList<ParseableRecipeData> retvalue=new ArrayList<>();
+		for(ParseableRecipeData prd:recipesByParameters) {
+			if(prd!=null
+					&&prd.getDietLabels().containsAll(eap.getDietLabels())
+					&&prd.getHealthLabels().containsAll(eap.getHealthLabels()))
+				retvalue.add(prd);
+		}
+		return retvalue;
+		
+	}
+
+
+	private EdamanRecipeApiParameters packToEap(String searchPhrase, HealthAndDietLimitations recipeLimitations) {
+		EdamanRecipeApiParameters eap=new EdamanRecipeApiParameters();
+
+		eap.setDietLabels(recipeLimitations.getDietLabels());
+		eap.setHealthLabels(recipeLimitations.getHealthLabels());
+		eap.setPhrase(searchPhrase);
+		return eap;
+	}
+
+
+	private HealthAndDietLimitations getRecipeLimitations() throws GoogleDriveAccessNotAuthorisedException {
+		StringMessage messageToSend = createGetLimitationMessage();
+
+		AgentAddress x=getAgentWithRole(StringHolder.AGENT_COMMUNITY, AGENT_GROUP, GoogleAccessAgent.GOOGLE_AGENT_NAME);
+
+		StringMessage response=(StringMessage) 
+				sendMessageWithRoleAndWaitForReplyKA(x, messageToSend,PARSER_NAME);
+
+		return processResponseMessage(response);
+	}
+
+
+	private HealthAndDietLimitations processResponseMessage(StringMessage response) throws GoogleDriveAccessNotAuthorisedException {
+		if(response.getContent().equals(""))
+			return new HealthAndDietLimitations();
+		else{
+			JSONObject jsonObject = new JSONObject(response.getContent());
+
+			if(!jsonObject.has(StringHolder.MESSAGE_TYPE_NAME))
+			{
+				ProblemLogger.logProblem("Received message without type "+response.getContent());
+				return new HealthAndDietLimitations();
+			}else {
+				if(MessageTypes.ExceptionOccured.toString().equals(jsonObject.getString(StringHolder.MESSAGE_TYPE_NAME))){
+					String name=jsonObject.getString(StringHolder.EXCEPTION_MESSAGE_NAME);
+					String stackTrace=jsonObject.getString(StringHolder.EXCEPTION_STACKTRACE_NAME);
+
+					throw new RuntimeException("Exception was thrown in agent"+name+":\n"+stackTrace);
+				}else {
+					if(MessageTypes.GetLimitationsResponseNotAuthorised.toString().equals(jsonObject.getString(StringHolder.MESSAGE_TYPE_NAME))){
+						throw new GoogleDriveAccessNotAuthorisedException();
+					}else{
+						
+						if(MessageTypes.GetLimitationsResponse.toString().equals(jsonObject.getString(StringHolder.MESSAGE_TYPE_NAME))){
+							HealthAndDietLimitations retValue=new HealthAndDietLimitations();
+							String dietLabels=jsonObject.getString(StringHolder.DIET_LIMITATIONS_NAME);
+
+							if(dietLabels!=null&&!dietLabels.equals("")) {
+								List<DietLabels> retrievedByName = DietLabels.retrieveByName(Arrays.asList(dietLabels.split("\r\n")));
+								retValue.setDietLabels(retrievedByName);
+							}
+							String healthLabels=jsonObject.getString(StringHolder.HEALTH_LIMITATIONS_NAME);
+
+							if(healthLabels!=null&&!healthLabels.equals("")) {
+								List<HealthLabels> retrievedByName = HealthLabels.retrieveByParameterName(Arrays.asList(healthLabels.split("\r\n")));
+								retValue.setHealthLabels(retrievedByName);
+							}
+
+							return retValue;
+						}else {
+							ProblemLogger.logProblem("Received message of improper type "+response.getContent());
+							return new HealthAndDietLimitations();
+						}
+					}
+				}
+			}
+		}
+	}
+
+
+	private StringMessage createGetLimitationMessage() {
+		JSONObject json = new JSONObject();
+
+		json.put(StringHolder.MESSAGE_CREATOR_NAME, PARSER_NAME);
+		json.put(StringHolder.MESSAGE_TYPE_NAME, MessageTypes.GetLimitations);
+
+		StringMessage messageToSend = new StringMessage(json.toString());
+
+		return messageToSend;
 	}
 
 
 	private ParseableRecipeData getFromDbOrApiRecipeHeaderData(String urlId) throws Page404Exception {
 		//TODO for recipe url
-		
+
 		return EdamanRecipeApiClient.getSingleRecipe(urlId);
 		//		Recipe recipeByURL = DaoProvider.getInstance().getRecipeDao().getRecipeByURL(url);
-//
-//		if(recipeByURL==null)
-//			return parseProduktsPhrasesAndQuantitiesFromRecipeUrl(url);
-//		else
-//			return retrieveFromDb();
+		//
+		//		if(recipeByURL==null)
+		//			return parseProduktsPhrasesAndQuantitiesFromRecipeUrl(url);
+		//		else
+		//			return retrieveFromDb();
 	}
 
 

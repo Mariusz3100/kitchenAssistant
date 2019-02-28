@@ -9,7 +9,11 @@ public enum MessageTypes {
 	GetProduktDataResponse,
 	
 	
+	
+	GetLimitationsResponse,
+	GetLimitationsResponseNotAuthorised,
 	GetLimitations,
+	
 	
 	ExceptionOccured
 	;
