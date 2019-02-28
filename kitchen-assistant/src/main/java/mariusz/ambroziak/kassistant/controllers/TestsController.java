@@ -14,6 +14,7 @@ import mariusz.ambroziak.kassistant.Apiclients.usda.UsdaFoodId;
 import mariusz.ambroziak.kassistant.Apiclients.usda.UsdaNutrientApiClient;
 import mariusz.ambroziak.kassistant.Apiclients.usda.UsdaNutrientApiClientParticularFood;
 import mariusz.ambroziak.kassistant.agents.ClockAgent;
+import mariusz.ambroziak.kassistant.agents.ProduktAgent;
 import mariusz.ambroziak.kassistant.agents.RecipeAgent;
 import mariusz.ambroziak.kassistant.agents.config.AgentsSystem;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
@@ -231,7 +232,7 @@ public class TestsController {
 		}else{
 			List<Produkt> parseProdukt = null;
 			try {
-				parseProdukt = RecipeAgent.parseProdukt(name);
+				parseProdukt = ProduktAgent.searchForProdukt(name);
 			} catch (AgentSystemNotStartedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

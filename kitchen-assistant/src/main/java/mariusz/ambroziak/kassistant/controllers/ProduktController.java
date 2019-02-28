@@ -82,7 +82,7 @@ public class ProduktController {
 			List<Produkt> produkts = null;
 			try {
 //				produkts = ShopComAgent.searchForIngredient(url);
-				produkts = RecipeAgent.searchForProdukt(url,quantity);
+				produkts = ProduktAgent.searchForProdukt(url);
 
 			} catch (AgentSystemNotStartedException e) {
 				return new ModelAndView("agentSystemNotStarted");

@@ -150,7 +150,7 @@ public class RecipeAgent extends BaseAgent{
 	}
 
 
-	public static List<Produkt> parseProdukt(String produktPhrase) throws AgentSystemNotStartedException{
+	private static List<Produkt> parseProdukt(String produktPhrase) throws AgentSystemNotStartedException{
 		RecipeAgent freeOne = getFreeAgent();
 		if(freeOne!=null)
 		{
@@ -163,7 +163,7 @@ public class RecipeAgent extends BaseAgent{
 	}
 
 
-	public static List<Produkt> searchForProdukt(String searchPhrase,String quantityPhrase) throws AgentSystemNotStartedException{
+	private static List<Produkt> searchForProdukt(String searchPhrase,String quantityPhrase) throws AgentSystemNotStartedException{
 		RecipeAgent freeOne = getFreeAgent();
 		if(freeOne==null){
 			return null;

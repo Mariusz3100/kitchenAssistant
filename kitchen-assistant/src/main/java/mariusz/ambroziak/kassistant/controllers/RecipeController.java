@@ -110,7 +110,7 @@ public class RecipeController extends RecipeLogic{
 			
 			List<Produkt> possibleProdukts=null;
 			try {
-				possibleProdukts=getProduktsWithRecountedPrice(RecipeAgent.parseProdukt(produktPhrase),quantity,"$");
+				possibleProdukts=getProduktsWithRecountedPrice(ProduktAgent.searchForProdukt(produktPhrase),quantity,"$");
 			} catch (AgentSystemNotStartedException e) {
 				return returnAgentSystemNotStartedPage();
 			}
@@ -159,7 +159,7 @@ public class RecipeController extends RecipeLogic{
 			PreciseQuantity quantity=extractQuantity(quantityAmount, quantityType);
 			List<Produkt> possibleProdukts=null;
 			try {
-				possibleProdukts=getProduktsWithRecountedPrice(RecipeAgent.parseProdukt(produktPhrase),quantity);
+				possibleProdukts=getProduktsWithRecountedPrice(ProduktAgent.searchForProdukt(produktPhrase),quantity);
 			} catch (AgentSystemNotStartedException e) {
 				return returnAgentSystemNotStartedPage();
 			}
