@@ -80,7 +80,6 @@ public enum HealthLabels {
 				return at;
 			}
 		}
-		ProblemLogger.logProblem("unparsable health label: "+name);
 		return null;
 		
 	}
@@ -108,6 +107,11 @@ public enum HealthLabels {
 		if(retrieveByLabel==null) {
 			retrieveByLabel=retrieveByLabel(name);
 		}
+		if(retrieveByLabel==null) {
+			ProblemLogger.logProblem("unparsable health label: "+name);
+		}
+		
+
 		return retrieveByLabel;
 	}
 	
@@ -120,7 +124,6 @@ public enum HealthLabels {
 				return at;
 			}
 		}
-		ProblemLogger.logProblem("unparsable health label: "+name);
 		return null;
 		
 	}

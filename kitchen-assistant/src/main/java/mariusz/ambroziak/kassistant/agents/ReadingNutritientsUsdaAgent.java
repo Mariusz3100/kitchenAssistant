@@ -144,6 +144,8 @@ public class ReadingNutritientsUsdaAgent extends BaseAgent{
 		sendReplyWithRoleKA(m, messageToSend,AGENT_ROLE);
 	}
 
+	
+	
 	private StringMessage createResponseMessage(String ids) {
 		JSONObject result=new JSONObject();
 
@@ -487,8 +489,24 @@ public class ReadingNutritientsUsdaAgent extends BaseAgent{
 		}
 	}
 
+	public static Map<SingleProdukt_SearchResult, Map<Nutrient, PreciseQuantity>> searchForListOfProduct(List<SingleProdukt_SearchResult> listOfResults)
+			throws AgentSystemNotStartedException{
+		ReadingNutritientsUsdaAgent freeOne = getFreeAgent();
+		if(freeOne==null){
+			return null;
+		}else{
+			freeOne.setBusy(true);
+			Map<SingleProdukt_SearchResult, Map<Nutrient, PreciseQuantity>> result;
+			try{
+				result= freeOne.searchForDetailsInDbAndApi(listOfResults);
+			}finally{
+				freeOne.setBusy(false);
+			}
+			return result;
+		}
+	}
 
-
+	
 
 	//	private ProduktWithAllIngredients getAllFoodIngredients(String shortUrl)
 	//			throws ShopNotFoundException, AgentSystemNotStartedException, Page404Exception {
@@ -498,6 +516,13 @@ public class ReadingNutritientsUsdaAgent extends BaseAgent{
 	//		return produktWithIngredinets;
 	//	}
 
+
+	private Map<SingleProdukt_SearchResult, Map<Nutrient, PreciseQuantity>> searchForDetailsInDbAndApi(
+			List<SingleProdukt_SearchResult> listOfResults) {
+		Map<SingleProdukt_SearchResult, Map<Nutrient, PreciseQuantity>> results
+			= UsdaNutrientApiClient.retrieveNutrientDataForProdukts(listOfResults);
+		return results;
+	}
 
 	private UsdaFoodDetails parseProductByNdbno(String ndbno) {
 		UsdaFoodDetails nutrientDetailObjectForDbno =null;

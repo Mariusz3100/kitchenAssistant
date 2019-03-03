@@ -84,7 +84,7 @@ public class EdamanRecipeApiClient {
 			rd.setUrl(url);
 			rd.setImageUrl(imgUrl);
 			for(int j=0;j<healthLabels.length();j++){
-				HealthLabels retrievedHL = HealthLabels.retrieveByLabel((String) healthLabels.get(j));
+				HealthLabels retrievedHL = HealthLabels.tryRetrieving((String) healthLabels.get(j));
 				if(retrievedHL!=null)
 					rd.addHealthLabels(retrievedHL);
 			}
@@ -92,7 +92,7 @@ public class EdamanRecipeApiClient {
 			JSONArray dietLabels=(JSONArray)recipeUrlList.getJSONArray("dietLabels");
 
 			for(int j=0;j<dietLabels.length();j++){
-				DietLabels retrievedDL = DietLabels.retrieveByLabel((String) dietLabels.get(j));
+				DietLabels retrievedDL = DietLabels.tryRetrieving((String) dietLabels.get(j));
 				if(retrievedDL!=null)
 					rd.addDietLabel(retrievedDL);
 			}
@@ -198,6 +198,35 @@ public class EdamanRecipeApiClient {
 		return response1;
 	}
 
+
+	private static String getResponse(EdamanRecipeApiParameters eap, int querySize) {
+		ClientConfig cc = new DefaultClientConfig();
+		cc.getProperties().put(ClientConfig.PROPERTY_FOLLOW_REDIRECTS, true);
+
+		Client c = Client.create();
+		WebResource resource = c.resource("https://api.edamam.com/search");
+
+		MultivaluedMap<String, String> queryParams_appId = new MultivaluedMapImpl();
+		queryParams_appId.add("app_id",EdamanRecipeApiParameters.getApp_id());
+
+		MultivaluedMap<String, String> queryParams = new MultivaluedMapImpl();
+		queryParams.add("app_key",EdamanRecipeApiParameters.getApp_key());
+		
+		queryParams.add("q", eap.getPhrase());
+		
+		if(eap.getHealthLabels()!=null)
+			for(HealthLabels hl:eap.getHealthLabels())
+				queryParams.add("health", hl.getParameterName());
+		
+		if(eap.getDietLabels()!=null)
+			for(DietLabels dl:eap.getDietLabels())
+				queryParams.add("diet", dl.getParameterName());
+
+
+		
+		String response1 = resource.queryParams(queryParams_appId).queryParams(queryParams).accept("text/plain").get(String.class);
+		return response1;
+	}
 
 	private static String convertEapToLink(EdamanRecipeApiParameters eap) {
 		String link="https://api.edamam.com/search?app_id="+eap.getApp_id()

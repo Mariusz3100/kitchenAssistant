@@ -23,21 +23,40 @@
 ============================-->
 	<section id="hero" class="wow fadeIn">
 	<div class="container"
-		style="padding-top: 1px; overflow-y: auto; max-height: 90vh">
+		style="padding-top: 1px; overflow-y: auto; max-height: 90vh; max-width: 95vw">
 
-		<h3 style="margin-top:2px">Results for <u>${productIdObject.name}</u> (ndbno ${productIdObject.ndbno}):</h3>
-		<table class="table table-striped">
+		<h3 style="margin-top: 2px">
+			Results for <u>${productIdObject.name}</u> (ndbno
+			${productIdObject.ndbno}):
+		</h3>
+		<table class="table table-striped table-bordered nutrition-table">
 			<thead>
-				<tr class="table-success" style="position: sticky; top: 1px;">
-					<th scope="col">Nutrient</th>
-					<th scope="col">Amount</th>
+				<tr class="table-success">
+					<th scope="col"
+						class="nutrition-table-header nutrition-table-ingredient-column">Ingredient</th>
+					<th scope="col" class="nutrition-table-header"
+						colspan="${fn:length(allNutrients)}">Nutrients</th>
+				</tr>
+				<tr class="table-success">
+					<th scope="col"
+						class="nutrition-table-header nutrition-header-cell">Name of the produkt chosen</th>
+					<c:forEach var="nutrient" items="${allNutrients}">
+
+						<th 
+							class="nutrition-table-header  nutrition-header-cell width:${80/fn:length(allNutrients)}vw"
+							scope="col">
+							<div class="outer-vertical-text">
+								<div class="vertical-text"><pre style="width: 160px;">${nutrient}</pre></div>
+							</div>
+						</th>
+					</c:forEach>
 				</tr>
 			</thead>
 			<tbody>
-				<c:forEach var="nutrient" items="${nutrients}"
+				<c:forEach var="nutrient" items="${nutrientsMap}"
 					varStatus="nutrientCount">
 					<tr>
-						<th scope="row">${nutrient.key.name}</th>
+						<th scope="row">${nutrient.key}</th>
 						<td>${nutrient.value}</td>
 					</tr>
 				</c:forEach>

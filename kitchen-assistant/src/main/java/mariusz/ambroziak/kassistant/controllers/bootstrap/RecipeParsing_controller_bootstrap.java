@@ -14,20 +14,25 @@ import org.springframework.web.servlet.ModelAndView;
 import api.extractors.EdamanQExtract;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.EdamanRecipeApiClient;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.ParseableRecipeData;
+import mariusz.ambroziak.kassistant.Apiclients.usda.UsdaNutrientApiClient;
 import mariusz.ambroziak.kassistant.agents.EdamanRecipeAgent;
 import mariusz.ambroziak.kassistant.agents.ProduktAgent;
+import mariusz.ambroziak.kassistant.agents.ReadingNutritientsUsdaAgent;
 import mariusz.ambroziak.kassistant.agents.RecipeAgent;
 import mariusz.ambroziak.kassistant.controllers.logic.RecipeLogic;
 import mariusz.ambroziak.kassistant.exceptions.AgentSystemNotStartedException;
 import mariusz.ambroziak.kassistant.exceptions.Page404Exception;
 import mariusz.ambroziak.kassistant.exceptions.ShopNotFoundException;
+import mariusz.ambroziak.kassistant.model.Nutrient;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.jsp.MultiProdukt_SearchResult;
 import mariusz.ambroziak.kassistant.model.jsp.ProduktWithRecountedPrice;
 import mariusz.ambroziak.kassistant.model.jsp.SingleProdukt_SearchResult;
+import mariusz.ambroziak.kassistant.model.quantity.NotPreciseQuantity;
 import mariusz.ambroziak.kassistant.model.quantity.PreciseQuantity;
 import mariusz.ambroziak.kassistant.model.utils.ApiIngredientAmount;
 import mariusz.ambroziak.kassistant.model.utils.GoodBadSkippedResults;
+import mariusz.ambroziak.kassistant.utils.CompoundMapManipulator;
 import mariusz.ambroziak.kassistant.utils.JspStringHolder;
 import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 import mariusz.ambroziak.kassistant.utils.StringHolder;
@@ -84,8 +89,13 @@ public class RecipeParsing_controller_bootstrap extends RecipeLogic{
 			if(extractGoodBadSkippedResults.getUsersBadChoice()==null
 					||extractGoodBadSkippedResults.getUsersBadChoice().isEmpty()) 
 			{
+				Map<SingleProdukt_SearchResult, Map<Nutrient, PreciseQuantity>> parseNutrientDataOfIngredients = parseNutrientDataOfIngredients(extractGoodBadSkippedResults.getGoodResults());
+				
+				//parseNutrientDataOfIngredients.values().iterator().next()
+				
+				ModelAndView nutrientsMav = getNutrientsMav(parseNutrientDataOfIngredients);
 				//working
-				return new ModelAndView("List");
+				return nutrientsMav;
 
 			}else {
 					ModelAndView mav=new ModelAndView(StringHolder.bootstrapFolder+"boot_correctProducts");
@@ -103,6 +113,42 @@ public class RecipeParsing_controller_bootstrap extends RecipeLogic{
 
 		
 	}
+
+	private ModelAndView getNutrientsMav(
+			Map<SingleProdukt_SearchResult, Map<Nutrient, PreciseQuantity>> parseNutrientDataOfIngredients) {
+				
+
+
+		Map<String, Map<String, NotPreciseQuantity>> nutrientMap = CompoundMapManipulator.stringifyKeys(parseNutrientDataOfIngredients);
+		
+
+		CompoundMapManipulator<String, String> cmm=new CompoundMapManipulator<String, String>(nutrientMap);
+		Map<String, NotPreciseQuantity> sumOfNutrients = cmm.sumUpInnerMaps();
+		List<String> nutrientsList = new ArrayList<String>(cmm.getAllInnerMapsKeys());
+
+
+		ModelAndView mav=new ModelAndView(StringHolder.bootstrapFolder+"boot_NutrientResultsForRecipe");		
+		mav.addObject("nutrientsMap", nutrientMap);//[nazwa produktu->[nazwa składnika odżywczego->ilość]]
+		mav.addObject("allNutrients",nutrientsList );//[lista składników odżywczych]
+		mav.addObject("sumOfNutrients", sumOfNutrients);//suma składników odżywczych (sumowana po wszystkich produktach)
+
+
+		return mav;
+	}
+
+
+
+
+
+	private Map<SingleProdukt_SearchResult, Map<Nutrient, PreciseQuantity>> parseNutrientDataOfIngredients(ArrayList<SingleProdukt_SearchResult> goodResults) throws AgentSystemNotStartedException {
+		
+		Map<SingleProdukt_SearchResult, Map<Nutrient, PreciseQuantity>> listOfProductNutrients = ReadingNutritientsUsdaAgent.searchForListOfProduct(goodResults);
+		return listOfProductNutrients;
+	}
+
+
+
+
 
 	@Override
 	protected Produkt retieveProdukts(String innyUrl, PreciseQuantity neededQuantity, String curency) throws ShopNotFoundException, AgentSystemNotStartedException {

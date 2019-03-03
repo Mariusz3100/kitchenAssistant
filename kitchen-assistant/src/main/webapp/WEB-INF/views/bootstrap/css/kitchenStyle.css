@@ -49,27 +49,26 @@
 
 .ingredient-heading {
 	color: green;
-	margin:10px;
+	margin: 10px;
 }
 
 .ingredient-heading-not-found {
 	color: red;
-	margin:10px;
+	margin: 10px;
 }
 
 .single-ingredient-section {
 	border-bottom: double;
 	border-radius: 10px;
-/* 	margin-bottom: 50px; */
+	/* 	margin-bottom: 50px; */
 	border-top: double;
 	border-radius: 10px;
-/* 	margin-top: 50px; */
+	/* 	margin-top: 50px; */
 	max-height: 500px;
 }
 
-
-.ingredient-list{
- 	padding-top:1px; 
+.ingredient-list {
+	padding-top: 1px;
 }
 
 .shortcuts-on-the-left {
@@ -82,27 +81,61 @@
 	max-height: 97%;
 }
 
-.with-left-shortcuts{
-	position: relative;	
+.with-left-shortcuts {
+	position: relative;
 }
 
-.section-shortcut{
+.section-shortcut {
 	margin-bottom: 50px;
-	
 }
 
-
-.empty-page-info{
+.empty-page-info {
 	margin-top: 100px;
 }
 
-.recipe-parsed-submit{
-	position:fixed;
-	right:5px;
-	top:50%;
-	height:50px
+.recipe-parsed-submit {
+	position: fixed;
+	right: 5px;
+	top: 50%;
+	height: 50px
 }
 
-.left-align{
+.left-align {
 	text-align: left !important;
+}
+
+.nutrition-table{
+	table-layout: fixed;
+}
+
+.vertical-text {
+	transform: rotate(90deg);
+	transform-origin: 16% 100% 0;
+	margin-top: 0%;
+	
+}
+
+.nutrition-table-header {
+	border-color: #015c17 !important;
+	border-width: 2px !important;
+	font-size: 16px;
+	vertical-align: top;
+	min-width: 70px;
+}
+
+
+
+.nutrition-header-cell {
+	height: 160px;
+	vertical-align: top !important;
+	padding: 0px !important;
+	text-align: center;
+}
+
+.nutrition-table-ingredient-column{
+	width: 15vw
+}
+
+.outer-vertical-text{
+	margin-top: 0;
 }
