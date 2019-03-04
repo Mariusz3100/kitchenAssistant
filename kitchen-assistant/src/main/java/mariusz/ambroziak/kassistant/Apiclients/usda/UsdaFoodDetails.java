@@ -7,13 +7,13 @@ import mariusz.ambroziak.kassistant.model.Nutrient;
 import mariusz.ambroziak.kassistant.model.quantity.PreciseQuantity;
 
 public class UsdaFoodDetails {
-	public UsdaFoodDetails(UsdaFoodId id, Map<Nutrient, PreciseQuantity> nutrietsMap) {
+	public UsdaFoodDetails(UsdaFoodId id, Map<Nutrient, PreciseQuantity> nutrietsMapPer100g) {
 		super();
 		this.id = id;
-		this.nutrietsMap = nutrietsMap;
+		this.nutrietsMapPer100g = nutrietsMapPer100g;
 	}
 	private UsdaFoodId id;
-	private Map<Nutrient, PreciseQuantity> nutrietsMap;
+	private Map<Nutrient, PreciseQuantity> nutrietsMapPer100g;
 
 	public UsdaFoodId getId() {
 		return id;
@@ -21,11 +21,11 @@ public class UsdaFoodDetails {
 	public void setId(UsdaFoodId id) {
 		this.id = id;
 	}
-	public Map<Nutrient, PreciseQuantity> getNutrietsMap() {
-		return nutrietsMap;
+	public Map<Nutrient, PreciseQuantity> getNutrietsMapPer100g() {
+		return nutrietsMapPer100g;
 	}
-	public void setNutrietsMap(Map<Nutrient, PreciseQuantity> nutrietsMap) {
-		this.nutrietsMap = nutrietsMap;
+	public void setNutrietsMapPer100g(Map<Nutrient, PreciseQuantity> nutrietsMap) {
+		this.nutrietsMapPer100g = nutrietsMap;
 	}
 
 	public static UsdaFoodDetails getEmptyOne(){
@@ -33,7 +33,7 @@ public class UsdaFoodDetails {
 	}
 
 	public boolean isEmpty() {
-		return this.getId()==null&&(this.getNutrietsMap()==null||this.getNutrietsMap().size()==0);
+		return this.getId()==null&&(this.getNutrietsMapPer100g()==null||this.getNutrietsMapPer100g().size()==0);
 				
 	}
 }

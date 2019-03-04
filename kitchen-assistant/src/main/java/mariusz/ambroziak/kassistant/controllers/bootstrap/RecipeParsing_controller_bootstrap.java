@@ -142,7 +142,7 @@ public class RecipeParsing_controller_bootstrap extends RecipeLogic{
 
 	private Map<SingleProdukt_SearchResult, Map<Nutrient, PreciseQuantity>> parseNutrientDataOfIngredients(ArrayList<SingleProdukt_SearchResult> goodResults) throws AgentSystemNotStartedException {
 		
-		Map<SingleProdukt_SearchResult, Map<Nutrient, PreciseQuantity>> listOfProductNutrients = ReadingNutritientsUsdaAgent.searchForListOfProduct(goodResults);
+		Map<SingleProdukt_SearchResult, Map<Nutrient, PreciseQuantity>> listOfProductNutrients = ReadingNutritientsUsdaAgent.searchForListOfProductAndRecountAmounts(goodResults);
 		return listOfProductNutrients;
 	}
 

@@ -232,8 +232,8 @@ public class UsdaNutrientApiClient {
 			Map<SingleProdukt_SearchResult, Map<Nutrient, PreciseQuantity>> nutrientMap,
 			SingleProdukt_SearchResult sp_sr, UsdaFoodDetails searchForNutritionDetails) {
 		
-		if(searchForNutritionDetails!=null&&searchForNutritionDetails.getNutrietsMap()!=null)
-			nutrientMap.put(sp_sr, searchForNutritionDetails.getNutrietsMap());
+		if(searchForNutritionDetails!=null&&searchForNutritionDetails.getNutrietsMapPer100g()!=null)
+			nutrientMap.put(sp_sr, searchForNutritionDetails.getNutrietsMapPer100g());
 		else
 			nutrientMap.put(sp_sr, new HashMap<Nutrient, PreciseQuantity>());
 	}

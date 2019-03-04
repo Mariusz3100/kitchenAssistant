@@ -40,7 +40,7 @@ public class NutrientParsing_controller_bootstrap {
 			ModelAndView mav=new ModelAndView(StringHolder.bootstrapFolder+"boot_NutrientResultsForSingleFood");
 			
 			mav.addObject("productIdObject",nutrientDetailsForDbno.getId());
-			mav.addObject("nutrients",nutrientDetailsForDbno.getNutrietsMap());
+			mav.addObject("nutrients",nutrientDetailsForDbno.getNutrietsMapPer100g());
 
 			return mav;
 

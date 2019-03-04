@@ -101,6 +101,7 @@ public class Basic_Ingredient_Nutrient_Data_SourceDAOImpl implements Basic_Ingre
 		return dataSources;
 	}
 	@Override
+	@Transactional
 	public List<Basic_Ingredient_Nutrient_Data_Source> getDataSourcesByIngredientNames(Collection<String> names) {
 		String whereClause = getProperIlike_WhereClause(names);
 		String sql=selectByIngredientsNameSql.replace("__where_clause__", whereClause);

@@ -83,7 +83,7 @@ public class NutrientsController {
 		List<String> list =new ArrayList<>();
 		list.add("Ndbo of product is "+nutrientDetails.getId().getNdbno());
 		list.add("Name of product is \""+nutrientDetails.getId().getName()+"\"");
-		list = putNutrientDetailsIntoStringList(nutrientDetails.getNutrietsMap(),list);
+		list = putNutrientDetailsIntoStringList(nutrientDetails.getNutrietsMapPer100g(),list);
 
 		ModelAndView mav=new ModelAndView("List");
 		mav.addObject("list",list);

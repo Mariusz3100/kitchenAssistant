@@ -377,7 +377,7 @@ public class EdamanRecipeAgent extends BaseAgent{
 		}catch (UniformInterfaceException e) {
 			recipesByParameters = EdamanRecipeApiClient.getRecipesByPhrase(eap.getPhrase());
 		}
-		
+		//Peanuts
 		ArrayList<ParseableRecipeData> retvalue=new ArrayList<>();
 		for(ParseableRecipeData prd:recipesByParameters) {
 			if(prd!=null

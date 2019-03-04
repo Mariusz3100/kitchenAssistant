@@ -6,48 +6,62 @@ import java.util.Map.Entry;
 
 import mariusz.ambroziak.kassistant.model.Basic_Ingredient;
 import mariusz.ambroziak.kassistant.model.Nutrient;
+import mariusz.ambroziak.kassistant.model.quantity.AmountTypes;
 import mariusz.ambroziak.kassistant.model.quantity.PreciseQuantity;
 
 public class NutrientDetailsOfBasicIngredient {
-	Basic_Ingredient basicIngredient;
-	Map<Nutrient,Float> nutrientsMap;
+	private Basic_Ingredient basicIngredient;
+	private Map<Nutrient,Float> nutrientsPer100gMap;
 	public Basic_Ingredient getBasicIngredient() {
 		return basicIngredient;
 	}
 	public void setBasicIngredient(Basic_Ingredient basicIngredient) {
 		this.basicIngredient = basicIngredient;
 	}
-	public Map<Nutrient, Float> getNutrientsMap() {
-		return nutrientsMap;
+	public Map<Nutrient, Float> getNutrientsPer100gMap() {
+		return nutrientsPer100gMap;
 	}
-	public void setNutrientsMap(Map<Nutrient, Float> nutrientsMap) {
-		this.nutrientsMap = nutrientsMap;
+	public void setNutrientsPer100gMap(Map<Nutrient, Float> nutrientsMap) {
+		this.nutrientsPer100gMap = nutrientsMap;
 	}
-	public NutrientDetailsOfBasicIngredient(Basic_Ingredient basicIngredient, Map<Nutrient, Float> nutrientsMap) {
+	public NutrientDetailsOfBasicIngredient(Basic_Ingredient basicIngredient, Map<Nutrient, Float> nutrientsPer100gMap) {
 		super();
 		this.basicIngredient = basicIngredient;
-		this.nutrientsMap = nutrientsMap;
+		this.nutrientsPer100gMap = nutrientsPer100gMap;
 	}
 
 
-	
+
 	public NutrientDetailsOfBasicIngredient() {
 		super();
 	}
 	public void setNutrientsMapFromMapWithPreciseQuantityValues(Map<Nutrient, PreciseQuantity> map) {
-		this.nutrientsMap=new HashMap<Nutrient, Float>();
+		this.nutrientsPer100gMap=new HashMap<Nutrient, Float>();
 		if(map!=null&&!map.isEmpty())
 		{
 			for(Entry<Nutrient,PreciseQuantity> e:map.entrySet()) {
-				this.nutrientsMap.put(e.getKey(), e.getValue()==null?0:e.getValue().getAmount());
+				this.nutrientsPer100gMap.put(e.getKey(), e.getValue()==null?0:e.getValue().getAmount());
 			}
 		}
-		
+
+	}
+
+	public Map<Nutrient, PreciseQuantity> getNutrientsMapOfPreciseQuantityValues() {
+		Map<Nutrient, PreciseQuantity> retValue=new HashMap<>();
+
+		if(this.getNutrientsPer100gMap()==null)
+			return retValue;
+
+		for(Entry<Nutrient, Float> e:getNutrientsPer100gMap().entrySet()) {
+			retValue.put(e.getKey(),new PreciseQuantity(e.getValue(),AmountTypes.mg));
+		}
+		return retValue;
+
 	}
 	public boolean isEmpty() {
-		return this.getBasicIngredient()==null&&(this.getNutrientsMap()==null||this.getNutrientsMap().size()==0);
-				
+		return this.getBasicIngredient()==null&&(this.getNutrientsPer100gMap()==null||this.getNutrientsPer100gMap().size()==0);
+
 	}
-	
-	
+
+
 }

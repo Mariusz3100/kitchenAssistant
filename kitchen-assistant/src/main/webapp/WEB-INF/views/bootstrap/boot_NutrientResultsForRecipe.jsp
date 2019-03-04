@@ -39,25 +39,32 @@
 				</tr>
 				<tr class="table-success">
 					<th scope="col"
-						class="nutrition-table-header nutrition-header-cell">Name of the produkt chosen</th>
+						class="nutrition-table-header nutrition-header-cell">Name of
+						the produkt chosen</th>
 					<c:forEach var="nutrient" items="${allNutrients}">
 
-						<th 
+						<th
 							class="nutrition-table-header  nutrition-header-cell width:${80/fn:length(allNutrients)}vw"
 							scope="col">
 							<div class="outer-vertical-text">
-								<div class="vertical-text"><pre style="width: 160px;">${nutrient}</pre></div>
+								<div class="vertical-text">
+									<pre style="width: 160px;">${nutrient}</pre>
+								</div>
 							</div>
 						</th>
 					</c:forEach>
 				</tr>
 			</thead>
 			<tbody>
-				<c:forEach var="nutrient" items="${nutrientsMap}"
+				<c:forEach var="ingredientToNutrients" items="${nutrientsMap}"
 					varStatus="nutrientCount">
 					<tr>
-						<th scope="row">${nutrient.key}</th>
-						<td>${nutrient.value}</td>
+						<td scope="row">Key: ${ingredientToNutrients.key}</td>
+
+						<c:forEach var="nutrient" items="${allNutrients}">
+
+							<td>${ingredientToNutrients.value[nutrient]}</td>
+						</c:forEach>
 					</tr>
 				</c:forEach>
 

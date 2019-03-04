@@ -181,7 +181,7 @@ public class ReadingNutritientsUsdaAgent extends BaseAgent{
 
 			productDetails=new NutrientDetailsOfBasicIngredient();
 			productDetails.setBasicIngredient(biFromDb);
-			productDetails.setNutrientsMapFromMapWithPreciseQuantityValues(usdaDetails.getNutrietsMap());
+			productDetails.setNutrientsMapFromMapWithPreciseQuantityValues(usdaDetails.getNutrietsMapPer100g());
 		}
 		return productDetails;
 	}
@@ -269,14 +269,14 @@ public class ReadingNutritientsUsdaAgent extends BaseAgent{
 				if(areNutrientsAlreadyInDb) {
 					ProblemLogger.logProblem("Trying to save nutrient details for an ingredient, that has already details saved");
 					Map<Nutrient, Float> nutrientsForBasicIngredient = DaoProvider.getInstance().getBasicIngredientNutrientAmountDao().getNutrientsForBasicIngredientById(fromDb.getBi_id());
-					if(checkIfTheseAreTheSameNutrients(productDetails.getNutrietsMap(),nutrientsForBasicIngredient)) {
+					if(checkIfTheseAreTheSameNutrients(productDetails.getNutrietsMapPer100g(),nutrientsForBasicIngredient)) {
 						return fromDb;
 					}else {
 						ProblemLogger.logProblem("Trying to save nutrient details for an ingredient, that has already details saved AND the nutrients do not match");
 						return null;
 					}
 				}else {
-					Map<Nutrient, Float> nutrietsMap=getRelativeAmountsFromPreciseQuantityFor100g(productDetails.getNutrietsMap());
+					Map<Nutrient, Float> nutrietsMap=getRelativeAmountsFromPreciseQuantityFor100g(productDetails.getNutrietsMapPer100g());
 					Basic_Ingredient_Nutrient_Data_Source binds = createDataSourceDbObject(productDetails, fromDb);
 					DaoProvider.getInstance().getBasicIngredientNutrientAmountDao().saveNutrientData(fromDb,binds,nutrietsMap);
 					return fromDb;
@@ -288,7 +288,7 @@ public class ReadingNutritientsUsdaAgent extends BaseAgent{
 				basicIngredientDao.saveBasicIngredient(bi);
 				Basic_Ingredient_Nutrient_Data_Source binds = createDataSourceDbObject(productDetails, bi);
 
-				Map<Nutrient, Float> nutrietsMap=getRelativeAmountsFromPreciseQuantityFor100g(productDetails.getNutrietsMap());
+				Map<Nutrient, Float> nutrietsMap=getRelativeAmountsFromPreciseQuantityFor100g(productDetails.getNutrietsMapPer100g());
 				//below method should do the above anyway; code above is just in case		
 				DaoProvider.getInstance().getBasicIngredientNutrientAmountDao().saveNutrientData(bi,binds, nutrietsMap);
 				return bi;
@@ -315,14 +315,14 @@ public class ReadingNutritientsUsdaAgent extends BaseAgent{
 				if(areNutrientsAlreadyInDb) {
 					ProblemLogger.logProblem("Trying to save nutrient details for an ingredient, that has already details saved");
 					Map<Nutrient, Float> nutrientsForBasicIngredient = DaoProvider.getInstance().getBasicIngredientNutrientAmountDao().getNutrientsForBasicIngredientById(bi.getBi_id());
-					if(checkIfTheseAreTheSameNutrients(productDetails.getNutrietsMap(),nutrientsForBasicIngredient)) {
+					if(checkIfTheseAreTheSameNutrients(productDetails.getNutrietsMapPer100g(),nutrientsForBasicIngredient)) {
 						return bi;
 					}else {
 						ProblemLogger.logProblem("Trying to save nutrient details for an ingredient, that has already details saved AND the nutrients do not match");
 						return null;
 					}
 				}else {
-					Map<Nutrient, Float> nutrietsMap=getRelativeAmountsFromPreciseQuantityFor100g(productDetails.getNutrietsMap());
+					Map<Nutrient, Float> nutrietsMap=getRelativeAmountsFromPreciseQuantityFor100g(productDetails.getNutrietsMapPer100g());
 					Basic_Ingredient_Nutrient_Data_Source binds = createDataSourceDbObject(productDetails, bi);
 					DaoProvider.getInstance().getBasicIngredientNutrientAmountDao().saveNutrientData(bi,binds,nutrietsMap);
 					return bi;
@@ -334,7 +334,7 @@ public class ReadingNutritientsUsdaAgent extends BaseAgent{
 				basicIngredientDao.saveBasicIngredient(bi);
 				Basic_Ingredient_Nutrient_Data_Source binds = createDataSourceDbObject(productDetails, bi);
 
-				Map<Nutrient, Float> nutrietsMap=getRelativeAmountsFromPreciseQuantityFor100g(productDetails.getNutrietsMap());
+				Map<Nutrient, Float> nutrietsMap=getRelativeAmountsFromPreciseQuantityFor100g(productDetails.getNutrietsMapPer100g());
 				//below method should do the above anyway; code above is just in case		
 				DaoProvider.getInstance().getBasicIngredientNutrientAmountDao().saveNutrientData(bi,binds, nutrietsMap);
 				return bi;
@@ -489,7 +489,7 @@ public class ReadingNutritientsUsdaAgent extends BaseAgent{
 		}
 	}
 
-	public static Map<SingleProdukt_SearchResult, Map<Nutrient, PreciseQuantity>> searchForListOfProduct(List<SingleProdukt_SearchResult> listOfResults)
+	public static Map<SingleProdukt_SearchResult, Map<Nutrient, PreciseQuantity>> searchForListOfProductAndRecountAmounts(List<SingleProdukt_SearchResult> listOfResults)
 			throws AgentSystemNotStartedException{
 		ReadingNutritientsUsdaAgent freeOne = getFreeAgent();
 		if(freeOne==null){
@@ -498,7 +498,7 @@ public class ReadingNutritientsUsdaAgent extends BaseAgent{
 			freeOne.setBusy(true);
 			Map<SingleProdukt_SearchResult, Map<Nutrient, PreciseQuantity>> result;
 			try{
-				result= freeOne.searchForDetailsInDbAndApi(listOfResults);
+				result= freeOne.searchForDetailsInDbAndApiAndRecountResults(listOfResults);
 			}finally{
 				freeOne.setBusy(false);
 			}
@@ -517,11 +517,41 @@ public class ReadingNutritientsUsdaAgent extends BaseAgent{
 	//	}
 
 
+	private Map<SingleProdukt_SearchResult, Map<Nutrient, PreciseQuantity>> searchForDetailsInDbAndApiAndRecountResults(
+			List<SingleProdukt_SearchResult> listOfResults) {
+		Map<SingleProdukt_SearchResult, Map<Nutrient, PreciseQuantity>> searchResults = searchForDetailsInDbAndApi(listOfResults);
+		
+		for(Entry<SingleProdukt_SearchResult, Map<Nutrient, PreciseQuantity>> e:searchResults.entrySet()) {
+			SingleProdukt_SearchResult key = e.getKey();
+			Map<Nutrient, PreciseQuantity> value = e.getValue();
+			PreciseQuantity parseFromJspString = PreciseQuantity.parseFromJspString(key.getQuantity());
+			
+			float fractionOf100g = parseFromJspString.getFractionOf100g();
+	//		Map<Nutrient, PreciseQuantity> resultMap=new HashMap<Nutrient, PreciseQuantity>();
+			for(Entry<Nutrient, PreciseQuantity> nutrientAmount: value.entrySet()) {
+				nutrientAmount.getValue().multiplyBy(fractionOf100g);
+			}
+		}
+		
+		return searchResults;
+	}
+
 	private Map<SingleProdukt_SearchResult, Map<Nutrient, PreciseQuantity>> searchForDetailsInDbAndApi(
 			List<SingleProdukt_SearchResult> listOfResults) {
-		Map<SingleProdukt_SearchResult, Map<Nutrient, PreciseQuantity>> results
-			= UsdaNutrientApiClient.retrieveNutrientDataForProdukts(listOfResults);
-		return results;
+//		Map<SingleProdukt_SearchResult, Map<Nutrient, PreciseQuantity>> results
+//			= UsdaNutrientApiClient.retrieveNutrientDataForProdukts(listOfResults);
+//		return results;
+		Map<SingleProdukt_SearchResult, Map<Nutrient, PreciseQuantity>> retValue=new HashMap<>();
+		if(listOfResults==null||listOfResults.isEmpty())
+			return retValue;
+		
+		for(SingleProdukt_SearchResult sp_sr:listOfResults) {
+			NutrientDetailsOfBasicIngredient productDetails = searchForDetailsInDbAndApi(sp_sr.getProduktPhrase());
+			retValue.put(sp_sr, productDetails.getNutrientsMapOfPreciseQuantityValues());
+			
+		}
+		return retValue;
+		
 	}
 
 	private UsdaFoodDetails parseProductByNdbno(String ndbno) {
