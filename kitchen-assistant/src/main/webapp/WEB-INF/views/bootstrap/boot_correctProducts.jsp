@@ -21,14 +21,16 @@
 
 	<form action="b_productsChosen">
 		<input type="hidden" name="${liczbaSkladnikow}"
-			value="${fn:length(badResults)}"> <input type="hidden"
-			name="${recipeUrl_name}" value="${url}">
-
-
+			value="${fn:length(badResults)}">
+		<input type="hidden"
+			name="${recipeUrl_name}" value="${recipeUrl}">
+		<input type="hidden"
+			name="${recipeName_name}" value="${recipeName}">
+		<h2>Details for "${recipeName}"</h2>
 		<div class="ingredient-list">
 
 
-
+			<div class="empty-page-info"></div>
 			<c:if test="${fn:length(correctResults) gt 0}">
 				<div class="section-shortcut" id="${properResultsSection_name}"></div>
 

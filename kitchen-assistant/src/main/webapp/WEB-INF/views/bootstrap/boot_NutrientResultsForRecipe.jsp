@@ -24,11 +24,9 @@
 	<section id="hero" class="wow fadeIn">
 	<div class="container"
 		style="padding-top: 1px; overflow-y: auto; max-height: 90vh; max-width: 95vw">
-
-		<h3 style="margin-top: 2px">
-			Results for <u>${productIdObject.name}</u> (ndbno
-			${productIdObject.ndbno}):
-		</h3>
+		<div class="empty-page-info"></div>
+		<h2>Details for "${recipeName}"</h2>
+		
 		<table class="table table-striped table-bordered nutrition-table">
 			<thead>
 				<tr class="table-success">
@@ -59,7 +57,7 @@
 				<c:forEach var="ingredientToNutrients" items="${nutrientsMap}"
 					varStatus="nutrientCount">
 					<tr>
-						<td scope="row">Key: ${ingredientToNutrients.key}</td>
+						<td scope="row">${ingredientToNutrients.key}</td>
 
 						<c:forEach var="nutrient" items="${allNutrients}">
 
@@ -68,7 +66,14 @@
 					</tr>
 				</c:forEach>
 
+					<tr class="table-success">
+						<td scope="row"><b>Sum of all nutrients</b></td>
 
+						<c:forEach var="nutrient" items="${allNutrients}">
+
+							<td>${sumOfNutrients[nutrient]}</td>
+						</c:forEach>
+					</tr>
 			</tbody>
 		</table>
 	</div>

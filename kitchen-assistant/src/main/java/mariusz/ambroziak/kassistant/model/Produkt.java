@@ -56,30 +56,42 @@ public class Produkt {
 
 
 	public Produkt(String nazwa2, String detailsUrl) {
-		this(detailsUrl,nazwa2,"","",-1,false);
+		this(detailsUrl,"",nazwa2,"","", -1,false);
 	}
 
 	public Produkt() {
 		super();
 	}
 
-	public Produkt(String url, String nazwa, String sklad, String opis,
-			float cena, boolean przetworzony) {
-		super();
-		this.url = url;
-		this.nazwa = nazwa;
-		this.sklad = sklad;
-		this.opis = opis;
-		this.cena = cena;
-		this.przetworzony = przetworzony;
-
-	}
+//	public Produkt(String url, String nazwa, String sklad, String opis,
+//			float cena, boolean przetworzony) {
+//		super();
+//		this.url = url;
+//		this.nazwa = nazwa;
+//		this.sklad = sklad;
+//		this.opis = opis;
+//		this.cena = cena;
+//		this.przetworzony = przetworzony;
+//
+//	}
 
 
 
 
 	public Long getP_id() {
 		return p_id;
+	}
+
+	public Produkt(String url, String quantity_phrase, String nazwa, String sklad, String opis, float cena,
+			boolean przetworzony) {
+		super();
+		this.url = url;
+		this.quantity_phrase = quantity_phrase;
+		this.nazwa = nazwa;
+		this.sklad = sklad;
+		this.opis = opis;
+		this.cena = cena;
+		this.przetworzony = przetworzony;
 	}
 
 	public void setP_id(Long p_id) {

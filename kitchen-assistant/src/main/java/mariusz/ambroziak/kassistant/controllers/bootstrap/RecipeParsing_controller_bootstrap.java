@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -61,15 +62,19 @@ public class RecipeParsing_controller_bootstrap extends RecipeLogic{
 		
 		Map<MultiProdukt_SearchResult,PreciseQuantity> result=new HashMap<>(); 
 		ModelAndView mav=new ModelAndView(StringHolder.bootstrapFolder+"boot_chooseProducts");
-
+		ParseableRecipeData recipeHeader=null;
 		try {
 			result= EdamanRecipeAgent.parseSingleRecipe(recipeID);
+			recipeHeader = EdamanRecipeAgent.retrieveSingleRecipeHeaderById(recipeID);
 		} catch (AgentSystemNotStartedException e) {
 			return returnAgentSystemNotStartedPage();
 		} catch (Page404Exception e) {
 			mav.addObject("erroneusUrl",recipeID);
 		}
-		mav.addObject("url",recipeID);
+		if(recipeHeader!=null&&recipeHeader.getLabel()!=null)
+			mav.addObject("recipeName",recipeHeader.getLabel());
+
+		mav.addObject("recipeUrl",recipeID);
 		mav.addObject("results",result);
 
 		return mav;
@@ -81,7 +86,8 @@ public class RecipeParsing_controller_bootstrap extends RecipeLogic{
 	public ModelAndView b_correctProducts(HttpServletRequest request) {
 		setEncoding(request);
 		String url=request.getParameter(JspStringHolder.recipeUrl_name);
-
+		String recipeName=request.getParameter(JspStringHolder.recipeName_name);
+		
 
 		GoodBadSkippedResults extractGoodBadSkippedResults;
 		try {
@@ -94,6 +100,10 @@ public class RecipeParsing_controller_bootstrap extends RecipeLogic{
 				//parseNutrientDataOfIngredients.values().iterator().next()
 				
 				ModelAndView nutrientsMav = getNutrientsMav(parseNutrientDataOfIngredients);
+				nutrientsMav.addObject(JspStringHolder.recipeUrl_name, url);
+				nutrientsMav.addObject(JspStringHolder.recipeName_name,recipeName);
+
+				
 				//working
 				return nutrientsMav;
 
@@ -102,6 +112,7 @@ public class RecipeParsing_controller_bootstrap extends RecipeLogic{
 					mav.addObject("badResults",extractGoodBadSkippedResults.getUsersBadChoice());
 					mav.addObject("correctResults", extractGoodBadSkippedResults.getGoodResults());
 					mav.addObject("skippedResults",extractGoodBadSkippedResults.getSkippedResults());
+					mav.addObject(JspStringHolder.recipeName_name,recipeName);
 					return mav;
 				
 			}
@@ -109,7 +120,7 @@ public class RecipeParsing_controller_bootstrap extends RecipeLogic{
 			returnAgentSystemNotStartedPage();
 		}
 		return null;
-		
+
 
 		
 	}
@@ -126,14 +137,28 @@ public class RecipeParsing_controller_bootstrap extends RecipeLogic{
 		Map<String, NotPreciseQuantity> sumOfNutrients = cmm.sumUpInnerMaps();
 		List<String> nutrientsList = new ArrayList<String>(cmm.getAllInnerMapsKeys());
 
-
+		Map<String,String> produktParsingLinks=createLinksToParseProdukts(parseNutrientDataOfIngredients.keySet());
+		
 		ModelAndView mav=new ModelAndView(StringHolder.bootstrapFolder+"boot_NutrientResultsForRecipe");		
 		mav.addObject("nutrientsMap", nutrientMap);//[nazwa produktu->[nazwa składnika odżywczego->ilość]]
 		mav.addObject("allNutrients",nutrientsList );//[lista składników odżywczych]
 		mav.addObject("sumOfNutrients", sumOfNutrients);//suma składników odżywczych (sumowana po wszystkich produktach)
-
-
+		mav.addObject("produktLinksMap", produktParsingLinks);
+		
 		return mav;
+	}
+
+
+
+
+
+	private Map<String, String> createLinksToParseProdukts(Set<SingleProdukt_SearchResult> keySet) {
+		Map<String, String> retMap=new HashMap<>();
+		for(SingleProdukt_SearchResult sp_sr:keySet) {
+//			String produktParsingUrl=
+			retMap.put(sp_sr.getProdukt().getNazwa(), sp_sr.getProdukt().getUrl());
+		}
+		return retMap;
 	}
 
 

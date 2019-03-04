@@ -19,7 +19,7 @@
 						<li><a href="/b_engRecipeForm">Search for a recipe</a></li>
 					</ul>
 				</li>
-				<li><a href="#blog">Search for Produkts</a></li>
+	<!-- 			<li class="menu-has-children"><a href="#blog">Search for Produkts</a></li> -->
 				<li class="menu-has-children"><a href="">Agents</a>
 					<ul>
 						<li><a href="${startAgentSystemSuffix}">Start Agent System</a></li>
