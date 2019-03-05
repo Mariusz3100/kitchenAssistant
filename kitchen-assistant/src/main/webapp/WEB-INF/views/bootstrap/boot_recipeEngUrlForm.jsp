@@ -24,12 +24,12 @@
 	<section id="hero" class="wow fadeIn">
 	<div class="hero-container">
 		<c:if test="${not empty erroneusUrl}">
-			<h3>Recipe with id "${erroneusUrl}" doesn't exist. Try another
+			<h3 style="color: red">Recipe with id "${erroneusUrl}" doesn't exist. Try another
 				one.</h3>
 		</c:if>
 		<form action="b_apiRecipeParsed">
-			<h3>Paste id of a recipe from edaman api:</h3>
-			<input type="text" name="${recipeUrl}">
+			<h3>Paste id of a recipe:</h3>
+			<input type="text" name="${recipeApiId}">
 			<button type="submit" class="btn btn-success">Parse Recipe</button>
 		</form>
 	</div>
@@ -38,7 +38,7 @@
 	<section>
 	<h1>
 
-		<br>For url <i> "<%=pageContext.getRequest()
+		For url <i> "<%=pageContext.getRequest()
 					.getParameter(mariusz.ambroziak.kassistant.utils.JspStringHolder.recipeId_name)%>"
 		</i> these products were found for ingredients:
 

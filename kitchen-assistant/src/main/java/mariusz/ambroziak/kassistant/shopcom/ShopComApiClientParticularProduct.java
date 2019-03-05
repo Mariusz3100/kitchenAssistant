@@ -117,11 +117,11 @@ public class ShopComApiClientParticularProduct {
 		float price=Float.parseFloat(proceObj==null?"0":proceObj.toString());
 		
 		
-		
-		
-		double weight=(double) root.get("weight");
-		
-		PreciseQuantity pq=new PreciseQuantity(fakeWeight,AmountTypes.mg);
+		double weight=-1;
+		if(root.has("weight")) {
+			weight=(double) root.get("weight");
+		}
+		PreciseQuantity pq=new PreciseQuantity((float)weight,AmountTypes.mg);
 		Produkt resultProdukt =new Produkt();
 		resultProdukt.setNazwa(name);
 		resultProdukt.setOpis(description);

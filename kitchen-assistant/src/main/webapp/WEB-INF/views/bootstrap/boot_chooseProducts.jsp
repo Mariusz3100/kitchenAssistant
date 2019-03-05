@@ -21,16 +21,14 @@
 
 	<form action="b_productsChosen">
 		<input type="hidden" name="${liczbaSkladnikow}"
-			value="${fn:length(results)}">
-		<input type="hidden"
-			name="${recipeUrl_name}" value="${recipeUrl}">
-		<input type="hidden"
-			name="${recipeName_name}" value="${recipeName}">
+			value="${fn:length(results)}"> <input type="hidden"
+			name="${recipeUrl_name}" value="${recipeUrl}"> <input
+			type="hidden" name="${recipeName_name}" value="${recipeName}">
 		<div class="empty-page-info"></div>
-		<h2>Details for "${recipeName}" </h2>
 
 		<c:choose>
 			<c:when test="${fn:length(results) gt 0}">
+				<h2>Details for "${recipeName}"</h2>
 
 
 				<div class="ingredient-list">
@@ -126,11 +124,15 @@
 				</div>
 			</c:when>
 			<c:otherwise>
+			<section class="wow fadeIn">
+				<div class="container">
 				<h3 class="empty-page-info">
 					Url "<%=pageContext.getRequest()
 							.getParameter(mariusz.ambroziak.kassistant.utils.JspStringHolder.recipeApiId)%>"
 					was not recognized by any of the data sources
 				</h3>
+				</div>
+			</section>
 			</c:otherwise>
 
 		</c:choose>

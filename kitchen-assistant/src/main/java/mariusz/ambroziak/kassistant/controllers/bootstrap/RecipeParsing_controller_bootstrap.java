@@ -61,7 +61,6 @@ public class RecipeParsing_controller_bootstrap extends RecipeLogic{
 		}
 		
 		Map<MultiProdukt_SearchResult,PreciseQuantity> result=new HashMap<>(); 
-		ModelAndView mav=new ModelAndView(StringHolder.bootstrapFolder+"boot_chooseProducts");
 		ParseableRecipeData recipeHeader=null;
 		try {
 			result= EdamanRecipeAgent.parseSingleRecipe(recipeID);
@@ -69,8 +68,12 @@ public class RecipeParsing_controller_bootstrap extends RecipeLogic{
 		} catch (AgentSystemNotStartedException e) {
 			return returnAgentSystemNotStartedPage();
 		} catch (Page404Exception e) {
+			ModelAndView mav=new ModelAndView(StringHolder.bootstrapFolder+"boot_recipeEngUrlForm");
 			mav.addObject("erroneusUrl",recipeID);
+			return mav;
 		}
+		ModelAndView mav=new ModelAndView(StringHolder.bootstrapFolder+"boot_chooseProducts");
+
 		if(recipeHeader!=null&&recipeHeader.getLabel()!=null)
 			mav.addObject("recipeName",recipeHeader.getLabel());
 
@@ -80,7 +83,9 @@ public class RecipeParsing_controller_bootstrap extends RecipeLogic{
 		return mav;
 	}
 	
-	
+	protected ModelAndView returnAgentSystemNotStartedPage() {
+		return new ModelAndView(StringHolder.bootstrapFolder+"boot_agentSystemNotStarted");
+	}
 	
 	@RequestMapping(value="/b_productsChosen")
 	public ModelAndView b_correctProducts(HttpServletRequest request) {
