@@ -23,10 +23,19 @@
 ============================-->
 	<section id="hero" class="wow fadeIn">
 	<div class="hero-container">
-		<c:if test="${not empty erroneusUrl}">
-			<h3 style="color: red">Recipe with id "${erroneusUrl}" doesn't exist. Try another
-				one.</h3>
-		</c:if>
+		<c:choose>
+			<c:when test="${not empty erroneusUrl}">
+				<h3 style="color: red">Recipe with id "${erroneusUrl}" doesn't
+					exist. Try another one.</h3>
+			</c:when>
+			<c:otherwise>
+				<c:if test="${empty results or fn:length(results) lt 0}">
+					<h3 style="color: red">No ingredients found for recipe url "<%=pageContext.getRequest()
+									.getParameter(mariusz.ambroziak.kassistant.utils.JspStringHolder.recipeApiId)%>"
+					</h3>
+				</c:if>
+			</c:otherwise>
+		</c:choose>
 		<form action="b_apiRecipeParsed">
 			<h3>Paste id of a recipe:</h3>
 			<input type="text" name="${recipeApiId}">
@@ -35,31 +44,21 @@
 	</div>
 	</section>
 
-	<section>
-	<h1>
-
-		For url <i> "<%=pageContext.getRequest()
-					.getParameter(mariusz.ambroziak.kassistant.utils.JspStringHolder.recipeId_name)%>"
-		</i> these products were found for ingredients:
-
-	</h1>
-
-	<c:choose>
-		<c:when test="${fn:length(results) lt 0}">
-			<h3 class="empty-page-info">
-				No ingredients found for recipe url "<%=pageContext.getRequest()
-							.getParameter(mariusz.ambroziak.kassistant.utils.JspStringHolder.recipeApiId)%>"
-			</h3>
-			<h4>Try something else</h4>
-
-
+	<section> <c:choose>
+		<c:when test="${empty results or fn:length(results) lt 0}">
 		</c:when>
 		<c:otherwise>
 			<form action="correctProdukts">
 				<input type="hidden" name="${liczbaSkladnikow}"
 					value="${fn:length(results)}"> <input type="hidden"
 					name="${recipeUrl_name}" value="${url}">
+				<h1>
 
+					For url <i> "<%=pageContext.getRequest()
+							.getParameter(mariusz.ambroziak.kassistant.utils.JspStringHolder.recipeId_name)%>"
+					</i> these products were found for ingredients:
+
+				</h1>
 				<c:forEach var="result" items="${results}" varStatus="skladnikCount">
 
 					<br>

@@ -195,8 +195,14 @@ public class RecipeParsing_controller_bootstrap extends RecipeLogic{
 			return null;
 		String recountedPrice="";
 		PreciseQuantity produktQuan=PreciseQuantity.parseFromJspString(orScrapProdukt.getQuantityPhrase());
-		if(produktQuan.getType()!=neededQuantity.getType()){
-			ProblemLogger.logProblem("Wielkości skladnika w przepisie+"+neededQuantity+" i w sklepie "+produktQuan+"nie są tego samego typu");
+		if(produktQuan==null||!produktQuan.isValid()) {
+			if(orScrapProdukt.getP_id()!=null) {
+				ProblemLogger.logProblem("Amount for product with id: "+orScrapProdukt.getP_id()+" is empty");
+			}else {
+				ProblemLogger.logProblem("Amount for product with no id and url: "+orScrapProdukt.getUrl()+" is empty");
+			}
+		}else if(produktQuan.getType()!=neededQuantity.getType()){
+			ProblemLogger.logProblem("Amount of ingredient "+neededQuantity+" in the recipe is different from amount in the shop: "+produktQuan);
 		}else{
 			if(produktQuan.getAmount()>=neededQuantity.getAmount()){
 				recountedPrice=produktQuan+"->"+orScrapProdukt.getCena()+" "+curency;
