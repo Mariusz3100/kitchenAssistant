@@ -8,6 +8,7 @@ import java.util.logging.Level;
 import madkit.kernel.AgentAddress;
 import madkit.kernel.Message;
 import madkit.message.StringMessage;
+import mariusz.ambroziak.kassistant.api.agents.ShopComAgent;
 import mariusz.ambroziak.kassistant.dao.Base_WordDAOImpl;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
 import mariusz.ambroziak.kassistant.dao.ProduktDAO;
@@ -16,6 +17,7 @@ import mariusz.ambroziak.kassistant.exceptions.ShopNotFoundException;
 import mariusz.ambroziak.kassistant.model.Base_Word;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.utils.PreciseQuantityWithPhrase;
+import mariusz.ambroziak.kassistant.shopcom.ShopComApiClientParticularProduct;
 import mariusz.ambroziak.kassistant.shops.ShopRecognizer;
 import mariusz.ambroziak.kassistant.utils.MessageTypes;
 import mariusz.ambroziak.kassistant.utils.ParameterHolder;
@@ -108,7 +110,39 @@ public class ProduktAgent extends BaseAgent{
 		}
 	}
 	
+	public static String getProduktFullLink(String shortUrl) throws AgentSystemNotStartedException, ShopNotFoundException{
+		ProduktAgent freeOne = getFreeAgent();
+		if(freeOne==null){
+			return null;
+		}else{
+			freeOne.setBusy(true);
+			String result;
+			try{
+				result= freeOne.produceFullLink(shortUrl);
+			}finally{
+				freeOne.setBusy(false);
+			}
+			return result;
+		}
+	}
 	
+	private String produceFullLink(String shortUrl) throws ShopNotFoundException {
+		if(shortUrl==null||shortUrl.equals("")) {
+			return "";
+		}else if(shortUrl.startsWith(ShopComAgent.baseUrl)) {
+			String result=shortUrl;
+			return result;
+		}else {
+			throw new ShopNotFoundException("Url \""+shortUrl
+					+"\" was not matched with any known shop");
+		}
+		
+		
+	}
+
+
+
+
 	public static Produkt getOrScrapProdukt(String produktUrl) throws ShopNotFoundException, AgentSystemNotStartedException{
 		ProduktAgent freeOne = getFreeAgent();
 		if(freeOne==null){

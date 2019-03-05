@@ -21,12 +21,16 @@
 <c:set var="produktUrl_name" value="<%= mariusz.ambroziak.kassistant.utils.JspStringHolder.produktUrl_name%>" scope="session"/>
 <c:set var="recipeSearchPhrase_name" value="<%= mariusz.ambroziak.kassistant.utils.JspStringHolder.recipeSearchPhrase_name%>" scope="session"/>
 <c:set var="recipeUrl" value="<%= mariusz.ambroziak.kassistant.utils.JspStringHolder.recipeUrl_name%>" scope="session"/>
+<c:set var="recipeApiId" value="<%= mariusz.ambroziak.kassistant.utils.JspStringHolder.recipeApiId%>" scope="session"/>
 <c:set var="recipeName_name" value="<%= mariusz.ambroziak.kassistant.utils.JspStringHolder.recipeUrl_name%>" scope="session"/>
 <c:set var="ndbno" value="<%= mariusz.ambroziak.kassistant.utils.JspStringHolder.ndbno%>" scope="session"/>
 <c:set var="foodName" value="<%= mariusz.ambroziak.kassistant.utils.JspStringHolder.foodName%>" scope="session"/>
 <c:set var="skipOptionText" value="<%= mariusz.ambroziak.kassistant.utils.JspStringHolder.SKIP_OPTION_TEXT%>" scope="session"/>
 <c:set var="skladnikSectionName" value="<%= mariusz.ambroziak.kassistant.utils.JspStringHolder.skladnikSection_name %>" scope="session"/>
 <c:set var="agentName" value="<%= mariusz.ambroziak.kassistant.utils.JspStringHolder.agentName %>" scope="session"/>
+
+<c:set var="recipeByUrlSuffix" value="<%= mariusz.ambroziak.kassistant.utils.JspStringHolder.RECIPE_BY_URL_SUFFIX%>" scope="session"/>
+<c:set var="recipeByNameSuffix" value="<%= mariusz.ambroziak.kassistant.utils.JspStringHolder.RECIPE_BY_NAME_SUFFIX%>" scope="session"/>
 
 
 <c:set var="googleAuthorisationSuffix" value="<%= mariusz.ambroziak.kassistant.utils.JspStringHolder.GOOGLE_AUTHORISATION_SUFFIX%>" scope="session"/>

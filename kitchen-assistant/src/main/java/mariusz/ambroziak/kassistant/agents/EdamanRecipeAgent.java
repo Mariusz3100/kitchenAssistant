@@ -223,18 +223,22 @@ public class EdamanRecipeAgent extends BaseAgent{
 		return retValue;
 	}
 
-	private Map<MultiProdukt_SearchResult, PreciseQuantity> parseRecipeOrRetrieveFromDb(String urlId) {
+	private Map<MultiProdukt_SearchResult, PreciseQuantity> parseRecipeOrRetrieveFromDb(String urlId) throws Page404Exception {
 		Map<MultiProdukt_SearchResult, PreciseQuantity> retValue=new HashMap<>();
 		ParseableRecipeData singleRecipe = EdamanRecipeApiClient.getSingleRecipe(urlId);
-
-		for(ApiIngredientAmount aia:singleRecipe.getIngredients()) {
-			String ingName=aia.getName();
-			String ingredientNameWithoutQuantities=EdamanQExtract.correctText(ingName);
-			ArrayList<Produkt> found=getFromDbOrApiSingleIngredient(ingredientNameWithoutQuantities);
-			List<Produkt> foundProductsWithRecountedPrices=getProduktsWithRecountedPrice(found, aia.getAmount(), "$");
-			MultiProdukt_SearchResult singleResult=
-					new MultiProdukt_SearchResult(ingName, ingredientNameWithoutQuantities,aia.getAmount().toJspString() , foundProductsWithRecountedPrices);
-			retValue.put(singleResult, aia.getAmount());
+		
+		if(singleRecipe==null) {
+			throw new Page404Exception("Url '"+urlId+"' does not return any valid recipe data");
+		}else {
+			for(ApiIngredientAmount aia:singleRecipe.getIngredients()) {
+				String ingName=aia.getName();
+				String ingredientNameWithoutQuantities=EdamanQExtract.correctText(ingName);
+				ArrayList<Produkt> found=getFromDbOrApiSingleIngredient(ingredientNameWithoutQuantities);
+				List<Produkt> foundProductsWithRecountedPrices=getProduktsWithRecountedPrice(found, aia.getAmount(), "$");
+				MultiProdukt_SearchResult singleResult=
+						new MultiProdukt_SearchResult(ingName, ingredientNameWithoutQuantities,aia.getAmount().toJspString() , foundProductsWithRecountedPrices);
+				retValue.put(singleResult, aia.getAmount());
+			}
 		}
 
 		return retValue;

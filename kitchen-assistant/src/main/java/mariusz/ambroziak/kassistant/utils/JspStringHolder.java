@@ -42,6 +42,9 @@ public class JspStringHolder {
 	
 	
 	public static final String START_AGENT_SYSTEM_SUFFIX="b_startSystem";
+	
+	public static final String RECIPE_BY_URL_SUFFIX ="/b_produktByUrl";
+	public static final String RECIPE_BY_NAME_SUFFIX ="/b_produktByName";
 
 	
 	public static final String agentName="agentName";

@@ -16,10 +16,16 @@
 				<li><a class="menu-has-children">Parse Recipe</a>
 					<ul>
 						<li><a href="/b_engRecipeUrlForm">By URL</a></li>
-						<li><a href="/b_engRecipeForm">Search for a recipe</a></li>
+						<li><a href="/b_engRecipeForm">By phrase</a></li>
 					</ul>
 				</li>
-	<!-- 			<li class="menu-has-children"><a href="#blog">Search for Produkts</a></li> -->
+	 			<li class="menu-has-children"><a href="">Search for Produkts</a>
+	 				<ul>
+						<li><a href="${recipeByUrlSuffix}">By URL</a></li>
+						<li><a href="${recipeByNameSuffix }">By phrase</a></li>
+					</ul>
+	 			
+	 			</li>
 				<li class="menu-has-children"><a href="">Agents</a>
 					<ul>
 						<li><a href="${startAgentSystemSuffix}">Start Agent System</a></li>
