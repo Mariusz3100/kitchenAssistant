@@ -22,42 +22,42 @@
   Hero Section
 ============================-->
 	<div class="empty-page-info"></div>
-	<div class="hero-container">
-		<form action="b_produktByUrl">
-			<h4>Parse product by url:</h4>
-			<input type="text" name="${produktUrl_name}">
-			<button type="submit" class="btn btn-success">Parse</button>
-		</form>
+
+	<form action="b_produktByUrl">
+		<h4>Parse product by url:</h4>
+		<input type="text" name="${produktUrl_name}">
+		<button type="submit" class="btn btn-success">Parse</button>
+	</form>
+
+	<div style="min-height: 70vh">
+		<c:if test="${not empty produkt }">
+			<h3 class="single-ingredient-section">Details for
+				"${produkt.nazwa}"</h3>
+			<c:choose>
+				<c:when test="${not empty apiDetailsLink}">
+					<h4>
+						Data source: <a href="${apiDetailsLink}">${produkt.url}</a>
+					</h4>
+				</c:when>
+				<c:otherwise>
+					<h4>Data source: ${produkt.url}</h4>
+				</c:otherwise>
+			</c:choose>
+
+
+
+			<h4>Composition: ${produkt.sklad }</h4>
+			<h4>Price: ${produkt.cena }$</h4>
+			<h4>
+				<b>Amount:</b> ${produkt.quantityPhrase }
+			</h4>
+			<h4>
+				<b>Description:</b>
+			</h4>
+			<div>${produkt.opis }</div>
+
+		</c:if>
 	</div>
-	
-
-	<c:if test="${not empty produkt }">
-		<h3 class="single-ingredient-section">Details for "${produkt.nazwa}"</h3>
-		<c:choose>
-			<c:when test="${not empty apiDetailsLink}">
-				<h4>
-					Data source: <a href="${apiDetailsLink}">${produkt.url}</a>
-				</h4>
-			</c:when>
-			<c:otherwise>
-				<h4>Data source: ${produkt.url}</h4>
-			</c:otherwise>
-		</c:choose>
-
-
-
-		<h4>Composition: ${produkt.sklad }</h4>
-		<h4>Price: ${produkt.cena }$</h4>
-		<h4>
-			<b>Amount:</b> ${produkt.quantityPhrase }
-		</h4>
-		<h4>
-			<b>Description:</b>
-		</h4>
-		<div>${produkt.opis }</div>
-
-	</c:if>
-
 	<jsp:include page="includes/footerInclude.jsp" />
 
 	<a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>

@@ -32,32 +32,34 @@
 		</form>
 
 	</div>
-	<c:if test="${not empty produktList }">
-		<h3>Results found:</h3>
-
-		<table class="table table-striped">
-			<thead>
-				<tr class="table-success" style="position: sticky; top: 1px;">
-					<th scope="col">Product</th>
-					<th scope="col">Price</th>
-				</tr>
-			</thead>
-			<tbody>
-				<c:forEach var="product" items="${produktList}"
-					varStatus="productCount">
-					<tr>
-						<c:url var="escapedUrl" value = "${product.url}"/>
-
-						<td><a href="${recipeByUrlSuffix}?${produktUrl_name}=${escapedUrl}">${escapedUrl} ${product.nazwa}</a></td>
-						<td>${product.cena}$</td>
+	<div style="min-height: 70vh">
+	
+		<c:if test="${not empty produktList }">
+			<h3>Results found:</h3>
+	
+			<table class="table table-striped">
+				<thead>
+					<tr class="table-success" style="position: sticky; top: 1px;">
+						<th scope="col">Product</th>
+						<th scope="col">Price</th>
 					</tr>
-				</c:forEach>
-
-
-			</tbody>
-		</table>
-	</c:if>
-
+				</thead>
+				<tbody>
+					<c:forEach var="product" items="${produktList}"
+						varStatus="productCount">
+						<tr>
+							<c:url var="escapedUrl" value = "${product.url}"/>
+	
+							<td><a href="${recipeByUrlSuffix}?${produktUrl_name}=${escapedUrl}">${escapedUrl} ${product.nazwa}</a></td>
+							<td>${product.cena}$</td>
+						</tr>
+					</c:forEach>
+	
+	
+				</tbody>
+			</table>
+		</c:if>
+	</div>
 	<jsp:include page="includes/footerInclude.jsp" />
 
 	<a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
