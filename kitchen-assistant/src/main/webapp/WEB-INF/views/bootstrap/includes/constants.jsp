@@ -29,8 +29,8 @@
 <c:set var="skladnikSectionName" value="<%= mariusz.ambroziak.kassistant.utils.JspStringHolder.skladnikSection_name %>" scope="session"/>
 <c:set var="agentName" value="<%= mariusz.ambroziak.kassistant.utils.JspStringHolder.agentName %>" scope="session"/>
 
-<c:set var="recipeByUrlSuffix" value="<%= mariusz.ambroziak.kassistant.utils.JspStringHolder.RECIPE_BY_URL_SUFFIX%>" scope="session"/>
-<c:set var="recipeByNameSuffix" value="<%= mariusz.ambroziak.kassistant.utils.JspStringHolder.RECIPE_BY_NAME_SUFFIX%>" scope="session"/>
+<c:set var="productByUrlSuffix" value="<%=mariusz.ambroziak.kassistant.utils.JspStringHolder.PRODUCT_BY_URL_SUFFIX%>" scope="session"/>
+<c:set var="productByNameSuffix" value="<%=mariusz.ambroziak.kassistant.utils.JspStringHolder.PRODUCT_BY_NAME_SUFFIX%>" scope="session"/>
 
 
 <c:set var="googleAuthorisationSuffix" value="<%= mariusz.ambroziak.kassistant.utils.JspStringHolder.GOOGLE_AUTHORISATION_SUFFIX%>" scope="session"/>

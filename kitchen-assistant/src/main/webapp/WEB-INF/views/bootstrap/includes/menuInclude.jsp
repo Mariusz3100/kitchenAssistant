@@ -21,8 +21,8 @@
 				</li>
 	 			<li class="menu-has-children"><a href="">Search for Produkts</a>
 	 				<ul>
-						<li><a href="${recipeByUrlSuffix}">By URL</a></li>
-						<li><a href="${recipeByNameSuffix }">By phrase</a></li>
+						<li><a href="${productByUrlSuffix}">By URL</a></li>
+						<li><a href="${productByNameSuffix }">By phrase</a></li>
 					</ul>
 	 			
 	 			</li>

@@ -44,7 +44,7 @@ import mariusz.ambroziak.kassistant.utils.StringHolder;
 public class ProduktParsing_controller_bootstrap extends RecipeLogic{
 
 
-	@RequestMapping(value=JspStringHolder.RECIPE_BY_NAME_SUFFIX)
+	@RequestMapping(value=JspStringHolder.PRODUCT_BY_NAME_SUFFIX)
 	public ModelAndView apiRecipeParsed(HttpServletRequest request) throws AgentSystemNotStartedException {
 		setEncoding(request);
 		String phrase=request.getParameter(JspStringHolder.produktPhrase_name);
@@ -90,7 +90,7 @@ public class ProduktParsing_controller_bootstrap extends RecipeLogic{
 
 
 
-	@RequestMapping(value=JspStringHolder.RECIPE_BY_URL_SUFFIX)
+	@RequestMapping(value=JspStringHolder.PRODUCT_BY_URL_SUFFIX)
 	public ModelAndView b_correctProducts(HttpServletRequest request) {
 		setEncoding(request);
 		String url=request.getParameter(JspStringHolder.produktUrl_name);
