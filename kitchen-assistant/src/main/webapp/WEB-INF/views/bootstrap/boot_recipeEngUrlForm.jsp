@@ -29,10 +29,11 @@
 					exist. Try another one.</h3>
 			</c:when>
 			<c:otherwise>
-				<c:if test="${empty results or fn:length(results) lt 0}">
-					<h3 style="color: red">No ingredients found for recipe url "<%=pageContext.getRequest()
-									.getParameter(mariusz.ambroziak.kassistant.utils.JspStringHolder.recipeApiId)%>"
-					</h3>
+			
+			<c:set var="originalUrl" value="<%=pageContext.getRequest()
+					.getParameter(mariusz.ambroziak.kassistant.utils.JspStringHolder.recipeApiId)%>"></c:set>
+				<c:if test="${not empty originalUrl and (empty results or fn:length(results) lt 0)}">
+					<h3 style="color: red">No ingredients found for recipe url "${originalUrl}"</h3>
 				</c:if>
 			</c:otherwise>
 		</c:choose>

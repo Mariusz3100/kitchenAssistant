@@ -27,8 +27,6 @@
 			<button type="submit" class="btn btn-success">Search for recipes</button>
 				
 		</form>
-		<a href="#get-started" class="btn-get-started scrollto">Go back to
-			top</a>
 	</div>
 	</section>
 
