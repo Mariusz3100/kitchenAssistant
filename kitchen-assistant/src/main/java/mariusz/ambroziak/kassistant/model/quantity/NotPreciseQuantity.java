@@ -11,7 +11,18 @@ public class NotPreciseQuantity extends AbstractQuantity {
 	private float minimalAmount=INVALID_AMOUNT;
 	private float maximalAmount=INVALID_AMOUNT;
 	
+	private String amountRepresentation="derived variable, to be updated in getter";
 	
+	
+	public String getAmountRepresentation() {
+		amountRepresentation=minimalAmount+" - "+maximalAmount;
+		return amountRepresentation;
+	}
+	public void setAmountRepresentation(String amountRepresentation) {
+		//derived variable
+		//this.amountRepresentation = amountRepresentation;
+		
+	}
 	public float getMinimalAmount() {
 		return minimalAmount;
 	}

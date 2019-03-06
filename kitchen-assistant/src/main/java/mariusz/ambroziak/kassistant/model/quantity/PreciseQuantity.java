@@ -7,7 +7,23 @@ import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 
 public class PreciseQuantity extends NotPreciseQuantity {
 	private float amount;
+	private String amountRepresentation="derived variable, to be updated in getter";
 
+
+
+	public String getAmountRepresentation() {
+		amountRepresentation=""+amount;
+		return amountRepresentation;
+	}
+	public void setAmountRepresentation(String amountRepresentation) {
+		//derived variable
+		//this.amountRepresentation = amountRepresentation;
+		
+	}
+	
+	
+	
+	
 	@Override
 	public float getMinimalAmount() {
 		return getAmount();

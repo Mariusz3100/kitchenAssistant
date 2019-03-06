@@ -42,7 +42,7 @@
 					<c:forEach var="nutrient" items="${allNutrients}">
 
 						<th
-							class="nutrition-table-header  nutrition-header-cell width:${80/fn:length(allNutrients)}vw"
+							class="nutrition-table-header  nutrition-header-cell " style="width:${80/fn:length(allNutrients)}vw"
 							scope="col">
 							<div class="outer-vertical-text">
 								<div class="vertical-text">
@@ -57,11 +57,11 @@
 				<c:forEach var="ingredientToNutrients" items="${nutrientsMap}"
 					varStatus="nutrientCount">
 					<tr>
-						<td scope="row">${ingredientToNutrients.key}</td>
+						<td class="td-nutrient" scope="row">${ingredientToNutrients.key}</td>
 
 						<c:forEach var="nutrient" items="${allNutrients}">
 
-							<td>${ingredientToNutrients.value[nutrient]}</td>
+							<td class="td-nutrient" >${ingredientToNutrients.value[nutrient].amountRepresentation}</td>
 						</c:forEach>
 					</tr>
 				</c:forEach>
@@ -71,7 +71,10 @@
 
 						<c:forEach var="nutrient" items="${allNutrients}">
 
-							<td>${sumOfNutrients[nutrient]}</td>
+							<td class=td-nutrient>
+							
+							${sumOfNutrients[nutrient].amountRepresentation}
+							</td>
 						</c:forEach>
 					</tr>
 			</tbody>
