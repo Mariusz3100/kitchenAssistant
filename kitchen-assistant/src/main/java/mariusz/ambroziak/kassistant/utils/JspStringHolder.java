@@ -15,11 +15,14 @@ public class JspStringHolder {
 	public static final String skladnikRadio_name="radio";
 	public static final String skladnikSection_name="section";
 	public static final String properResultsSection_name="properResultsSection";
+	public static final String skippedResultsSection_name="skippedResultsSection_name";
 
 	public static final String skipOptionSuffix="skip";
 	public static final String skladnikRadioIdPrefix="id_";
 
 	public static final String liczbaSkladnikow="liczbaSkladnikow";
+	public static final String liczbaNiepoprawnychSkladnikow="liczbaNiepoprawnychSkladnikow";
+
 	public static final String radioValuePrefix="_";
 	public static final String recipeUrl_name="recipeurl";
 	public static final String recipeSearchPhrase_name="recipeSearchPhrase";
@@ -38,6 +41,7 @@ public class JspStringHolder {
 	public static final String SKIP_OPTION_TEXT="Skip this ingredient (for your own risk)";
 	public static final String GOOGLE_DELETION_SUFFIX="b_googleDelete";
 	public static final String GOOGLE_GET_DATA_SUFFIX="b_getGoogleData";
+	public static final String problemId_name="problemId";
 
 	
 	
