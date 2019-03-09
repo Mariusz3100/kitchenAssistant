@@ -22,11 +22,11 @@
   Hero Section
 ============================-->
 	<div class="empty-page-info"></div>
-
+	<div class="container">
 	<form action="b_produktByUrl">
 		<h4>Parse product by url:</h4>
 		<input type="text" name="${produktUrl_name}">
-		<button type="submit" class="btn btn-success">Parse</button>
+		<button type="submit" class="btn btn-success">Get</button>
 	</form>
 
 	<div style="min-height: 70vh">
@@ -55,8 +55,10 @@
 				<b>Description:</b>
 			</h4>
 			<div>${produkt.opis }</div>
+			<a class="btn btn-success" href="${nutrientByNameSuffix}?${foodName}=${produkt.nazwa}">Get Nutrition Details</a>
 
 		</c:if>
+	</div>
 	</div>
 	<jsp:include page="includes/footerInclude.jsp" />
 

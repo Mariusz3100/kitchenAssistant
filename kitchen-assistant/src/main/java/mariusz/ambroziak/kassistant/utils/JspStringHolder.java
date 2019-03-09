@@ -49,12 +49,15 @@ public class JspStringHolder {
 	
 	public static final String PRODUCT_BY_URL_SUFFIX ="/b_produktByUrl";
 	public static final String PRODUCT_BY_NAME_SUFFIX ="/b_produktByName";
+	public static final String NUTRIENT_BY_NAME_SUFFIX ="/b_nutritientForFoodName";
 
 	
 	public static final String agentName="agentName";
 	public static final String GOOGLE_AUTHORISATION_SUFFIX ="/b_google_authorise";
 	public static final String GOOGLE_AUTHORISATION_SUCCESSFUL_SUFFIX ="/b_google_authorisation_success";
 
+	
+	
 	static {
 //		GOOGLE_AUTHORISATION_SUFFIX=StringHolder.GOOGLE_AUTHORISATION_SUFFIX;
 	}

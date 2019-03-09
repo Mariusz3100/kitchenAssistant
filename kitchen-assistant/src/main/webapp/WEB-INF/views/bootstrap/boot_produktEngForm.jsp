@@ -23,7 +23,7 @@
 ============================-->
 	<div class="empty-page-info"></div>
 
-	<div class="hero-container">
+	<div class="hero-container container">
 		<form action="b_produktByName">
 			<h3>Search for products in the system:</h3>
 			<input type="text" name="${produktPhraseName}">

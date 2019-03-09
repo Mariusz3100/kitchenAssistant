@@ -43,7 +43,7 @@ public class NutrientSearching_controller_bootstrap {
 //	}
 	
 	
-	@RequestMapping(value="/b_nutritientForFoodName")
+	@RequestMapping(value=JspStringHolder.NUTRIENT_BY_NAME_SUFFIX)
 	public ModelAndView agentNutrientsParsed(HttpServletRequest request) {
 
 		String foodName=request.getParameter(JspStringHolder.foodName);

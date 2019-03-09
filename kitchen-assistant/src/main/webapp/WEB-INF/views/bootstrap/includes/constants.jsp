@@ -40,6 +40,7 @@
 
 <c:set var="productByUrlSuffix" value="<%=mariusz.ambroziak.kassistant.utils.JspStringHolder.PRODUCT_BY_URL_SUFFIX%>" scope="session"/>
 <c:set var="productByNameSuffix" value="<%=mariusz.ambroziak.kassistant.utils.JspStringHolder.PRODUCT_BY_NAME_SUFFIX%>" scope="session"/>
+<c:set var="nutrientByNameSuffix" value="<%=mariusz.ambroziak.kassistant.utils.JspStringHolder.NUTRIENT_BY_NAME_SUFFIX%>" scope="session"/>
 
 
 <c:set var="googleAuthorisationSuffix" value="<%= mariusz.ambroziak.kassistant.utils.JspStringHolder.GOOGLE_AUTHORISATION_SUFFIX%>" scope="session"/>
