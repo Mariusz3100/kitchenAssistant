@@ -25,7 +25,7 @@
 		<form action="correctProdukts">
 			<input type="hidden" name="${liczbaSkladnikow}" value="${fn:length(skippedResults)+fn:length(correctResults)+fn:length(badResults)}">
 			<input type="hidden" name="${recipeUrl_name}" value="${url}">
-			<c:set var="skladnikiCount" value="1" scope="page" />
+			<c:set var="skladnikiOuterCount" value="1" scope="page" />
 			
 			<c:forEach var="result" items="${correctResults}">
 				<c:set var="skladnikiOuterCount" value="${skladnikiOuterCount + 1}" scope="page"/>

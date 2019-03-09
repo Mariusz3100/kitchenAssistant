@@ -17,6 +17,7 @@ import mariusz.ambroziak.kassistant.Apiclients.usda.UsdaNutrientApiClient;
 import mariusz.ambroziak.kassistant.exceptions.IncopatibleAmountTypesException;
 import mariusz.ambroziak.kassistant.exceptions.InvalidArgumentException;
 import mariusz.ambroziak.kassistant.model.Nutrient;
+import mariusz.ambroziak.kassistant.model.jsp.PhraseWithMultiplier;
 import mariusz.ambroziak.kassistant.model.jsp.SingleProdukt_SearchResult;
 import mariusz.ambroziak.kassistant.model.quantity.NotPreciseQuantity;
 import mariusz.ambroziak.kassistant.model.quantity.PreciseQuantity;
@@ -113,7 +114,7 @@ public class CompoundMapManipulator <OuterMapKey,InnerMapKey>{
 		Map<String, Map<String,NotPreciseQuantity>> amountsMap=new HashMap<String, Map<String,NotPreciseQuantity>>();
 
 		for(Entry<SingleProdukt_SearchResult, ProduktWithBasicIngredients> e:retrievedBasicNutrientValues.entrySet()){
-			Map<String, NotPreciseQuantity> produktNutrients = amountsMap.get(e.getKey());
+			Map<String, NotPreciseQuantity> produktNutrients = amountsMap.get(e.getKey().getProduktNameAndSearchPhrase());
 			if(produktNutrients==null){
 				produktNutrients=new HashMap<String,NotPreciseQuantity>();
 				amountsMap.put(e.getKey().getProduktNameAndSearchPhrase(),produktNutrients );
@@ -127,18 +128,54 @@ public class CompoundMapManipulator <OuterMapKey,InnerMapKey>{
 		return amountsMap;
 	}
 
-	public static Map<String, Map<String, NotPreciseQuantity>> stringifyKeys(
+	public static Map<PhraseWithMultiplier, Map<String, NotPreciseQuantity>> stringifyKeys(
 			Map<SingleProdukt_SearchResult, Map<Nutrient, PreciseQuantity>> retrievedNutrientDataForProdukts) {
-		Map<String, Map<String, NotPreciseQuantity>>  retValue=new HashMap<String, Map<String,NotPreciseQuantity>>();
-		
+		Map<PhraseWithMultiplier, Map<String, NotPreciseQuantity>>  retValue=new HashMap<PhraseWithMultiplier, Map<String,NotPreciseQuantity>>();
+		Map<String,PhraseWithMultiplier> multipliersMap=new HashMap<String,PhraseWithMultiplier>();
 		for(SingleProdukt_SearchResult sp_sr:retrievedNutrientDataForProdukts.keySet()) {
 			Map<Nutrient, PreciseQuantity> map = retrievedNutrientDataForProdukts.get(sp_sr);
-			Map<String, NotPreciseQuantity> transformedMap=new HashMap<String, NotPreciseQuantity>();
 			
-			for(Nutrient nutrient:map.keySet()) {
-				transformedMap.put(nutrient.getName(), map.get(nutrient));
+
+			
+			PhraseWithMultiplier multiplierInMap = multipliersMap.get(sp_sr.getProdukt().getUrl());
+			if(multiplierInMap==null) {
+				multiplierInMap=new PhraseWithMultiplier(sp_sr.getProdukt().getNazwa());
+				multiplierInMap.setUrl(sp_sr.getProdukt().getUrl());
+				multiplierInMap.setMultiplier(sp_sr.getIloscSztuk());
+				multipliersMap.put(sp_sr.getProdukt().getUrl(), multiplierInMap);
+				
+			}else {
+				multiplierInMap.setMultiplier(multiplierInMap.getMultiplier()+sp_sr.getIloscSztuk());
+				multipliersMap.put(sp_sr.getProdukt().getUrl(), multiplierInMap);
 			}
-			retValue.put(sp_sr.getProdukt().getNazwa(), transformedMap);
+			
+			Map<String, NotPreciseQuantity> innerMap = retValue.get(multiplierInMap);
+			if(innerMap==null) {
+				innerMap=new HashMap<String, NotPreciseQuantity>();
+				
+				for(Nutrient nutrient:map.keySet()) {
+					innerMap.put(nutrient.getName(), map.get(nutrient));
+				}
+				
+				retValue.put(multiplierInMap, innerMap);
+			}else{
+				for(Nutrient nutrient:map.keySet()) {
+					PreciseQuantity preciseQuantity = map.get(nutrient);
+					try {
+						preciseQuantity.add(map.get(nutrient));
+					} catch (IncopatibleAmountTypesException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (InvalidArgumentException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					innerMap.put(nutrient.getName(), preciseQuantity);
+				}
+				retValue.put(multiplierInMap, innerMap);
+			}
+			
+			
 			
 			
 		}

@@ -29,6 +29,7 @@ import mariusz.ambroziak.kassistant.model.Nutrient;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.jsp.InvalidSearchResult;
 import mariusz.ambroziak.kassistant.model.jsp.MultiProdukt_SearchResult;
+import mariusz.ambroziak.kassistant.model.jsp.PhraseWithMultiplier;
 import mariusz.ambroziak.kassistant.model.jsp.ProduktWithRecountedPrice;
 import mariusz.ambroziak.kassistant.model.jsp.SearchResult;
 import mariusz.ambroziak.kassistant.model.jsp.SingleProdukt_SearchResult;
@@ -260,11 +261,11 @@ public class RecipeController extends RecipeLogic{
 
 		
 		//Nazwa produktu->[nazwa skladnika->ilosc]
-		Map<String, Map<String, NotPreciseQuantity>> nutrientsMap = retrieveNutritionDetails(resultsHolder);
+		Map<PhraseWithMultiplier, Map<String, NotPreciseQuantity>> nutrientsMap = retrieveNutritionDetails(resultsHolder);
 		
 		
 
-		CompoundMapManipulator<String, String> cmm=new CompoundMapManipulator<String, String>(nutrientsMap);
+		CompoundMapManipulator<PhraseWithMultiplier, String> cmm=new CompoundMapManipulator<PhraseWithMultiplier, String>(nutrientsMap);
 		Map<String, NotPreciseQuantity> sumOfNutrients = cmm.sumUpInnerMaps();
 		List<String> nutrientsList = new ArrayList<String>(cmm.getAllInnerMapsKeys());
 
@@ -289,13 +290,13 @@ public class RecipeController extends RecipeLogic{
 		return mav;
 	}
 
-	private Map<String, Map<String, NotPreciseQuantity>> retrieveNutritionDetails(
+	private Map<PhraseWithMultiplier, Map<String, NotPreciseQuantity>> retrieveNutritionDetails(
 			GoodBadSkippedResults resultsHolder) {
 		
 		Map<SingleProdukt_SearchResult, Map<Nutrient, PreciseQuantity>> retrievedNutrientDataForProdukts = 
 				UsdaNutrientApiClient.retrieveNutrientDataForProdukts(resultsHolder.getGoodResults());
 
-		Map<String, Map<String, NotPreciseQuantity>> retValue = CompoundMapManipulator.stringifyKeys(retrievedNutrientDataForProdukts);
+		Map<PhraseWithMultiplier, Map<String, NotPreciseQuantity>> retValue = CompoundMapManipulator.stringifyKeys(retrievedNutrientDataForProdukts);
 		
 		return retValue;
 		

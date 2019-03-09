@@ -27,8 +27,10 @@ import mariusz.ambroziak.kassistant.exceptions.ShopNotFoundException;
 import mariusz.ambroziak.kassistant.model.Nutrient;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.jsp.MultiProdukt_SearchResult;
+import mariusz.ambroziak.kassistant.model.jsp.PhraseWithMultiplier;
 import mariusz.ambroziak.kassistant.model.jsp.ProduktWithRecountedPrice;
 import mariusz.ambroziak.kassistant.model.jsp.SingleProdukt_SearchResult;
+import mariusz.ambroziak.kassistant.model.quantity.AmountTypes;
 import mariusz.ambroziak.kassistant.model.quantity.NotPreciseQuantity;
 import mariusz.ambroziak.kassistant.model.quantity.PreciseQuantity;
 import mariusz.ambroziak.kassistant.model.utils.ApiIngredientAmount;
@@ -102,11 +104,11 @@ public class RecipeParsing_controller_bootstrap extends RecipeLogic{
 			{
 				Map<SingleProdukt_SearchResult, Map<Nutrient, PreciseQuantity>> parseNutrientDataOfIngredients = parseNutrientDataOfIngredients(extractGoodBadSkippedResults.getGoodResults());
 				
-				//parseNutrientDataOfIngredients.values().iterator().next()
+				//parseNutrientDataOfIngredients.kySet().iterator().next()
 				
 				ModelAndView nutrientsMav = getNutrientsMav(parseNutrientDataOfIngredients);
 				nutrientsMav.addObject(JspStringHolder.recipeUrl_name, url);
-				nutrientsMav.addObject(JspStringHolder.recipeName_name,recipeName);
+				nutrientsMav.addObject("recipe_name_value",recipeName);
 
 				
 				//working
@@ -117,14 +119,13 @@ public class RecipeParsing_controller_bootstrap extends RecipeLogic{
 					mav.addObject("badResults",extractGoodBadSkippedResults.getUsersBadChoice());
 					mav.addObject("correctResults", extractGoodBadSkippedResults.getGoodResults());
 					mav.addObject("skippedResults",extractGoodBadSkippedResults.getSkippedResults());
-					mav.addObject(JspStringHolder.recipeName_name,recipeName);
+					mav.addObject("recipe_name_value",recipeName);
 					return mav;
 				
 			}
 		} catch (AgentSystemNotStartedException e) {
-			returnAgentSystemNotStartedPage();
+			return returnAgentSystemNotStartedPage();
 		}
-		return null;
 
 
 		
@@ -135,15 +136,15 @@ public class RecipeParsing_controller_bootstrap extends RecipeLogic{
 				
 
 
-		Map<String, Map<String, NotPreciseQuantity>> nutrientMap = CompoundMapManipulator.stringifyKeys(parseNutrientDataOfIngredients);
+		Map<PhraseWithMultiplier, Map<String, NotPreciseQuantity>> nutrientMap = CompoundMapManipulator.stringifyKeys(parseNutrientDataOfIngredients);
 		
 
-		CompoundMapManipulator<String, String> cmm=new CompoundMapManipulator<String, String>(nutrientMap);
+		CompoundMapManipulator<PhraseWithMultiplier, String> cmm=new CompoundMapManipulator<PhraseWithMultiplier, String>(nutrientMap);
 		Map<String, NotPreciseQuantity> sumOfNutrients = cmm.sumUpInnerMaps();
 		List<String> nutrientsList = new ArrayList<String>(cmm.getAllInnerMapsKeys());
 
 		Map<String,String> produktParsingLinks=createLinksToParseProdukts(parseNutrientDataOfIngredients.keySet());
-		
+//		nutrientMap.keySet().iterator().next().get("potassium").setType(AmountTypes.ml);
 		ModelAndView mav=new ModelAndView(StringHolder.bootstrapFolder+"boot_NutrientResultsForRecipe");		
 		mav.addObject("nutrientsMap", nutrientMap);//[nazwa produktu->[nazwa składnika odżywczego->ilość]]
 		mav.addObject("allNutrients",nutrientsList );//[lista składników odżywczych]

@@ -28,7 +28,7 @@
 
 		<c:choose>
 			<c:when test="${fn:length(results) gt 0}">
-				<h2>Details for "${recipeName}"</h2>
+				<h2>Details for "${recipe_name_value}"</h2>
 
 
 				<div class="ingredient-list">

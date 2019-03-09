@@ -24,8 +24,7 @@
 	<section id="hero" class="wow fadeIn">
 	<div class="container"
 		style="padding-top: 1px; overflow-y: auto; max-height: 90vh; max-width: 95vw">
-		<div class="empty-page-info"></div>
-		<h2>Details for "${recipeName}"</h2>
+		<h2 style="padding-top:1px">Details for "${recipe_name_value}"</h2>
 		
 		<table class="table table-striped table-bordered nutrition-table">
 			<thead>
@@ -46,7 +45,7 @@
 							scope="col">
 							<div class="outer-vertical-text">
 								<div class="vertical-text">
-									<pre style="width: 160px;">${nutrient}</pre>
+									<pre style="width: 175px;">${nutrient}</pre>
 								</div>
 							</div>
 						</th>
@@ -57,11 +56,29 @@
 				<c:forEach var="ingredientToNutrients" items="${nutrientsMap}"
 					varStatus="nutrientCount">
 					<tr>
-						<td class="td-nutrient" scope="row">${ingredientToNutrients.key}</td>
+						
+					
+						<td class="td-nutrient" scope="row">
+								<c:url var="escapedUrl" value = "${ingredientToNutrients.key.url}"/>
+						
+								<a href="${productByUrlSuffix}?${produktUrl_name}=${escapedUrl}">
+									${ingredientToNutrients.key.nazwa}
+								</a> 
+							<b>x${ingredientToNutrients.key.multiplier}</b>
+						</td>
 
 						<c:forEach var="nutrient" items="${allNutrients}">
-
-							<td class="td-nutrient" >${ingredientToNutrients.value[nutrient].amountRepresentation}</td>
+							<c:choose >
+							<c:when  test="${not empty ingredientToNutrients.value[nutrient].type and ingredientToNutrients.value[nutrient].type != mgType}">
+								<td class="td-nutrient" style="background-color: red" >
+								${ingredientToNutrients.value[nutrient].amountRepresentation}</td>
+							</c:when>
+							<c:otherwise>
+								<td class="td-nutrient" >
+								${ingredientToNutrients.value[nutrient].amountRepresentation}</td>
+							</c:otherwise>
+							</c:choose>
+							
 						</c:forEach>
 					</tr>
 				</c:forEach>
@@ -70,11 +87,18 @@
 						<td scope="row"><b>Sum of all nutrients</b></td>
 
 						<c:forEach var="nutrient" items="${allNutrients}">
-
-							<td class=td-nutrient>
-							
-							${sumOfNutrients[nutrient].amountRepresentation}
+							<c:choose >
+							<c:when  test="${not empty sumOfNutrients[nutrient].type and sumOfNutrients[nutrient].type != mgType}">
+							<td style="background-color: red" class=td-nutrient>
+									${sumOfNutrients[nutrient].amountRepresentation}
 							</td>
+							</c:when>
+							<c:otherwise>
+							<td class="td-nutrient">
+								${sumOfNutrients[nutrient].amountRepresentation}
+							</td>
+							</c:otherwise>
+							</c:choose>
 						</c:forEach>
 					</tr>
 			</tbody>

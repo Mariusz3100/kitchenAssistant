@@ -50,7 +50,7 @@
 						<tr>
 							<c:url var="escapedUrl" value = "${product.url}"/>
 	
-							<td><a href="${recipeByUrlSuffix}?${produktUrl_name}=${escapedUrl}">${escapedUrl} ${product.nazwa}</a></td>
+							<td><a href="${productByUrlSuffix}?${produktUrl_name}=${escapedUrl}">${escapedUrl} ${product.nazwa}</a></td>
 							<td>${product.cena}$</td>
 						</tr>
 					</c:forEach>
