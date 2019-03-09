@@ -142,7 +142,7 @@ public class UsdaNutrientApiClient {
 
 		JSONObject root=new JSONObject(response);
 		if(root.has("errors")) {
-			ProblemLogger.logProblem("Error occured when searching for \""+foodName+": "+response);
+			ProblemLogger.logProblem("Error occured when searching for \""+foodName+"\": "+response);
 			return UsdaFoodDetails.getEmptyOne();
 		}else{
 
@@ -165,7 +165,7 @@ public class UsdaNutrientApiClient {
 
 		JSONObject root=new JSONObject(response);
 		if(root.has("errors")) {
-			ProblemLogger.logProblem("Error occured when searching for \""+foodName+": "+response);
+			ProblemLogger.logProblem("Error occured when searching for \""+foodName+"\": "+response);
 			return new ArrayList<>();
 		}else{
 			ArrayList<UsdaFoodId> parseIntoNutrientDetails = parseIntoNutrientDetails(response);

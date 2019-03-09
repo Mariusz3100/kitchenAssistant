@@ -126,7 +126,7 @@
 
 
 .nutrition-header-cell {
-	height: 170px;
+	height: 200px;
 	vertical-align: top !important;
 	padding: 0px !important;
 	text-align: center;
@@ -143,5 +143,5 @@
 td.td-nutrient{
 	padding-left:0 !important;
 	padding-right: 0 !important;
-	font-size: 10;
+	font-size: 0.8rem;
 }
