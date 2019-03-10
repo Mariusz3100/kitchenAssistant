@@ -55,7 +55,7 @@
 				<b>Description:</b>
 			</h4>
 			<div>${produkt.opis }</div>
-			<a class="btn btn-success" href="${nutrientByNameSuffix}?${foodName}=${produkt.nazwa}">Get Nutrition Details</a>
+			<a class="btn btn-success" href="/nutrient_get_nutrient?${foodName}=${produkt.nazwa}">Get Nutrition Details</a>
 
 		</c:if>
 	</div>

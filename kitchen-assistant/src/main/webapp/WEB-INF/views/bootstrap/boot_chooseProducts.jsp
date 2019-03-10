@@ -80,7 +80,10 @@
 												id="${skladnikName}${skladnikCount.count}_${skladnikRadioName}_${opcjaCount.index}"
 												value="${radioValuePrefix}${produkt.url}" /> <label
 												for="${skladnikName}${skladnikCount.count}_${skladnikRadioName}_${opcjaCount.index}">[${produkt.cena}
-												$, ${produkt.recountedPrice}] ${produkt.nazwa}</label>
+												$, ${produkt.recountedPrice}] ${produkt.nazwa}
+															<a href="/nutrient_get_nutrient?${foodName}=${produkt.nazwa}">details</a>
+												
+												</label>
 										</div>
 
 

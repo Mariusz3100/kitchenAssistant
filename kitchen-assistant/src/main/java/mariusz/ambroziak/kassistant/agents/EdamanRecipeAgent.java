@@ -249,15 +249,20 @@ public class EdamanRecipeAgent extends BaseAgent{
 	private ProduktWithRecountedPrice getProduktWithRecountedPrice(Produkt p, PreciseQuantity neededQuantity, String curency) {
 		String recountedPrice="";
 		PreciseQuantity produktQuan=PreciseQuantity.parseFromJspString(p.getQuantityPhrase());
-		if(produktQuan.getType()!=neededQuantity.getType()){
-			ProblemLogger.logProblem("Wielkości skladnika w przepisie+"+neededQuantity+" i w sklepie "+produktQuan+"nie są tego samego typu");
-		}else{
-			if(produktQuan.getAmount()>=neededQuantity.getAmount()){
-				recountedPrice=produktQuan+"->"+p.getCena()+" "+curency;
+		if(produktQuan==null||neededQuantity==null) {
+			ProblemLogger.logProblem("Amount not found for product with id: "+p.getP_id());
+			recountedPrice="1->"+p.getCena()+" "+curency;
+		}else {
+			if(produktQuan.getType()!=neededQuantity.getType()){
+				ProblemLogger.logProblem("Wielkości skladnika w przepisie+"+neededQuantity+" i w sklepie "+produktQuan+"nie są tego samego typu");
 			}else{
-				int multiplier = neededQuantity.getMultiplierOfProduktQuantityForNeededQuantity( produktQuan);
-				recountedPrice=produktQuan+" x "+multiplier+" -> "
-						+p.getCena()+" x "+multiplier+" "+curency+"="+p.getCena()*multiplier+" "+curency;
+				if(produktQuan.getAmount()>=neededQuantity.getAmount()){
+					recountedPrice=produktQuan+"->"+p.getCena()+" "+curency;
+				}else{
+					int multiplier = neededQuantity.getMultiplierOfProduktQuantityForNeededQuantity( produktQuan);
+					recountedPrice=produktQuan+" x "+multiplier+" -> "
+							+p.getCena()+" x "+multiplier+" "+curency+"="+p.getCena()*multiplier+" "+curency;
+				}
 			}
 		}
 		ProduktWithRecountedPrice retValue=new ProduktWithRecountedPrice(p, recountedPrice);

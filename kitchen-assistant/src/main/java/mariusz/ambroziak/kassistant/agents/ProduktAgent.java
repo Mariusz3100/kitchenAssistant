@@ -8,6 +8,7 @@ import java.util.logging.Level;
 import madkit.kernel.AgentAddress;
 import madkit.kernel.Message;
 import madkit.message.StringMessage;
+import mariusz.ambroziak.kassistant.Apiclients.shopcom.ShopComApiParameters;
 import mariusz.ambroziak.kassistant.api.agents.ShopComAgent;
 import mariusz.ambroziak.kassistant.dao.Base_WordDAOImpl;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
@@ -17,6 +18,7 @@ import mariusz.ambroziak.kassistant.exceptions.ShopNotFoundException;
 import mariusz.ambroziak.kassistant.model.Base_Word;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.utils.PreciseQuantityWithPhrase;
+import mariusz.ambroziak.kassistant.shopcom.ShopComApiClient;
 import mariusz.ambroziak.kassistant.shopcom.ShopComApiClientParticularProduct;
 import mariusz.ambroziak.kassistant.shops.ShopRecognizer;
 import mariusz.ambroziak.kassistant.utils.MessageTypes;
@@ -130,7 +132,8 @@ public class ProduktAgent extends BaseAgent{
 		if(shortUrl==null||shortUrl.equals("")) {
 			return "";
 		}else if(shortUrl.startsWith(ShopComAgent.baseUrl)) {
-			String result=shortUrl;
+			String result=ShopComApiParameters.getUrlWithKeys(shortUrl);
+			
 			return result;
 		}else {
 			throw new ShopNotFoundException("Url \""+shortUrl

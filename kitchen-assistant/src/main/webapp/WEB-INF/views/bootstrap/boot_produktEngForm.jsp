@@ -22,7 +22,6 @@
   Hero Section
 ============================-->
 	<div class="empty-page-info"></div>
-
 	<div class="hero-container container">
 		<form action="b_produktByName">
 			<h3>Search for products in the system:</h3>
@@ -31,34 +30,36 @@
 
 		</form>
 
-	</div>
-	<div style="min-height: 70vh">
-	
-		<c:if test="${not empty produktList }">
-			<h3>Results found:</h3>
-	
-			<table class="table table-striped">
-				<thead>
-					<tr class="table-success" style="position: sticky; top: 1px;">
-						<th scope="col">Product</th>
-						<th scope="col">Price</th>
-					</tr>
-				</thead>
-				<tbody>
-					<c:forEach var="product" items="${produktList}"
-						varStatus="productCount">
-						<tr>
-							<c:url var="escapedUrl" value = "${product.url}"/>
-	
-							<td><a href="${productByUrlSuffix}?${produktUrl_name}=${escapedUrl}">${escapedUrl} ${product.nazwa}</a></td>
-							<td>${product.cena}$</td>
+
+		<div style="min-height: 70vh">
+
+			<c:if test="${not empty produktList }">
+				<h3>Results found:</h3>
+
+				<table class="table table-striped">
+					<thead>
+						<tr class="table-success" style="position: sticky; top: 1px;">
+							<th scope="col">Product</th>
+							<th scope="col">Price</th>
 						</tr>
-					</c:forEach>
-	
-	
-				</tbody>
-			</table>
-		</c:if>
+					</thead>
+					<tbody>
+						<c:forEach var="product" items="${produktList}"
+							varStatus="productCount">
+							<tr>
+								<c:url var="escapedUrl" value="${product.url}" />
+
+								<td><a href="${productByUrlSuffix}?${produktUrl_name}=${escapedUrl}">${escapedUrl}
+										${product.nazwa}</a></td>
+								<td>${product.cena}$</td>
+							</tr>
+						</c:forEach>
+
+
+					</tbody>
+				</table>
+			</c:if>
+		</div>
 	</div>
 	<jsp:include page="includes/footerInclude.jsp" />
 
