@@ -33,7 +33,7 @@
 
 		<div class="empty-page-info"></div>
 
-		<h2>Details for "${recipe_name_value}"</h2>
+		<h2>Details for "${recipeName}"</h2>
 		<div class="ingredient-list">
 
 
@@ -223,7 +223,7 @@
 								<c:choose>
 									<c:when test="${fn:length(result.produkts) gt 0}">
 										<h6 class="ingredient-heading">For ingredient
-											"${result.searchPhraseAnswered }" [${result.value}] these
+											"${result.searchPhraseAnswered }" [${result.quantityNeeded}] these
 											products were found:</h6>
 									</c:when>
 									<c:otherwise>
@@ -243,7 +243,12 @@
 												id="${skladnikName}${skladnikiOuterCount}_${skladnikRadioName}_${opcjaCount.index}"
 												value="${radioValuePrefix}${produkt.url}" /> <label
 												for="${skladnikName}${skladnikiOuterCount}_${skladnikRadioName}_${opcjaCount.index}">[${produkt.cena}
-												$, ${produkt.recountedPrice}] ${produkt.nazwa}</label>
+												$, ${produkt.recountedPrice}] ${produkt.nazwa}
+												
+
+												<c:url var="escapedUrl" value="${product.url}" />
+												<a href="${productByUrlSuffix}?${produktUrl_name}=${escapedUrl}">details</a>
+												</label>
 										</div>
 
 

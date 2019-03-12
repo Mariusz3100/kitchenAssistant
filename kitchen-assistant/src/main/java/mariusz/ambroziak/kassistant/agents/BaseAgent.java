@@ -62,7 +62,15 @@ public abstract class BaseAgent extends Agent {
 	}
 
 	public Object[] getMyRolesKA() {
-		TreeSet<String> myRoles = this.getMyRoles(AGENT_COMMUNITY, AGENT_GROUP);
+		
+		TreeSet<String> myRoles = null;
+		
+		if(AGENT_COMMUNITY==null) {
+			myRoles=this.getMyRoles("kitchenAssistant", AGENT_GROUP);
+	
+		}else {
+			myRoles=this.getMyRoles(AGENT_COMMUNITY, AGENT_GROUP);
+		}
 		return myRoles.toArray();
 	}
 	

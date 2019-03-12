@@ -3,11 +3,23 @@ package mariusz.ambroziak.kassistant.model.jsp;
 import java.util.List;
 
 import mariusz.ambroziak.kassistant.model.Produkt;
+import mariusz.ambroziak.kassistant.model.quantity.PreciseQuantity;
 
 public class InvalidSearchResult extends MultiProdukt_SearchResult {
 
 	private String invalidityReason;
-	
+	private PreciseQuantity quantityNeeded;
+
+
+	public PreciseQuantity getQuantityNeeded() {
+		quantityNeeded=PreciseQuantity.parseFromJspString(quantityPhrase);
+		return quantityNeeded;
+	}
+
+	public void setQuantityNeeded(PreciseQuantity quantityNeeded) {
+		this.quantityNeeded = quantityNeeded;
+	}
+
 	public String getInvalidityReason() {
 		return invalidityReason;
 	}

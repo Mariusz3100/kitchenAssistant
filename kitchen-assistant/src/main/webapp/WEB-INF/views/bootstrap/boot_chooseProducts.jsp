@@ -28,7 +28,7 @@
 
 		<c:choose>
 			<c:when test="${fn:length(results) gt 0}">
-				<h2>Details for "${recipe_name_value}"</h2>
+				<h2>Details for "${recipeName}"</h2>
 
 
 				<div class="ingredient-list">
@@ -81,7 +81,8 @@
 												value="${radioValuePrefix}${produkt.url}" /> <label
 												for="${skladnikName}${skladnikCount.count}_${skladnikRadioName}_${opcjaCount.index}">[${produkt.cena}
 												$, ${produkt.recountedPrice}] ${produkt.nazwa}
-															<a href="/nutrient_get_nutrient?${foodName}=${produkt.nazwa}">details</a>
+													<c:url var="escapedUrl" value="${produkt.url}" />
+													<a href="${productByUrlSuffix}?${produktUrl_name}=${escapedUrl}">details</a>
 												
 												</label>
 										</div>

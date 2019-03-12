@@ -108,7 +108,7 @@ public class RecipeParsing_controller_bootstrap extends RecipeLogic{
 				
 				ModelAndView nutrientsMav = getNutrientsMav(parseNutrientDataOfIngredients);
 				nutrientsMav.addObject(JspStringHolder.recipeUrl_name, url);
-				nutrientsMav.addObject("recipe_name_value",recipeName);
+				nutrientsMav.addObject("recipeName",recipeName);
 
 				
 				//working
@@ -119,7 +119,7 @@ public class RecipeParsing_controller_bootstrap extends RecipeLogic{
 					mav.addObject("badResults",extractGoodBadSkippedResults.getUsersBadChoice());
 					mav.addObject("correctResults", extractGoodBadSkippedResults.getGoodResults());
 					mav.addObject("skippedResults",extractGoodBadSkippedResults.getSkippedResults());
-					mav.addObject("recipe_name_value",recipeName);
+					mav.addObject("recipeName",recipeName);
 					return mav;
 				
 			}
@@ -150,7 +150,7 @@ public class RecipeParsing_controller_bootstrap extends RecipeLogic{
 		mav.addObject("allNutrients",nutrientsList );//[lista składników odżywczych]
 		mav.addObject("sumOfNutrients", sumOfNutrients);//suma składników odżywczych (sumowana po wszystkich produktach)
 		mav.addObject("produktLinksMap", produktParsingLinks);
-		
+
 		return mav;
 	}
 

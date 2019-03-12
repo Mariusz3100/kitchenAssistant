@@ -73,8 +73,24 @@ public class GoogleAuthApiClient {
 	}
 
 	public static void main(String[] args) throws IOException, GoogleDriveAccessNotAuthorisedException {
-		System.out.println(getDietLimitationsAsString());
+		System.out.println();
+		writeToDrive("xxx");
+		
 
+	}
+
+	private static void writeToDrive(String string) throws IOException, GoogleDriveAccessNotAuthorisedException {
+		Drive service = getDriveService();
+
+
+		// Print the names and IDs for up to 10 files.
+		FileList result = service.files().list()
+				.setPageSize(10)
+				.setFields("nextPageToken, files(id, name)")
+				//          .setQ("mimeType='application/vnd.google-apps.folder'")
+				.setQ("name='health'")
+
+				.execute();
 	}
 
 	public static void deleteCredentials(){
