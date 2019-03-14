@@ -99,7 +99,7 @@
 										<label
 											for="${skladnikName}${skladnikCount.count}_${skladnikRadioName}_${innaOpcjaName}"
 											class="inny-radio-label" style="width: 19.6%;">
-											Other: </label> <input type="text"
+											Other: </label> <input type="text" disabled="disabled"
 											name="${skladnikName}${skladnikCount.count}_${innyUrlName}"
 											id="${skladnikName}${skladnikCount.count}_${innyUrlName}"
 											class="inny-url">

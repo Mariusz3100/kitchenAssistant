@@ -4,7 +4,8 @@ package mariusz.ambroziak.kassistant.utils;
 public class StringHolder {
 	public static String servletBasePath="";
 	public static String auchanFilename="auchanEntries.txt";
-	
+	public static final String GOOGLE_DRIVE_LINE_SEPARATOR = "\r\n";
+
 	public static final String currentAppName="";
 	public static final String SEARCH4_NAME = "search4";
 	public static final String PRODUKT_URL_NAME = "produktUrl";
@@ -24,7 +25,9 @@ public class StringHolder {
 	public static final String NO_RESULT_INFO_NAME = "errorMessage";
 	public static final String NO_RESULT_UNKNOWN_SHOP = "UnknownShop";
 
-	
+	public static final String GOOGLE_DRIVE_FOLDER="kitchenAssistant";
+	public static final String GOOGLE_DRIVE_DIET_FILENAME="diet";
+	public static final String GOOGLE_DRIVE_HEALTH_FILENAME="health";
 	
 	public static final String MESSAGE_CREATOR_NAME = "Message_creator";
 	public static final String MESSAGE_TYPE_NAME = "Message_Type";

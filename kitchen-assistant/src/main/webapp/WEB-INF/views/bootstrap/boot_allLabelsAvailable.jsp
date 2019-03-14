@@ -24,23 +24,23 @@
 ============================-->
 	<section id="hero" class="wow fadeIn">
 	<div class="hero-container">
-			<h3>Diet and health restrictions are taken from kitchenAssistant/diet and kitchenAssistant/health files in your google drive, respectively.</h3>
-
+			<h3>Diet and health restrictions available.</h3>
+	<div style="overflow-y: auto; max-height: 80vh">
 				<c:choose>
 					<c:when test="${not empty dietLabels && fn:length(dietLabels)>0}">
 						<div>
-							<h3 class="ingredient-heading">Following diet labels were found</h3>
+							<h3 class="ingredient-heading">Following diet labels can be used</h3>
 
 							<ul>
 								<c:forEach var="dietLabel" items="${dietLabels}"
 									varStatus="status">
-									<li>${dietLabel}</li>
+									<li>${dietLabel.label} (${dietLabel.parameterName})</li>
 								</c:forEach>
 							</ul>
 						</div>
 					</c:when>
 					<c:otherwise>
-						<h3 class="ingredient-heading">No diet labels found in your google drive</h3>
+						<h3 class="ingredient-heading">No diet labels found.</h3>
 
 					</c:otherwise>
 				</c:choose>
@@ -48,24 +48,24 @@
 				<c:choose>
 					<c:when
 						test="${not empty healthLabels && fn:length(healthLabels)>0}">
-						<h3 class="ingredient-heading">Following health labels were found</h3>
+						<h3 class="ingredient-heading">Following health labels can be used</h3>
 						<div>
 							<ul>
 								<c:forEach var="healthLabel" items="${healthLabels}"
 									varStatus="status">
-									<li>${healthLabel}</li>
+									<li>${healthLabel.label} (${healthLabel.parameterName})</li>
 								</c:forEach>
 							</ul>
 						</div>
 					</c:when>
 					<c:otherwise>
-						<h3 class="ingredient-heading">No health labels found in your google drive</h3>
+						<h3 class="ingredient-heading">No health labels found.</h3>
 
 					</c:otherwise>
 				</c:choose>
 
 
-
+</div>
 
 	</div>
 	</section>

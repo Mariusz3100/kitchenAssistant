@@ -258,12 +258,12 @@
 										<input type="radio"
 											name="${skladnikName}${skladnikiOuterCount}_${skladnikRadioName}"
 											id="${skladnikName}${skladnikiOuterCount}_${skladnikRadioName}_${innaOpcjaName}"
-											value="${innaOpcjaName}" disabled="disabled" class="inny-radio-label">
+											value="${innaOpcjaName}"  class="inny-radio-label">
 										<!-- class didn't connect with style from kitchenStyle.css for some reason. Lets fo for inline-->
 										<label
 											for="${skladnikName}${skladnikiOuterCount}_${skladnikRadioName}_${innaOpcjaName}"
 											class="inny-radio-label" style="width: 19.6%;">
-											Other: </label> <input type="text"
+											Other: </label> <input type="text" disabled="disabled"
 											name="${skladnikName}${skladnikiOuterCount}_${innyUrlName}"
 											id="${skladnikName}${skladnikiOuterCount}_${innyUrlName}"
 											class="inny-url">

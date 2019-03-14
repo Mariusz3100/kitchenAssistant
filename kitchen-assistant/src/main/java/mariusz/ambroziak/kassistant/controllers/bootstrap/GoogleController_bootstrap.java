@@ -56,8 +56,8 @@ public class GoogleController_bootstrap{
 		ArrayList<String> healthList=new ArrayList<>();
 
 		try {
-			dietList = getHealthLimitations();
-			healthList=getDietLimitations();
+			dietList = getDietLimitations();
+			healthList=getHealthLimitations();
 		} catch (GoogleDriveAccessNotAuthorisedException e) {
 			return createGoogleAccessNotGrantedMav();
 		} catch (AgentSystemNotStartedException e) {
@@ -127,6 +127,20 @@ public class GoogleController_bootstrap{
 
 	private void deleteLocalAuthorisationData() throws AgentSystemNotStartedException {
 		GoogleAccessAgent.deleteGoogleAuthorisationData();
+		
+	}
+	
+	@RequestMapping(value="getLabels")
+	public ModelAndView b_getAllLabels(HttpServletRequest request) throws IOException {
+		DietLabels[] diets=DietLabels.values();
+		HealthLabels[] healths=HealthLabels.values();
+		
+		ModelAndView mav=new ModelAndView(StringHolder.bootstrapFolder+"boot_allLabelsAvailable");
+
+		mav.addObject("healthLabels",healths);
+		mav.addObject("dietLabels",diets);
+
+		return mav;
 		
 	}
 

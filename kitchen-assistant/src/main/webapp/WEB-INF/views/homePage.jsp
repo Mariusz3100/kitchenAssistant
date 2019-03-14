@@ -16,6 +16,10 @@
 		<li><a href="/agents/start">Start agent system</a></li>
 		<li><a href="/agents/all">List all agents in the system</a></li>
 		<li><a href="/recipeApiForm">Search apis for recipes</a></li>
+		<li><a href="/bindex">Go to bootstrap page</a></li>
+		
+		
+		
 	</ul>
 
 
