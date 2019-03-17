@@ -9,6 +9,7 @@ import madkit.kernel.ConversationID;
 import madkit.kernel.Message;
 import madkit.message.StringMessage;
 import mariusz.ambroziak.kassistant.messages.filters.NotConversationIDsFilter;
+import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 import mariusz.ambroziak.kassistant.utils.StringHolder;
 
 import org.springframework.stereotype.Controller;
@@ -64,12 +65,13 @@ public abstract class BaseAgent extends Agent {
 	public Object[] getMyRolesKA() {
 		
 		TreeSet<String> myRoles = null;
-		
-		if(AGENT_COMMUNITY==null) {
-			myRoles=this.getMyRoles("kitchenAssistant", AGENT_GROUP);
-	
-		}else {
+		try {
 			myRoles=this.getMyRoles(AGENT_COMMUNITY, AGENT_GROUP);
+		}catch (NullPointerException e) {
+			ProblemLogger.logProblem("An NullPointerException was thrown while trying to get roles for agent."
+					+" Arguments used:'getMyRoles("+AGENT_COMMUNITY+","+ AGENT_GROUP+");");
+			myRoles=this.getMyRoles("kitchenAssistant", "group");
+			
 		}
 		return myRoles.toArray();
 	}
