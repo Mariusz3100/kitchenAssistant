@@ -108,7 +108,7 @@ public class RecipeParsing_controller_bootstrap extends RecipeLogic{
 				
 				ModelAndView nutrientsMav = getNutrientsMav(parseNutrientDataOfIngredients);
 				nutrientsMav.addObject(JspStringHolder.recipeUrl_name, url);
-				nutrientsMav.addObject("recipeName",recipeName);
+				nutrientsMav.addObject("recipe_name_value",recipeName);
 
 				
 				//working

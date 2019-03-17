@@ -34,6 +34,7 @@ public class NutrientDetailsOfBasicIngredient {
 
 	public NutrientDetailsOfBasicIngredient() {
 		super();
+		nutrientsPer100gMap=new HashMap<Nutrient, Float>();
 	}
 	public void setNutrientsMapFromMapWithPreciseQuantityValues(Map<Nutrient, PreciseQuantity> map) {
 		this.nutrientsPer100gMap=new HashMap<Nutrient, Float>();

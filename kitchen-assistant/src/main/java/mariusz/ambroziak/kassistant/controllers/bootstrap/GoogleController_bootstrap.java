@@ -130,7 +130,7 @@ public class GoogleController_bootstrap{
 		
 	}
 	
-	@RequestMapping(value="getLabels")
+	@RequestMapping(value="boot_getLabels")
 	public ModelAndView b_getAllLabels(HttpServletRequest request) throws IOException {
 		DietLabels[] diets=DietLabels.values();
 		HealthLabels[] healths=HealthLabels.values();

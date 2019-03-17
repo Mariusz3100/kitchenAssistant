@@ -177,11 +177,15 @@ public class ReadingNutritientsUsdaAgent extends BaseAgent{
 
 		if(productDetails==null||productDetails.isEmpty()) {
 			UsdaFoodDetails usdaDetails = searchForCorrectInUsda(searchForPhrase);
-			Basic_Ingredient biFromDb = saveDetailsInDbCheckPrerequisites(usdaDetails);
-
-			productDetails=new NutrientDetailsOfBasicIngredient();
-			productDetails.setBasicIngredient(biFromDb);
-			productDetails.setNutrientsMapFromMapWithPreciseQuantityValues(usdaDetails.getNutrietsMapPer100g());
+			if(usdaDetails==null) {
+				productDetails=new NutrientDetailsOfBasicIngredient();
+			}else {
+				Basic_Ingredient biFromDb = saveDetailsInDbCheckPrerequisites(usdaDetails);
+	
+				productDetails=new NutrientDetailsOfBasicIngredient();
+				productDetails.setBasicIngredient(biFromDb);
+				productDetails.setNutrientsMapFromMapWithPreciseQuantityValues(usdaDetails.getNutrietsMapPer100g());
+			}
 		}
 		return productDetails;
 	}
