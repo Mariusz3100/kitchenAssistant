@@ -550,9 +550,20 @@ public class ReadingNutritientsUsdaAgent extends BaseAgent{
 			return retValue;
 		
 		for(SingleProdukt_SearchResult sp_sr:listOfResults) {
-			NutrientDetailsOfBasicIngredient productDetails = searchForDetailsInDbAndApi(sp_sr.getProduktPhrase());
-			retValue.put(sp_sr, productDetails.getNutrientsMapOfPreciseQuantityValues());
-			
+			String phraseToSearchFor="";
+			if(sp_sr!=null) {
+				NutrientDetailsOfBasicIngredient productDetails = null;
+				if(sp_sr.getProdukt()!=null&&sp_sr.getProdukt().getNazwa()!=null) {
+					productDetails = searchForDetailsInDbAndApi(sp_sr.getProdukt().getNazwa());
+				}
+				if(productDetails==null||productDetails.isEmpty()) {
+					productDetails = searchForDetailsInDbAndApi(sp_sr.getProduktPhrase());
+				}
+				
+				
+				
+				retValue.put(sp_sr, productDetails.getNutrientsMapOfPreciseQuantityValues());
+			}
 		}
 		return retValue;
 		
