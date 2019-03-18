@@ -149,6 +149,8 @@ public class Basic_Ingredient_Nutrient_AmountDAOImpl implements Basic_Ingredient
 	@Override
 	@Transactional
 	public Map<Nutrient, Float> getNutrientsForBasicIngredientByName(String basicIngredientName) {
+		basicIngredientName=org.apache.commons.lang.StringEscapeUtils.escapeSql(basicIngredientName);
+
 		String sql=getNutrientsForBasicIngredientNameQuery.replaceAll("__name__", basicIngredientName);
 
 		@SuppressWarnings("unchecked")
@@ -182,6 +184,8 @@ public class Basic_Ingredient_Nutrient_AmountDAOImpl implements Basic_Ingredient
 	@Override
 	@Transactional
 	public boolean areNutrientsForBasicIngredient(String basicIngredientName) {
+		basicIngredientName=org.apache.commons.lang.StringEscapeUtils.escapeSql(basicIngredientName);
+
 		return sessionFactory.getCurrentSession()
 		.createCriteria(Basic_Ingredient_Nutrient_amount.class)
         .add(Restrictions.eq("basicIngredient.id", basicIngredientName))

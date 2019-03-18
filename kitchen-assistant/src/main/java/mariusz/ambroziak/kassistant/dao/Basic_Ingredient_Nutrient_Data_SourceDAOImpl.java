@@ -1,5 +1,6 @@
 package mariusz.ambroziak.kassistant.dao;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -12,6 +13,7 @@ import mariusz.ambroziak.kassistant.model.Basic_Ingredient;
 import mariusz.ambroziak.kassistant.model.Basic_Ingredient_Nutrient_Data_Source;
 import mariusz.ambroziak.kassistant.model.Basic_Ingredient_Nutrient_amount;
 import mariusz.ambroziak.kassistant.model.Nutrient;
+import mariusz.ambroziak.kassistant.model.Problem;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.User;
 import mariusz.ambroziak.kassistant.model.Variant_Word;
@@ -37,7 +39,7 @@ public class Basic_Ingredient_Nutrient_Data_SourceDAOImpl implements Basic_Ingre
 	private static String selectByIngredientsNameSql="select * from basic_ingredient " + 
 			"inner join basic_ingredient_nutrient_data_source on basic_ingredient_nutrient_data_source.bi_id=basic_ingredient.bi_id " + 
 			"where __where_clause__";
-	
+
 	private static String selectByDataSourceApiIdSql="select * from basic_ingredient_nutrient_data_source  where id_in_api  ='__id_in_api__'";
 	@Override
 	public void saveDataSource(Basic_Ingredient_Nutrient_Data_Source dataSource) {
@@ -90,7 +92,7 @@ public class Basic_Ingredient_Nutrient_Data_SourceDAOImpl implements Basic_Ingre
 		if(apiId==null||apiId.equals("")) {
 			return new ArrayList<>();
 		}
-		
+
 		String sql=selectByDataSourceApiIdSql.replaceAll("__id_in_api__",apiId);		
 		@SuppressWarnings("unchecked")
 		List<Basic_Ingredient_Nutrient_Data_Source> dataSources = (List<Basic_Ingredient_Nutrient_Data_Source>)sessionFactory.getCurrentSession()
@@ -105,6 +107,8 @@ public class Basic_Ingredient_Nutrient_Data_SourceDAOImpl implements Basic_Ingre
 	public List<Basic_Ingredient_Nutrient_Data_Source> getDataSourcesByIngredientNames(Collection<String> names) {
 		String whereClause = getProperIlike_WhereClause(names);
 		String sql=selectByIngredientsNameSql.replace("__where_clause__", whereClause);
+		System.err.println("SQL: "+sql);
+
 		@SuppressWarnings("unchecked")
 		List<Basic_Ingredient_Nutrient_Data_Source> dataSources = (List<Basic_Ingredient_Nutrient_Data_Source>)sessionFactory.getCurrentSession()
 		.createSQLQuery(sql)
@@ -112,6 +116,8 @@ public class Basic_Ingredient_Nutrient_Data_SourceDAOImpl implements Basic_Ingre
 		.list();
 
 		return dataSources;	
+
+
 	}
 
 	private String getProperIlike_WhereClause(Collection<String> names) {
@@ -120,10 +126,12 @@ public class Basic_Ingredient_Nutrient_Data_SourceDAOImpl implements Basic_Ingre
 
 		}else {
 			for(String singleName:names) {
+				String temp=org.apache.commons.lang.StringEscapeUtils.escapeSql(singleName);
+
 				if(whereClause==null)
-					whereClause=" basic_ingredient.name ilike '"+singleName+"'";
+					whereClause=" basic_ingredient.name ilike '"+temp+"'";
 				else
-					whereClause+=" AND basic_ingredient.name ilike '"+singleName+"'";
+					whereClause+=" AND basic_ingredient.name ilike '"+temp+"'";
 			}
 		}
 		if(whereClause==null)whereClause="true";

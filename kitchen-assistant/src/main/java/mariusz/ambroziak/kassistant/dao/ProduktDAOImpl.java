@@ -84,6 +84,8 @@ public class ProduktDAOImpl implements ProduktDAO {
 	@Override
 	@Transactional
 	public List<Produkt> getProduktsByNazwa(String nazwa) {
+		nazwa=org.apache.commons.lang.StringEscapeUtils.escapeSql(nazwa);
+
 		@SuppressWarnings("unchecked")
 		List<Produkt> produkt =  sessionFactory.getCurrentSession()		
 				.createSQLQuery("SELECT * FROM Produkt where nazwa='"+nazwa+"'")
@@ -114,6 +116,8 @@ public class ProduktDAOImpl implements ProduktDAO {
 		ArrayList<String> x=new ArrayList<String>();
 		
 		for(String y:parts){
+			y=org.apache.commons.lang.StringEscapeUtils.escapeSql(y);
+
 			x.add(y);
 		}
 		
@@ -132,6 +136,8 @@ public class ProduktDAOImpl implements ProduktDAO {
 					.createCriteria(Produkt.class);
 			//crit.add(Restrictions.i));
 			for(String x:parts){
+				x=org.apache.commons.lang.StringEscapeUtils.escapeSql(x);
+
 				crit=crit.add(Restrictions.ilike("nazwa", "%"+x+"%"));
 			}
 			//		crit.add(Restrictions.ilike("x", "y"))
@@ -147,7 +153,9 @@ public class ProduktDAOImpl implements ProduktDAO {
 		ArrayList<String> namesSet=new ArrayList<String>();
 		
 		for(int i=0;i<x.length;i++){
-			namesSet.add(x[i]);
+			String temp=org.apache.commons.lang.StringEscapeUtils.escapeSql(x[i]);
+
+			namesSet.add(temp);
 			
 		}
 		
@@ -158,6 +166,7 @@ public class ProduktDAOImpl implements ProduktDAO {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Produkt> getProduktsByVariantNames(Collection<String> names) {
+		
 		List<String> base_Names = variantWordDao.getBase_NamesAsStrings(names);
 		
 		List<Produkt> produkts = getProduktsByNames(base_Names);

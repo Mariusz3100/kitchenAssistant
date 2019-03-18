@@ -77,6 +77,8 @@ public class NutrientDAOImpl implements NutrientDAO {
 	@Override
 	@Transactional
 	public Nutrient getNutrientByName(String name) {
+		name=org.apache.commons.lang.StringEscapeUtils.escapeSql(name);
+
 		@SuppressWarnings("unchecked")
 		List<Nutrient> listNutrients = (List<Nutrient>) sessionFactory.getCurrentSession()
 				.createCriteria(Nutrient.class)

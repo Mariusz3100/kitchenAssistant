@@ -60,6 +60,8 @@ public class Basic_IngredientDAOImpl implements Basic_IngredientDAO {
 	@Override
 	@Transactional
 	public Basic_Ingredient getIngredientByAnyName(String name) {
+		name=org.apache.commons.lang.StringEscapeUtils.escapeSql(name);
+
 		@SuppressWarnings("unchecked")
 		List<Basic_Ingredient> ingredients = (List<Basic_Ingredient>) sessionFactory.getCurrentSession()
 		.createSQLQuery(selectBase.replaceAll("__name__", name))
@@ -123,6 +125,8 @@ public class Basic_IngredientDAOImpl implements Basic_IngredientDAO {
 	}
 
 	private Basic_Ingredient getFromDbByName(String name) {
+		name=org.apache.commons.lang.StringEscapeUtils.escapeSql(name);
+
 		Basic_Ingredient bi_retrieved = (Basic_Ingredient) sessionFactory.getCurrentSession()
 				.createCriteria(Basic_Ingredient.class)
 				.add(Restrictions.eq("name",name))
@@ -153,6 +157,8 @@ public class Basic_IngredientDAOImpl implements Basic_IngredientDAO {
 				.createCriteria(Basic_Ingredient.class);
 				
 		for(String x:name){
+			x=org.apache.commons.lang.StringEscapeUtils.escapeSql(x);
+
 			createdCriteria=createdCriteria.add(Restrictions.ilike("name", "%"+x+"%"));
 		}
 		
@@ -167,6 +173,8 @@ public class Basic_IngredientDAOImpl implements Basic_IngredientDAO {
 		ArrayList<String> x=new ArrayList<String>();
 		
 		for(String y:parts){
+			y=org.apache.commons.lang.StringEscapeUtils.escapeSql(y);
+
 			x.add(y);
 		}
 		

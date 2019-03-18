@@ -47,6 +47,8 @@ public class Variant_WordDAOImpl implements Variant_WordDAO {
 	@Transactional
 	@Override
 	public List<Variant_Word> getVariant_Name(String name) {
+		name=org.apache.commons.lang.StringEscapeUtils.escapeSql(name);
+
 		@SuppressWarnings("unchecked")
 		List<Variant_Word> words =  sessionFactory.getCurrentSession()
 				.createCriteria(Variant_Word.class)
