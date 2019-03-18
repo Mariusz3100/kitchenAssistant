@@ -25,7 +25,7 @@ public class StringHolder {
 	public static final String NO_RESULT_INFO_NAME = "errorMessage";
 	public static final String NO_RESULT_UNKNOWN_SHOP = "UnknownShop";
 
-	public static final String GOOGLE_DRIVE_FOLDER="kitchenAssistant";
+	public static final String GOOGLE_DRIVE_FOLDER="kitchenAssistantRestrictions";
 	public static final String GOOGLE_DRIVE_DIET_FILENAME="diet";
 	public static final String GOOGLE_DRIVE_HEALTH_FILENAME="health";
 	
