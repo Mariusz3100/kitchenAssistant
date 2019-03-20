@@ -9,7 +9,7 @@ import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 public enum HealthLabels {
 	Alcohol_free("Alcohol-free","alcohol-free"),
 	Celery_free("Celery-free","celery-free",false),
-	Crustcean_free("Crustcean-free","crustacean-free,false"),
+	Crustcean_free("Crustcean-free","crustacean-free",false),
 	Dairy("Dairy","dairy-free",false),
 	Eggs("Eggs","egg-free",false),
 	Fish("Fish","fish-free",false),
@@ -113,6 +113,21 @@ public enum HealthLabels {
 		
 
 		return retrieveByLabel;
+	}
+	
+	public  static List<HealthLabels> tryRetrieving(List<String> list){
+		if(list==null)
+			return null;
+
+		List<HealthLabels> retValue=new ArrayList<>();
+		
+		for(String label:list) {
+			HealthLabels hl=tryRetrieving(label);
+			if(hl!=null)
+				retValue.add(hl);
+		}
+		
+		return retValue;
 	}
 	
 	

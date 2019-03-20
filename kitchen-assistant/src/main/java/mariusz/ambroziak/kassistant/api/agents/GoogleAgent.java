@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import madkit.message.StringMessage;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.ParseableRecipeData;
-import mariusz.ambroziak.kassistant.Apiclients.googleAuth.GoogleAuthApiClient;
+import mariusz.ambroziak.kassistant.Apiclients.googleAuth.GoogleDriveApiClient;
 import mariusz.ambroziak.kassistant.agents.BaseAgent;
 import mariusz.ambroziak.kassistant.agents.ProduktAgent;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
@@ -86,8 +86,8 @@ public class GoogleAgent extends BaseAgent {
 		String dietLimitationsAsString="";
 		String healthLimitationsAsString="";
 		try {
-			dietLimitationsAsString = GoogleAuthApiClient.getDietLimitationsAsString();
-			healthLimitationsAsString = GoogleAuthApiClient.getHealthLimitationsAsString();
+			dietLimitationsAsString = GoogleDriveApiClient.getDietLimitationsAsString();
+			healthLimitationsAsString = GoogleDriveApiClient.getHealthLimitationsAsString();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

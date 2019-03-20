@@ -48,6 +48,8 @@
 <c:set var="googleAuthorisationSuffix" value="<%= mariusz.ambroziak.kassistant.utils.JspStringHolder.GOOGLE_AUTHORISATION_SUFFIX%>" scope="session"/>
 <c:set var="googleDeleteSuffix" value="<%= mariusz.ambroziak.kassistant.utils.JspStringHolder.GOOGLE_DELETION_SUFFIX%>" scope="session"/>
 <c:set var="googleGetDataSuffix" value="<%= mariusz.ambroziak.kassistant.utils.JspStringHolder.GOOGLE_GET_DATA_SUFFIX%>" scope="session"/>
+<c:set var="dietCheckboxName" value="<%= mariusz.ambroziak.kassistant.utils.JspStringHolder.dietCheckboxName%>" scope="session"/>
+<c:set var="healthCheckboxName" value="<%= mariusz.ambroziak.kassistant.utils.JspStringHolder.healthCheckboxName%>" scope="session"/>
 
 
 

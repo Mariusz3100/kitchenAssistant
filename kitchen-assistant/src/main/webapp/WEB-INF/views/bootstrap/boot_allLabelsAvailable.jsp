@@ -22,17 +22,17 @@
 	<!--==========================
   Hero Section
 ============================-->
-			<div class="empty-page-info"></div>
-	
+	<div class="empty-page-info"></div>
+
 	<section id="hero" class="wow fadeIn">
-	<h3 style="text-align: center;">Diet and health restrictions available.</h3>
-	<div style="overflow-y: auto; max-height: 80vh">
+	<h3 style="text-align: center;">Diet and health restrictions
+		available.</h3>
 		<div class="container">
 			<div class="row">
-				<c:choose>
-					<c:when test="${not empty dietLabels && fn:length(dietLabels)>0}">
-						<div>
-							<div class="col">
+				<div class="col">
+					<c:choose>
+						<c:when test="${not empty dietLabels && fn:length(dietLabels)>0}">
+							
 								<h3 class="ingredient-heading">Following diet labels can be
 									used</h3>
 
@@ -42,39 +42,36 @@
 										<li>${dietLabel.label}(${dietLabel.parameterName})</li>
 									</c:forEach>
 								</ul>
-							</div>
-					</c:when>
-					<c:otherwise>
-						<h3 class="ingredient-heading">No diet labels found.</h3>
+						</c:when>
+						<c:otherwise>
+							<h3 class="ingredient-heading">No diet labels found.</h3>
 
-					</c:otherwise>
-				</c:choose>
-			</div>
-			<div class="col">
-				<c:choose>
-					<c:when
-						test="${not empty healthLabels && fn:length(healthLabels)>0}">
-						<h3 class="ingredient-heading">Following health labels can be
-							used</h3>
-						<div>
-							<ul>
-								<c:forEach var="healthLabel" items="${healthLabels}"
-									varStatus="status">
-									<li>${healthLabel.label}(${healthLabel.parameterName})</li>
-								</c:forEach>
-							</ul>
-						</div>
-					</c:when>
-					<c:otherwise>
-						<h3 class="ingredient-heading">No health labels found.</h3>
+						</c:otherwise>
+					</c:choose>
+				</div>
 
-					</c:otherwise>
-				</c:choose>
+				<div class="col">
+					<c:choose>
+						<c:when
+							test="${not empty healthLabels && fn:length(healthLabels)>0}">
+							<h3 class="ingredient-heading">Following health labels can
+								be used</h3>
+								<ul>
+									<c:forEach var="healthLabel" items="${healthLabels}"
+										varStatus="status">
+										<li>${healthLabel.label}(${healthLabel.parameterName})</li>
+									</c:forEach>
+								</ul>
+						</c:when>
+						<c:otherwise>
+							<h3 class="ingredient-heading">No health labels found.</h3>
+
+						</c:otherwise>
+					</c:choose>
+				</div>
 			</div>
+
 		</div>
-
-	</div>
-
 	</section>
 
 	<jsp:include page="includes/footerInclude.jsp" />

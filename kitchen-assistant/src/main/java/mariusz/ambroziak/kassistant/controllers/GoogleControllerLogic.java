@@ -14,7 +14,7 @@ import com.google.api.services.drive.DriveScopes;
 
 import mariusz.ambroziak.kassistant.Apiclients.edaman.DietLabels;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.HealthLabels;
-import mariusz.ambroziak.kassistant.Apiclients.googleAuth.GoogleAuthApiClient;
+import mariusz.ambroziak.kassistant.Apiclients.googleAuth.GoogleDriveApiClient;
 import mariusz.ambroziak.kassistant.Apiclients.googleAuth.GoogleAuthApiParameters;
 import mariusz.ambroziak.kassistant.api.agents.GoogleAccessAgent;
 import mariusz.ambroziak.kassistant.exceptions.AgentSystemNotStartedException;
@@ -36,7 +36,7 @@ public abstract class GoogleControllerLogic {
 	}
 	protected ArrayList<String> getHealthLimitations() throws IOException, GoogleDriveAccessNotAuthorisedException {
 		ArrayList<HealthLabels> healthLimittions;
-		healthLimittions = GoogleAuthApiClient.getHealthLimitations();
+		healthLimittions = GoogleDriveApiClient.getHealthLimitations();
 		ArrayList<String> list=new ArrayList<String>();
 		if(healthLimittions!=null&&!healthLimittions.isEmpty())
 		{
@@ -90,7 +90,7 @@ public abstract class GoogleControllerLogic {
 	}
 	protected ArrayList<String> getDietLimitations() throws IOException, GoogleDriveAccessNotAuthorisedException {
 		ArrayList<DietLabels> dietLimittions;
-		dietLimittions = GoogleAuthApiClient.getDietLimitations();
+		dietLimittions = GoogleDriveApiClient.getDietLimitations();
 	
 	
 		ArrayList<String> list=new ArrayList<String>();
@@ -106,7 +106,7 @@ public abstract class GoogleControllerLogic {
 	}
 
 	protected void deleteLocalAuthorisationData() {
-		GoogleAuthApiClient.deleteCredentials();
+		GoogleDriveApiClient.deleteCredentials();
 	}
 //
 //	@Override

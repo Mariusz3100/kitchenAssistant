@@ -37,7 +37,7 @@
 						<li><a href="${googleAuthorisationSuffix}">Authorise access to google drive</a></li>
 						<li><a href="${googleDeleteSuffix}">Remove access to google drive</a></li>
 						<li><a href="${googleGetDataSuffix}">Get Diet and Health restrictions</a></li>
-						<li><a href="/boot_getLabels">List all available labels</a></li>
+						<li><a href="/boot_getAllLabels">List all available labels</a></li>
 						
 					</ul></li>
 				<li>

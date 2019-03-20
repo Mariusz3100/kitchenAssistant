@@ -1,67 +1,33 @@
 package mariusz.ambroziak.kassistant.agents;
 
-import static org.hamcrest.CoreMatchers.nullValue;
-
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Array;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 
-import org.hibernate.Session;
 import org.json.JSONObject;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-
-//import com.codesnippets4all.json.parsers.JsonParserFactory;
-
-
-
-
-import org.postgresql.translation.messages_bg;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import webscrappers.SJPWebScrapper;
-import webscrappers.przepisy.PrzepisyPLQExtract;
-import webscrappers.przepisy.PrzepisyPlWebscrapper;
-import webscrappers.przepisy.SkladnikiExtractor;
-import madkit.kernel.Agent;
 import madkit.kernel.AgentAddress;
-import madkit.kernel.Message;
 import madkit.message.StringMessage;
 import mariusz.ambroziak.kassistant.dao.Base_WordDAOImpl;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
 import mariusz.ambroziak.kassistant.dao.ProduktDAO;
-import mariusz.ambroziak.kassistant.dao.Variant_WordDAOImpl;
 import mariusz.ambroziak.kassistant.exceptions.AgentSystemNotStartedException;
 import mariusz.ambroziak.kassistant.exceptions.Page404Exception;
-import mariusz.ambroziak.kassistant.model.Base_Word;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.Recipe;
-import mariusz.ambroziak.kassistant.model.Recipe_Ingredient;
-import mariusz.ambroziak.kassistant.model.Variant_Word;
 import mariusz.ambroziak.kassistant.model.jsp.MultiProdukt_SearchResult;
 import mariusz.ambroziak.kassistant.model.jsp.SearchResult;
 import mariusz.ambroziak.kassistant.model.utils.PreciseQuantityWithPhrase;
-import mariusz.ambroziak.kassistant.utils.Converter;
 import mariusz.ambroziak.kassistant.utils.MessageTypes;
-import mariusz.ambroziak.kassistant.utils.ParameterHolder;
 import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 import mariusz.ambroziak.kassistant.utils.StringHolder;
+import webscrappers.przepisy.PrzepisyPlWebscrapper;
+import webscrappers.przepisy.SkladnikiExtractor;
 
 public class RecipeAgent extends BaseAgent{
 

@@ -2,6 +2,7 @@ package mariusz.ambroziak.kassistant.api.agents;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 
 import org.json.JSONObject;
@@ -12,7 +13,7 @@ import org.mortbay.jetty.security.Credential;
 import madkit.message.StringMessage;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.DietLabels;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.HealthLabels;
-import mariusz.ambroziak.kassistant.Apiclients.googleAuth.GoogleAuthApiClient;
+import mariusz.ambroziak.kassistant.Apiclients.googleAuth.GoogleDriveApiClient;
 import mariusz.ambroziak.kassistant.Apiclients.googleAuth.GoogleAuthApiClientCallbackController;
 import mariusz.ambroziak.kassistant.Apiclients.googleAuth.GoogleAuthApiClientController;
 import mariusz.ambroziak.kassistant.agents.BaseAgent;
@@ -121,17 +122,17 @@ public class GoogleAccessAgent extends BaseAgent {
 
 	private void deleteAuthorisationData() {
 		GoogleAuthApiClientCallbackController.authorisationMap.clear();
-		GoogleAuthApiClient.deleteCredentials();
+		GoogleDriveApiClient.deleteCredentials();
 		GoogleAuthApiClientController.deletionCounter++;
 	}
 
 
 	private ArrayList<DietLabels> getDietLimitationsPrivately() throws IOException, GoogleDriveAccessNotAuthorisedException {
-		return GoogleAuthApiClient.getDietLimitations();
+		return GoogleDriveApiClient.getDietLimitations();
 	}
 
 	private ArrayList<HealthLabels> getHealthLimitationsPrivately() throws IOException, GoogleDriveAccessNotAuthorisedException {
-		return GoogleAuthApiClient.getHealthLimitations();
+		return GoogleDriveApiClient.getHealthLimitations();
 	}
 	//
 	//	public Credential getCredentials() {
@@ -153,14 +154,48 @@ public class GoogleAccessAgent extends BaseAgent {
 		}
 	}
 
+	
+	public static void saveHealthLimitations(List<HealthLabels> labels) throws AgentSystemNotStartedException, GoogleDriveAccessNotAuthorisedException{
+		try {
+			GoogleAccessAgent freeAgent = getFreeAgent();
+			freeAgent.saveHealthLimitationsPrivately(labels);
+		} catch (IOException e) {
+			ProblemLogger.logProblem("Exception thrown during retrieving diet data from google drive");
+			ProblemLogger.logStackTrace(e.getStackTrace());
+			e.printStackTrace();
+		}
+	}
+	
+	public static void saveDietLimitations(List<DietLabels> labels) throws AgentSystemNotStartedException, GoogleDriveAccessNotAuthorisedException{
+		try {
+			GoogleAccessAgent freeAgent = getFreeAgent();
+			freeAgent.saveDietLimitationsPrivately(labels);
+		} catch (IOException e) {
+			ProblemLogger.logProblem("Exception thrown during retrieving diet data from google drive");
+			ProblemLogger.logStackTrace(e.getStackTrace());
+			e.printStackTrace();
+		}
+	}
+	private void saveDietLimitationsPrivately(List<DietLabels> labels) throws IOException, GoogleDriveAccessNotAuthorisedException {
+		GoogleDriveApiClient.writeDietLabelsToDrive(labels);
+		
+	}
+
+
+	private void saveHealthLimitationsPrivately(List<HealthLabels> labels) throws IOException, GoogleDriveAccessNotAuthorisedException {
+		GoogleDriveApiClient.writeHealthLabelsToDrive(labels);
+		
+	}
+
+
 	private void processgetLimitationsMessage(StringMessage m) {
 		JSONObject retValue=new JSONObject();
 
 		String dietLimitationsAsString="";
 		String healthLimitationsAsString="";
 		try {
-			dietLimitationsAsString = GoogleAuthApiClient.getDietLimitationsAsString();
-			healthLimitationsAsString = GoogleAuthApiClient.getHealthLimitationsAsString();
+			dietLimitationsAsString = GoogleDriveApiClient.getDietLimitationsAsString();
+			healthLimitationsAsString = GoogleDriveApiClient.getHealthLimitationsAsString();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

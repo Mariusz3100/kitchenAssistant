@@ -43,7 +43,9 @@ public class JspStringHolder {
 	public static final String GOOGLE_GET_DATA_SUFFIX="b_getGoogleData";
 	public static final String problemId_name="problemId";
 
-	
+	public static final String dietCheckboxName="dietLimtations";
+	public static final String healthCheckboxName="healthLimtations";
+
 	
 	public static final String START_AGENT_SYSTEM_SUFFIX="b_startSystem";
 	
