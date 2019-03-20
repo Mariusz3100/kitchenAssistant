@@ -7,7 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import mariusz.ambroziak.kassistant.Apiclients.googleAuth.GoogleAuthApiClient;
+import mariusz.ambroziak.kassistant.Apiclients.googleAuth.GoogleDriveApiClient;
 import mariusz.ambroziak.kassistant.exceptions.GoogleDriveAccessNotAuthorisedException;
 import mariusz.ambroziak.kassistant.utils.StringHolder;
 
@@ -36,7 +36,7 @@ public class TestController {
 	
 	@RequestMapping(value="/google_test")
 	public ModelAndView b_main() throws IOException, GoogleDriveAccessNotAuthorisedException {
-		GoogleAuthApiClient.main(null);
+		GoogleDriveApiClient.main(null);
 		
 		return null;
 	}

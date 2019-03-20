@@ -58,6 +58,21 @@ public enum DietLabels {
 	}
 	
 	
+	public  static List<DietLabels> tryRetrieving(List<String> list){
+		if(list==null)
+			return null;
+
+		List<DietLabels> retValue=new ArrayList<>();
+		
+		for(String label:list) {
+			DietLabels hl=tryRetrieving(label);
+			if(hl!=null)
+				retValue.add(hl);
+		}
+		
+		return retValue;
+	}
+	
 	public  static DietLabels tryRetrieving(String name){
 		if(name==null)
 			return null;

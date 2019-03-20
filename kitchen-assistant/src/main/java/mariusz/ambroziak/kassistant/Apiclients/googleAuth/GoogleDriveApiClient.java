@@ -49,7 +49,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public class GoogleAuthApiClient {
+public class GoogleDriveApiClient {
 
 	/**
 	 * Build and return an authorized Drive client service.
@@ -79,13 +79,13 @@ public class GoogleAuthApiClient {
 
 	public static void main(String[] args) throws IOException, GoogleDriveAccessNotAuthorisedException {
 		System.out.println();
-///		writeToDrive("xxx");
+		///		writeToDrive("xxx");
 		List<DietLabels> l=new ArrayList<>();
-//		l.add(DietLabels.HIGH_FIBER);
-//		l.add(DietLabels.BALANCED);
+		//		l.add(DietLabels.HIGH_FIBER);
+		//		l.add(DietLabels.BALANCED);
 		l.add(DietLabels.LOW_CARB);
-		
-		
+
+
 		writeDietLabelsToDrive(l);
 
 	}
@@ -123,30 +123,30 @@ public class GoogleAuthApiClient {
 
 	}
 
-//	public static void getOrCreateDirectory() throws IOException, GoogleDriveAccessNotAuthorisedException {
-//		Drive driveService = getDriveService();
-//		com.google.api.services.drive.model.File remoteFile;
-//		com.google.api.services.drive.model.File remoteFolder = getOrCreateKitchenAssistantFolder(driveService);
-//
-//		if(remoteFolder==null) {
-//			
-//		}
-//		getOrCreateGoogleDriveFile(driveService, StringHolder.GOOGLE_DRIVE_DIET_FILENAME,remoteFolder);
-//		getOrCreateGoogleDriveFile(driveService, StringHolder.GOOGLE_DRIVE_HEALTH_FILENAME,remoteFolder);
-//		
-//	}
+	//	public static void getOrCreateDirectory() throws IOException, GoogleDriveAccessNotAuthorisedException {
+	//		Drive driveService = getDriveService();
+	//		com.google.api.services.drive.model.File remoteFile;
+	//		com.google.api.services.drive.model.File remoteFolder = getOrCreateKitchenAssistantFolder(driveService);
+	//
+	//		if(remoteFolder==null) {
+	//			
+	//		}
+	//		getOrCreateGoogleDriveFile(driveService, StringHolder.GOOGLE_DRIVE_DIET_FILENAME,remoteFolder);
+	//		getOrCreateGoogleDriveFile(driveService, StringHolder.GOOGLE_DRIVE_HEALTH_FILENAME,remoteFolder);
+	//		
+	//	}
 
 	public static void writeDietLabelsToDrive(List<DietLabels> labels) throws IOException, GoogleDriveAccessNotAuthorisedException {
 		if(labels==null) {
 			labels=new ArrayList<>();
 		}
-		
+
 		if(!labels.isEmpty()) {
 			Drive driveService = getDriveService();
 			com.google.api.services.drive.model.File remoteFolder = getOrCreateKitchenAssistantFolder(driveService);
 			com.google.api.services.drive.model.File dietFile = getOrCreateGoogleDriveFile(driveService, StringHolder.GOOGLE_DRIVE_DIET_FILENAME,remoteFolder);
-			File outFile = createLocalFileToUpload(labels);
-			
+			File outFile = createLocalFileWithDietLabelsToUpload(labels);
+
 			com.google.api.services.drive.model.File fileToBeCreated = createLocalVersionOfDriveFile(dietFile);
 			FileContent mediaContent = new FileContent(dietFile.getMimeType(), outFile);
 			com.google.api.services.drive.model.File updatedFile = driveService.files().update(dietFile.getId(), fileToBeCreated, mediaContent).execute();
@@ -156,13 +156,58 @@ public class GoogleAuthApiClient {
 		}
 	}
 
-	private static File createLocalFileToUpload(List<DietLabels> labels) throws FileNotFoundException, IOException {
-		String newContent = convertLabelsToString(labels);
-		
+
+	public static void writeHealthLabelsToDrive(List<HealthLabels> labels) throws IOException, GoogleDriveAccessNotAuthorisedException {
+		if(labels==null) {
+			labels=new ArrayList<>();
+		}
+
+		if(!labels.isEmpty()) {
+			Drive driveService = getDriveService();
+			com.google.api.services.drive.model.File remoteFolder = getOrCreateKitchenAssistantFolder(driveService);
+			com.google.api.services.drive.model.File healthFile = getOrCreateGoogleDriveFile(driveService, StringHolder.GOOGLE_DRIVE_HEALTH_FILENAME,remoteFolder);
+			File outFile = createLocalFileWithHealthLabelsToUpload(labels);
+
+			com.google.api.services.drive.model.File fileToBeCreated = createLocalVersionOfDriveFile(healthFile);
+			FileContent mediaContent = new FileContent(healthFile.getMimeType(), outFile);
+			com.google.api.services.drive.model.File updatedFile = driveService.files().update(healthFile.getId(), fileToBeCreated, mediaContent).execute();
+			outFile.delete();
+			String dietLimitationsAsString = getDietLimitationsAsString();
+			System.out.println(dietLimitationsAsString);
+		}
+	}
+
+	private static File createLocalFileWithHealthLabelsToUpload(List<HealthLabels> labels) throws IOException {
+		String newContent = convertHealthLabelsToString(labels);
+
 		File outFile=new File("tempFile");
-		BufferedWriter writer=new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile)));
+		BufferedWriter writer;
+		writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile)));
 		writer.write(newContent);
 		writer.close();
+
+
+		return outFile;
+	}
+
+	private static String convertHealthLabelsToString(List<HealthLabels> labels) {
+		String newContent="";
+
+		for(HealthLabels label:labels) {
+			newContent+=label.getParameterName()+StringHolder.GOOGLE_DRIVE_LINE_SEPARATOR;
+		}
+		return newContent;
+	}
+
+	private static File createLocalFileWithDietLabelsToUpload(List<DietLabels> labels) throws IOException {
+		String newContent = convertDietLabelsToString(labels);
+
+		File outFile=new File("tempFile");
+		BufferedWriter writer;
+		writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile)));
+		writer.write(newContent);
+		writer.close();
+
 		return outFile;
 	}
 
@@ -175,29 +220,30 @@ public class GoogleAuthApiClient {
 		return fileToBeCreated;
 	}
 
-private static String convertLabelsToString(List<DietLabels> labels) {
-	String newContent="";
+	private static String convertDietLabelsToString(List<DietLabels> labels) {
+		String newContent="";
 
-	for(DietLabels label:labels) {
-		newContent+=label.getParameterName()+StringHolder.GOOGLE_DRIVE_LINE_SEPARATOR;
+		for(DietLabels label:labels) {
+			newContent+=label.getParameterName()+StringHolder.GOOGLE_DRIVE_LINE_SEPARATOR;
+		}
+		return newContent;
 	}
-	return newContent;
-}
 
-	
+
 	private static com.google.api.services.drive.model.File getOrCreateGoogleDriveFile(Drive driveService,String filename,
 			com.google.api.services.drive.model.File remoteFolder) throws IOException {
 		FileList kitchenAssistantFolder = getKitchenAssistantFolder(driveService);
-		
+
 		com.google.api.services.drive.model.File remoteFile;
 		String googleDriveQuery = "name='"+filename+"'"
-				+" and '"+kitchenAssistantFolder.getFiles().get(0).getId()+"' in parents";
+				+" and '"+kitchenAssistantFolder.getFiles().get(0).getId()+"' in parents"
+				+" and trashed = false";
 		FileList result = driveService.files().list()
 				.setPageSize(10)
 				.setFields("nextPageToken, files(id, name)")
 				.setQ(googleDriveQuery)
 				.execute();
-		
+
 		if(result==null||result.isEmpty()||result.getFiles().isEmpty()) {
 			com.google.api.services.drive.model.File fileMetadata = new com.google.api.services.drive.model.File();
 			fileMetadata.setName(filename);
@@ -233,7 +279,7 @@ private static String convertLabelsToString(List<DietLabels> labels) {
 		FileList result = driveService.files().list()
 				.setPageSize(10)
 				.setFields("nextPageToken, files(id, name)")
-				.setQ("name='"+StringHolder.GOOGLE_DRIVE_FOLDER+"'")
+				.setQ("name='"+StringHolder.GOOGLE_DRIVE_FOLDER+"' and trashed = false")
 
 				.execute();
 		return result;
@@ -277,7 +323,7 @@ private static String convertLabelsToString(List<DietLabels> labels) {
 		}
 
 		return retValue;
-		}
+	}
 
 
 	public static String getHealthLimitationsAsString() throws IOException, GoogleDriveAccessNotAuthorisedException {

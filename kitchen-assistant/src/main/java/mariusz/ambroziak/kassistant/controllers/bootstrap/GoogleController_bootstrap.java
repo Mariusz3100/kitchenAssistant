@@ -3,6 +3,9 @@ package mariusz.ambroziak.kassistant.controllers.bootstrap;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.jdo.JDOHelper;
@@ -12,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import madkit.kernel.Madkit;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.DietLabels;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.HealthLabels;
+import mariusz.ambroziak.kassistant.Apiclients.googleAuth.GoogleDriveApiClient;
 import mariusz.ambroziak.kassistant.agents.ClockAgent;
 import mariusz.ambroziak.kassistant.agents.RecipeAgent;
 import mariusz.ambroziak.kassistant.agents.config.AgentsSystem;
@@ -52,23 +56,7 @@ public class GoogleController_bootstrap{
 
 	@RequestMapping(value=JspStringHolder.GOOGLE_GET_DATA_SUFFIX)
 	public ModelAndView getGoogleData(HttpServletRequest request) {
-		ArrayList<String> dietList=new ArrayList<>();
-		ArrayList<String> healthList=new ArrayList<>();
-
-		try {
-			dietList = getDietLimitations();
-			healthList=getHealthLimitations();
-		} catch (GoogleDriveAccessNotAuthorisedException e) {
-			return createGoogleAccessNotGrantedMav();
-		} catch (AgentSystemNotStartedException e) {
-			return returnAgentSystemNotStartedPage();
-		}
-		ModelAndView mav=new ModelAndView(StringHolder.bootstrapFolder+"boot_GoogleData");
-
-		mav.addObject("healthLabels",healthList);
-		mav.addObject("dietLabels",dietList);
-
-		return mav;
+		return create_GetLabelsFromGoogleDrive_Mav();
 
 
 	}
@@ -130,7 +118,7 @@ public class GoogleController_bootstrap{
 		
 	}
 	
-	@RequestMapping(value="boot_getLabels")
+	@RequestMapping(value="boot_getAllLabels")
 	public ModelAndView b_getAllLabels(HttpServletRequest request) throws IOException {
 		DietLabels[] diets=DietLabels.values();
 		HealthLabels[] healths=HealthLabels.values();
@@ -143,7 +131,97 @@ public class GoogleController_bootstrap{
 		return mav;
 		
 	}
+	
+	
+	@RequestMapping(value="b_editLabelsDone")
+	public ModelAndView b_editedLabels(HttpServletRequest request) throws IOException {
+		String[] dietLabelsChosen=request.getParameterValues(JspStringHolder.dietCheckboxName);
+		String[] healthLabelsChosen=request.getParameterValues(JspStringHolder.healthCheckboxName);
 
+		List<DietLabels> chosenDietLabels = dietLabelsChosen==null?new ArrayList<>():DietLabels.tryRetrieving(Arrays.asList(dietLabelsChosen));
+		List<HealthLabels> chosenHealthLabels = healthLabelsChosen==null?new ArrayList<>():HealthLabels.tryRetrieving(Arrays.asList(healthLabelsChosen));
+		
+		try {
+			GoogleAccessAgent.saveDietLimitations(chosenDietLabels);
+			GoogleAccessAgent.saveHealthLimitations(chosenHealthLabels);
+		} catch (GoogleDriveAccessNotAuthorisedException e) {
+			return createGoogleAccessNotGrantedMav();
+		} catch (AgentSystemNotStartedException e) {
+			return returnAgentSystemNotStartedPage();
+		}
+		
+		return create_GetLabelsFromGoogleDrive_Mav();		
+	}
+
+	private ModelAndView create_GetLabelsFromGoogleDrive_Mav() {
+		ArrayList<String> dietList=new ArrayList<>();
+		ArrayList<String> healthList=new ArrayList<>();
+
+		try {
+			dietList = getDietLimitations();
+			healthList=getHealthLimitations();
+		} catch (GoogleDriveAccessNotAuthorisedException e) {
+			return createGoogleAccessNotGrantedMav();
+		} catch (AgentSystemNotStartedException e) {
+			return returnAgentSystemNotStartedPage();
+		}
+		ModelAndView mav=new ModelAndView(StringHolder.bootstrapFolder+"boot_GoogleData");
+
+		mav.addObject("healthLabels",healthList);
+		mav.addObject("dietLabels",dietList);
+
+		return mav;
+	}
+	
+	@RequestMapping(value="b_editLabels")
+	public ModelAndView b_editLabels(HttpServletRequest request) throws IOException {
+		DietLabels[] diets=DietLabels.values();
+		HealthLabels[] healths=HealthLabels.values();
+		
+		ModelAndView mav=new ModelAndView(StringHolder.bootstrapFolder+"boot_editLabels");
+
+		mav.addObject("healthLabels",healths);
+		mav.addObject("dietLabels",diets);
+
+		try {
+			Map<String,String> dietLimitations = getDietLimitationsAsMap();
+			Map<String,String> healthLimitations = getHealthLimitationsAsMap();
+			
+			
+			mav.addObject("selectedHealthLabels",healthLimitations);
+			mav.addObject("selectedDietLabels",dietLimitations);
+			
+		} catch (AgentSystemNotStartedException e) {
+			return returnAgentSystemNotStartedPage();
+		} catch (GoogleDriveAccessNotAuthorisedException e) {
+			return createGoogleAccessNotGrantedMav();
+		}
+		
+		
+		return mav;
+	}
+
+	private Map<String, String> getDietLimitationsAsMap() throws AgentSystemNotStartedException, GoogleDriveAccessNotAuthorisedException {
+		Map<String, String> retValue=new HashMap<String, String>();
+		ArrayList<String> dietLimitations = getDietLimitations();
+		
+		for(String dl: dietLimitations) {
+			retValue.put(dl, dl);
+		}
+		
+		return retValue;
+	}
+
+	private Map<String, String> getHealthLimitationsAsMap() throws AgentSystemNotStartedException, GoogleDriveAccessNotAuthorisedException {
+		Map<String, String> retValue=new HashMap<String, String>();
+		ArrayList<String> healtLimitations = getHealthLimitations();
+		
+		for(String dl: healtLimitations) {
+			retValue.put(dl, dl);
+		}
+		
+		return retValue;
+	}
 //	
 //	protected String getRedirectUri(HttpServletRequest req) throws ServletException, IOException {
 //		GenericUrl url = new GenericUrl(req.getRequestURL().toString());

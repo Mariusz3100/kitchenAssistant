@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import madkit.kernel.Madkit;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.DietLabels;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.HealthLabels;
-import mariusz.ambroziak.kassistant.Apiclients.googleAuth.GoogleAuthApiClient;
+import mariusz.ambroziak.kassistant.Apiclients.googleAuth.GoogleDriveApiClient;
 import mariusz.ambroziak.kassistant.agents.ClockAgent;
 import mariusz.ambroziak.kassistant.agents.RecipeAgent;
 import mariusz.ambroziak.kassistant.agents.config.AgentsSystem;
