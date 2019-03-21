@@ -29,6 +29,8 @@ import com.google.api.services.drive.model.*;
 
 import mariusz.ambroziak.kassistant.Apiclients.edaman.DietLabels;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.HealthLabels;
+import mariusz.ambroziak.kassistant.api.agents.GoogleAccessAgent;
+import mariusz.ambroziak.kassistant.exceptions.AgentSystemNotStartedException;
 import mariusz.ambroziak.kassistant.utils.JspStringHolder;
 import mariusz.ambroziak.kassistant.utils.StringHolder;
 
@@ -54,11 +56,13 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class GoogleAuthApiClientController extends AbstractAuthorizationCodeServlet {
@@ -69,11 +73,27 @@ public class GoogleAuthApiClientController extends AbstractAuthorizationCodeServ
 	  protected void localDoGet(HttpServletRequest request, HttpServletResponse response)
 	      throws IOException, ServletException {
 	    // do stuff
+		  Cookie c=getKitchenAssistantCookie(request);
+//		  try {
+//			  boolean accessAuthorised = GoogleAccessAgent.isAccessAuthorised();
+//			  if(accessAuthorised) {
+//				  response.sendRedirect(JspStringHolder.GOOGLE_AUTHORISATION_SUCCESSFUL_SUFFIX); 
+//			  }else {
+//				  super.service(request, response);
+//			  }
+//			
+//		} catch (AgentSystemNotStartedException e) {
+//			response.sendRedirect(JspStringHolder.START_AGENT_SYSTEM_NOT_STARTED_SUFFIX);
+//		}
+		  if(c==null) {
+			  super.service(request, response);
+		  }else {
+			  response.sendRedirect(JspStringHolder.GOOGLE_AUTHORISATION_SUCCESSFUL_SUFFIX);
+		  }
+		  
+
 		  System.out.println("stuff");
 
-		  super.service(request, response);
-
-	  
 	  }
 
 
@@ -102,10 +122,32 @@ public class GoogleAuthApiClientController extends AbstractAuthorizationCodeServ
 
 	  }
 
+		protected ModelAndView returnAgentSystemNotStartedPage() {
+			return new ModelAndView(StringHolder.bootstrapFolder+"boot_agentSystemNotStarted");
+		}
+		
 	  @Override
 	  protected String getUserId(HttpServletRequest req) throws ServletException, IOException {
 	    // return user ID
+		//  Cookie c=getKitchenAssistantCookie(req);
+			  
+			  
 		  return req.getSession(true).getId()+deletionCounter; 
 	  }
+
+
+
+	private Cookie getKitchenAssistantCookie(HttpServletRequest req) {
+		Cookie[] cookies = req.getCookies();
+		  
+		  if(cookies!=null) {
+			  for(Cookie c:cookies) {
+				  if(StringHolder.CREDENTIAL_COOKIE_NAME.equals(c.getName())){
+					  return c;
+				  }
+			  }
+		  }
+		  return null;
+	}
 	}
  

@@ -12,6 +12,7 @@ import java.util.Map;
 
 import javax.jdo.JDOHelper;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -119,8 +120,8 @@ public class GoogleAuthApiClientCallbackController extends AbstractAuthorization
 //		System.out.println("receiving session: "+req.getSession().getId());
 //		System.out.println("received credentials: "+credential);
 		authorisationMap.put(getUserId(req), credential);
-
-
+		resp.addCookie(new Cookie(StringHolder.CREDENTIAL_COOKIE_NAME, credential.getAccessToken()));
+		
 		resp.sendRedirect(JspStringHolder.GOOGLE_AUTHORISATION_SUCCESSFUL_SUFFIX);
 	}
 

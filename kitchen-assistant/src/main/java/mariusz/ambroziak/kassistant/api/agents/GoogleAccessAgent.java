@@ -7,8 +7,7 @@ import java.util.logging.Level;
 
 import org.json.JSONObject;
 import org.mortbay.jetty.security.Credential;
-
-
+import org.springframework.web.servlet.ModelAndView;
 
 import madkit.message.StringMessage;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.DietLabels;
@@ -241,5 +240,19 @@ public class GoogleAccessAgent extends BaseAgent {
 		AGENT_COMMUNITY=StringHolder.AGENT_COMMUNITY;
 		AGENT_ROLE=GOOGLE_AGENT_NAME;
 
+	}
+
+
+	public static boolean isAccessAuthorised() throws AgentSystemNotStartedException {
+		try {
+			GoogleAccessAgent freeAgent = getFreeAgent();
+			freeAgent.getDietLimitationsPrivately();
+			return true;
+		} catch (IOException e) {
+			return false;
+		} catch (GoogleDriveAccessNotAuthorisedException e) {
+			return false;
+		}
+		
 	}
 }

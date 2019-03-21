@@ -59,6 +59,7 @@ public class GoogleDriveApiClient {
 	 */
 	public static Drive getDriveService() throws IOException, GoogleDriveAccessNotAuthorisedException {
 		Credential credential = getCredential();//new java.io.File("").getAbsolutePath()
+		
 		if(credential==null)
 			return null;
 		else
@@ -90,51 +91,6 @@ public class GoogleDriveApiClient {
 
 	}
 
-	private static void writeToDrive(String string) throws IOException, GoogleDriveAccessNotAuthorisedException {
-		Drive service = getDriveService();
-
-		FileList result = service.files().list()
-				.setPageSize(10)
-				.setFields("nextPageToken, files(id, name)")
-				.setQ("name='creationTest'")
-
-				.execute();
-
-		if(result.isEmpty()||result.getFiles().isEmpty())
-			return;
-		OutputStream outputStream = new ByteArrayOutputStream();
-
-
-		service.files()
-		.export(result.getFiles().get(0).getId(),"text/csv")
-		.executeMediaAndDownloadTo(outputStream);
-		String driveContent=outputStream.toString();
-
-		String[] labels=driveContent.split(StringHolder.GOOGLE_DRIVE_LINE_SEPARATOR);
-		if(driveContent!=null&&!driveContent.equals(""))
-		{
-			for(String lab:labels){
-				DietLabels retrievedByName = DietLabels.tryRetrieving(lab);
-
-
-			}
-		}
-
-
-	}
-
-	//	public static void getOrCreateDirectory() throws IOException, GoogleDriveAccessNotAuthorisedException {
-	//		Drive driveService = getDriveService();
-	//		com.google.api.services.drive.model.File remoteFile;
-	//		com.google.api.services.drive.model.File remoteFolder = getOrCreateKitchenAssistantFolder(driveService);
-	//
-	//		if(remoteFolder==null) {
-	//			
-	//		}
-	//		getOrCreateGoogleDriveFile(driveService, StringHolder.GOOGLE_DRIVE_DIET_FILENAME,remoteFolder);
-	//		getOrCreateGoogleDriveFile(driveService, StringHolder.GOOGLE_DRIVE_HEALTH_FILENAME,remoteFolder);
-	//		
-	//	}
 
 	public static void writeDietLabelsToDrive(List<DietLabels> labels) throws IOException, GoogleDriveAccessNotAuthorisedException {
 		if(labels==null) {
