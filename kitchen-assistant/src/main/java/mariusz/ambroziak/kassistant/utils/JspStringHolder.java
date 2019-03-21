@@ -48,10 +48,12 @@ public class JspStringHolder {
 
 	
 	public static final String START_AGENT_SYSTEM_SUFFIX="b_startSystem";
+	public static final String START_AGENT_SYSTEM_NOT_STARTED_SUFFIX="/boot_systemNotStarted";
 	
 	public static final String PRODUCT_BY_URL_SUFFIX ="/b_produktByUrl";
 	public static final String PRODUCT_BY_NAME_SUFFIX ="/b_produktByName";
 	public static final String NUTRIENT_BY_NAME_SUFFIX ="/b_nutritientForFoodName";
+	public static final String NUTRIENT_BY_NDBNO_SUFFIX ="/b_nutritientForNdbno";
 	public static final String NUTRIENT_BY_NAME_SMARTLY_SUFFIX ="111";
 	public static final String NUTRIENT_SMART_PARSING_SUFFIX ="/nutrient_smart_parsing";
 

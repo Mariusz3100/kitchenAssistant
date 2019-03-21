@@ -21,8 +21,10 @@
 	<section id="hero" class="wow fadeIn">
 	<div class="hero-container">
 		<h1>Welcome to Kitchen Assistant</h1>
-		<a href="#get-started" class="btn-get-started scrollto">Get
-			Started</a>
+		<a href="/b_engRecipeForm" class="btn-get-started">Search For Recipes</a>
+		<a href="${productByNameSuffix }" class="btn-get-started">Search For Products</a>
+		<a href="${googleAuthorisationSuffix}" class="btn-get-started">Authorise access to google drive</a>
+
 	</div>
 	</section>
 

@@ -87,6 +87,7 @@ public class Agents_controller_bootstrap {
 
 	}
 	
+	@RequestMapping(value=JspStringHolder.START_AGENT_SYSTEM_NOT_STARTED_SUFFIX)
 	protected ModelAndView returnAgentSystemNotStartedPage() {
 		return new ModelAndView(StringHolder.bootstrapFolder+"boot_agentSystemNotStarted");
 	}

@@ -43,7 +43,7 @@ public class StringHolder {
 
 	public static final String SERVLET_RESPONSE_ENCODING ="ISO-8859-2";
 	public static final String user_name_value_suffix ="_users_value";
-
+	public static final String CREDENTIAL_COOKIE_NAME="kitchenAssistantCookie";
 	public static final String ENCODING =java.nio.charset.StandardCharsets.UTF_8.toString();
 	public static final String googleCredentials="{\n" + 
 			"	\"web\": {\n" + 

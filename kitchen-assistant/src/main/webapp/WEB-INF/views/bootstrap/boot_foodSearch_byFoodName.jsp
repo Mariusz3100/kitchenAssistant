@@ -22,11 +22,10 @@
 	<div class="hero-container">
 		<form action="b_nutritientForFoodName">
 			<h4>Search for food by its name:</h4>
-			<input type="text" name="${foodName}"> <br>
+			<input type="text" name="${foodName}">
 			<button type="submit" class="btn btn-success">Search</button>
 		</form>
-		<a href="#get-started" class="btn-get-started scrollto">Go back to
-			top</a>
+
 	</div>
 	</section>
 

@@ -26,8 +26,7 @@
 			<input type="number" name="${ndbno}">
 			<button type="submit" class="btn btn-success">Parse</button>
 		</form>
-		<a href="#get-started" class="btn-get-started scrollto">Go back to
-			top</a>
+
 	</div>
 	</section>
 

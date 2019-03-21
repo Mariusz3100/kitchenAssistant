@@ -22,7 +22,7 @@ import mariusz.ambroziak.kassistant.utils.StringHolder;
 public class NutrientParsing_controller_bootstrap {
 
 
-	@RequestMapping(value="/b_nutritientForNdbno")
+	@RequestMapping(value=JspStringHolder.NUTRIENT_BY_NDBNO_SUFFIX)
 	public ModelAndView apiRecipeParsed(HttpServletRequest request) {
 		String ndbno=request.getParameter(JspStringHolder.ndbno);
 		//04542
