@@ -25,8 +25,9 @@
 	<div class="empty-page-info"></div>
 
 	<section id="hero" class="wow fadeIn">
-	<h3 style="text-align: center;">Diet and health restrictions available.</h3>
-	<h6 style="text-align: center;">Edit labels below. If you want to remove all restrictions, remove respective file from google drive</h6>
+	<h6 style="text-align: center;">Edit your food restrictions below. Changes will be visible in Your google drive, in files diet and health in kitchenAssistant folder.</h6>
+	<h6 style="text-align: center;">If such files do not exist, they will be created.</h6> 
+	<h6 style="text-align: center;">If you want to remove all restrictions, remove respective file from google drive</h6>
 	<div style="overflow-y: auto; max-height: 80vh">
 		<form action="b_editLabelsDone">
 
