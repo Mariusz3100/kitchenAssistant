@@ -10,7 +10,9 @@ import java.util.Map;
 
 import javax.jdo.JDOHelper;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import madkit.kernel.Madkit;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.DietLabels;
@@ -56,7 +58,7 @@ public class GoogleController_bootstrap{
 
 	@RequestMapping(value=JspStringHolder.GOOGLE_GET_DATA_SUFFIX)
 	public ModelAndView getGoogleData(HttpServletRequest request) {
-		return create_GetLabelsFromGoogleDrive_Mav();
+		return create_GetLabelsFromGoogleDrive_Mav(request);
 
 
 	}
@@ -65,8 +67,11 @@ public class GoogleController_bootstrap{
 		return new ModelAndView(StringHolder.bootstrapFolder+"boot_agentSystemNotStarted");
 	}
 	
-	private ArrayList<String> getDietLimitations() throws AgentSystemNotStartedException, GoogleDriveAccessNotAuthorisedException {
-		ArrayList<DietLabels> dietLimitations = GoogleAccessAgent.getDietLimitations();
+	private ArrayList<String> getDietLimitations(HttpServletRequest request) throws AgentSystemNotStartedException, GoogleDriveAccessNotAuthorisedException {
+		Cookie accessToken=getKitchenAssistantCookie(request);
+		if(accessToken==null)
+			throw new GoogleDriveAccessNotAuthorisedException();
+		ArrayList<DietLabels> dietLimitations = GoogleAccessAgent.getDietLimitations(accessToken.getValue());
 		ArrayList<String> retValue=new ArrayList<>();
 		for(DietLabels dl:dietLimitations) {
 			retValue.add(dl.getParameterName());
@@ -74,8 +79,11 @@ public class GoogleController_bootstrap{
 		return retValue;
 	}
 
-	private ArrayList<String> getHealthLimitations() throws AgentSystemNotStartedException, GoogleDriveAccessNotAuthorisedException {
-		ArrayList<HealthLabels> healthLimitations = GoogleAccessAgent.getHealthLimitations();
+	private ArrayList<String> getHealthLimitations(HttpServletRequest request) throws AgentSystemNotStartedException, GoogleDriveAccessNotAuthorisedException {
+		Cookie accessToken=getKitchenAssistantCookie(request);
+		if(accessToken==null)
+			throw new GoogleDriveAccessNotAuthorisedException();
+		ArrayList<HealthLabels> healthLimitations = GoogleAccessAgent.getHealthLimitations(accessToken.getValue());
 		ArrayList<String> retValue=new ArrayList<>();
 		for(HealthLabels hl:healthLimitations) {
 			retValue.add(hl.getParameterName());
@@ -96,11 +104,10 @@ public class GoogleController_bootstrap{
 
 
 	}
-	@RequestMapping(value=JspStringHolder.GOOGLE_DELETION_SUFFIX)
-	public ModelAndView b_googleDelete(HttpServletRequest request) throws IOException {
+	public ModelAndView b_googleDelete(HttpServletResponse response) throws IOException {
 
 		try {
-			deleteLocalAuthorisationData();
+			deleteLocalAuthorisationData(response);
 		} catch (AgentSystemNotStartedException e) {
 			// TODO Auto-generated catch block
 			return returnAgentSystemNotStartedPage();
@@ -113,12 +120,12 @@ public class GoogleController_bootstrap{
 
 	}
 
-	private void deleteLocalAuthorisationData() throws AgentSystemNotStartedException {
-		GoogleAccessAgent.deleteGoogleAuthorisationData();
+	private void deleteLocalAuthorisationData(HttpServletResponse response) throws AgentSystemNotStartedException {
+		GoogleAccessAgent.deleteGoogleAuthorisationData(response);
 		
 	}
 	
-	@RequestMapping(value="boot_getAllLabels")
+	@RequestMapping(value="b_getAllLabels")
 	public ModelAndView b_getAllLabels(HttpServletRequest request) throws IOException {
 		DietLabels[] diets=DietLabels.values();
 		HealthLabels[] healths=HealthLabels.values();
@@ -132,6 +139,18 @@ public class GoogleController_bootstrap{
 		
 	}
 	
+	private Cookie getKitchenAssistantCookie(HttpServletRequest req) {
+		Cookie[] cookies = req.getCookies();
+		  
+		  if(cookies!=null) {
+			  for(Cookie c:cookies) {
+				  if(StringHolder.CREDENTIAL_COOKIE_NAME.equals(c.getName())){
+					  return c;
+				  }
+			  }
+		  }
+		  return null;
+	}
 	
 	@RequestMapping(value="b_editLabelsDone")
 	public ModelAndView b_editedLabels(HttpServletRequest request) throws IOException {
@@ -140,26 +159,32 @@ public class GoogleController_bootstrap{
 
 		List<DietLabels> chosenDietLabels = dietLabelsChosen==null?new ArrayList<>():DietLabels.tryRetrieving(Arrays.asList(dietLabelsChosen));
 		List<HealthLabels> chosenHealthLabels = healthLabelsChosen==null?new ArrayList<>():HealthLabels.tryRetrieving(Arrays.asList(healthLabelsChosen));
-		
+		Cookie accessToken=getKitchenAssistantCookie(request);
+		if(accessToken==null) {
+			return createGoogleAccessNotGrantedMav();
+		}
 		try {
-			GoogleAccessAgent.saveDietLimitations(chosenDietLabels);
-			GoogleAccessAgent.saveHealthLimitations(chosenHealthLabels);
+			GoogleAccessAgent.saveDietLimitations(accessToken.getValue(),chosenDietLabels);
+			GoogleAccessAgent.saveHealthLimitations(accessToken.getValue(),chosenHealthLabels);
 		} catch (GoogleDriveAccessNotAuthorisedException e) {
 			return createGoogleAccessNotGrantedMav();
 		} catch (AgentSystemNotStartedException e) {
 			return returnAgentSystemNotStartedPage();
 		}
 		
-		return create_GetLabelsFromGoogleDrive_Mav();		
+		return create_GetLabelsFromGoogleDrive_Mav(request);		
 	}
 
-	private ModelAndView create_GetLabelsFromGoogleDrive_Mav() {
+	private ModelAndView create_GetLabelsFromGoogleDrive_Mav(HttpServletRequest request) {
 		ArrayList<String> dietList=new ArrayList<>();
 		ArrayList<String> healthList=new ArrayList<>();
+		Cookie accessToken=getKitchenAssistantCookie(request);
+		if(accessToken==null)
+			return createGoogleAccessNotGrantedMav();
 
 		try {
-			dietList = getDietLimitations();
-			healthList=getHealthLimitations();
+			dietList = getDietLimitations(request);
+			healthList=getHealthLimitations(request);
 		} catch (GoogleDriveAccessNotAuthorisedException e) {
 			return createGoogleAccessNotGrantedMav();
 		} catch (AgentSystemNotStartedException e) {
@@ -184,8 +209,8 @@ public class GoogleController_bootstrap{
 		mav.addObject("dietLabels",diets);
 
 		try {
-			Map<String,String> dietLimitations = getDietLimitationsAsMap();
-			Map<String,String> healthLimitations = getHealthLimitationsAsMap();
+			Map<String,String> dietLimitations = getDietLimitationsAsMap(request);
+			Map<String,String> healthLimitations = getHealthLimitationsAsMap(request);
 			
 			
 			mav.addObject("selectedHealthLabels",healthLimitations);
@@ -201,9 +226,9 @@ public class GoogleController_bootstrap{
 		return mav;
 	}
 
-	private Map<String, String> getDietLimitationsAsMap() throws AgentSystemNotStartedException, GoogleDriveAccessNotAuthorisedException {
+	private Map<String, String> getDietLimitationsAsMap(HttpServletRequest request) throws AgentSystemNotStartedException, GoogleDriveAccessNotAuthorisedException {
 		Map<String, String> retValue=new HashMap<String, String>();
-		ArrayList<String> dietLimitations = getDietLimitations();
+		ArrayList<String> dietLimitations = getDietLimitations(request);
 		
 		for(String dl: dietLimitations) {
 			retValue.put(dl, dl);
@@ -212,9 +237,9 @@ public class GoogleController_bootstrap{
 		return retValue;
 	}
 
-	private Map<String, String> getHealthLimitationsAsMap() throws AgentSystemNotStartedException, GoogleDriveAccessNotAuthorisedException {
+	private Map<String, String> getHealthLimitationsAsMap(HttpServletRequest request) throws AgentSystemNotStartedException, GoogleDriveAccessNotAuthorisedException {
 		Map<String, String> retValue=new HashMap<String, String>();
-		ArrayList<String> healtLimitations = getHealthLimitations();
+		ArrayList<String> healtLimitations = getHealthLimitations(request);
 		
 		for(String dl: healtLimitations) {
 			retValue.put(dl, dl);

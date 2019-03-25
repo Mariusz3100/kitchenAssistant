@@ -18,7 +18,9 @@ public class StringHolder {
 
 	public static final String EXCEPTION_MESSAGE_NAME="exception_name";
 	public static final String EXCEPTION_STACKTRACE_NAME="stacktrace";
-	
+	public static final String GOOGLE_ACCESS_TOKEN_NAME="accessToken";
+	public static final String GOOGLE_ACCESS_TOKEN_ID_NAME="accessTokenId";
+
 	
 	public static final String SEARCH_PHRASE_BORDERS="_";
 	
@@ -41,9 +43,14 @@ public class StringHolder {
 	public static final String SERVLETS_GROUP = AGENT_GROUP;//"servlets";
 	public static final String AGENT_COMMUNITY ="kitchenAssistant";
 
+	
+	public static final String INVALID_CREDENTIALS_EXCEPTION_MESSAGE ="Invalid Credentials";
+
+	
+	
 	public static final String SERVLET_RESPONSE_ENCODING ="ISO-8859-2";
 	public static final String user_name_value_suffix ="_users_value";
-	public static final String CREDENTIAL_COOKIE_NAME="kitchenAssistantCookie";
+	public static final String CREDENTIAL_COOKIE_NAME="kitchenAssistantCredentialCookie";
 	public static final String ENCODING =java.nio.charset.StandardCharsets.UTF_8.toString();
 	public static final String googleCredentials="{\n" + 
 			"	\"web\": {\n" + 

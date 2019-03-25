@@ -307,7 +307,7 @@ public class EdamanRecipeAgent extends BaseAgent{
 		return json;
 	}
 
-	public static ArrayList<ParseableRecipeData> searchForRecipes(String searchPhrase) throws AgentSystemNotStartedException{
+	public static ArrayList<ParseableRecipeData> searchForRecipes(String googleAccessToken,String searchPhrase) throws AgentSystemNotStartedException{
 		EdamanRecipeAgent freeOne = getFreeAgent();
 		if(freeOne==null){
 			return null;
@@ -315,7 +315,7 @@ public class EdamanRecipeAgent extends BaseAgent{
 			freeOne.setBusy(true);
 			ArrayList<ParseableRecipeData> result;
 			try{
-				result= freeOne.searchForRecipesByPhrase(searchPhrase);
+				result= freeOne.searchForRecipesByPhrase(googleAccessToken,searchPhrase);
 			}finally{
 				freeOne.setBusy(false);
 			}
@@ -323,10 +323,13 @@ public class EdamanRecipeAgent extends BaseAgent{
 		}
 	}	
 
-	private ArrayList<ParseableRecipeData> searchForRecipesByPhrase(String searchPhrase) {
+	private ArrayList<ParseableRecipeData> searchForRecipesByPhrase(String googleAccessToken,String searchPhrase) {
 		HealthAndDietLimitations recipeLimitations;
 		try {
-			recipeLimitations = getRecipeLimitations();
+			if(googleAccessToken==null||googleAccessToken.equals(""))
+				return EdamanRecipeApiClient.getRecipesByPhrase(searchPhrase);
+			else
+				recipeLimitations = getRecipeLimitations(googleAccessToken);
 		} catch (GoogleDriveAccessNotAuthorisedException e) {
 			return EdamanRecipeApiClient.getRecipesByPhrase(searchPhrase);
 
@@ -358,16 +361,17 @@ public class EdamanRecipeAgent extends BaseAgent{
 
 	private EdamanRecipeApiParameters packToEap(String searchPhrase, HealthAndDietLimitations recipeLimitations) {
 		EdamanRecipeApiParameters eap=new EdamanRecipeApiParameters();
-
-		eap.setDietLabels(recipeLimitations.getDietLabels());
-		eap.setHealthLabels(recipeLimitations.getHealthLabels());
+		if(recipeLimitations!=null) {
+			eap.setDietLabels(recipeLimitations.getDietLabels());
+			eap.setHealthLabels(recipeLimitations.getHealthLabels());
+		}
 		eap.setPhrase(searchPhrase);
 		return eap;
 	}
 
 
-	private HealthAndDietLimitations getRecipeLimitations() throws GoogleDriveAccessNotAuthorisedException {
-		StringMessage messageToSend = createGetLimitationMessage();
+	private HealthAndDietLimitations getRecipeLimitations(String googleAccessToken) throws GoogleDriveAccessNotAuthorisedException {
+		StringMessage messageToSend = createGetLimitationMessage(googleAccessToken);
 
 		AgentAddress x=getAgentWithRole(StringHolder.AGENT_COMMUNITY, AGENT_GROUP, GoogleAccessAgent.GOOGLE_AGENT_NAME);
 
@@ -426,15 +430,25 @@ public class EdamanRecipeAgent extends BaseAgent{
 	}
 
 
-	private StringMessage createGetLimitationMessage() {
+	private StringMessage createGetLimitationMessage(String googleAccessToken) {
 		JSONObject json = new JSONObject();
 
 		json.put(StringHolder.MESSAGE_CREATOR_NAME, PARSER_NAME);
 		json.put(StringHolder.MESSAGE_TYPE_NAME, MessageTypes.GetLimitations);
-
+		includeAccessToken(json,googleAccessToken);
 		StringMessage messageToSend = new StringMessage(json.toString());
 
 		return messageToSend;
+	}
+
+
+	private void includeAccessToken(JSONObject json, String googleAccessToken) {
+		GoogleAccessAgent.accessTokenMap
+			.put(Long.toString(GoogleAccessAgent.accessTokenIdInMap),
+					googleAccessToken);
+		
+		json.put(StringHolder.GOOGLE_ACCESS_TOKEN_ID_NAME, GoogleAccessAgent.accessTokenIdInMap);
+		GoogleAccessAgent.accessTokenIdInMap++;
 	}
 
 

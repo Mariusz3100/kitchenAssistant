@@ -2,8 +2,14 @@ package mariusz.ambroziak.kassistant.api.agents;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
 import org.mortbay.jetty.security.Credential;
@@ -22,10 +28,12 @@ import mariusz.ambroziak.kassistant.model.jsp.MultiProdukt_SearchResult;
 import mariusz.ambroziak.kassistant.utils.MessageTypes;
 import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 import mariusz.ambroziak.kassistant.utils.StringHolder;
+import mariusz.ambroziak.kassistant.utils.StringUtils;
 
 public class GoogleAccessAgent extends BaseAgent {
 	public static String GOOGLE_AGENT_NAME="Google_agent";
-
+	public static Map<String,String> accessTokenMap=new HashMap<>();
+	public static long accessTokenIdInMap=0;
 	private static ArrayList<GoogleAccessAgent> agents;
 
 	GoogleAuthApiClientCallbackController googleCallbackController;
@@ -93,45 +101,51 @@ public class GoogleAccessAgent extends BaseAgent {
 	}
 
 
-	public static ArrayList<DietLabels> getDietLimitations() throws AgentSystemNotStartedException, GoogleDriveAccessNotAuthorisedException{
+	public static ArrayList<DietLabels> getDietLimitations(String accessToken) throws AgentSystemNotStartedException, GoogleDriveAccessNotAuthorisedException{
 		try {
 			GoogleAccessAgent freeAgent = getFreeAgent();
-			return freeAgent.getDietLimitationsPrivately();
+			return freeAgent.getDietLimitationsPrivately(accessToken);
 		} catch (IOException e) {
-			ProblemLogger.logProblem("Exception thrown during retrieving diet data from google drive");
-			ProblemLogger.logStackTrace(e.getStackTrace());
-			ArrayList<DietLabels> arrayList = new ArrayList<DietLabels>();
-			e.printStackTrace();
-			return arrayList;
+
+			if(e.getMessage().contains(StringHolder.INVALID_CREDENTIALS_EXCEPTION_MESSAGE)) {
+				throw new GoogleDriveAccessNotAuthorisedException();
+			}else {
+				ProblemLogger.logProblem("Exception thrown during retrieving diet data from google drive");
+				ProblemLogger.logStackTrace(e.getStackTrace());
+				ArrayList<DietLabels> arrayList = new ArrayList<DietLabels>();
+				e.printStackTrace();
+				return arrayList;
+			}
 		}
 
 	}
 
-	public static void deleteGoogleAuthorisationData() throws AgentSystemNotStartedException{
+	public static void deleteGoogleAuthorisationData(HttpServletResponse response) throws AgentSystemNotStartedException{
 
 		GoogleAccessAgent freeOne = getFreeAgent();
 		if(freeOne!=null)
 		{
 			freeOne.setBusy(true);
-			freeOne.deleteAuthorisationData();
+			freeOne.deleteAuthorisationData(response);
 			freeOne.setBusy(false);
 		}
 	}
 
 
-	private void deleteAuthorisationData() {
-		GoogleAuthApiClientCallbackController.authorisationMap.clear();
+	private void deleteAuthorisationData(HttpServletResponse response) {
+		Cookie cookie = new Cookie(StringHolder.CREDENTIAL_COOKIE_NAME, "");
+		cookie.setMaxAge(0);
+		response.addCookie(cookie);
 		GoogleDriveApiClient.deleteCredentials();
-		GoogleAuthApiClientController.deletionCounter++;
 	}
 
 
-	private ArrayList<DietLabels> getDietLimitationsPrivately() throws IOException, GoogleDriveAccessNotAuthorisedException {
-		return GoogleDriveApiClient.getDietLimitations();
+	private ArrayList<DietLabels> getDietLimitationsPrivately(String accessToken) throws IOException, GoogleDriveAccessNotAuthorisedException {
+		return GoogleDriveApiClient.getDietLimitations(accessToken);
 	}
 
-	private ArrayList<HealthLabels> getHealthLimitationsPrivately() throws IOException, GoogleDriveAccessNotAuthorisedException {
-		return GoogleDriveApiClient.getHealthLimitations();
+	private ArrayList<HealthLabels> getHealthLimitationsPrivately(String accessToken) throws IOException, GoogleDriveAccessNotAuthorisedException {
+		return GoogleDriveApiClient.getHealthLimitations(accessToken);
 	}
 	//
 	//	public Credential getCredentials() {
@@ -140,49 +154,61 @@ public class GoogleAccessAgent extends BaseAgent {
 	//		return null;
 	//	}
 	//	
-	public static ArrayList<HealthLabels> getHealthLimitations() throws AgentSystemNotStartedException, GoogleDriveAccessNotAuthorisedException{
+	public static ArrayList<HealthLabels> getHealthLimitations(String accessToken) throws AgentSystemNotStartedException, GoogleDriveAccessNotAuthorisedException{
 		try {
 			GoogleAccessAgent freeAgent = getFreeAgent();
-			return freeAgent.getHealthLimitationsPrivately();
+			return freeAgent.getHealthLimitationsPrivately(accessToken);
 		} catch (IOException e) {
-			ProblemLogger.logProblem("Exception thrown during retrieving diet data from google drive");
-			ProblemLogger.logStackTrace(e.getStackTrace());
-			ArrayList<HealthLabels> arrayList = new ArrayList<HealthLabels>();
-			e.printStackTrace();
-			return arrayList;
+			if(e.getMessage().contains(StringHolder.INVALID_CREDENTIALS_EXCEPTION_MESSAGE)) {
+				throw new GoogleDriveAccessNotAuthorisedException();
+			}else {
+				ProblemLogger.logProblem("Exception thrown during retrieving diet data from google drive");
+				ProblemLogger.logStackTrace(e.getStackTrace());
+				ArrayList<HealthLabels> arrayList = new ArrayList<HealthLabels>();
+				e.printStackTrace();
+				return arrayList;
+			}
 		}
 	}
 
 	
-	public static void saveHealthLimitations(List<HealthLabels> labels) throws AgentSystemNotStartedException, GoogleDriveAccessNotAuthorisedException{
+	public static void saveHealthLimitations(String accessToken,List<HealthLabels> labels) throws AgentSystemNotStartedException, GoogleDriveAccessNotAuthorisedException{
 		try {
 			GoogleAccessAgent freeAgent = getFreeAgent();
-			freeAgent.saveHealthLimitationsPrivately(labels);
+			freeAgent.saveHealthLimitationsPrivately(accessToken,labels);
 		} catch (IOException e) {
-			ProblemLogger.logProblem("Exception thrown during retrieving diet data from google drive");
-			ProblemLogger.logStackTrace(e.getStackTrace());
-			e.printStackTrace();
+			if(e.getMessage().contains(StringHolder.INVALID_CREDENTIALS_EXCEPTION_MESSAGE)) {
+				throw new GoogleDriveAccessNotAuthorisedException();
+			}else {
+				ProblemLogger.logProblem("Exception thrown during retrieving diet data from google drive");
+				ProblemLogger.logStackTrace(e.getStackTrace());
+				e.printStackTrace();
+			}
 		}
 	}
 	
-	public static void saveDietLimitations(List<DietLabels> labels) throws AgentSystemNotStartedException, GoogleDriveAccessNotAuthorisedException{
+	public static void saveDietLimitations(String accessToken,List<DietLabels> labels) throws AgentSystemNotStartedException, GoogleDriveAccessNotAuthorisedException{
 		try {
 			GoogleAccessAgent freeAgent = getFreeAgent();
-			freeAgent.saveDietLimitationsPrivately(labels);
+			freeAgent.saveDietLimitationsPrivately(accessToken,labels);
 		} catch (IOException e) {
-			ProblemLogger.logProblem("Exception thrown during retrieving diet data from google drive");
-			ProblemLogger.logStackTrace(e.getStackTrace());
-			e.printStackTrace();
+			if(e.getMessage().contains(StringHolder.INVALID_CREDENTIALS_EXCEPTION_MESSAGE)) {
+				throw new GoogleDriveAccessNotAuthorisedException();
+			}else {
+				ProblemLogger.logProblem("Exception thrown during retrieving diet data from google drive");
+				ProblemLogger.logStackTrace(e.getStackTrace());
+				e.printStackTrace();
+			}
 		}
 	}
-	private void saveDietLimitationsPrivately(List<DietLabels> labels) throws IOException, GoogleDriveAccessNotAuthorisedException {
-		GoogleDriveApiClient.writeDietLabelsToDrive(labels);
+	private void saveDietLimitationsPrivately(String accessToken,List<DietLabels> labels) throws IOException, GoogleDriveAccessNotAuthorisedException {
+		GoogleDriveApiClient.writeDietLabelsToDrive(accessToken,labels);
 		
 	}
 
 
-	private void saveHealthLimitationsPrivately(List<HealthLabels> labels) throws IOException, GoogleDriveAccessNotAuthorisedException {
-		GoogleDriveApiClient.writeHealthLabelsToDrive(labels);
+	private void saveHealthLimitationsPrivately(String accessToken,List<HealthLabels> labels) throws IOException, GoogleDriveAccessNotAuthorisedException {
+		GoogleDriveApiClient.writeHealthLabelsToDrive(accessToken,labels);
 		
 	}
 
@@ -192,21 +218,32 @@ public class GoogleAccessAgent extends BaseAgent {
 
 		String dietLimitationsAsString="";
 		String healthLimitationsAsString="";
+		String accessToken=extractAccessTokenFromMessage(m);
 		try {
-			dietLimitationsAsString = GoogleDriveApiClient.getDietLimitationsAsString();
-			healthLimitationsAsString = GoogleDriveApiClient.getHealthLimitationsAsString();
+			dietLimitationsAsString = GoogleDriveApiClient.getDietLimitationsAsString(accessToken);
+			healthLimitationsAsString = GoogleDriveApiClient.getHealthLimitationsAsString(accessToken);
+			retValue.put(StringHolder.MESSAGE_TYPE_NAME, MessageTypes.GetLimitationsResponse);
+
+			retValue.put(StringHolder.HEALTH_LIMITATIONS_NAME,healthLimitationsAsString);
+			retValue.put(StringHolder.DIET_LIMITATIONS_NAME,dietLimitationsAsString);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			if(e.getMessage()!=null&&e.getMessage().contains(StringHolder.INVALID_CREDENTIALS_EXCEPTION_MESSAGE)) {
+				retValue.put(StringHolder.MESSAGE_TYPE_NAME, MessageTypes.GetLimitationsResponseNotAuthorised);
+
+
+			}else {
+				ProblemLogger.logProblem("Exception thrown during retrieving diet data from google drive");
+				retValue.put(StringHolder.MESSAGE_CREATOR_NAME, GOOGLE_AGENT_NAME);
+				retValue.put(StringHolder.EXCEPTION_MESSAGE_NAME, e.getMessage());
+				retValue.put(StringHolder.EXCEPTION_STACKTRACE_NAME, StringUtils.stackTraceToString(e));
+
+			
+			}
 		} catch (GoogleDriveAccessNotAuthorisedException e) {
 			retValue.put(StringHolder.MESSAGE_TYPE_NAME, MessageTypes.GetLimitationsResponseNotAuthorised);
 
 		}
 		
-		retValue.put(StringHolder.MESSAGE_TYPE_NAME, MessageTypes.GetLimitationsResponse);
-
-		retValue.put(StringHolder.HEALTH_LIMITATIONS_NAME,healthLimitationsAsString);
-		retValue.put(StringHolder.DIET_LIMITATIONS_NAME,dietLimitationsAsString);
 
 
 		StringMessage messageToSend = new StringMessage(retValue.toString());
@@ -214,6 +251,25 @@ public class GoogleAccessAgent extends BaseAgent {
 		sendReplyWithRoleKA(m, messageToSend,GOOGLE_AGENT_NAME);
 
 
+	}
+
+
+	private String extractAccessTokenFromMessage(StringMessage m) {
+		if(m==null||m.getContent()==null)
+			return "";
+		String content=((StringMessage)m).getContent();
+		JSONObject json=new JSONObject(content);
+
+		String accessTokenId = "";
+		
+		try{
+			accessTokenId=Integer.toString((Integer) json.get(StringHolder.GOOGLE_ACCESS_TOKEN_ID_NAME));
+		}catch (ClassCastException e) {
+			accessTokenId=(String) json.get(StringHolder.GOOGLE_ACCESS_TOKEN_ID_NAME);
+			
+		}
+		String accessToken = accessTokenMap.get(accessTokenId);
+		return accessToken;
 	}
 
 
@@ -243,10 +299,10 @@ public class GoogleAccessAgent extends BaseAgent {
 	}
 
 
-	public static boolean isAccessAuthorised() throws AgentSystemNotStartedException {
+	public static boolean isAccessAuthorised(String accessToken) throws AgentSystemNotStartedException {
 		try {
 			GoogleAccessAgent freeAgent = getFreeAgent();
-			freeAgent.getDietLimitationsPrivately();
+			freeAgent.getDietLimitationsPrivately(accessToken);
 			return true;
 		} catch (IOException e) {
 			return false;

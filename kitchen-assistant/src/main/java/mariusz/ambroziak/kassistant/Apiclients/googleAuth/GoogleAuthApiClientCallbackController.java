@@ -67,13 +67,10 @@ public class GoogleAuthApiClientCallbackController extends AbstractAuthorization
 	public static final String callbackBaseUrl=StringHolder.baseUrl+callbackSuffix;
 
 
-	public static Map<String,Credential> authorisationMap;
 
 
 
-	static {
-		authorisationMap=new HashMap<>();
-	}
+
 	@RequestMapping(value="/oauth2callback")
 	public void localDoGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
@@ -119,8 +116,10 @@ public class GoogleAuthApiClientCallbackController extends AbstractAuthorization
 		System.out.println("success");
 //		System.out.println("receiving session: "+req.getSession().getId());
 //		System.out.println("received credentials: "+credential);
-		authorisationMap.put(getUserId(req), credential);
-		resp.addCookie(new Cookie(StringHolder.CREDENTIAL_COOKIE_NAME, credential.getAccessToken()));
+//		authorisationMap.put(getUserId(req), credential);
+		Cookie cookie = new Cookie(StringHolder.CREDENTIAL_COOKIE_NAME, credential.getAccessToken());
+		
+		resp.addCookie(cookie);
 		
 		resp.sendRedirect(JspStringHolder.GOOGLE_AUTHORISATION_SUCCESSFUL_SUFFIX);
 	}
@@ -146,7 +145,7 @@ public class GoogleAuthApiClientCallbackController extends AbstractAuthorization
 	@Override
 	protected String getUserId(HttpServletRequest req) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		return req.getSession(true).getId()+GoogleAuthApiClientController.deletionCounter; 
+		return req.getSession(true).getId(); 
 	}
 
 

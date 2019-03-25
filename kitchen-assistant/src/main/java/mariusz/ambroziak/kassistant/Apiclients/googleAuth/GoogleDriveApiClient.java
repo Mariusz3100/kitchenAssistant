@@ -7,6 +7,7 @@ import com.google.api.client.auth.oauth2.Credential;
 //import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.AbstractInputStreamContent;
 import com.google.api.client.http.FileContent;
@@ -57,8 +58,9 @@ public class GoogleDriveApiClient {
 	 * @throws IOException
 	 * @throws GoogleDriveAccessNotAuthorisedException 
 	 */
-	public static Drive getDriveService() throws IOException, GoogleDriveAccessNotAuthorisedException {
-		Credential credential = getCredential();//new java.io.File("").getAbsolutePath()
+	public static Drive getDriveService(String accessToken) throws IOException, GoogleDriveAccessNotAuthorisedException {
+		
+		Credential credential = getCredential(accessToken);//new java.io.File("").getAbsolutePath()
 		
 		if(credential==null)
 			return null;
@@ -69,13 +71,15 @@ public class GoogleDriveApiClient {
 					.build();
 	}
 
-	private static Credential getCredential() throws GoogleDriveAccessNotAuthorisedException {
-		Map<String, Credential> authorisationMap = GoogleAuthApiClientCallbackController.authorisationMap;
-
-		if(authorisationMap.isEmpty())
+	private static Credential getCredential(String accessToken) throws GoogleDriveAccessNotAuthorisedException {
+//		Map<String, Credential> authorisationMap = GoogleAuthApiClientCallbackController.authorisationMap;
+		
+		if(accessToken==null||accessToken.equals(""))
 			throw new GoogleDriveAccessNotAuthorisedException();
-		else
-			return authorisationMap.values().iterator().next();
+		else{
+			GoogleCredential credential = new GoogleCredential().setAccessToken(accessToken);
+			return credential;
+		}
 	}
 
 	public static void main(String[] args) throws IOException, GoogleDriveAccessNotAuthorisedException {
@@ -87,18 +91,18 @@ public class GoogleDriveApiClient {
 		l.add(DietLabels.LOW_CARB);
 
 
-		writeDietLabelsToDrive(l);
+		writeDietLabelsToDrive("",l);
 
 	}
 
 
-	public static void writeDietLabelsToDrive(List<DietLabels> labels) throws IOException, GoogleDriveAccessNotAuthorisedException {
+	public static void writeDietLabelsToDrive(String accessToken,List<DietLabels> labels) throws IOException, GoogleDriveAccessNotAuthorisedException {
 		if(labels==null) {
 			labels=new ArrayList<>();
 		}
 
 		if(!labels.isEmpty()) {
-			Drive driveService = getDriveService();
+			Drive driveService = getDriveService(accessToken);
 			com.google.api.services.drive.model.File remoteFolder = getOrCreateKitchenAssistantFolder(driveService);
 			com.google.api.services.drive.model.File dietFile = getOrCreateGoogleDriveFile(driveService, StringHolder.GOOGLE_DRIVE_DIET_FILENAME,remoteFolder);
 			File outFile = createLocalFileWithDietLabelsToUpload(labels);
@@ -107,19 +111,18 @@ public class GoogleDriveApiClient {
 			FileContent mediaContent = new FileContent(dietFile.getMimeType(), outFile);
 			com.google.api.services.drive.model.File updatedFile = driveService.files().update(dietFile.getId(), fileToBeCreated, mediaContent).execute();
 			outFile.delete();
-			String dietLimitationsAsString = getDietLimitationsAsString();
-			System.out.println(dietLimitationsAsString);
+
 		}
 	}
 
 
-	public static void writeHealthLabelsToDrive(List<HealthLabels> labels) throws IOException, GoogleDriveAccessNotAuthorisedException {
+	public static void writeHealthLabelsToDrive(String accessToken,List<HealthLabels> labels) throws IOException, GoogleDriveAccessNotAuthorisedException {
 		if(labels==null) {
 			labels=new ArrayList<>();
 		}
 
 		if(!labels.isEmpty()) {
-			Drive driveService = getDriveService();
+			Drive driveService = getDriveService(accessToken);
 			com.google.api.services.drive.model.File remoteFolder = getOrCreateKitchenAssistantFolder(driveService);
 			com.google.api.services.drive.model.File healthFile = getOrCreateGoogleDriveFile(driveService, StringHolder.GOOGLE_DRIVE_HEALTH_FILENAME,remoteFolder);
 			File outFile = createLocalFileWithHealthLabelsToUpload(labels);
@@ -128,8 +131,7 @@ public class GoogleDriveApiClient {
 			FileContent mediaContent = new FileContent(healthFile.getMimeType(), outFile);
 			com.google.api.services.drive.model.File updatedFile = driveService.files().update(healthFile.getId(), fileToBeCreated, mediaContent).execute();
 			outFile.delete();
-			String dietLimitationsAsString = getDietLimitationsAsString();
-			System.out.println(dietLimitationsAsString);
+
 		}
 	}
 
@@ -262,9 +264,9 @@ public class GoogleDriveApiClient {
 	}
 
 
-	public static ArrayList<HealthLabels> getHealthLimitations() throws IOException, GoogleDriveAccessNotAuthorisedException {
+	public static ArrayList<HealthLabels> getHealthLimitations(String accessToken) throws IOException, GoogleDriveAccessNotAuthorisedException {
 		ArrayList<HealthLabels> retValue=new ArrayList<>();
-		String driveContent=getHealthLimitationsAsString();
+		String driveContent=getHealthLimitationsAsString(accessToken);
 		if(driveContent!=null&&!driveContent.equals(""))
 		{
 			String[] labels=driveContent.split(StringHolder.GOOGLE_DRIVE_LINE_SEPARATOR);
@@ -282,8 +284,8 @@ public class GoogleDriveApiClient {
 	}
 
 
-	public static String getHealthLimitationsAsString() throws IOException, GoogleDriveAccessNotAuthorisedException {
-		Drive service = getDriveService();
+	public static String getHealthLimitationsAsString(String accessToken) throws IOException, GoogleDriveAccessNotAuthorisedException {
+		Drive service = getDriveService(accessToken);
 		FileList kitchenAssistantFolder = getKitchenAssistantFolder(service);
 
 		if(kitchenAssistantFolder.isEmpty()||kitchenAssistantFolder.getFiles().isEmpty()) {
@@ -298,9 +300,9 @@ public class GoogleDriveApiClient {
 		}
 	}
 
-	public static ArrayList<DietLabels> getDietLimitations() throws IOException, GoogleDriveAccessNotAuthorisedException {
+	public static ArrayList<DietLabels> getDietLimitations(String accessToken) throws IOException, GoogleDriveAccessNotAuthorisedException {
 		ArrayList<DietLabels> retValue=new ArrayList<>();
-		String driveContent=getDietLimitationsAsString();
+		String driveContent=getDietLimitationsAsString(accessToken);
 		if(driveContent!=null&&!driveContent.equals(""))
 		{
 			String[] labels=driveContent.split(StringHolder.GOOGLE_DRIVE_LINE_SEPARATOR);
@@ -319,8 +321,8 @@ public class GoogleDriveApiClient {
 
 
 
-	public static String getDietLimitationsAsString() throws IOException, GoogleDriveAccessNotAuthorisedException {
-		Drive service = getDriveService();
+	public static String getDietLimitationsAsString(String accessToken) throws IOException, GoogleDriveAccessNotAuthorisedException {
+		Drive service = getDriveService(accessToken);
 		FileList kitchenAssistantFolder = getKitchenAssistantFolder(service);
 
 		if(kitchenAssistantFolder.isEmpty()||kitchenAssistantFolder.getFiles().isEmpty()) {

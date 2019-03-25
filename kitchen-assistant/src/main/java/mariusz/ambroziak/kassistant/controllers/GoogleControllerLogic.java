@@ -34,23 +34,23 @@ public abstract class GoogleControllerLogic {
 	public GoogleControllerLogic() {
 		super();
 	}
-	protected ArrayList<String> getHealthLimitations() throws IOException, GoogleDriveAccessNotAuthorisedException {
-		ArrayList<HealthLabels> healthLimittions;
-		healthLimittions = GoogleDriveApiClient.getHealthLimitations();
-		ArrayList<String> list=new ArrayList<String>();
-		if(healthLimittions!=null&&!healthLimittions.isEmpty())
-		{
-			for(HealthLabels s:healthLimittions)
-			{	
-				list.add(s.getParameterName());
-			}
-		}
-		return list;
-	}
+//	protected ArrayList<String> getHealthLimitations() throws IOException, GoogleDriveAccessNotAuthorisedException {
+//		ArrayList<HealthLabels> healthLimittions;
+//		healthLimittions = GoogleDriveApiClient.getHealthLimitations();
+//		ArrayList<String> list=new ArrayList<String>();
+//		if(healthLimittions!=null&&!healthLimittions.isEmpty())
+//		{
+//			for(HealthLabels s:healthLimittions)
+//			{	
+//				list.add(s.getParameterName());
+//			}
+//		}
+//		return list;
+//	}
 
-	protected ArrayList<String> getHealthLimitationWithComments() throws IOException, GoogleDriveAccessNotAuthorisedException, AgentSystemNotStartedException {
+	protected ArrayList<String> getHealthLimitationWithComments(String accessToken) throws IOException, GoogleDriveAccessNotAuthorisedException, AgentSystemNotStartedException {
 		ArrayList<HealthLabels> healthLimittions;
-		healthLimittions = GoogleAccessAgent.getHealthLimitations();
+		healthLimittions = GoogleAccessAgent.getHealthLimitations(accessToken);
 	
 	
 		ArrayList<String> list=new ArrayList<String>();
@@ -69,9 +69,9 @@ public abstract class GoogleControllerLogic {
 		return list;
 	}
 
-	protected ArrayList<String> getDietLimitationsWithComments() throws IOException, GoogleDriveAccessNotAuthorisedException, AgentSystemNotStartedException {
+	protected ArrayList<String> getDietLimitationsWithComments(String accessToken) throws IOException, GoogleDriveAccessNotAuthorisedException, AgentSystemNotStartedException {
 		ArrayList<DietLabels> healthLimittions;
-		healthLimittions = GoogleAccessAgent.getDietLimitations();
+		healthLimittions = GoogleAccessAgent.getDietLimitations(accessToken);
 	
 	
 		ArrayList<String> list=new ArrayList<String>();
@@ -88,22 +88,22 @@ public abstract class GoogleControllerLogic {
 		}
 		return list;
 	}
-	protected ArrayList<String> getDietLimitations() throws IOException, GoogleDriveAccessNotAuthorisedException {
-		ArrayList<DietLabels> dietLimittions;
-		dietLimittions = GoogleDriveApiClient.getDietLimitations();
-	
-	
-		ArrayList<String> list=new ArrayList<String>();
-	
-		if(dietLimittions!=null&&!dietLimittions.isEmpty())
-		{
-			for(DietLabels s:dietLimittions)
-			{	
-				list.add(s.getParameterName());
-			}
-		}
-		return list;
-	}
+//	protected ArrayList<String> getDietLimitations() throws IOException, GoogleDriveAccessNotAuthorisedException {
+//		ArrayList<DietLabels> dietLimittions;
+//		dietLimittions = GoogleDriveApiClient.getDietLimitations();
+//	
+//	
+//		ArrayList<String> list=new ArrayList<String>();
+//	
+//		if(dietLimittions!=null&&!dietLimittions.isEmpty())
+//		{
+//			for(DietLabels s:dietLimittions)
+//			{	
+//				list.add(s.getParameterName());
+//			}
+//		}
+//		return list;
+//	}
 
 	protected void deleteLocalAuthorisationData() {
 		GoogleDriveApiClient.deleteCredentials();

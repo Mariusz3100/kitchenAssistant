@@ -2,6 +2,7 @@ package mariusz.ambroziak.kassistant.controllers.bootstrap;
 
 import java.util.List;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
@@ -30,6 +31,23 @@ public class RecipeSearchList_controller_bootstrap {
 		return model;
 	}
 
+	private ModelAndView createGoogleAccessNotGrantedMav() {
+		ModelAndView mav=new ModelAndView(StringHolder.bootstrapFolder+"boot_GoogleDataAccessDeleted");
+		return mav;
+	}
+
+	private Cookie getKitchenAssistantCookie(HttpServletRequest req) {
+		Cookie[] cookies = req.getCookies();
+		  
+		  if(cookies!=null) {
+			  for(Cookie c:cookies) {
+				  if(StringHolder.CREDENTIAL_COOKIE_NAME.equals(c.getName())){
+					  return c;
+				  }
+			  }
+		  }
+		  return null;
+	}
 
 	@RequestMapping(value="/b_apirecipes")
 	public ModelAndView b_apirecipes(HttpServletRequest request) {
@@ -37,7 +55,12 @@ public class RecipeSearchList_controller_bootstrap {
 		
 		List<ParseableRecipeData> results = null;
 		try {
-			results = EdamanRecipeAgent.searchForRecipes(searchPhrase);
+			Cookie c=getKitchenAssistantCookie(request);
+			if(c==null||c.getValue()==null||c.getValue().equals("")) {
+				results = EdamanRecipeAgent.searchForRecipes("",searchPhrase);
+			}else {
+				results = EdamanRecipeAgent.searchForRecipes(c.getValue(),searchPhrase);
+			}
 		} catch (AgentSystemNotStartedException e) {
 			return returnAgentSystemNotStartedPage();
 		} 
