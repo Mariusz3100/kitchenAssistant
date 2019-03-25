@@ -46,7 +46,7 @@
 	<classpathentry kind="lib" path="lib/google/jetty-6.1.26.jar"/>
 	<classpathentry kind="lib" path="lib/google/jetty-util-6.1.26.jar"/>
 	<classpathentry kind="lib" path="lib/google/jsr305-1.3.9.jar"/>
-	<classpathentry kind="lib" path="lib/commons-lang-2.6.jar">
+	<classpathentry kind="lib" path="lib/commons-lang-2.6.jar" sourcepath="/home/mariusz/development/mgr/software/commons-lang-2.6-src.zip">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
