@@ -34,6 +34,8 @@
 				<h3 class="ingredient-heading">${agent.value.name}</h3>
 				<ul>
 					<li><b>state:</b> ${agent.value.state}</li>
+					<li><b>busy:</b> ${agent.value.busy}</li>
+					
 					<li><b>roles:</b> <c:forEach var="role"
 							items="${agentRoles[agent.value]}" varStatus="status">
 							${role} 
