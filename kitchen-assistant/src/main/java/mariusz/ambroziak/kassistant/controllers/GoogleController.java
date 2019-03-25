@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.jdo.JDOHelper;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import madkit.kernel.Madkit;
@@ -50,7 +51,8 @@ public class GoogleController extends GoogleControllerLogic{
 	public ModelAndView problems1(HttpServletRequest request) throws IOException {
 		ArrayList<String> list=new ArrayList<>();
 		try {
-			list = getHealthLimitationWithComments();
+			Cookie accessToken=getKitchenAssistantCookie(request);
+			list = getHealthLimitationWithComments(accessToken.getValue());
 		} catch (GoogleDriveAccessNotAuthorisedException e) {
 			return createGoogleAccessNotGrantedMav();
 		} catch (AgentSystemNotStartedException e) {
@@ -80,7 +82,12 @@ public class GoogleController extends GoogleControllerLogic{
 	public ModelAndView getDiet(HttpServletRequest request) throws IOException {
 		ArrayList<String> list = null;
 		try {
-			list = getDietLimitationsWithComments();
+			Cookie accessToken=getKitchenAssistantCookie(request);
+			if(accessToken!=null) {
+				list = getDietLimitationsWithComments(accessToken.getValue());
+			}else {
+				return createGoogleAccessNotGrantedMav();
+			}
 		} catch (GoogleDriveAccessNotAuthorisedException e) {
 			return createGoogleAccessNotGrantedMav();
 		} catch (AgentSystemNotStartedException e) {
@@ -110,7 +117,18 @@ public class GoogleController extends GoogleControllerLogic{
 
 	}
 
-
+	private Cookie getKitchenAssistantCookie(HttpServletRequest req) {
+		Cookie[] cookies = req.getCookies();
+		  
+		  if(cookies!=null) {
+			  for(Cookie c:cookies) {
+				  if(StringHolder.CREDENTIAL_COOKIE_NAME.equals(c.getName())){
+					  return c;
+				  }
+			  }
+		  }
+		  return null;
+	}
 
 
 	protected ModelAndView returnAgentSystemNotStartedPage() {

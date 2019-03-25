@@ -412,7 +412,7 @@ public class ReadingNutritientsUsdaAgent extends BaseAgent{
 
 		result.put(StringHolder.MESSAGE_TYPE_NAME, MessageTypes.ExceptionOccured);
 		result.put(StringHolder.MESSAGE_CREATOR_NAME, USDA_AGENT_NAME);
-		result.put(StringHolder.EXCEPTION_MESSAGE_NAME, e.toString());
+		result.put(StringHolder.EXCEPTION_MESSAGE_NAME, e.getMessage());
 		result.put(StringHolder.EXCEPTION_STACKTRACE_NAME, StringUtils.stackTraceToString(e));
 		StringMessage messageToSend = new StringMessage(result.toString());
 

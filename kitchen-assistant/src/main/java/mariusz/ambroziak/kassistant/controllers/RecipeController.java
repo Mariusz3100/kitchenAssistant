@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
@@ -23,6 +24,7 @@ import mariusz.ambroziak.kassistant.agents.RecipeAgent;
 import mariusz.ambroziak.kassistant.controllers.logic.RecipeLogic;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
 import mariusz.ambroziak.kassistant.exceptions.AgentSystemNotStartedException;
+import mariusz.ambroziak.kassistant.exceptions.GoogleDriveAccessNotAuthorisedException;
 import mariusz.ambroziak.kassistant.exceptions.Page404Exception;
 import mariusz.ambroziak.kassistant.exceptions.ShopNotFoundException;
 import mariusz.ambroziak.kassistant.model.Nutrient;
@@ -70,7 +72,11 @@ public class RecipeController extends RecipeLogic{
 		return new ModelAndView("recipeUrlApiForm");
 
 	}
-	
+	private ModelAndView createGoogleAccessNotGrantedMav() {
+		ModelAndView mav=new ModelAndView(StringHolder.bootstrapFolder+"boot_GoogleDataAccessDeleted");
+		return mav;
+	}
+
 	@RequestMapping(value="/apirecipes")
 	public ModelAndView recipeApiResult(HttpServletRequest request) throws AgentSystemNotStartedException {
 		String recipeID=request.getParameter(JspStringHolder.recipeApiId);
@@ -79,7 +85,14 @@ public class RecipeController extends RecipeLogic{
 		if(recipeID==null||recipeID.equals("")){
 			String phrase=request.getParameter(JspStringHolder.recipeSearchPhrase_name);
 			try{
-				results=mariusz.ambroziak.kassistant.agents.EdamanRecipeAgent.searchForRecipes(phrase);
+				Cookie c=getKitchenAssistantCookie(request);
+				if(c==null||c.getValue()==null||c.getValue().equals("")) {
+					return createGoogleAccessNotGrantedMav();
+				}else {
+					results=mariusz.ambroziak.kassistant.agents.EdamanRecipeAgent.searchForRecipes(c.getValue(),phrase);	
+				}
+				
+				
 			}catch (AgentSystemNotStartedException e) {
 					return returnAgentSystemNotStartedPage();
 			}
@@ -213,7 +226,18 @@ public class RecipeController extends RecipeLogic{
 		return returnResultsProperlyParsedPage(url, result);
 	}
 
-
+	private Cookie getKitchenAssistantCookie(HttpServletRequest req) {
+		Cookie[] cookies = req.getCookies();
+		  
+		  if(cookies!=null) {
+			  for(Cookie c:cookies) {
+				  if(StringHolder.CREDENTIAL_COOKIE_NAME.equals(c.getName())){
+					  return c;
+				  }
+			  }
+		  }
+		  return null;
+	}
 	private ModelAndView returnResultsProperlyParsedPage(String url, ArrayList<SearchResult> result) {
 		ModelAndView mav=new ModelAndView("correctQuantities");
 

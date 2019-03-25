@@ -20,6 +20,7 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.InputStreamContent;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.util.store.DataStore;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
@@ -66,10 +67,43 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class GoogleAuthApiClientController extends AbstractAuthorizationCodeServlet {
-		public static float deletionCounter=1;
 
 	  
-	  @RequestMapping(value=JspStringHolder.GOOGLE_AUTHORISATION_SUFFIX)
+	  private GoogleAuthorizationCodeFlow flow;
+
+		@RequestMapping(value=JspStringHolder.GOOGLE_DELETION_SUFFIX)
+		public ModelAndView b_googleDelete(HttpServletRequest request,HttpServletResponse response) throws IOException {
+
+			try {
+				deleteLocalAuthorisationData(response);
+				Cookie kitchenAssistantCookie = getKitchenAssistantCookie(request);
+				if(kitchenAssistantCookie!=null&&kitchenAssistantCookie.getValue()!=null)
+				{
+					Cookie cookie = new Cookie(StringHolder.CREDENTIAL_COOKIE_NAME, "");
+					cookie.setMaxAge(0);
+					response.addCookie(cookie);
+				}
+				DataStore<StoredCredential> credentialDataStore = flow.getCredentialDataStore().clear();
+
+				credentialDataStore.clear();
+			} catch (AgentSystemNotStartedException e) {
+				// TODO Auto-generated catch block
+				return returnAgentSystemNotStartedPage();
+			}
+
+			ModelAndView mav=new ModelAndView(StringHolder.bootstrapFolder+"boot_GoogleDataAccessDeleted");
+			mav.addObject("deleted",true);
+			return mav;
+
+
+		}
+
+		private void deleteLocalAuthorisationData(HttpServletResponse response) throws AgentSystemNotStartedException {
+			GoogleAccessAgent.deleteGoogleAuthorisationData(response);
+			
+		}
+	  
+	@RequestMapping(value=JspStringHolder.GOOGLE_AUTHORISATION_SUFFIX)
 	  protected void localDoGet(HttpServletRequest request, HttpServletResponse response)
 	      throws IOException, ServletException {
 	    // do stuff
@@ -88,7 +122,16 @@ public class GoogleAuthApiClientController extends AbstractAuthorizationCodeServ
 		  if(c==null) {
 			  super.service(request, response);
 		  }else {
-			  response.sendRedirect(JspStringHolder.GOOGLE_AUTHORISATION_SUCCESSFUL_SUFFIX);
+			  try {
+				if(GoogleAccessAgent.isAccessAuthorised(c.getValue())) {
+				    response.sendRedirect(JspStringHolder.GOOGLE_AUTHORISATION_SUCCESSFUL_SUFFIX);
+				  }else {
+					  super.service(request, response);
+
+				  }
+			} catch (AgentSystemNotStartedException e) {
+			    response.sendRedirect(JspStringHolder.START_AGENT_SYSTEM_NOT_STARTED_SUFFIX);
+			}
 		  }
 		  
 
@@ -111,13 +154,11 @@ public class GoogleAuthApiClientController extends AbstractAuthorizationCodeServ
 					GoogleClientSecrets.load(GoogleAuthApiParameters.getJsonFactory(), new StringReader(StringHolder.googleCredentials));
 
 		  
-		  GoogleAuthorizationCodeFlow flow =
-					new GoogleAuthorizationCodeFlow.Builder(
-							GoogleAuthApiParameters.getHTTP_TRANSPORT(), GoogleAuthApiParameters.getJsonFactory(), clientSecrets, GoogleAuthApiParameters.getScopes())
-					.setDataStoreFactory(GoogleAuthApiParameters.getDATA_STORE_FACTORY())
-					.setAccessType("offline")
-					.build();
-		  
+		  flow = new GoogleAuthorizationCodeFlow.Builder(
+				GoogleAuthApiParameters.getHTTP_TRANSPORT(), GoogleAuthApiParameters.getJsonFactory(), clientSecrets, GoogleAuthApiParameters.getScopes())
+		.setDataStoreFactory(GoogleAuthApiParameters.getDATA_STORE_FACTORY())
+		.setAccessType("online")
+		.build();
 		  return flow;
 
 	  }
@@ -132,7 +173,7 @@ public class GoogleAuthApiClientController extends AbstractAuthorizationCodeServ
 		//  Cookie c=getKitchenAssistantCookie(req);
 			  
 			  
-		  return req.getSession(true).getId()+deletionCounter; 
+		  return req.getSession(true).getId(); 
 	  }
 
 
