@@ -105,10 +105,12 @@ public class RecipeLogic {
 					List<Produkt> searchResults;
 					searchResults = ProduktAgent.searchForProdukt(produktPhrase);
 					searchResults =recountPrices(searchResults,PreciseQuantity.parseFromJspString(quantityPhrase),"$");
-					String invalidityReason = //PL:"Wygl---da na to, ---e url \""+innyUrl
-							//+"\" nie zosta--- rozpoznany jako pasuj---cy do ---adnego ze wspieranych sklep---w.";
-							"It seems url \""+innyUrl+"\" did not match any supported shops.";
-					
+					String invalidityReason = "";
+							if(innyUrl==null||innyUrl.equals("")) {
+								invalidityReason="Url provided was empty";
+							}else {
+								invalidityReason="It seems url \""+innyUrl+"\" did not match any supported shops.";
+							}
 					InvalidSearchResult isr=new InvalidSearchResult(searchPhrase,produktPhrase,quantityPhrase,searchResults,
 							invalidityReason);
 					resultsHolder.addUsersBadChoice(isr);
