@@ -263,7 +263,7 @@
 										<label
 											for="${skladnikName}${skladnikiOuterCount}_${skladnikRadioName}_${innaOpcjaName}"
 											class="inny-radio-label" style="width: 19.6%;">
-											Other: </label> <input type="text" disabled="disabled"
+											Other: </label><input type="text" disabled="disabled"
 											name="${skladnikName}${skladnikiOuterCount}_${innyUrlName}"
 											id="${skladnikName}${skladnikiOuterCount}_${innyUrlName}"
 											class="inny-url">
