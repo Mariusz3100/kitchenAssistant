@@ -50,6 +50,8 @@
 .ingredient-heading {
 	color: green;
 	margin: 10px;
+	height: 10vh;
+	overflow-y:auto;
 }
 
 .ingredient-heading-not-found {
@@ -64,7 +66,7 @@
 	border-top: double;
 	border-radius: 10px;
 	/* 	margin-top: 50px; */
-	max-height: 500px;
+	max-height: 75vh;
 }
 
 .ingredient-list {
@@ -77,8 +79,8 @@
 	left: -2vw;
 	color: green;
 	font-size: 2vw;
-	overflow-y: scroll;
-	max-height: 97%;
+	overflow-y: auto;
+	height: 97%;
 }
 
 .with-left-shortcuts {

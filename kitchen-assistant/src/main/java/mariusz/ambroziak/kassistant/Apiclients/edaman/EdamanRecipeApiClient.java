@@ -260,6 +260,8 @@ public class EdamanRecipeApiClient {
 		eap.addHealthLabels(HealthLabels.Alcohol_free);
 		eap.setPhrase("cake");
 		ArrayList<ParseableRecipeData> recipesByParameters = getRecipesByParameters(eap);
+		
+		ParseableRecipeData singleRecipe = getSingleRecipe("http://www.edamam.com/ontologies/edamam.owl%23recipe_2f9199d70e40e7bf77625c93e08ccae2");
 		System.out.println(recipesByParameters);
 	}
 

@@ -55,7 +55,7 @@
 						</c:forEach>
 					</div>
 					<div class="dynamic-size"
-						style="overflow-y: auto; max-height: 63vh">
+						style="overflow-y: auto; max-height: 60vh">
 
 
 						<c:forEach var="result" items="${correctResults}"
@@ -124,7 +124,7 @@
 						</c:forEach>
 					</div>
 					<div class="dynamic-size"
-						style="overflow-y: auto; max-height: 63vh">
+						style="overflow-y: auto; max-height: 60vh">
 
 
 						<c:forEach var="result" items="${skippedResults}"
@@ -234,7 +234,7 @@
 
 
 								<div class="dynamic-size"
-									style="overflow-y: auto; max-height: 63vh">
+									style="overflow-y: auto; max-height: 60vh">
 									<c:forEach var="produkt" items="${result.produkts}"
 										varStatus="opcjaCount">
 										<div class="funkyradio-success">
