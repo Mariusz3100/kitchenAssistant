@@ -50,7 +50,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public class GoogleDriveApiClient {
+public class GoogleDriveApiClient extends GoogleApi{
 
 	/**
 	 * Build and return an authorized Drive client service.
@@ -71,16 +71,7 @@ public class GoogleDriveApiClient {
 					.build();
 	}
 
-	private static Credential getCredential(String accessToken) throws GoogleDriveAccessNotAuthorisedException {
-//		Map<String, Credential> authorisationMap = GoogleAuthApiClientCallbackController.authorisationMap;
-		
-		if(accessToken==null||accessToken.equals(""))
-			throw new GoogleDriveAccessNotAuthorisedException();
-		else{
-			GoogleCredential credential = new GoogleCredential().setAccessToken(accessToken);
-			return credential;
-		}
-	}
+
 
 	public static void main(String[] args) throws IOException, GoogleDriveAccessNotAuthorisedException {
 		System.out.println();
@@ -247,21 +238,7 @@ public class GoogleDriveApiClient {
 
 	}
 
-	public static void deleteCredentials(){
-		try {
-			if(GoogleAuthApiParameters.getDataStoreDir().isDirectory()){
-				File[] listFiles = GoogleAuthApiParameters.getDataStoreDir().listFiles();
-				for(java.io.File f:listFiles){
-					f.delete();
-				}
-			}else{
-				GoogleAuthApiParameters.getDataStoreDir().delete();
-			}
-		}catch (Exception e) {
-			ProblemLogger.logProblem("Some (probably runtime) exception during deleting the google authorisation data");
-			ProblemLogger.logStackTrace(e.getStackTrace());
-		}
-	}
+
 
 
 	public static ArrayList<HealthLabels> getHealthLimitations(String accessToken) throws IOException, GoogleDriveAccessNotAuthorisedException {
