@@ -25,7 +25,7 @@
 	<section id="hero" class="wow fadeIn">
 	<div class="hero-container">
 			<h3>Diet and health restrictions are taken from kitchenAssistant/diet and kitchenAssistant/health files in your google drive, respectively.</h3>
-
+			<h3>To create restrictions changing over time create events called kitchenAssistantDietRestrictions and kitchenAssistantHealthRestrictions, with labels in the description. </h3>
 				<c:choose>
 					<c:when test="${not empty dietLabels && fn:length(dietLabels)>0}">
 						<div>

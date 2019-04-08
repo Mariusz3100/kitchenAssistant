@@ -22,6 +22,7 @@ import mariusz.ambroziak.kassistant.Apiclients.edaman.HealthLabels;
 import mariusz.ambroziak.kassistant.exceptions.GoogleDriveAccessNotAuthorisedException;
 import mariusz.ambroziak.kassistant.utils.StringHolder;
 
+import com.google.api.services.calendar.CalendarScopes;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.Drive.Files.Export;
 import com.google.api.services.drive.DriveScopes;
@@ -93,7 +94,7 @@ public class GoogleAuthApiParameters {
 	private static final List<String> SCOPES =
 			//        Arrays.asList(DriveScopes.DRIVE_METADATA_READONLY);
 			Arrays.asList(DriveScopes.DRIVE_FILE,DriveScopes.DRIVE_SCRIPTS,
-					DriveScopes.DRIVE_APPDATA,DriveScopes.DRIVE);
+					DriveScopes.DRIVE_APPDATA,DriveScopes.DRIVE,CalendarScopes.CALENDAR);
 
 	static {
 		try {
