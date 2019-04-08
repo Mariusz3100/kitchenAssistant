@@ -14,6 +14,7 @@ import com.google.api.client.http.FileContent;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.InputStreamContent;
 import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.util.DateTime;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
@@ -25,6 +26,9 @@ import mariusz.ambroziak.kassistant.exceptions.GoogleDriveAccessNotAuthorisedExc
 import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 import mariusz.ambroziak.kassistant.utils.StringHolder;
 
+import com.google.api.services.calendar.Calendar;
+import com.google.api.services.calendar.model.Event;
+import com.google.api.services.calendar.model.Events;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.Drive.Files.Export;
 import com.google.api.services.drive.DriveScopes;
@@ -52,38 +56,145 @@ import java.util.Map;
 
 public class GoogleCalendarApiClient extends GoogleApi{
 
-	/**
-	 * Build and return an authorized Drive client service.
-	 * @return an authorized Drive client service
-	 * @throws IOException
-	 * @throws GoogleDriveAccessNotAuthorisedException 
-	 */
-//	public static Drive getDriveService(String accessToken) throws IOException, GoogleDriveAccessNotAuthorisedException {
-//		
-//		Credential credential = getCredential(accessToken);//new java.io.File("").getAbsolutePath()
-//		
-//		 Calendar service = new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
-//	                .setApplicationName(APPLICATION_NAME)
-//	                .build();
-//
-//		if(credential==null)
-//			return null;
-//		else
-//			return new Drive.Builder(
-//					GoogleAuthApiParameters.getHTTP_TRANSPORT(), GoogleAuthApiParameters.getJsonFactory(), credential)
-//					.setApplicationName(GoogleAuthApiParameters.getApplicationName())
-//					.build();
-//	}
 
-
-
-	public static void main(String[] args) throws IOException, GoogleDriveAccessNotAuthorisedException {
+	public static Calendar getCalendarService(String accessToken) throws IOException, GoogleDriveAccessNotAuthorisedException {
 		
+		Credential credential = getCredential(accessToken);//new java.io.File("").getAbsolutePath()
+
+
+		if(credential==null)
+			return null;
+		else
+			return new Calendar.Builder(GoogleAuthApiParameters.getHTTP_TRANSPORT(),
+				 GoogleAuthApiParameters.getJsonFactory(), credential)
+	                .setApplicationName(GoogleAuthApiParameters.getApplicationName())
+	                .build();
+	}
+
+	public static ArrayList<HealthLabels> getHealthLimitations(String accessToken) throws IOException, GoogleDriveAccessNotAuthorisedException {
+		Events events = getCurrentEvents(accessToken);
+
+		ArrayList<HealthLabels> retHealths=new ArrayList<HealthLabels>();
+		
+		for(Event event:events.getItems()) {
+			if(event.getSummary()!=null
+					&&event.getSummary().indexOf(StringHolder.GOOGLE_CALENDAR_HEALTH_EVENT)>=0)
+			{
+				String desc=event.getDescription();
+				if(desc!=null) {
+					String[] split = desc.split(StringHolder.GOOGLE_CALENDAR_LINE_SEPARATOR);
+					
+					for(String line:split) {
+						
+						HealthLabels healthLabel=HealthLabels.tryRetrieving(line);
+						if(healthLabel!=null) {
+							retHealths.add(healthLabel);
+						}
+					}
+				}
+			}
+			
+		}
+		return retHealths;
 
 	}
 
+	private static Events getCurrentEvents(String accessToken)
+			throws IOException, GoogleDriveAccessNotAuthorisedException {
+		Calendar calendarService = getCalendarService(accessToken);
+		DateTime now =new DateTime(System.currentTimeMillis());
+		DateTime InASecond =new DateTime(System.currentTimeMillis()+1000);
 
+		Events events = calendarService.events().list("primary")
+        .setMaxResults(10)
+        .setTimeMin(now)
+        .setTimeMax(InASecond)
+        .setOrderBy("startTime")
+        .setSingleEvents(true)
+        .execute();
+		return events;
+	}
+	
+	public static ArrayList<DietLabels> getDietLimitations(String accessToken) throws IOException, GoogleDriveAccessNotAuthorisedException {
+		Events events = getCurrentEvents(accessToken);
 
+		ArrayList<DietLabels> retDiets=new ArrayList<DietLabels>();
+		
+		for(Event event:events.getItems()) {
+			if(event.getSummary()!=null
+					&&event.getSummary().indexOf(StringHolder.GOOGLE_CALENDAR_DIET_EVENT)>=0)
+			{
+				String desc=event.getDescription();
+				if(desc!=null) {
+					String[] split = desc.split(StringHolder.GOOGLE_CALENDAR_LINE_SEPARATOR);
+					
+					for(String line:split) {
+						
+						DietLabels dietLabel=DietLabels.tryRetrieving(line);
+						if(dietLabel!=null) {
+							retDiets.add(dietLabel);
+						}
+					}
+				}
+			}
+			
+		}
+		return retDiets;
+
+	}
+	
+	public static String getHealthLimitationsAsString(String accessToken) throws IOException, GoogleDriveAccessNotAuthorisedException {
+		Events events = getCurrentEvents(accessToken);
+		
+		for(Event event:events.getItems()) {
+			if(event.getSummary()!=null
+					&&event.getSummary().indexOf(StringHolder.GOOGLE_CALENDAR_HEALTH_EVENT)>=0)
+			{
+				String desc=event.getDescription();
+				if(desc!=null) {
+					return desc;
+				}
+			}
+			
+		}
+		return "";
+
+	}
+
+	
+	public static String getDietLimitationsAsString(String accessToken) throws IOException, GoogleDriveAccessNotAuthorisedException {
+		Events events = getCurrentEvents(accessToken);
+
+		
+		for(Event event:events.getItems()) {
+			if(event.getSummary()!=null
+					&&event.getSummary().indexOf(StringHolder.GOOGLE_CALENDAR_DIET_EVENT)>=0)
+			{
+				String desc=event.getDescription();
+				if(desc!=null) {
+					return desc;
+				}
+			}
+			
+		}
+		return "";
+
+	}
+	
+	
+	public static void main(String[] arg){
+		String accessToken="";
+		try {
+			ArrayList<HealthLabels> healthLimitations = getHealthLimitations(accessToken);
+			ArrayList<DietLabels> dietLimitations = getDietLimitations(accessToken);
+
+		} catch (IOException | GoogleDriveAccessNotAuthorisedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		System.out.println();
+	}
 
 
 //	public static String getDietLimitationsAsString(String accessToken) throws IOException, GoogleDriveAccessNotAuthorisedException {

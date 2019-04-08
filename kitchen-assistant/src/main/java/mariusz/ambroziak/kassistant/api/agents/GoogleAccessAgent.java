@@ -21,6 +21,7 @@ import mariusz.ambroziak.kassistant.Apiclients.edaman.HealthLabels;
 import mariusz.ambroziak.kassistant.Apiclients.googleAuth.GoogleDriveApiClient;
 import mariusz.ambroziak.kassistant.Apiclients.googleAuth.GoogleAuthApiClientCallbackController;
 import mariusz.ambroziak.kassistant.Apiclients.googleAuth.GoogleAuthApiClientController;
+import mariusz.ambroziak.kassistant.Apiclients.googleAuth.GoogleCalendarApiClient;
 import mariusz.ambroziak.kassistant.agents.BaseAgent;
 import mariusz.ambroziak.kassistant.exceptions.AgentSystemNotStartedException;
 import mariusz.ambroziak.kassistant.exceptions.GoogleDriveAccessNotAuthorisedException;
@@ -141,11 +142,26 @@ public class GoogleAccessAgent extends BaseAgent {
 
 
 	private ArrayList<DietLabels> getDietLimitationsPrivately(String accessToken) throws IOException, GoogleDriveAccessNotAuthorisedException {
-		return GoogleDriveApiClient.getDietLimitations(accessToken);
+		ArrayList<DietLabels> calendarLimitations=GoogleCalendarApiClient.getDietLimitations(accessToken);
+		ArrayList<DietLabels> driveLimitations=GoogleDriveApiClient.getDietLimitations(accessToken);
+		
+		ArrayList<DietLabels> retValue=new ArrayList<DietLabels>();
+		retValue.addAll(driveLimitations);
+		retValue.addAll(calendarLimitations);
+
+		return retValue;
 	}
 
 	private ArrayList<HealthLabels> getHealthLimitationsPrivately(String accessToken) throws IOException, GoogleDriveAccessNotAuthorisedException {
-		return GoogleDriveApiClient.getHealthLimitations(accessToken);
+		ArrayList<HealthLabels> calendarLimitations=GoogleCalendarApiClient.getHealthLimitations(accessToken);
+		ArrayList<HealthLabels> driveLimitations=GoogleDriveApiClient.getHealthLimitations(accessToken);
+		
+		ArrayList<HealthLabels> retValue=new ArrayList<HealthLabels>();
+		retValue.addAll(driveLimitations);
+		retValue.addAll(calendarLimitations);
+
+		return retValue;
+		
 	}
 	//
 	//	public Credential getCredentials() {
@@ -220,8 +236,9 @@ public class GoogleAccessAgent extends BaseAgent {
 		String healthLimitationsAsString="";
 		String accessToken=extractAccessTokenFromMessage(m);
 		try {
-			dietLimitationsAsString = GoogleDriveApiClient.getDietLimitationsAsString(accessToken);
-			healthLimitationsAsString = GoogleDriveApiClient.getHealthLimitationsAsString(accessToken);
+			dietLimitationsAsString = getDietLimitationsString(accessToken);
+			healthLimitationsAsString = getHealthLimitationsAsString(accessToken);
+		
 			retValue.put(StringHolder.MESSAGE_TYPE_NAME, MessageTypes.GetLimitationsResponse);
 
 			retValue.put(StringHolder.HEALTH_LIMITATIONS_NAME,healthLimitationsAsString);
@@ -251,6 +268,34 @@ public class GoogleAccessAgent extends BaseAgent {
 		sendReplyWithRoleKA(m, messageToSend,GOOGLE_AGENT_NAME);
 
 
+	}
+
+
+	private String getHealthLimitationsAsString(String accessToken)
+			throws IOException, GoogleDriveAccessNotAuthorisedException {
+		String healthLimitationsAsString;
+		String healthLimitationsFromDrive = GoogleDriveApiClient.getDietLimitationsAsString(accessToken);
+		String healthLimitationsFromCalendar = GoogleCalendarApiClient.getHealthLimitationsAsString(accessToken);
+		healthLimitationsAsString=(healthLimitationsFromDrive==null?"":healthLimitationsFromDrive)+
+				StringHolder.GOOGLE_CALENDAR_LINE_SEPARATOR+
+				(healthLimitationsFromCalendar==null?"":healthLimitationsFromCalendar);
+		
+		
+		
+		return healthLimitationsAsString;
+	}
+
+
+	private String getDietLimitationsString(String accessToken)
+			throws IOException, GoogleDriveAccessNotAuthorisedException {
+		String dietLimitationsAsString;
+		String dietLimitationsFromDrive = GoogleDriveApiClient.getDietLimitationsAsString(accessToken);
+		String dietLimitationsFromCalendar = GoogleCalendarApiClient.getDietLimitationsAsString(accessToken);
+		dietLimitationsAsString=(dietLimitationsFromDrive==null?"":dietLimitationsFromDrive)+
+				StringHolder.GOOGLE_CALENDAR_LINE_SEPARATOR+
+				(dietLimitationsFromCalendar==null?"":dietLimitationsFromCalendar);
+		
+		return dietLimitationsAsString;
 	}
 
 
