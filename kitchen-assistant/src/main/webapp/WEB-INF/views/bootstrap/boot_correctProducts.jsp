@@ -19,7 +19,7 @@
 
 	<jsp:include page="includes/menuInclude.jsp" />
 
-	<form action="b_productsChosen">
+	<form action="b_productsChosen" target="_blank">
 		<input type="hidden" name="${liczbaSkladnikow}"
 			value="${fn:length(badResults)+fn:length(correctResults)+fn:length(skippedResults)}">
 
