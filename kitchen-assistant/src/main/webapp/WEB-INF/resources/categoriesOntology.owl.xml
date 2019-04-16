@@ -1,0 +1,2558 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#"
+     xml:base="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+    <owl:Ontology rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Datatypes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#id -->
+
+
+    <rdfs:Datatype rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#id"/>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#name -->
+
+
+    <rdfs:Datatype rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#name"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Object Properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#subcategoryOf -->
+
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#subcategoryOf"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Data properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#baseId -->
+
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#baseId"/>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#compoundId -->
+
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#compoundId"/>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#id -->
+
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#id"/>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#name -->
+
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#name">
+        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topDataProperty"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#parentingPrefix -->
+
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#parentingPrefix"/>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#relevance -->
+
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#relevance"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category -->
+
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category">
+        <rdfs:label>Category from shop.com api.</rdfs:label>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Product -->
+
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Product">
+        <rdfs:label>Product from shop.com api.</rdfs:label>
+    </owl:Class>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Individuals
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#1-32806 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#1-32806">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <baseId>1-32806</baseId>
+        <compoundId>1-32806</compoundId>
+        <name>Food and Drink</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>10</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-11201725 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-11201725">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#1-32806"/>
+        <baseId>2-11201725</baseId>
+        <compoundId>2-11201725</compoundId>
+        <name>Restaurant Voucher</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>0</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-11216133 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-11216133">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#1-32806"/>
+        <baseId>2-11216133</baseId>
+        <compoundId>2-11216133</compoundId>
+        <name>Baby Food</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>0</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143936 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143936">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#1-32806"/>
+        <baseId>2-2143936</baseId>
+        <compoundId>2-2143936</compoundId>
+        <name>Dairy Products</name>
+        <parentingPrefix>3-7666_a</parentingPrefix>
+        <relevance>50</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143942 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143942">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#1-32806"/>
+        <baseId>2-2143942</baseId>
+        <compoundId>2-2143942</compoundId>
+        <name>Cooking &amp; Baking Products</name>
+        <parentingPrefix>3-7667_a</parentingPrefix>
+        <relevance>50</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143960 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143960">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#1-32806"/>
+        <baseId>2-2143960</baseId>
+        <compoundId>2-2143960</compoundId>
+        <name>Food Gifts &amp; Baskets</name>
+        <parentingPrefix>3-7668_a</parentingPrefix>
+        <relevance>0</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143970 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143970">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#1-32806"/>
+        <baseId>2-2143970</baseId>
+        <compoundId>2-2143970</compoundId>
+        <name>Condiments &amp; Seasonings</name>
+        <parentingPrefix>3-7669_a</parentingPrefix>
+        <relevance>10</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143985 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143985">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#1-32806"/>
+        <baseId>2-2143985</baseId>
+        <compoundId>2-2143985</compoundId>
+        <name>Snacks</name>
+        <parentingPrefix>3-7670_a</parentingPrefix>
+        <relevance>10</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143994 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143994">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#1-32806"/>
+        <baseId>2-2143994</baseId>
+        <compoundId>2-2143994</compoundId>
+        <name>Candies &amp; Chocolates</name>
+        <parentingPrefix>3-7671_a</parentingPrefix>
+        <relevance>10</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144007 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144007">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#1-32806"/>
+        <baseId>2-2144007</baseId>
+        <compoundId>2-2144007</compoundId>
+        <name>Bread &amp; Bakery Goods</name>
+        <parentingPrefix>3-7672_a</parentingPrefix>
+        <relevance>50</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144014 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144014">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#1-32806"/>
+        <baseId>2-2144014</baseId>
+        <compoundId>2-2144014</compoundId>
+        <name>Prepared Foods</name>
+        <parentingPrefix>3-7673_a</parentingPrefix>
+        <relevance>0</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144024 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144024">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#1-32806"/>
+        <baseId>2-2144024</baseId>
+        <compoundId>2-2144024</compoundId>
+        <name>Cereals &amp; Grains</name>
+        <parentingPrefix>3-7674_a</parentingPrefix>
+        <relevance>40</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144033 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144033">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#1-32806"/>
+        <baseId>2-2144033</baseId>
+        <compoundId>2-2144033</compoundId>
+        <name>Beer, Wine &amp; Spirits</name>
+        <parentingPrefix>3-7675_a</parentingPrefix>
+        <relevance>10</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144044 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144044">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#1-32806"/>
+        <baseId>2-2144044</baseId>
+        <compoundId>2-2144044</compoundId>
+        <name>Meats, Poultry &amp; Seafood</name>
+        <parentingPrefix>3-7676_a</parentingPrefix>
+        <relevance>50</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144059 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144059">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#1-32806"/>
+        <baseId>2-2144059</baseId>
+        <compoundId>2-2144059</compoundId>
+        <name>Beverages</name>
+        <parentingPrefix>3-7677_a</parentingPrefix>
+        <relevance>20</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144070 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144070">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#1-32806"/>
+        <baseId>2-2144070</baseId>
+        <compoundId>2-2144070</compoundId>
+        <name>Fruits, Nuts &amp; Vegetables</name>
+        <parentingPrefix>3-7678_a</parentingPrefix>
+        <relevance>50</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2190300 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2190300">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#1-32806"/>
+        <baseId>2-2190300</baseId>
+        <compoundId>2-2190300</compoundId>
+        <name>Tobacco Products &amp; Supplies</name>
+        <parentingPrefix>3-7931_a</parentingPrefix>
+        <relevance>0</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-4031553 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-4031553">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#1-32806"/>
+        <baseId>2-4031553</baseId>
+        <compoundId>2-4031553</compoundId>
+        <name>Monthly Clubs</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>0</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7666_a:11911627 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7666_a:11911627">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143936"/>
+        <baseId>3-7666_a:11911627</baseId>
+        <compoundId>3-7666_a:11911627</compoundId>
+        <name>Yogurt</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>50</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7666_a:2143937 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7666_a:2143937">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143936"/>
+        <baseId>3-7666_a:2143937</baseId>
+        <compoundId>3-7666_a:2143937</compoundId>
+        <name>Milk Substitutes</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>50</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7666_a:2143938 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7666_a:2143938">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143936"/>
+        <baseId>3-7666_a:2143938</baseId>
+        <compoundId>3-7666_a:2143938</compoundId>
+        <name>Milks &amp; Creams</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>50</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7666_a:2143939 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7666_a:2143939">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143936"/>
+        <baseId>3-7666_a:2143939</baseId>
+        <compoundId>3-7666_a:2143939</compoundId>
+        <name>Ice Creams</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>50</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7666_a:2143941 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7666_a:2143941">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143936"/>
+        <baseId>3-7666_a:2143941</baseId>
+        <compoundId>3-7666_a:2143941</compoundId>
+        <name>Cheeses &amp; Dairy Spreads</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>50</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7667_a:11824151 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7667_a:11824151">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143942"/>
+        <baseId>3-7667_a:11824151</baseId>
+        <compoundId>3-7667_a:11824151</compoundId>
+        <name>Pancake &amp; Waffle Mixes</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>10</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7667_a:12440732 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7667_a:12440732">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143942"/>
+        <baseId>3-7667_a:12440732</baseId>
+        <compoundId>3-7667_a:12440732</compoundId>
+        <name>Gelatins</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>10</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7667_a:12440733 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7667_a:12440733">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143942"/>
+        <baseId>3-7667_a:12440733</baseId>
+        <compoundId>3-7667_a:12440733</compoundId>
+        <name>Puddings &amp; Pie Fillings</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>10</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7667_a:2143943 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7667_a:2143943">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143942"/>
+        <baseId>3-7667_a:2143943</baseId>
+        <compoundId>3-7667_a:2143943</compoundId>
+        <name>Cake &amp; Cookie Decorations</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>10</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7667_a:2143944 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7667_a:2143944">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143942"/>
+        <baseId>3-7667_a:2143944</baseId>
+        <compoundId>3-7667_a:2143944</compoundId>
+        <name>Flours</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>50</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7667_a:2143945 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7667_a:2143945">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143942"/>
+        <baseId>3-7667_a:2143945</baseId>
+        <compoundId>3-7667_a:2143945</compoundId>
+        <name>Crumbs &amp; Breading</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>20</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7667_a:2143947 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7667_a:2143947">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143942"/>
+        <baseId>3-7667_a:2143947</baseId>
+        <compoundId>3-7667_a:2143947</compoundId>
+        <name>Baking Chocolates &amp; Flavor Chips</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>0</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7667_a:2143948 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7667_a:2143948">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143942"/>
+        <baseId>3-7667_a:2143948</baseId>
+        <compoundId>3-7667_a:2143948</compoundId>
+        <name>Flavorings, Marinades &amp; Glazes</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>20</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7667_a:2143950 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7667_a:2143950">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143942"/>
+        <baseId>3-7667_a:2143950</baseId>
+        <compoundId>3-7667_a:2143950</compoundId>
+        <name>Frostings, Toppings &amp; Mixes</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>10</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7667_a:2143951 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7667_a:2143951">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143942"/>
+        <baseId>3-7667_a:2143951</baseId>
+        <compoundId>3-7667_a:2143951</compoundId>
+        <name>Baking Powder</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>50</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7667_a:2143953 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7667_a:2143953">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143942"/>
+        <baseId>3-7667_a:2143953</baseId>
+        <compoundId>3-7667_a:2143953</compoundId>
+        <name>Sauces</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>20</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7667_a:2143954 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7667_a:2143954">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143942"/>
+        <baseId>3-7667_a:2143954</baseId>
+        <compoundId>3-7667_a:2143954</compoundId>
+        <name>Food Colorings</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>0</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7667_a:2143955 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7667_a:2143955">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143942"/>
+        <baseId>3-7667_a:2143955</baseId>
+        <compoundId>3-7667_a:2143955</compoundId>
+        <name>Stocks</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>10</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7667_a:2143956 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7667_a:2143956">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143942"/>
+        <baseId>3-7667_a:2143956</baseId>
+        <compoundId>3-7667_a:2143956</compoundId>
+        <name>Baking Kits &amp; Mixes</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>10</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7667_a:2143957 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7667_a:2143957">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143942"/>
+        <baseId>3-7667_a:2143957</baseId>
+        <compoundId>3-7667_a:2143957</compoundId>
+        <name>Oils, Fats &amp; Shortenings</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>50</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7667_a:2143958 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7667_a:2143958">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143942"/>
+        <baseId>3-7667_a:2143958</baseId>
+        <compoundId>3-7667_a:2143958</compoundId>
+        <name>Sugars &amp; Sweeteners</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>50</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7667_a:2143959 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7667_a:2143959">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143942"/>
+        <baseId>3-7667_a:2143959</baseId>
+        <compoundId>3-7667_a:2143959</compoundId>
+        <name>Stuffing Mixes</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>10</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7668_a:11745634 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7668_a:11745634">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143960"/>
+        <baseId>3-7668_a:11745634</baseId>
+        <compoundId>3-7668_a:11745634</compoundId>
+        <name>Cheese Boards &amp; Baskets</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>0</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7668_a:11805493 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7668_a:11805493">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143960"/>
+        <baseId>3-7668_a:11805493</baseId>
+        <compoundId>3-7668_a:11805493</compoundId>
+        <name>Gourmet Gifts</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>0</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7668_a:2143961 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7668_a:2143961">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143960"/>
+        <baseId>3-7668_a:2143961</baseId>
+        <compoundId>3-7668_a:2143961</compoundId>
+        <name>Snacks</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>0</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7668_a:2143962 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7668_a:2143962">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143960"/>
+        <baseId>3-7668_a:2143962</baseId>
+        <compoundId>3-7668_a:2143962</compoundId>
+        <name>Beer, Wine &amp; Spirits</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>0</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7668_a:2143963 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7668_a:2143963">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143960"/>
+        <baseId>3-7668_a:2143963</baseId>
+        <compoundId>3-7668_a:2143963</compoundId>
+        <name>Condiments &amp; Seasonings</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>10</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7668_a:2143964 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7668_a:2143964">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143960"/>
+        <baseId>3-7668_a:2143964</baseId>
+        <compoundId>3-7668_a:2143964</compoundId>
+        <name>Baked Goods &amp; Desserts</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>0</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7668_a:2143965 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7668_a:2143965">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143960"/>
+        <baseId>3-7668_a:2143965</baseId>
+        <compoundId>3-7668_a:2143965</compoundId>
+        <name>Candies &amp; Chocolates</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>0</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7668_a:2143967 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7668_a:2143967">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143960"/>
+        <baseId>3-7668_a:2143967</baseId>
+        <compoundId>3-7668_a:2143967</compoundId>
+        <name>Meat, Poultry &amp; Seafood</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>10</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7668_a:2143968 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7668_a:2143968">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143960"/>
+        <baseId>3-7668_a:2143968</baseId>
+        <compoundId>3-7668_a:2143968</compoundId>
+        <name>Vegetables, Nuts &amp; Fruits</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>10</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7668_a:2143969 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7668_a:2143969">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143960"/>
+        <baseId>3-7668_a:2143969</baseId>
+        <compoundId>3-7668_a:2143969</compoundId>
+        <name>Beverage</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>0</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7669_a:2143971 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7669_a:2143971">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143970"/>
+        <baseId>3-7669_a:2143971</baseId>
+        <compoundId>3-7669_a:2143971</compoundId>
+        <name>Honey &amp; Syrups</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>30</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7669_a:2143972 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7669_a:2143972">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143970"/>
+        <baseId>3-7669_a:2143972</baseId>
+        <compoundId>3-7669_a:2143972</compoundId>
+        <name>Salsas, Dips &amp; Spreads</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>5</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7669_a:2143973 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7669_a:2143973">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143970"/>
+        <baseId>3-7669_a:2143973</baseId>
+        <compoundId>3-7669_a:2143973</compoundId>
+        <name>Hot Sauces</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>10</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7669_a:2143975 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7669_a:2143975">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143970"/>
+        <baseId>3-7669_a:2143975</baseId>
+        <compoundId>3-7669_a:2143975</compoundId>
+        <name>Jams, Jellies &amp; Preserves</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>10</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7669_a:2143977 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7669_a:2143977">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143970"/>
+        <baseId>3-7669_a:2143977</baseId>
+        <compoundId>3-7669_a:2143977</compoundId>
+        <name>Ketchups</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>10</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7669_a:2143978 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7669_a:2143978">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143970"/>
+        <baseId>3-7669_a:2143978</baseId>
+        <compoundId>3-7669_a:2143978</compoundId>
+        <name>Peanut &amp; Other Butters</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>30</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7669_a:2143979 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7669_a:2143979">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143970"/>
+        <baseId>3-7669_a:2143979</baseId>
+        <compoundId>3-7669_a:2143979</compoundId>
+        <name>Mustards</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>10</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7669_a:2143980 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7669_a:2143980">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143970"/>
+        <baseId>3-7669_a:2143980</baseId>
+        <compoundId>3-7669_a:2143980</compoundId>
+        <name>Pickled Products</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>10</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7669_a:2143981 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7669_a:2143981">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143970"/>
+        <baseId>3-7669_a:2143981</baseId>
+        <compoundId>3-7669_a:2143981</compoundId>
+        <name>Chutneys &amp; Relishes</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>10</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7669_a:2143982 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7669_a:2143982">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143970"/>
+        <baseId>3-7669_a:2143982</baseId>
+        <compoundId>3-7669_a:2143982</compoundId>
+        <name>Vinegars</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>30</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7669_a:2143983 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7669_a:2143983">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143970"/>
+        <baseId>3-7669_a:2143983</baseId>
+        <compoundId>3-7669_a:2143983</compoundId>
+        <name>Herbs, Spices &amp; Seasonings</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>10</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7669_a:2143984 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7669_a:2143984">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143970"/>
+        <baseId>3-7669_a:2143984</baseId>
+        <compoundId>3-7669_a:2143984</compoundId>
+        <name>Salad Dressings</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>10</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7669_a:2195413 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7669_a:2195413">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143970"/>
+        <baseId>3-7669_a:2195413</baseId>
+        <compoundId>3-7669_a:2195413</compoundId>
+        <name>Barbeque &amp; Grill Seasoning</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>10</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7670_a:11216149 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7670_a:11216149">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143985"/>
+        <baseId>3-7670_a:11216149</baseId>
+        <compoundId>3-7670_a:11216149</compoundId>
+        <name>Toaster Pastries</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>10</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7670_a:12440738 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7670_a:12440738">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143985"/>
+        <baseId>3-7670_a:12440738</baseId>
+        <compoundId>3-7670_a:12440738</compoundId>
+        <name>Trail Mix</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>10</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7670_a:12453654 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7670_a:12453654">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143985"/>
+        <baseId>3-7670_a:12453654</baseId>
+        <compoundId>3-7670_a:12453654</compoundId>
+        <name>Snack Bars</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>0</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7670_a:2143986 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7670_a:2143986">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143985"/>
+        <baseId>3-7670_a:2143986</baseId>
+        <compoundId>3-7670_a:2143986</compoundId>
+        <name>Fruit Rolls &amp; Chews</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>10</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7670_a:2143987 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7670_a:2143987">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143985"/>
+        <baseId>3-7670_a:2143987</baseId>
+        <compoundId>3-7670_a:2143987</compoundId>
+        <name>Jerky</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>10</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7670_a:2143990 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7670_a:2143990">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143985"/>
+        <baseId>3-7670_a:2143990</baseId>
+        <compoundId>3-7670_a:2143990</compoundId>
+        <name>Chips &amp; Pretzels</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>0</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7670_a:2143991 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7670_a:2143991">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143985"/>
+        <baseId>3-7670_a:2143991</baseId>
+        <compoundId>3-7670_a:2143991</compoundId>
+        <name>Crackers</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>10</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7670_a:2143992 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7670_a:2143992">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143985"/>
+        <baseId>3-7670_a:2143992</baseId>
+        <compoundId>3-7670_a:2143992</compoundId>
+        <name>Popcorn</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>10</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7670_a:2143993 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7670_a:2143993">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143985"/>
+        <baseId>3-7670_a:2143993</baseId>
+        <compoundId>3-7670_a:2143993</compoundId>
+        <name>Seasoned Nuts &amp; Mixes</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>10</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7670_a:2194690 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7670_a:2194690">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143985"/>
+        <baseId>3-7670_a:2194690</baseId>
+        <compoundId>3-7670_a:2194690</compoundId>
+        <name>Collections</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>0</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7671_a:10733116 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7671_a:10733116">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143994"/>
+        <baseId>3-7671_a:10733116</baseId>
+        <compoundId>3-7671_a:10733116</compoundId>
+        <name>Assorted Chewy Candy</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>0</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7671_a:10989867 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7671_a:10989867">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143994"/>
+        <baseId>3-7671_a:10989867</baseId>
+        <compoundId>3-7671_a:10989867</compoundId>
+        <name>Breath Fresheners</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>0</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7671_a:2143995 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7671_a:2143995">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143994"/>
+        <baseId>3-7671_a:2143995</baseId>
+        <compoundId>3-7671_a:2143995</compoundId>
+        <name>Bubble &amp; Chewing Gums</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>0</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7671_a:2143996 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7671_a:2143996">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143994"/>
+        <baseId>3-7671_a:2143996</baseId>
+        <compoundId>3-7671_a:2143996</compoundId>
+        <name>Licorice</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>10</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7671_a:2143997 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7671_a:2143997">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143994"/>
+        <baseId>3-7671_a:2143997</baseId>
+        <compoundId>3-7671_a:2143997</compoundId>
+        <name>Chocolate Covered Fruits &amp; Candies</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>0</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7671_a:2143998 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7671_a:2143998">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143994"/>
+        <baseId>3-7671_a:2143998</baseId>
+        <compoundId>3-7671_a:2143998</compoundId>
+        <name>Novelty Candies</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>0</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7671_a:2143999 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7671_a:2143999">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143994"/>
+        <baseId>3-7671_a:2143999</baseId>
+        <compoundId>3-7671_a:2143999</compoundId>
+        <name>Boxed Chocolates &amp; Truffles</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>0</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7671_a:2144000 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7671_a:2144000">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143994"/>
+        <baseId>3-7671_a:2144000</baseId>
+        <compoundId>3-7671_a:2144000</compoundId>
+        <name>Toffees, Caramels &amp; Chews</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>10</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7671_a:2144001 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7671_a:2144001">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143994"/>
+        <baseId>3-7671_a:2144001</baseId>
+        <compoundId>3-7671_a:2144001</compoundId>
+        <name>Candy Bars</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>0</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7671_a:2144002 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7671_a:2144002">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143994"/>
+        <baseId>3-7671_a:2144002</baseId>
+        <compoundId>3-7671_a:2144002</compoundId>
+        <name>Candy Combination Sets</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>0</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7671_a:2144003 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7671_a:2144003">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143994"/>
+        <baseId>3-7671_a:2144003</baseId>
+        <compoundId>3-7671_a:2144003</compoundId>
+        <name>Assorted Hard Candies</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>10</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7671_a:2144004 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7671_a:2144004">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143994"/>
+        <baseId>3-7671_a:2144004</baseId>
+        <compoundId>3-7671_a:2144004</compoundId>
+        <name>Jelly Beans</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>10</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7671_a:2144005 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7671_a:2144005">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143994"/>
+        <baseId>3-7671_a:2144005</baseId>
+        <compoundId>3-7671_a:2144005</compoundId>
+        <name>Lollipops &amp; Sticks</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>0</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7671_a:2144006 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7671_a:2144006">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2143994"/>
+        <baseId>3-7671_a:2144006</baseId>
+        <compoundId>3-7671_a:2144006</compoundId>
+        <name>Rock Candy</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>10</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7672_a:11860829 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7672_a:11860829">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144007"/>
+        <baseId>3-7672_a:11860829</baseId>
+        <compoundId>3-7672_a:11860829</compoundId>
+        <name>Tortillas, Pitas &amp; Wraps</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>20</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7672_a:2144008 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7672_a:2144008">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144007"/>
+        <baseId>3-7672_a:2144008</baseId>
+        <compoundId>3-7672_a:2144008</compoundId>
+        <name>Pies &amp; Tarts</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>0</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7672_a:2144009 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7672_a:2144009">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144007"/>
+        <baseId>3-7672_a:2144009</baseId>
+        <compoundId>3-7672_a:2144009</compoundId>
+        <name>Croutons</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>50</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7672_a:2144012 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7672_a:2144012">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144007"/>
+        <baseId>3-7672_a:2144012</baseId>
+        <compoundId>3-7672_a:2144012</compoundId>
+        <name>Bars &amp; Brownies</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>20</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7672_a:2144013 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7672_a:2144013">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144007"/>
+        <baseId>3-7672_a:2144013</baseId>
+        <compoundId>3-7672_a:2144013</compoundId>
+        <name>Cakes, Tortes &amp; Pastries</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>20</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7672_a:2194688 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7672_a:2194688">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144007"/>
+        <baseId>3-7672_a:2194688</baseId>
+        <compoundId>3-7672_a:2194688</compoundId>
+        <name>Breads</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>50</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7672_a:2507688 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7672_a:2507688">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144007"/>
+        <baseId>3-7672_a:2507688</baseId>
+        <compoundId>3-7672_a:2507688</compoundId>
+        <name>Cookies &amp; Biscuits</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>20</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7673_a:11216144 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7673_a:11216144">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144014"/>
+        <baseId>3-7673_a:11216144</baseId>
+        <compoundId>3-7673_a:11216144</compoundId>
+        <name>Canned Beans</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>10</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7673_a:12440734 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7673_a:12440734">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144014"/>
+        <baseId>3-7673_a:12440734</baseId>
+        <compoundId>3-7673_a:12440734</compoundId>
+        <name>Macaroni &amp; Cheese</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>0</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7673_a:12440735 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7673_a:12440735">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144014"/>
+        <baseId>3-7673_a:12440735</baseId>
+        <compoundId>3-7673_a:12440735</compoundId>
+        <name>Pasta &amp; Noodle Dishes</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>0</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7673_a:12440736 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7673_a:12440736">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144014"/>
+        <baseId>3-7673_a:12440736</baseId>
+        <compoundId>3-7673_a:12440736</compoundId>
+        <name>Potatoes</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>10</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7673_a:12440737 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7673_a:12440737">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144014"/>
+        <baseId>3-7673_a:12440737</baseId>
+        <compoundId>3-7673_a:12440737</compoundId>
+        <name>Rice Dishes</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>0</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7673_a:2144015 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7673_a:2144015">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144014"/>
+        <baseId>3-7673_a:2144015</baseId>
+        <compoundId>3-7673_a:2144015</compoundId>
+        <name>Breakfast Foods</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>0</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7673_a:2144016 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7673_a:2144016">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144014"/>
+        <baseId>3-7673_a:2144016</baseId>
+        <compoundId>3-7673_a:2144016</compoundId>
+        <name>Soups &amp; Stews</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>0</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7673_a:2144017 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7673_a:2144017">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144014"/>
+        <baseId>3-7673_a:2144017</baseId>
+        <compoundId>3-7673_a:2144017</compoundId>
+        <name>Chilis</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>0</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7673_a:2144018 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7673_a:2144018">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144014"/>
+        <baseId>3-7673_a:2144018</baseId>
+        <compoundId>3-7673_a:2144018</compoundId>
+        <name>Complete Meals</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>0</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7673_a:2144019 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7673_a:2144019">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144014"/>
+        <baseId>3-7673_a:2144019</baseId>
+        <compoundId>3-7673_a:2144019</compoundId>
+        <name>Appetizers &amp; Hors D&apos;Oeuvres</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>0</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7673_a:2144020 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7673_a:2144020">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144014"/>
+        <baseId>3-7673_a:2144020</baseId>
+        <compoundId>3-7673_a:2144020</compoundId>
+        <name>Entrees</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>0</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7673_a:2144022 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7673_a:2144022">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144014"/>
+        <baseId>3-7673_a:2144022</baseId>
+        <compoundId>3-7673_a:2144022</compoundId>
+        <name>Pizzas</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>0</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7673_a:2209791 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7673_a:2209791">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144014"/>
+        <baseId>3-7673_a:2209791</baseId>
+        <compoundId>3-7673_a:2209791</compoundId>
+        <name>Side Dishes</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>0</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7674_a:11889564 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7674_a:11889564">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144024"/>
+        <baseId>3-7674_a:11889564</baseId>
+        <compoundId>3-7674_a:11889564</compoundId>
+        <name>Egg Noodles</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>10</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7674_a:12440731 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7674_a:12440731">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144024"/>
+        <baseId>3-7674_a:12440731</baseId>
+        <compoundId>3-7674_a:12440731</compoundId>
+        <name>Granola</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>10</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7674_a:2144025 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7674_a:2144025">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144024"/>
+        <baseId>3-7674_a:2144025</baseId>
+        <compoundId>3-7674_a:2144025</compoundId>
+        <name>Rices</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>40</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7674_a:2144026 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7674_a:2144026">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144024"/>
+        <baseId>3-7674_a:2144026</baseId>
+        <compoundId>3-7674_a:2144026</compoundId>
+        <name>Legumes</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>10</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7674_a:2144027 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7674_a:2144027">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144024"/>
+        <baseId>3-7674_a:2144027</baseId>
+        <compoundId>3-7674_a:2144027</compoundId>
+        <name>Pastas</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>40</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7674_a:2144028 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7674_a:2144028">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144024"/>
+        <baseId>3-7674_a:2144028</baseId>
+        <compoundId>3-7674_a:2144028</compoundId>
+        <name>Grains</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>40</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7674_a:2144029 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7674_a:2144029">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144024"/>
+        <baseId>3-7674_a:2144029</baseId>
+        <compoundId>3-7674_a:2144029</compoundId>
+        <name>Hot Cereals &amp; Oatmeal</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>10</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7674_a:2144030 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7674_a:2144030">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144024"/>
+        <baseId>3-7674_a:2144030</baseId>
+        <compoundId>3-7674_a:2144030</compoundId>
+        <name>Ready to Eat Cereals</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>0</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7675_a:2144035 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7675_a:2144035">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144033"/>
+        <baseId>3-7675_a:2144035</baseId>
+        <compoundId>3-7675_a:2144035</compoundId>
+        <name>Beers &amp; Ciders</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>10</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7675_a:2144038 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7675_a:2144038">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144033"/>
+        <baseId>3-7675_a:2144038</baseId>
+        <compoundId>3-7675_a:2144038</compoundId>
+        <name>Non-Alcoholic Wine, Beer &amp; Cider</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>10</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7675_a:2144040 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7675_a:2144040">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144033"/>
+        <baseId>3-7675_a:2144040</baseId>
+        <compoundId>3-7675_a:2144040</compoundId>
+        <name>Red Wines</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>10</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7675_a:2144041 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7675_a:2144041">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144033"/>
+        <baseId>3-7675_a:2144041</baseId>
+        <compoundId>3-7675_a:2144041</compoundId>
+        <name>White Wines</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>10</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7675_a:4010105 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7675_a:4010105">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144033"/>
+        <baseId>3-7675_a:4010105</baseId>
+        <compoundId>3-7675_a:4010105</compoundId>
+        <name>Premade Alcoholic Drinks &amp; Mixers</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>0</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7676_a:11824073 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7676_a:11824073">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144044"/>
+        <baseId>3-7676_a:11824073</baseId>
+        <compoundId>3-7676_a:11824073</compoundId>
+        <name>Bison</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>50</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7676_a:2144045 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7676_a:2144045">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144044"/>
+        <baseId>3-7676_a:2144045</baseId>
+        <compoundId>3-7676_a:2144045</compoundId>
+        <name>Chicken</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>50</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7676_a:2144046 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7676_a:2144046">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144044"/>
+        <baseId>3-7676_a:2144046</baseId>
+        <compoundId>3-7676_a:2144046</compoundId>
+        <name>Caviar</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>50</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7676_a:2144047 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7676_a:2144047">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144044"/>
+        <baseId>3-7676_a:2144047</baseId>
+        <compoundId>3-7676_a:2144047</compoundId>
+        <name>Turkey</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>50</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7676_a:2144049 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7676_a:2144049">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144044"/>
+        <baseId>3-7676_a:2144049</baseId>
+        <compoundId>3-7676_a:2144049</compoundId>
+        <name>Buffalo</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>50</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7676_a:2144051 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7676_a:2144051">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144044"/>
+        <baseId>3-7676_a:2144051</baseId>
+        <compoundId>3-7676_a:2144051</compoundId>
+        <name>Duck</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>50</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7676_a:2144052 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7676_a:2144052">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144044"/>
+        <baseId>3-7676_a:2144052</baseId>
+        <compoundId>3-7676_a:2144052</compoundId>
+        <name>Fish</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>50</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7676_a:2144053 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7676_a:2144053">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144044"/>
+        <baseId>3-7676_a:2144053</baseId>
+        <compoundId>3-7676_a:2144053</compoundId>
+        <name>Lamb</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>50</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7676_a:2144055 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7676_a:2144055">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144044"/>
+        <baseId>3-7676_a:2144055</baseId>
+        <compoundId>3-7676_a:2144055</compoundId>
+        <name>Pork</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>50</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7676_a:2144056 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7676_a:2144056">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144044"/>
+        <baseId>3-7676_a:2144056</baseId>
+        <compoundId>3-7676_a:2144056</compoundId>
+        <name>Meat, Seafood &amp; Poultry Combinations</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>50</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7676_a:2144057 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7676_a:2144057">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144044"/>
+        <baseId>3-7676_a:2144057</baseId>
+        <compoundId>3-7676_a:2144057</compoundId>
+        <name>Beef</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>50</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7676_a:2144058 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7676_a:2144058">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144044"/>
+        <baseId>3-7676_a:2144058</baseId>
+        <compoundId>3-7676_a:2144058</compoundId>
+        <name>Other Meat &amp; Poultry</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>50</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7676_a:2195579 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7676_a:2195579">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144044"/>
+        <baseId>3-7676_a:2195579</baseId>
+        <compoundId>3-7676_a:2195579</compoundId>
+        <name>Meat Alternatives</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>50</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7676_a:2195580 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7676_a:2195580">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144044"/>
+        <baseId>3-7676_a:2195580</baseId>
+        <compoundId>3-7676_a:2195580</compoundId>
+        <name>Shellfish</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>50</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7676_a:2195581 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7676_a:2195581">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144044"/>
+        <baseId>3-7676_a:2195581</baseId>
+        <compoundId>3-7676_a:2195581</compoundId>
+        <name>Venison</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>50</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7677_a:11216142 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7677_a:11216142">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144059"/>
+        <baseId>3-7677_a:11216142</baseId>
+        <compoundId>3-7677_a:11216142</compoundId>
+        <name>Smoothies</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>20</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7677_a:2144060 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7677_a:2144060">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144059"/>
+        <baseId>3-7677_a:2144060</baseId>
+        <compoundId>3-7677_a:2144060</compoundId>
+        <name>Rice &amp; Soy Drinks &amp; Mixes</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>20</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7677_a:2144061 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7677_a:2144061">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144059"/>
+        <baseId>3-7677_a:2144061</baseId>
+        <compoundId>3-7677_a:2144061</compoundId>
+        <name>Bottled Waters</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>20</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7677_a:2144062 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7677_a:2144062">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144059"/>
+        <baseId>3-7677_a:2144062</baseId>
+        <compoundId>3-7677_a:2144062</compoundId>
+        <name>Dairy Drinks &amp; Mixes</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>20</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7677_a:2144064 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7677_a:2144064">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144059"/>
+        <baseId>3-7677_a:2144064</baseId>
+        <compoundId>3-7677_a:2144064</compoundId>
+        <name>Coffee Drinks, Mixes &amp; Beans</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>20</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7677_a:2144065 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7677_a:2144065">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144059"/>
+        <baseId>3-7677_a:2144065</baseId>
+        <compoundId>3-7677_a:2144065</compoundId>
+        <name>Sports &amp; Energy Drinks</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>0</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7677_a:2144066 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7677_a:2144066">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144059"/>
+        <baseId>3-7677_a:2144066</baseId>
+        <compoundId>3-7677_a:2144066</compoundId>
+        <name>Fruit &amp; Vegetable Juices &amp; Concentrates</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>25</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7677_a:2144067 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7677_a:2144067">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144059"/>
+        <baseId>3-7677_a:2144067</baseId>
+        <compoundId>3-7677_a:2144067</compoundId>
+        <name>Premade Drinks &amp; Mixers</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>0</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7677_a:2144068 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7677_a:2144068">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144059"/>
+        <baseId>3-7677_a:2144068</baseId>
+        <compoundId>3-7677_a:2144068</compoundId>
+        <name>Soft Drinks &amp; Sodas</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>0</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7677_a:2144069 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7677_a:2144069">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144059"/>
+        <baseId>3-7677_a:2144069</baseId>
+        <compoundId>3-7677_a:2144069</compoundId>
+        <name>Tea Drinks, Bags &amp; Mixes</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>20</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7677_a:2194135 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7677_a:2194135">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144059"/>
+        <baseId>3-7677_a:2194135</baseId>
+        <compoundId>3-7677_a:2194135</compoundId>
+        <name>Cocoa/Chocolate Drinks &amp; Mixes</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>20</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7678_a:2144071 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7678_a:2144071">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144070"/>
+        <baseId>3-7678_a:2144071</baseId>
+        <compoundId>3-7678_a:2144071</compoundId>
+        <name>Canned Vegetables</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>50</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7678_a:2144072 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7678_a:2144072">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144070"/>
+        <baseId>3-7678_a:2144072</baseId>
+        <compoundId>3-7678_a:2144072</compoundId>
+        <name>Bulk &amp; Baking Nuts</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>50</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7678_a:2144073 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7678_a:2144073">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144070"/>
+        <baseId>3-7678_a:2144073</baseId>
+        <compoundId>3-7678_a:2144073</compoundId>
+        <name>Dried Fruits</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>50</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7678_a:2144075 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7678_a:2144075">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144070"/>
+        <baseId>3-7678_a:2144075</baseId>
+        <compoundId>3-7678_a:2144075</compoundId>
+        <name>Fresh Vegetables</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>50</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7678_a:2144077 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7678_a:2144077">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144070"/>
+        <baseId>3-7678_a:2144077</baseId>
+        <compoundId>3-7678_a:2144077</compoundId>
+        <name>Canned Fruits</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>50</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7678_a:2195578 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7678_a:2195578">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2144070"/>
+        <baseId>3-7678_a:2195578</baseId>
+        <compoundId>3-7678_a:2195578</compoundId>
+        <name>Olives &amp; Capers</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>50</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7931_a:2190304 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7931_a:2190304">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2190300"/>
+        <baseId>3-7931_a:2190304</baseId>
+        <compoundId>3-7931_a:2190304</compoundId>
+        <name>Cigar &amp; Pipe Tools</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>0</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7931_a:2190306 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7931_a:2190306">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2190300"/>
+        <baseId>3-7931_a:2190306</baseId>
+        <compoundId>3-7931_a:2190306</compoundId>
+        <name>Cigarette Holders</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>0</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7931_a:2190310 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7931_a:2190310">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2190300"/>
+        <baseId>3-7931_a:2190310</baseId>
+        <compoundId>3-7931_a:2190310</compoundId>
+        <name>Humidors &amp; Accessories</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>0</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7931_a:2190311 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7931_a:2190311">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2190300"/>
+        <baseId>3-7931_a:2190311</baseId>
+        <compoundId>3-7931_a:2190311</compoundId>
+        <name>Lighters</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>0</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7931_a:2190315 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7931_a:2190315">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2190300"/>
+        <baseId>3-7931_a:2190315</baseId>
+        <compoundId>3-7931_a:2190315</compoundId>
+        <name>Pipes</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>0</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7931_a:2190316 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7931_a:2190316">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2190300"/>
+        <baseId>3-7931_a:2190316</baseId>
+        <compoundId>3-7931_a:2190316</compoundId>
+        <name>Rolling Machines &amp; Papers</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>0</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7931_a:2190317 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7931_a:2190317">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2190300"/>
+        <baseId>3-7931_a:2190317</baseId>
+        <compoundId>3-7931_a:2190317</compoundId>
+        <name>Tobacco Flavoring Oils</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>0</relevance>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7931_a:2507692 -->
+
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#3-7931_a:2507692">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#Category"/>
+        <subcategoryOf rdf:resource="http://www.semanticweb.org/mariusz/ontologies/2019/3/CategoriesOntology#2-2190300"/>
+        <baseId>3-7931_a:2507692</baseId>
+        <compoundId>3-7931_a:2507692</compoundId>
+        <name>Cigar Carriers &amp; Cases</name>
+        <parentingPrefix></parentingPrefix>
+        <relevance>0</relevance>
+    </owl:NamedIndividual>
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 5.1.10) https://github.com/owlcs/owlapi/ -->
+
+
