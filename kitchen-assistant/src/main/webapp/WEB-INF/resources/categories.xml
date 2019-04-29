@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<category name="root">
+	<category name="marketing">
+	</category>
+	<category name="raw">
+
+	</category>
+	<category name="processed">
+		<category name="dried">
+
+		</category>
+		<category name="conserved">
+			<category name="pickled">
+
+			</category>
+		</category>
+	</category>
+</category>
