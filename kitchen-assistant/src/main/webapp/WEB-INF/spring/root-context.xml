@@ -5,88 +5,71 @@
 	xmlns:tx="http://www.springframework.org/schema/tx"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
-	
+
 	<!-- Root Context: defines shared resources visible to all other web components -->
 
-<!-- 
-<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
-        <property name="driverClassName" value="org.postgresql.Driver"/>
-        
-        <property name="url" value="jdbc:postgresql://localhost:5434/hibernate5"/>
-        <property name="username" value="postgres"/>
-        <property name="password" value="password"/>
-    </bean>	
- -->	
- 	
- 	<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
-        <property name="driverClassName" value="org.postgresql.Driver"/>
-        
-        <property name="url" value="jdbc:postgresql://localhost:5432/postgres5"/>
-        <property name="username" value="postgres"/>
-        <property name="password" value="PostgresPassword"/>
-    </bean>	
- 	 
-<!--  	 
-	<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
-        <property name="driverClassName" value="org.postgresql.Driver"/>
-        
-        <property name="url" value="jdbc:postgresql://127.6.211.2:5432/tomcatpack"/>
-        <property name="username" value="adminznmndu7"/>
-        <property name="password" value="NCaSJwYdxkyA"/>
-    </bean>	
-    
-	 -->
-	<!-- 
-	
-	jdbc:postgresql://127.6.211.2:5432/tomcatpack
-    <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
-        <property name="driverClassName" value="org.postgresql.Driver"/>
-        
-        <property name="url" value="jdbc:postgresql://${OPENSHIFT_POSTGRESQL_DB_HOST}:${OPENSHIFT_POSTGRESQL_DB_PORT}/${OPENSHIFT_APP_NAME}"/>
-        <property name="username" value="${OPENSHIFT_POSTGRESQL_DB_USERNAME}"/>
-        <property name="password" value="${OPENSHIFT_POSTGRESQL_DB_PASSWORD}"/>
-    </bean>	
-    
- -->   
-    <!-- 
-    <Resource name="jdbc/PostgreSQLDS"
-              url="jdbc:postgresql://${OPENSHIFT_POSTGRESQL_DB_HOST}:${OPENSHIFT_POSTGRESQL_DB_PORT}/${OPENSHIFT_APP_NAME}"
-              driverClassName="org.postgresql.Driver"
-              username="${OPENSHIFT_POSTGRESQL_DB_USERNAME}"
-              password="${OPENSHIFT_POSTGRESQL_DB_PASSWORD}"
-              auth="Container"
-              type="javax.sql.DataSource"
-              maxActive="20"
-              maxIdle="5"
-              maxWait="10000"/>
- -->
- 
-    <!--     
-    <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
-        <property name="driverClassName" value="org.postgresql.Driver"/>
-        <property name="url" value="jdbc:postgresql://localhost:5434/hibernate"/>
-        <property name="username" value="postgres"/>
-        <property name="password" value="password"/>
-    </bean>	
-     -->
-     
-      <bean id="sessionFactory"
-        class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
-        <property name="dataSource" ref="dataSource" />
-		<property name="configLocation" value="classpath:hibernate.cfg.xml" />
-    </bean>
-    
-    	<!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory -->
-	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+	<!-- <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" 
+		destroy-method="close"> <property name="driverClassName" value="org.postgresql.Driver"/> 
+		<property name="url" value="jdbc:postgresql://localhost:5434/hibernate5"/> 
+		<property name="username" value="postgres"/> <property name="password" value="password"/> 
+		</bean> -->
+
+	<bean id="dataSource"
+		class="org.apache.commons.dbcp2.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName"
+			value="org.postgresql.Driver" />
+
+		<property name="url"
+			value="jdbc:postgresql://localhost:5432/postgres5" />
+		<property name="username" value="postgres" />
+		<property name="password" value="PostgresPassword" />
+	</bean>
+
+	<!-- <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" 
+		destroy-method="close"> <property name="driverClassName" value="org.postgresql.Driver"/> 
+		<property name="url" value="jdbc:postgresql://127.6.211.2:5432/tomcatpack"/> 
+		<property name="username" value="adminznmndu7"/> <property name="password" 
+		value="NCaSJwYdxkyA"/> </bean> -->
+	<!-- jdbc:postgresql://127.6.211.2:5432/tomcatpack <bean id="dataSource" 
+		class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close"> 
+		<property name="driverClassName" value="org.postgresql.Driver"/> <property 
+		name="url" value="jdbc:postgresql://${OPENSHIFT_POSTGRESQL_DB_HOST}:${OPENSHIFT_POSTGRESQL_DB_PORT}/${OPENSHIFT_APP_NAME}"/> 
+		<property name="username" value="${OPENSHIFT_POSTGRESQL_DB_USERNAME}"/> <property 
+		name="password" value="${OPENSHIFT_POSTGRESQL_DB_PASSWORD}"/> </bean> -->
+	<!-- <Resource name="jdbc/PostgreSQLDS" url="jdbc:postgresql://${OPENSHIFT_POSTGRESQL_DB_HOST}:${OPENSHIFT_POSTGRESQL_DB_PORT}/${OPENSHIFT_APP_NAME}" 
+		driverClassName="org.postgresql.Driver" username="${OPENSHIFT_POSTGRESQL_DB_USERNAME}" 
+		password="${OPENSHIFT_POSTGRESQL_DB_PASSWORD}" auth="Container" type="javax.sql.DataSource" 
+		maxActive="20" maxIdle="5" maxWait="10000"/> -->
+
+	<!-- <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" 
+		destroy-method="close"> <property name="driverClassName" value="org.postgresql.Driver"/> 
+		<property name="url" value="jdbc:postgresql://localhost:5434/hibernate"/> 
+		<property name="username" value="postgres"/> <property name="password" value="password"/> 
+		</bean> -->
+
+
+
+	<!-- Resolves views selected for rendering by @Controllers to .jsp resources 
+		in the /WEB-INF/views directory -->
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="prefix" value="/WEB-INF/views/" />
 		<property name="suffix" value=".jsp" />
 	</bean>
-    
-   
-   
-    <bean id="transactionManager"
-        class="org.springframework.orm.hibernate4.HibernateTransactionManager">
-        <property name="sessionFactory" ref="sessionFactory" />
-    </bean>
-    		
+
+
+
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="configLocation"
+			value="classpath:hibernate.cfg.xml" />
+	</bean>
+
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
 </beans>
