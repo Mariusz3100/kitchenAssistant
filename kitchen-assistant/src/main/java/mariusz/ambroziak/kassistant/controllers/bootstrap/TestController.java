@@ -15,7 +15,9 @@ import org.springframework.web.servlet.ModelAndView;
 import mariusz.ambroziak.kassistant.Apiclients.googleAuth.GoogleCalendarApiClient;
 import mariusz.ambroziak.kassistant.Apiclients.googleAuth.GoogleDriveApiClient;
 import mariusz.ambroziak.kassistant.ai.FilesProvider;
+import mariusz.ambroziak.kassistant.ai.categorisation.Categoriser;
 import mariusz.ambroziak.kassistant.ai.categorisation.Category;
+import mariusz.ambroziak.kassistant.ai.categorisation.CategoryHierarchy;
 import mariusz.ambroziak.kassistant.exceptions.GoogleDriveAccessNotAuthorisedException;
 import mariusz.ambroziak.kassistant.tesco.TescoApiClient;
 import mariusz.ambroziak.kassistant.tesco.TescoApiClientParticularProduct_notUsed;
@@ -81,7 +83,7 @@ public class TestController {
 	
 	@RequestMapping(value="/categories_read_test")
 	public ModelAndView categories_read_test() {
-		Category singletonRoot = Category.getSingletonRoot();
+		Category singletonRoot = CategoryHierarchy.getSingletonCategoryRoot();
 		
 		
 		ModelAndView mav=new ModelAndView("List");
@@ -97,6 +99,14 @@ public class TestController {
 		return new ModelAndView();
 	}
 	
+	
+	@RequestMapping(value="/categorisation_test")
+	public ModelAndView categorisation_test() {
+		Categoriser.testCategoriesFor("cucumber", 10);
+		
+		
+		return new ModelAndView();
+	}
 	
 	@RequestMapping(value="/tesco_particular_test")
 	public ModelAndView tesco_particular_test() {

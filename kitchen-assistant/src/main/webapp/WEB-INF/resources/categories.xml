@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <category name="root">
-	<category name="marketing">
-	</category>
+
 	<category name="raw">
 
 	</category>
@@ -14,5 +13,7 @@
 
 			</category>
 		</category>
+	</category>
+	<category name="residual">
 	</category>
 </category>

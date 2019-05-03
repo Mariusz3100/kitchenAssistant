@@ -18,14 +18,16 @@ import mariusz.ambroziak.kassistant.ai.FilesProvider;
 
 
 public class Category {
+	@Override
+	public String toString() {
+		return name;
+	}
 	private String name;
 	private Category parent;
 	private List<Category> children;
 	
-	private static Category root;
 	
-	
-	private Category(String name) {
+	Category(String name) {
 		super();
 		this.name = name;
 	}
@@ -51,48 +53,5 @@ public class Category {
 		this.children.add(child);
 	}
 	
-	public static Category getSingletonRoot() {
-		if(root==null) {
-			initializeCategories();
-		}
-		return root;
-	}
-	
-	public static void initializeCategories() {
-		Resource categoriesFile = FilesProvider.getInstance().getCategoriesFile();
-        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-        Document doc;
-		try {
-	        DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-
-			doc = dBuilder.parse(categoriesFile.getInputStream());
-	        Element documentElement = doc.getDocumentElement();
-
-	        NodeList childNodes = documentElement.getChildNodes();
-	        
-	        InputStream inputStream = categoriesFile.getInputStream();
-			BufferedReader br=new BufferedReader(new InputStreamReader(inputStream));
-			List<String> content=new ArrayList<String>();
-			String temp=br.readLine();
-			while(temp!=null) {
-				content.add(temp);
-				temp=br.readLine();
-			}
-			
-	        System.out.println();
-		} catch (SAXException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ParserConfigurationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-        
-        
-	
-	}
 	
 }
