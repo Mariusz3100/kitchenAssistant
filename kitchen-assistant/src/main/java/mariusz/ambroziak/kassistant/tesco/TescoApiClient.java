@@ -32,11 +32,11 @@ public class TescoApiClient {
 	private static final String DETAILS_BASE_URL = "https://dev.tescolabs.com/product/?tpnb=";
 	private static final String baseUrl= "https://dev.tescolabs.com/grocery/products/";
 	private static final int  productsReturnedLimit=20;
-	
+
 	private static final String headerName="Ocp-Apim-Subscription-Key";
 	private static final String headerValue="bb40509242724f799153796d8718c3f3";
 
-//https://dev.tescolabs.com/grocry/products/?query=cucumber&offset=0&limit=10
+	//https://dev.tescolabs.com/grocry/products/?query=cucumber&offset=0&limit=10
 	private static String getResponse(String phrase) {
 		ClientConfig cc = new DefaultClientConfig();
 		cc.getProperties().put(ClientConfig.PROPERTY_FOLLOW_REDIRECTS, true);
@@ -50,7 +50,7 @@ public class TescoApiClient {
 		queryParams.add("limit",Integer.toString(productsReturnedLimit));
 		WebResource clientWithParams = client.queryParams(queryParams);
 		Builder clientWithParamsAndHeader = clientWithParams.header(headerName, headerValue);
-		
+
 		String response1 ="";
 
 		try{
@@ -68,7 +68,7 @@ public class TescoApiClient {
 				System.err.println("Double: "+ex);
 				ProblemLogger.logProblem("Double: "+ex);
 				ex.printStackTrace();
-			
+
 			}
 		}
 
@@ -78,33 +78,29 @@ public class TescoApiClient {
 
 
 	public static ArrayList<Produkt> getProduktsFor(String phrase){
-		ArrayList<Produkt> retValue=new ArrayList<Produkt>();
-		
-		String response=getResponse(phrase);
-//		sleep(1000); //just to not exceed limit
-		JSONObject root=new JSONObject(response);
-		JSONArray produkts=((JSONArray)root.get("products"));
-		
-		for(int i=0;i<produkts.length();i++){
-			JSONObject ApiProdukt=(JSONObject) produkts.get(i);
 
-			retValue.add(TescoApiClientParticularProduct.getProduktByShopId((Integer)ApiProdukt.get("id")));
-		}
-		
-		return retValue;
+		if(phrase==null|phrase.equals(""))
+			return new ArrayList<Produkt>();
+
+		String response = getResponse(phrase);
+
+		ArrayList<Produkt> list = parseResponse(response);
+
+
+		return list;
 	}
 
 
 	private static float getPrice(JSONObject ApiProdukt, String url) {
 		String minPrice=(String) ApiProdukt.get("minimumPrice");
 		String maxPrice=(String) ApiProdukt.get("maximumPrice");
-		
+
 		if(minPrice==null||minPrice.equals("")||maxPrice==null||maxPrice.equals(""))
 			ProblemLogger.logProblem("Problem with missing price(s) for produkt: "+url);
-		
+
 		if(!minPrice.equals(maxPrice))
 			ProblemLogger.logProblem("Problem with max and min price not matching for produkt: "+url);
-		
+
 		float maxFloat=extractFloatPrice(maxPrice);
 
 		return maxFloat;
@@ -120,24 +116,24 @@ public class TescoApiClient {
 
 	public static void main(String [] args){
 		//System.out.println(getProduktsFor("chicken"));
-		String response = getResponse("chicken");
-		
+		String response = getResponse("cucumber");
+
 		ArrayList<Produkt> list = parseResponse(response);
-		
+
 		System.out.println(list.size());
 	}
 
 
 	private static ArrayList<Produkt> parseResponse(String response) {
 		JSONObject jsonRoot=new JSONObject(response);
-		
-		
+
+
 		JSONObject ukJson = jsonRoot.getJSONObject("uk");
-		
+
 		JSONObject jsonGhs = ukJson.getJSONObject("ghs");
-		
+
 		JSONObject jsonProducts =jsonGhs.getJSONObject("products");
-		
+
 		JSONArray jsonProductResultsArray=jsonProducts.getJSONArray("results");
 
 		ArrayList<Produkt> resultProductList = calculateProductList(jsonProductResultsArray);
@@ -147,34 +143,41 @@ public class TescoApiClient {
 
 	private static ArrayList<Produkt> calculateProductList(JSONArray jsonProductResultsArray) {
 		ArrayList<Produkt> resultList=new ArrayList<Produkt>();
-		
-		
+
+
 		for(int i=0;i<jsonProductResultsArray.length();i++) {
 			JSONObject singleProductJson = jsonProductResultsArray.getJSONObject(i);
 			Produkt result = createParticularProduct(singleProductJson);
-			
+
 			resultList.add(result);
 		}
-		
+
 		return resultList;
 	}
 
 
 	private static Produkt createParticularProduct(JSONObject singleProductJson) {
-		String name = singleProductJson.getString("name");
-		long tpnb = singleProductJson.getLong("tpnb");
-		String detailsUrl=DETAILS_BASE_URL+tpnb;
+		String name =singleProductJson.has("name")?singleProductJson.getString("name"):"";
+		String detailsUrl="";
+		if(singleProductJson.has("tpnb")) {
+			long tpnb =singleProductJson.getLong("tpnb");
+			detailsUrl=DETAILS_BASE_URL+tpnb;
+
+		}
+		
 		String description = calculateDescription(singleProductJson);
-		float price = (float)singleProductJson.getDouble("price");
+		float price = singleProductJson.has("price")?(float)singleProductJson.getDouble("price"):0;
 
 		String quantityString = calculateQuantityJspString(singleProductJson, detailsUrl);
-					
+
 		Produkt result=new Produkt(detailsUrl,quantityString,name,"",description,price,false);
 		return result;
 	}
 
 
 	private static String calculateDescription(JSONObject singleProductJson) {
+		if(singleProductJson.has("description")) {
+		
 		JSONArray jsonArray = singleProductJson.getJSONArray("description");
 		String retValue="";
 		for(int i=0;i<jsonArray.length();i++) {
@@ -183,6 +186,9 @@ public class TescoApiClient {
 		}
 
 		return retValue;
+		}else {
+			return "";
+		}
 	}
 
 
@@ -191,21 +197,35 @@ public class TescoApiClient {
 		float contentsQuantity = (float)singleProductJson.getDouble("ContentsQuantity");
 
 		String quantityString="";
-		
-		if(!contentsMeasureType.equals("G")) {
-			ProblemLogger.logProblem("Found tesco product with type different than Grams:"+detailsUrl);
-			
-		}else {
-		
-			if(contentsMeasureType!=null&&contentsMeasureType.equals("G")) {
+		if(contentsMeasureType!=null) {
+			if(contentsMeasureType.equals("KG")) {
+				contentsQuantity*=1000;
+				contentsMeasureType="G";
+			}
+
+
+			if(contentsMeasureType.equals("G")) {
+
 				try {
-				PreciseQuantity pq=new PreciseQuantity(contentsQuantity*1000, AmountTypes.mg);
-				quantityString=pq.toJspString();
+					PreciseQuantity pq=new PreciseQuantity(contentsQuantity*1000, AmountTypes.mg);
+					quantityString=pq.toJspString();
 				}catch (NumberFormatException e) {
 					// Lets just leave empty Quantity string
 				}
+			}else {
+				if(contentsMeasureType.equals("SNGL")) {
+					PreciseQuantity pq=new PreciseQuantity(contentsQuantity, AmountTypes.szt);
+					quantityString=pq.toJspString();
+
+
+				}else {
+					ProblemLogger.logProblem("Found tesco product with unknown masure type:"+detailsUrl);
+
+				}
 			}
+
 		}
+
 		return quantityString;
 	}
 
@@ -221,4 +241,9 @@ public class TescoApiClient {
 			e.printStackTrace();
 		}
 	}
+
+
+
+
+
 }

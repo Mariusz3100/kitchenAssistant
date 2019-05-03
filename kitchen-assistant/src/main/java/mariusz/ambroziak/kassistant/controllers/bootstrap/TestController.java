@@ -17,6 +17,8 @@ import mariusz.ambroziak.kassistant.Apiclients.googleAuth.GoogleDriveApiClient;
 import mariusz.ambroziak.kassistant.ai.FilesProvider;
 import mariusz.ambroziak.kassistant.ai.categorisation.Category;
 import mariusz.ambroziak.kassistant.exceptions.GoogleDriveAccessNotAuthorisedException;
+import mariusz.ambroziak.kassistant.tesco.TescoApiClient;
+import mariusz.ambroziak.kassistant.tesco.TescoApiClientParticularProduct_notUsed;
 import mariusz.ambroziak.kassistant.utils.StringHolder;
 
 
@@ -88,4 +90,17 @@ public class TestController {
 		
 	}
 
+	
+	@RequestMapping(value="/tesco_test")
+	public ModelAndView tesco_test() {
+		TescoApiClient.main(null);
+		return new ModelAndView();
+	}
+	
+	
+	@RequestMapping(value="/tesco_particular_test")
+	public ModelAndView tesco_particular_test() {
+		TescoApiClientParticularProduct_notUsed.main(null);
+		return new ModelAndView();
+	}
 }
