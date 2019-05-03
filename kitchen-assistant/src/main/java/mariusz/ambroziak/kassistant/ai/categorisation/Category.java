@@ -10,6 +10,7 @@ import java.util.List;
 import javax.xml.parsers.*;
 
 import org.springframework.core.io.Resource;
+import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
 import mariusz.ambroziak.kassistant.ai.FilesProvider;
