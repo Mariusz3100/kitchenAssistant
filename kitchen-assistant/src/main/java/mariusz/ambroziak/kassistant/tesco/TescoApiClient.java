@@ -78,20 +78,16 @@ public class TescoApiClient {
 
 
 	public static ArrayList<Produkt> getProduktsFor(String phrase){
-		ArrayList<Produkt> retValue=new ArrayList<Produkt>();
 		
-		String response=getResponse(phrase);
-//		sleep(1000); //just to not exceed limit
-		JSONObject root=new JSONObject(response);
-		JSONArray produkts=((JSONArray)root.get("products"));
+		if(phrase==null|phrase.equals(""))
+			return new ArrayList<Produkt>();
 		
-		for(int i=0;i<produkts.length();i++){
-			JSONObject ApiProdukt=(JSONObject) produkts.get(i);
-
-			retValue.add(TescoApiClientParticularProduct.getProduktByShopId((Integer)ApiProdukt.get("id")));
-		}
+		String response = getResponse(phrase);
 		
-		return retValue;
+		ArrayList<Produkt> list = parseResponse(response);
+		
+		
+		return list;
 	}
 
 
@@ -191,6 +187,10 @@ public class TescoApiClient {
 		float contentsQuantity = (float)singleProductJson.getDouble("ContentsQuantity");
 
 		String quantityString="";
+		if(contentsMeasureType.equals("KG")) {
+			contentsQuantity*=1000;
+			contentsMeasureType="G";
+		}
 		
 		if(!contentsMeasureType.equals("G")) {
 			ProblemLogger.logProblem("Found tesco product with type different than Grams:"+detailsUrl);
@@ -221,4 +221,9 @@ public class TescoApiClient {
 			e.printStackTrace();
 		}
 	}
+	
+	
+	
+	
+
 }
