@@ -43,7 +43,7 @@ public class Categoriser {
 
 	}
 	
-	public static void testCategoriesFor(String phrase,int limit) {
+	public static Map<Produkt, Category> testCategoriesFor(String phrase,int limit) {
 		Category cat=CategoryHierarchy.getSingletonCategoryRoot();
 		
 		ArrayList<Produkt> produkts = TescoApiClient.getProduktsFor(phrase);
@@ -51,8 +51,8 @@ public class Categoriser {
 		
 		Map<Produkt, Category> categories = assignCategories(produkts);
 		
+		return categories;
 		
-		System.out.println();
 		
 	}
 
@@ -78,8 +78,12 @@ public class Categoriser {
 
 
 	private static Category assignCategory(Produkt p) {
+		Category root=CategoryHierarchy.getSingletonCategoryRoot();
 		
-		return CategoryHierarchy.getSingletonCategoryRoot();
+		Category result=root.assignCategoryFromTree(p);
+		
+		
+		return result;
 		
 	}
 	

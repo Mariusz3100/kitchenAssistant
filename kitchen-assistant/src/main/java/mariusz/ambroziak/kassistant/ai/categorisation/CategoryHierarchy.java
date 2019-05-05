@@ -40,24 +40,30 @@ public class CategoryHierarchy {
 		Category raw=new Category("raw");
 		raw.setParent(root);
 		root.addChildren(raw);
+		raw.addCategoryNameInclusions("fresh");
+		
 		
 		Category processed=new Category("processed");
 		processed.setParent(root);
 		root.addChildren(processed);
+		processed.addCategoryNameInclusions("processed");
 		
 		Category conserved=new Category("conserved");
 		conserved.setParent(processed);
 		processed.addChildren(conserved);
-		
+		conserved.addCategoryNameInclusions("canned");
+
 		Category pickled=new Category("pickled");
 		pickled.setParent(conserved);
 		conserved.addChildren(pickled);
-		
+		pickled.addCategoryNameInclusions("pickled");
+
 		
 		Category dried=new Category("dried");
 		dried.setParent(processed);
 		processed.addChildren(dried);
-		
+		dried.addCategoryNameInclusions("dried");
+
 		
 		
 		
@@ -66,7 +72,8 @@ public class CategoryHierarchy {
 		Category residual=new Category("residual");
 		residual.setParent(root);
 		root.addChildren(residual);
-		
+		residual.addNameInclusion("flavoured");
+
 		
 		
 	}

@@ -52,8 +52,19 @@ public class Produkt {
 	@NotNull
 	private boolean przetworzony=false;
 
+	@NotNull
+	private String metadata;
 
 
+
+
+	public String getMetadata() {
+		return metadata;
+	}
+
+	public void setMetadata(String metadata) {
+		this.metadata = metadata;
+	}
 
 	public Produkt(String nazwa2, String detailsUrl) {
 		this(detailsUrl,"",nazwa2,"","", -1,false);
@@ -92,6 +103,19 @@ public class Produkt {
 		this.opis = opis;
 		this.cena = cena;
 		this.przetworzony = przetworzony;
+	}
+
+	public Produkt(String url, String quantity_phrase, String nazwa, String sklad, String opis, float cena,
+			boolean przetworzony, String metadata) {
+		super();
+		this.url = url;
+		this.quantity_phrase = quantity_phrase;
+		this.nazwa = nazwa;
+		this.sklad = sklad;
+		this.opis = opis;
+		this.cena = cena;
+		this.przetworzony = przetworzony;
+		this.metadata = metadata;
 	}
 
 	public void setP_id(Long p_id) {

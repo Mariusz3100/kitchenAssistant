@@ -8,6 +8,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.google.gson.JsonObject;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.WebResource.Builder;
@@ -17,6 +18,7 @@ import com.sun.jersey.core.util.MultivaluedMapImpl;
 
 import api.extractors.AbstractQuantityEngExtractor.QuantityTranslation;
 import api.extractors.EdamanQExtract;
+import mariusz.ambroziak.kassistant.ai.categorisation.MetadataConstants;
 import mariusz.ambroziak.kassistant.model.Amount_Type;
 import mariusz.ambroziak.kassistant.model.Problem;
 import mariusz.ambroziak.kassistant.model.Produkt;
@@ -31,7 +33,7 @@ import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 public class TescoApiClient {
 	private static final String DETAILS_BASE_URL = "https://dev.tescolabs.com/product/?tpnb=";
 	private static final String baseUrl= "https://dev.tescolabs.com/grocery/products/";
-	private static final int  productsReturnedLimit=20;
+	private static final int  productsReturnedLimit=100;
 
 	private static final String headerName="Ocp-Apim-Subscription-Key";
 	private static final String headerValue="bb40509242724f799153796d8718c3f3";
@@ -164,14 +166,23 @@ public class TescoApiClient {
 			detailsUrl=DETAILS_BASE_URL+tpnb;
 
 		}
-		
+		String metadata=createMetadata(singleProductJson);
 		String description = calculateDescription(singleProductJson);
 		float price = singleProductJson.has("price")?(float)singleProductJson.getDouble("price"):0;
 
 		String quantityString = calculateQuantityJspString(singleProductJson, detailsUrl);
 
-		Produkt result=new Produkt(detailsUrl,quantityString,name,"",description,price,false);
+		Produkt result=new Produkt(detailsUrl,quantityString,name,"",description,price,false,metadata);
 		return result;
+	}
+
+
+	private static String createMetadata(JSONObject singleProductJson) {
+		JsonObject metadata=new JsonObject();
+		String category = singleProductJson.getString("superDepartment");
+		metadata.addProperty(MetadataConstants.categoryName,category );
+		
+		return metadata.toString();
 	}
 
 

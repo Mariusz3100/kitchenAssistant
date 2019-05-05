@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
@@ -19,6 +21,7 @@ import mariusz.ambroziak.kassistant.ai.categorisation.Categoriser;
 import mariusz.ambroziak.kassistant.ai.categorisation.Category;
 import mariusz.ambroziak.kassistant.ai.categorisation.CategoryHierarchy;
 import mariusz.ambroziak.kassistant.exceptions.GoogleDriveAccessNotAuthorisedException;
+import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.tesco.TescoApiClient;
 import mariusz.ambroziak.kassistant.tesco.TescoApiClientParticularProduct_notUsed;
 import mariusz.ambroziak.kassistant.utils.StringHolder;
@@ -102,10 +105,23 @@ public class TestController {
 	
 	@RequestMapping(value="/categorisation_test")
 	public ModelAndView categorisation_test() {
-		Categoriser.testCategoriesFor("cucumber", 10);
+		ArrayList<String> list=new ArrayList<String>();
+		list.add("cucumber:");
 		
+		Map<Produkt, Category> testedCategoriesFor = Categoriser.testCategoriesFor("cucumber", 10);
+		for(Entry<Produkt, Category> e:testedCategoriesFor.entrySet()) {
+			list.add(e.getKey().getNazwa()+" ("+e.getKey().getUrl()+")->"+e.getValue());
+		}
 		
-		return new ModelAndView();
+		list.add("tomato:");
+		Map<Produkt, Category> testedCategoriesForTomato = Categoriser.testCategoriesFor("tomato", 10);
+		for(Entry<Produkt, Category> e:testedCategoriesForTomato.entrySet()) {
+			list.add(e.getKey().getNazwa()+" ("+e.getKey().getUrl()+")->"+e.getValue());
+		}
+		
+		ModelAndView modelAndView = new ModelAndView("List");
+		modelAndView.addObject("list",list);
+		return modelAndView;
 	}
 	
 	@RequestMapping(value="/tesco_particular_test")
