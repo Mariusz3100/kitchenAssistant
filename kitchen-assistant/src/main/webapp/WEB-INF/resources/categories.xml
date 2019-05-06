@@ -8,10 +8,11 @@
 		<category name="dried">
 
 		</category>
-		<category name="conserved">
-			<category name="pickled">
+		<category name="grinded">
 
-			</category>
+		</category>
+		<category name="conserved">
+
 		</category>
 	</category>
 	<category name="residual">

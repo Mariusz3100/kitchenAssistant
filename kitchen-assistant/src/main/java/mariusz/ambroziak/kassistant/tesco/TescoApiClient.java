@@ -179,8 +179,12 @@ public class TescoApiClient {
 
 	private static String createMetadata(JSONObject singleProductJson) {
 		JsonObject metadata=new JsonObject();
-		String category = singleProductJson.getString("superDepartment");
-		metadata.addProperty(MetadataConstants.categoryName,category );
+		String category1 = singleProductJson.getString("superDepartment");
+		String category2 = singleProductJson.getString("department");
+
+		metadata.addProperty(MetadataConstants.categoryName1,category1 );
+		metadata.addProperty(MetadataConstants.categoryName2,category2 );
+
 		
 		return metadata.toString();
 	}
@@ -209,31 +213,43 @@ public class TescoApiClient {
 
 		String quantityString="";
 		if(contentsMeasureType!=null) {
-			if(contentsMeasureType.equals("KG")) {
-				contentsQuantity*=1000;
-				contentsMeasureType="G";
-			}
-
-
-			if(contentsMeasureType.equals("G")) {
-
-				try {
-					PreciseQuantity pq=new PreciseQuantity(contentsQuantity*1000, AmountTypes.mg);
-					quantityString=pq.toJspString();
-				}catch (NumberFormatException e) {
-					// Lets just leave empty Quantity string
-				}
+			QuantityTranslation translation = TescoQExtractor.getTranslationToBaseType(contentsMeasureType);
+			
+			if(translation!=null) {
+				contentsQuantity*=translation.getMultiplier();
+				PreciseQuantity pq=new PreciseQuantity(contentsQuantity,translation.getTargetAmountType());
+				quantityString=pq.toJspString();
+			
 			}else {
-				if(contentsMeasureType.equals("SNGL")) {
-					PreciseQuantity pq=new PreciseQuantity(contentsQuantity, AmountTypes.szt);
-					quantityString=pq.toJspString();
+				PreciseQuantity pq=new PreciseQuantity(0,AmountTypes.szt);
+				quantityString=pq.toJspString();
 
-
-				}else {
-					ProblemLogger.logProblem("Found tesco product with unknown masure type:"+detailsUrl);
-
-				}
 			}
+//			if(contentsMeasureType.equals("KG")) {
+//				contentsQuantity*=1000;
+//				contentsMeasureType="G";
+//			}
+//
+//
+//			if(contentsMeasureType.equals("G")) {
+//
+//				try {
+//					PreciseQuantity pq=new PreciseQuantity(contentsQuantity*1000, AmountTypes.mg);
+//					quantityString=pq.toJspString();
+//				}catch (NumberFormatException e) {
+//					// Lets just leave empty Quantity string
+//				}
+//			}else {
+//				if(contentsMeasureType.equals("SNGL")) {
+//					PreciseQuantity pq=new PreciseQuantity(contentsQuantity, AmountTypes.szt);
+//					quantityString=pq.toJspString();
+//
+//
+//				}else {
+//					ProblemLogger.logProblem("Found tesco product with unknown masure type:"+detailsUrl);
+//
+//				}
+//			}
 
 		}
 

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.xml.parsers.*;
@@ -28,10 +29,21 @@ public class Category {
 	private String name;
 	private Category parent;
 	private List<Category> children;
-	ArrayList<String> nameInclusions;
-	ArrayList<String> categoryNameInclusions;
+
+	private List<Condition> conditions;
+	private List<Condition> childrenConditions;
 
 
+
+	public List<Condition> getChildrenConditions() {
+		return childrenConditions;
+	}
+	public void addChildrenConditions(Condition condition) {
+		if(this.childrenConditions==null)
+			this.childrenConditions =new ArrayList<Condition>();
+
+		this.childrenConditions.add(condition);
+	}
 	Category(String name) {
 		super();
 		this.name = name;
@@ -57,80 +69,56 @@ public class Category {
 
 		this.children.add(child);
 	}
-	public ArrayList<String> getCategoryNameInclusions() {
-		return categoryNameInclusions;
+	public List<Condition> getConditions() {
+		return conditions;
 	}
-	public void addCategoryNameInclusions(String categoryNameInclusion) {
-		if(categoryNameInclusions==null)
-			categoryNameInclusions=new ArrayList<String>();
+	public void addConditions(Condition... conditions) {
+		if(this.conditions==null)
+			this.conditions =new ArrayList<Condition>();
 
-		this.categoryNameInclusions.add(categoryNameInclusion);
-	}
-	public ArrayList<String> getNameInclusions() {
-		return nameInclusions;
-	}
-	public void addNameInclusion(String nameInclusion) {
-		if(nameInclusions==null)
-			nameInclusions=new ArrayList<String>();
-
-		this.nameInclusions.add(nameInclusion);
+		this.conditions.addAll(Arrays.asList(conditions));
 	}
 	public Category assignCategoryFromTree(Produkt p) {
 		if(p==null)
 			return null;
-		boolean nameIsOk=checkName(p);
-		boolean categoryIsOk=checkCategory(p);
 
 
-		if(nameIsOk&&categoryIsOk) {
+
+
+		if(childrenConditions==null||childrenConditions.isEmpty()) {
 			Category child=checkChildren(p);
 			if(child!=null&&!child.checkIfEmpty()) {
 				return child;
-			}else {
-				return this;
 			}
 		}
+		
+		if(conditions==null||conditions.isEmpty()) {
+			return this;
+		}else {
+			for(Condition c:conditions) {
+				if(c.check(p)) {
+					return this;
+				}
+			}
+		}
+
+
+
+
+
+
 
 
 
 		return createEmpty();
 	}
-	private boolean checkName(Produkt p) {
-		boolean nameIsOk=true;
-
-		if(nameInclusions!=null&&!nameInclusions.isEmpty()) {
-			for(int i=0;nameIsOk&&i<nameInclusions.size();i++) {
-
-				if(p.getNazwa()==null||!p.getNazwa().toLowerCase().contains(nameInclusions.get(i).toLowerCase())) {
-					nameIsOk=false;
-				}
-			}
-		}
-		return nameIsOk;
-	}
-	private boolean checkCategory(Produkt p) {
-		boolean categoryIsOk=true;
-		if(p.getMetadata()==null||p.getMetadata().equals("")) {
-			return false;
-		}else {
-			String metadane=p.getMetadata();
-			JSONObject json=new JSONObject(metadane);
-			String category = json.getString(MetadataConstants.categoryName);
-
-
-
-			if(categoryNameInclusions!=null&&!categoryNameInclusions.isEmpty()) {
-				for(int i=0;categoryIsOk&&i<categoryNameInclusions.size();i++) {
-
-					if(category==null||!category.toLowerCase().contains(categoryNameInclusions.get(i).toLowerCase())) {
-						categoryIsOk=false;
-					}
-				}
-			}
-
-			return categoryIsOk;
-		}
-	}
+	//	private Category conditionsPassed(Produkt p) {
+	//		Category child=checkChildren(p);
+	//		if(child!=null&&!child.checkIfEmpty())
+	//			return child;
+	//		else				
+	//			return null;
+	//	}
 	public Category createEmpty() {
 		return new Category(MetadataConstants.emptyCategoryName);
 	}

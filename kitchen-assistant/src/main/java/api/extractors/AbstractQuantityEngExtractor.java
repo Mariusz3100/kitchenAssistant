@@ -66,6 +66,7 @@ public class AbstractQuantityEngExtractor {
 		translations.put("cloves",new QuantityTranslation(AmountTypes.szt, 1) );
 		translations.put("pack",new QuantityTranslation(AmountTypes.szt, 1) );
 		translations.put("bunch",new QuantityTranslation(AmountTypes.szt, 1) );
+		translations.put("sngl",new QuantityTranslation(AmountTypes.szt, 1) );
 		
 		
 //		translations.put("sztuka",new QuantityTranslation(AmountTypes.szt, 1) );

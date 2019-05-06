@@ -40,29 +40,42 @@ public class CategoryHierarchy {
 		Category raw=new Category("raw");
 		raw.setParent(root);
 		root.addChildren(raw);
-		raw.addCategoryNameInclusions("fresh");
-		
+		//raw.addCategoryNameInclusions("fresh");
+		raw.addConditions(Condition.createCategoryNameInclusionsContition("fresh"));
+
 		
 		Category processed=new Category("processed");
 		processed.setParent(root);
 		root.addChildren(processed);
-		processed.addCategoryNameInclusions("processed");
+//		processed.addCategoryNameInclusions("processed");
+		processed.addConditions(Condition.createNameInclusionsContition("processed"));
+
+		
+		Category grinded=new Category("grinded");
+		grinded.setParent(processed);
+		processed.addChildren(grinded);
+		grinded.addConditions(Condition.createNameInclusionsContition("paste"));
+
 		
 		Category conserved=new Category("conserved");
 		conserved.setParent(processed);
 		processed.addChildren(conserved);
-		conserved.addCategoryNameInclusions("canned");
+//		conserved.addCategoryNameInclusions("canned");
+		conserved.addConditions(Condition.createNameInclusionsContition("pickles"));
 
-		Category pickled=new Category("pickled");
-		pickled.setParent(conserved);
-		conserved.addChildren(pickled);
-		pickled.addCategoryNameInclusions("pickled");
+		
+		
+		
+//		Category pickled=new Category("pickled");
+//		pickled.setParent(conserved);
+//		conserved.addChildren(pickled);
+//		pickled.addCategoryNameInclusions("pickled");
 
 		
 		Category dried=new Category("dried");
 		dried.setParent(processed);
 		processed.addChildren(dried);
-		dried.addCategoryNameInclusions("dried");
+		dried.addConditions(Condition.createNameInclusionsContition("dried"));
 
 		
 		
@@ -72,7 +85,13 @@ public class CategoryHierarchy {
 		Category residual=new Category("residual");
 		residual.setParent(root);
 		root.addChildren(residual);
-		residual.addNameInclusion("flavoured");
+		
+		residual.addConditions(Condition.createNameInclusionsContition("flavoured"));
+		residual.addConditions(Condition.createCategoryNameInclusionsContition("drinks"));
+		residual.addConditions(Condition.createCategoryNameInclusionsContition("household"));
+
+		
+
 
 		
 		
