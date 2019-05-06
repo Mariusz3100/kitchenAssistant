@@ -11,6 +11,18 @@ import mariusz.ambroziak.kassistant.model.Produkt;
 public class Condition {
 	ArrayList<String> nameInclusions;
 	ArrayList<String> categoryNameInclusions;
+	ArrayList<String> attributesPresent;
+
+	
+	public ArrayList<String> getAttributesPresent() {
+		return attributesPresent;
+	}
+	public void addAttributePresent(String attributePresent) {
+		if(attributesPresent==null)
+			attributesPresent=new ArrayList<String>();
+
+		this.attributesPresent.add(attributePresent);
+	}
 	
 	public ArrayList<String> getCategoryNameInclusions() {
 		return categoryNameInclusions;
@@ -35,8 +47,9 @@ public class Condition {
 	public boolean check(Produkt p) {
 		boolean nameIsOk=checkName(p);
 		boolean categoryIsOk=checkCategory(p);
+		boolean areAttributesOk=checkMetadataAttributesPresence(p);
 		
-		return nameIsOk&&categoryIsOk;
+		return nameIsOk&&categoryIsOk&&areAttributesOk;
 	}
 	
 	
@@ -54,6 +67,24 @@ public class Condition {
 		}
 		return nameIsOk;
 	}
+	
+	private boolean checkMetadataAttributesPresence(Produkt p) {
+		boolean areAttrsPresest=true;
+		if(p==null||p.getMetadata()==null||p.getMetadata().equals("")) {
+			return false;
+		}
+		JSONObject metadataObject=new JSONObject(p.getMetadata().toLowerCase());
+		if(attributesPresent!=null&&!attributesPresent.isEmpty()) {
+			for(int i=0;areAttrsPresest&&i<attributesPresent.size();i++) {
+
+				if(!metadataObject.has(attributesPresent.get(i).toLowerCase())) {
+					areAttrsPresest=false;
+				}
+			}
+		}
+		return areAttrsPresest;
+	}
+	
 	private boolean checkCategory(Produkt p) {
 		boolean categoryIsOk=true;
 		if(p.getMetadata()==null||p.getMetadata().equals("")) {
@@ -98,6 +129,16 @@ public class Condition {
 		
 		return retValue;
 		
+	}
+	
+	public static Condition createAttributePresentCondition(String... strings) {
+		Condition retValue=new Condition();
+		if(retValue.attributesPresent==null)
+			retValue.attributesPresent=new ArrayList<String>();
+		
+		retValue.attributesPresent.addAll(Arrays.asList(strings));
+		
+		return retValue;
 	}
 
 }

@@ -62,6 +62,7 @@ public class CategoryHierarchy {
 		processed.addChildren(conserved);
 //		conserved.addCategoryNameInclusions("canned");
 		conserved.addConditions(Condition.createNameInclusionsContition("pickles"));
+		conserved.addConditions(Condition.createAttributePresentCondition("drainedWeight"));
 
 		
 		

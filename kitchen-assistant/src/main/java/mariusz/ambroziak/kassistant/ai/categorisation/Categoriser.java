@@ -6,6 +6,7 @@ import java.util.Map;
 
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.tesco.TescoApiClient;
+import mariusz.ambroziak.kassistant.tesco.TescoApiClientParticularProduct_notUsed;
 
 public class Categoriser {
 	private static Categoriser singleton;
@@ -46,7 +47,7 @@ public class Categoriser {
 	public static Map<Produkt, Category> testCategoriesFor(String phrase,int limit) {
 		Category cat=CategoryHierarchy.getSingletonCategoryRoot();
 		
-		ArrayList<Produkt> produkts = TescoApiClient.getProduktsFor(phrase);
+		ArrayList<Produkt> produkts = createProductDetailsList(phrase);
 		
 		
 		Map<Produkt, Category> categories = assignCategories(produkts);
@@ -54,6 +55,21 @@ public class Categoriser {
 		return categories;
 		
 		
+	}
+
+
+
+
+
+	private static ArrayList<Produkt> createProductDetailsList(String phrase) {
+		ArrayList<Produkt> produkts = TescoApiClient.getProduktsFor(phrase);
+		
+		for(int i=0;i<produkts.size();i++) {
+			Produkt p=produkts.get(i);
+			p=TescoApiClientParticularProduct_notUsed.updateParticularProduct(p);
+		}
+		
+		return produkts;
 	}
 
 
