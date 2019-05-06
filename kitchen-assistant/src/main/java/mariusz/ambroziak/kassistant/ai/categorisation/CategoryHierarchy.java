@@ -41,7 +41,7 @@ public class CategoryHierarchy {
 		raw.setParent(root);
 		root.addChildren(raw);
 		//raw.addCategoryNameInclusions("fresh");
-		raw.addConditions(Condition.createCategoryNameInclusionsContition("fresh"));
+		raw.addConditions(Condition.createCategoryNameInclusionsContition("fresh","food"));
 
 		
 		Category processed=new Category("processed");
@@ -89,7 +89,9 @@ public class CategoryHierarchy {
 		residual.addConditions(Condition.createNameInclusionsContition("flavoured"));
 		residual.addConditions(Condition.createCategoryNameInclusionsContition("drinks"));
 		residual.addConditions(Condition.createCategoryNameInclusionsContition("household"));
-
+		residual.addConditions(Condition.createCategoryNameInclusionsContition("beauty"));
+//		residual.addConditions(Condition.createCategoryNameInclusionsContition("Household"));
+		
 		
 
 
