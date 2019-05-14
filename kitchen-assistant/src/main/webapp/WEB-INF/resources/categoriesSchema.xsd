@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://www.w3schools.com"
+	xmlns:tns="https://app.kitchenassistant.com.pl/categoriesSchema"
+	elementFormDefault="qualified"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="category">
+		<xs:complexType>
+		
+		</xs:complexType>
+	</xs:element>
+
+
+</xs:schema>

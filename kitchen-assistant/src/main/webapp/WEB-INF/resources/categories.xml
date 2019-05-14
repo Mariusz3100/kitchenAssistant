@@ -1,20 +1,106 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<category name="root">
+<category xmlns="http://www.w3schools.com"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.w3schools.com categoriesSchema.xsd" name="root">
 
 	<category name="raw">
+		<conditions>
+			<condition>
+				<departmentName contains="fresh" />
+				<departmentName contains="food" />
+			</condition>
+		</conditions>
+
+		<traverseDescendantsConditions>
+		</traverseDescendantsConditions>
+
+		<children>
+			<category name="package">
+			</category>
+
+		</children>
+
 
 	</category>
 	<category name="processed">
-		<category name="dried">
+		<condition>
+			<name contains="processed" />
+		</condition>
+		<traverseDescendantsConditions>
+		</traverseDescendantsConditions>
 
-		</category>
-		<category name="grinded">
+		<children>
+			<category name="dried">
+				<conditions>
 
-		</category>
-		<category name="conserved">
+					<condition>
+						<name contains="dried" />
+					</condition>
+					<condition>
+						<name contains="powder" />
+					</condition>
+				</conditions>
 
-		</category>
+			</category>
+			<category name="grinded">
+				<conditions>
+
+					<condition>
+						<name contains="paste" />
+					</condition>
+					<condition>
+						<name contains="puree" />
+					</condition>
+				</conditions>
+
+
+			</category>
+			<category name="compoundDish">
+				<conditions>
+
+				</conditions>
+			</category>
+			<category name="conserved">
+				<condition>
+					<name contains="pickles" />
+				</condition>
+				<condition>
+					<attributes contains="drainedWeight" />
+				</condition>
+				<condition>
+					<departmentName contains="cans" />
+					<name notContains="puree" />
+
+				</condition>
+
+			</category>
+
+		</children>
+
 	</category>
-	<category name="residual">
+
+
+
+
+
+
+
+
+
+
+	<category name="residual" subCategoryOf="root">
+		<condition>
+			<name contains="flavoured" />
+		</condition>
+		<condition>
+			<departmentName contains="drinks" />
+		</condition>
+		<condition>
+			<departmentName contains="household" />
+		</condition>
+		<condition>
+			<departmentName contains="beauty" />
+		</condition>
+
 	</category>
 </category>
