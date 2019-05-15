@@ -1,14 +1,92 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns="http://www.w3.org/2001/XMLSchema"
-	targetNamespace="http://www.w3schools.com"
-	xmlns:tns="https://app.kitchenassistant.com.pl/categoriesSchema"
+<xs:schema
+	xmlns="https://app.kitchenassistant.com.pl/categoriesSchema"
+	targetNamespace="http://app.kitchenassistant.com.pl/categoriesSchema"
+	xmlns:kaxsd="http://app.kitchenassistant.com.pl/categoriesSchema"
 	elementFormDefault="qualified"
 	xmlns:xs="http://www.w3.org/2001/XMLSchema">
-	<xs:element name="category">
-		<xs:complexType>
-		
-		</xs:complexType>
-	</xs:element>
+	<xs:element name="category" type="kaxsd:categoryElement" />
+
+
+	<xs:complexType name="categoryElement">
+
+		<xs:all>
+			<xs:element name="conditions" type="kaxsd:conditions" />
+			<xs:element name="branchConditions"
+				type="kaxsd:branchConditions" />
+
+			<xs:element name="children" type="kaxsd:children" />
+
+
+		</xs:all>
+		<xs:attribute name="name" type="xs:string" />
+
+	</xs:complexType>
+
+	<xs:complexType name="children">
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="category" type="kaxsd:categoryElement" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="conditions">
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="condition" type="kaxsd:condition" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="condition">
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+			<xs:choice>
+				<xs:element name="departmentName"
+					type="kaxsd:departmentQuery" minOccurs="0" />
+				<xs:element name="name" type="kaxsd:nameQuery"
+					minOccurs="0" />
+				<xs:element name="attributes"
+					type="kaxsd:attributesQuery" minOccurs="0" />
+			</xs:choice>
+		</xs:sequence>
+
+	</xs:complexType>
+
+	<xs:complexType name="branchConditions">
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="condition" type="kaxsd:condition" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="query">
+		<xs:attribute name="contains" type="xs:string"
+			use="optional" />
+		<xs:attribute name="notContains" type="xs:string"
+			use="optional" />
+
+	</xs:complexType>
+
+	<xs:complexType name="nameQuery">
+		<xs:complexContent>
+			<xs:extension base="kaxsd:query">
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="departmentQuery">
+		<xs:complexContent>
+			<xs:extension base="kaxsd:query">
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="attributesQuery">
+		<xs:complexContent>
+			<xs:extension base="kaxsd:query">
+				<xs:attribute name="hasAttribute" type="xs:string"
+					use="optional" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+
 
 
 </xs:schema>

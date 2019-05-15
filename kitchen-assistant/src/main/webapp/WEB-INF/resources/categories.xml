@@ -1,106 +1,136 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<category xmlns="http://www.w3schools.com"
-           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-           xsi:schemaLocation="http://www.w3schools.com categoriesSchema.xsd" name="root">
+<category
+	xmlns="http://app.kitchenassistant.com.pl/categoriesSchema"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://app.kitchenassistant.com.pl/categoriesSchema categoriesSchema.xsd"
+	name="root">
 
-	<category name="raw">
-		<conditions>
-			<condition>
-				<departmentName contains="fresh" />
-				<departmentName contains="food" />
-			</condition>
-		</conditions>
-
-		<traverseDescendantsConditions>
-		</traverseDescendantsConditions>
-
-		<children>
-			<category name="package">
-			</category>
-
-		</children>
+	<conditions>
+	</conditions>
+	<branchConditions>
+	</branchConditions>
 
 
-	</category>
-	<category name="processed">
-		<condition>
-			<name contains="processed" />
-		</condition>
-		<traverseDescendantsConditions>
-		</traverseDescendantsConditions>
-
-		<children>
-			<category name="dried">
-				<conditions>
-
-					<condition>
-						<name contains="dried" />
-					</condition>
-					<condition>
-						<name contains="powder" />
-					</condition>
-				</conditions>
-
-			</category>
-			<category name="grinded">
-				<conditions>
-
-					<condition>
-						<name contains="paste" />
-					</condition>
-					<condition>
-						<name contains="puree" />
-					</condition>
-				</conditions>
-
-
-			</category>
-			<category name="compoundDish">
-				<conditions>
-
-				</conditions>
-			</category>
-			<category name="conserved">
+	<children>
+		<category name="raw">
+			<conditions>
 				<condition>
-					<name contains="pickles" />
+					<departmentName contains="fresh" />
+
+					 <departmentName contains="food" /> 
+				</condition>
+			</conditions>
+
+			<branchConditions>
+			</branchConditions>
+
+			<children>
+				<category name="package">
+					<conditions></conditions>
+
+					<branchConditions>
+					</branchConditions>
+					<children>
+					</children>
+				</category>
+
+			</children>
+
+
+		</category>
+		<category name="processed">
+			<conditions>
+				<condition>
+					<name contains="processed" />
+				</condition>
+			</conditions>
+			<branchConditions>
+			</branchConditions>
+			<children>
+				<category name="dried">
+					<conditions>
+
+						<condition>
+							<name contains="dried" />
+						</condition>
+						<condition>
+							<name contains="powder" />
+						</condition>
+					</conditions>
+					<children></children>
+					<branchConditions>
+					</branchConditions>
+
+				</category>
+				<category name="grinded">
+					<conditions>
+
+						<condition>
+							<name contains="paste" />
+						</condition>
+						<condition>
+							<name contains="puree" />
+						</condition>
+					</conditions>
+
+					<children></children>
+					<branchConditions>
+					</branchConditions>
+
+				</category>
+				<category name="compoundDish">
+					<conditions>
+
+					</conditions>
+					<children></children>
+					<branchConditions>
+					</branchConditions>
+
+				</category>
+				<category name="conserved">
+					<conditions>
+						<condition>
+							<name contains="pickles" />
+						</condition>
+						<condition>
+							<attributes contains="drainedWeight" />
+						</condition>
+						<condition>
+							<departmentName contains="cans" />
+							<name notContains="puree" />
+
+						</condition></conditions>
+
+					<branchConditions>
+					</branchConditions>
+					<children></children>
+				</category>
+
+			</children>
+
+		</category>
+
+
+		<category name="residual">
+			<conditions>
+				<condition>
+					<name contains="flavoured" />
 				</condition>
 				<condition>
-					<attributes contains="drainedWeight" />
+					<departmentName contains="drinks" />
 				</condition>
 				<condition>
-					<departmentName contains="cans" />
-					<name notContains="puree" />
-
+					<departmentName contains="household" />
 				</condition>
+				<condition>
+					<departmentName contains="beauty" />
+				</condition>
+			</conditions>
+			<branchConditions>
+			</branchConditions>
+			<children>
+			</children>
+		</category>
 
-			</category>
-
-		</children>
-
-	</category>
-
-
-
-
-
-
-
-
-
-
-	<category name="residual" subCategoryOf="root">
-		<condition>
-			<name contains="flavoured" />
-		</condition>
-		<condition>
-			<departmentName contains="drinks" />
-		</condition>
-		<condition>
-			<departmentName contains="household" />
-		</condition>
-		<condition>
-			<departmentName contains="beauty" />
-		</condition>
-
-	</category>
+	</children>
 </category>
