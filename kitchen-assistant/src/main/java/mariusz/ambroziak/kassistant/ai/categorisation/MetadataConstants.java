@@ -3,7 +3,7 @@ package mariusz.ambroziak.kassistant.ai.categorisation;
 public class MetadataConstants {
 //	public static final String categoryJsonName1="categoryName1";
 //	public static final String categoryJsonName2="categoryName2";
-	public static final String categoryNameJsonPrefix="categoryName";
+	public static final String categoryNameJsonName="categoryName";
 	public static final String produktNameJsonPrefix="name";
 
 	

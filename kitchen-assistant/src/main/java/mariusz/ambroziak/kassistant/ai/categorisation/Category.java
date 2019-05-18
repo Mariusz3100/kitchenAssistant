@@ -52,6 +52,9 @@ public class Category {
 	Category(String name) {
 		super();
 		this.name = name;
+		this.childrenConditions=new ArrayList<Condition>();
+		this.children=new ArrayList<Category>();
+		this.conditions=new ArrayList<Condition>();
 	}
 	public String getName() {
 		return name;
@@ -66,10 +69,7 @@ public class Category {
 		this.parent = parent;
 	}
 	public List<Category> getChildren() {
-		if(children==null)
-			children=new ArrayList<Category>();
 
-		
 		return children;
 	}
 	public void addChildren(Category child) {
@@ -166,7 +166,7 @@ public class Category {
 			for(Category ck:getChildren()) {
 				Category found=ck.assignCategoryFromTree(p);
 				if(match!=null&&found!=null&&!found.checkIfEmpty()) {
-					ProblemLogger.logProblem("Two different categories assigned for "+p.getUrl()+": "+match+" and "+found);
+					ProblemLogger.logProblem("Two different categories assigned for "+p.getUrl()+": "+match.getName()+" and "+found.getName());
 					return createEmpty();
 				}else {
 					if((match==null||match.checkIfEmpty())&&found!=null&&!found.checkIfEmpty()) {

@@ -182,8 +182,8 @@ public class TescoApiClient {
 		String category1 = singleProductJson.getString("superDepartment");
 		String category2 = singleProductJson.getString("department");
 
-		metadata.addProperty(MetadataConstants.categoryName1,category1 );
-		metadata.addProperty(MetadataConstants.categoryName2,category2 );
+		metadata.addProperty(MetadataConstants.categoryNameJsonName,category1 +MetadataConstants.stringListSeparator+category2);
+	//	metadata.addProperty(MetadataConstants.categoryNameJsonPrefix,category2 );
 
 		
 		return metadata.toString();

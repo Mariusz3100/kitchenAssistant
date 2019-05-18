@@ -3,6 +3,7 @@ package mariusz.ambroziak.kassistant.ai.categorisation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -13,14 +14,14 @@ import org.json.JSONObject;
 import mariusz.ambroziak.kassistant.model.Produkt;
 
 public class Condition {
-	ArrayList<String> nameInclusions;
-	ArrayList<String> nameExclusions;
+//	ArrayList<String> nameInclusions;
+//	ArrayList<String> nameExclusions;
 
 
 	//	ArrayList<String> categoryNameInclusions;
 	ArrayList<String> attributesPresent;
 	Map<String,String> attributeValues;
-
+	Map<String,String> attributeNotContainsValues;
 
 	public Map<String, String> getAttributeValues() {
 		if(attributeValues==null)
@@ -32,19 +33,47 @@ public class Condition {
 		if(attributeValues==null)
 			attributeValues=new HashMap<String, String>();
 
+		String existingValue = attributeValues.get(attribute);
+		
+		if(existingValue==null||existingValue.isEmpty())
+			existingValue=inclusion;
+		else
+			existingValue+=MetadataConstants.stringListSeparator+inclusion;
 		this.attributeValues.put(attribute, inclusion);
 	}
-	public ArrayList<String> getNameExclusions() {
-		if(nameExclusions==null)
-			nameExclusions=new ArrayList<String>();
+	
+	public void replaceAttributeValues(String attribute, String inclusion) {
+		if(attributeValues==null)
+			attributeValues=new HashMap<String, String>();
 
-		return nameExclusions;
+		this.attributeValues.put(attribute, inclusion);
+	}
+	
+	public void addAttributeNotContainsValue(String attribute, String exclusion) {
+		if(attributeNotContainsValues==null)
+			attributeNotContainsValues=new HashMap<String, String>();
+
+		this.attributeNotContainsValues.put(attribute, exclusion);
+	}
+	
+	public void replaceAttributeNotContainsValue(String attribute, String exclusion) {
+		if(attributeNotContainsValues==null)
+			attributeNotContainsValues=new HashMap<String, String>();
+
+		this.attributeNotContainsValues.put(attribute, exclusion);
+	}
+	
+	
+	
+	public List<String> getNameExclusions() {
+		String nameExclusions = attributeNotContainsValues.get(MetadataConstants.produktNameJsonPrefix);
+		if(nameExclusions==null)
+			return new ArrayList<String>();
+		else
+			return Arrays.asList(nameExclusions.split(MetadataConstants.stringListSeparator));
 	}
 	public void addNameExclusions(String nameExclusion) {
-		if(nameExclusions==null)
-			nameExclusions=new ArrayList<String>();
-
-		this.nameExclusions.add(nameExclusion);
+		this.addAttributeNotContainsValue(MetadataConstants.produktNameJsonPrefix,nameExclusion );
 	}
 
 
@@ -64,23 +93,26 @@ public class Condition {
 	//	public ArrayList<String> getCategoryNameInclusions() {
 	//		return categoryNameInclusions;
 	//	}
-	//	public void addCategoryNameInclusions(String categoryNameInclusion) {
-	//		if(categoryNameInclusions==null)
-	//			categoryNameInclusions=new ArrayList<String>();
-	//
-	//		this.categoryNameInclusions.add(categoryNameInclusion);
-	//	}
-	public ArrayList<String> getNameInclusions() {
-		if(nameInclusions==null)
-			nameInclusions=new ArrayList<String>();
+		public void addCategoryNameInclusions(String inclusion) {
+			String categoryNameInclusions = attributeValues.get(MetadataConstants.categoryNameJsonName);
+			if(categoryNameInclusions==null)
+				attributeValues.put(MetadataConstants.categoryNameJsonName, inclusion);
+			else
+				attributeValues.put(MetadataConstants.categoryNameJsonName, categoryNameInclusions+MetadataConstants.stringListSeparator+inclusion);
 
-		return nameInclusions;
+
+		}
+	public List<String> getNameInclusions() {
+		String nameInclusions = attributeValues.get(MetadataConstants.produktNameJsonPrefix);
+		if(nameInclusions==null)
+			return new ArrayList<String>();
+		else
+			return Arrays.asList(nameInclusions.split(MetadataConstants.stringListSeparator));
+
 	}
 	public void addNameInclusion(String nameInclusion) {
-		if(nameInclusions==null)
-			nameInclusions=new ArrayList<String>();
+		this.addAttributeValues(MetadataConstants.produktNameJsonPrefix,nameInclusion );
 
-		this.nameInclusions.add(nameInclusion);
 	}
 
 
@@ -98,7 +130,7 @@ public class Condition {
 
 	private boolean checkNameInclusions(Produkt p) {
 		boolean nameIsOk=true;
-
+		List<String> nameInclusions = getNameInclusions();
 		if(nameInclusions!=null&&!nameInclusions.isEmpty()) {
 			for(int i=0;nameIsOk&&i<nameInclusions.size();i++) {
 
@@ -111,6 +143,8 @@ public class Condition {
 	}
 
 	private boolean checkNameExclusons(Produkt p) {
+		List<String> nameExclusions = getNameExclusions();
+
 		if(nameExclusions!=null&&!nameExclusions.isEmpty()) {
 			for(int i=0;i<nameExclusions.size();i++) {
 
@@ -125,14 +159,14 @@ public class Condition {
 	private boolean checkMetadataAttributesPresence(Produkt p) {
 		boolean areAttrsPresest=true;
 
-		if(attributesPresent!=null&&!attributesPresent.isEmpty()) {
+		if(getAttributesPresent()!=null&&!getAttributesPresent().isEmpty()) {
 			if(p==null||p.getMetadata()==null||p.getMetadata().equals("")) {
 				return false;
 			}
 			JSONObject metadataObject=new JSONObject(p.getMetadata().toLowerCase());
-			for(int i=0;areAttrsPresest&&i<attributesPresent.size();i++) {
+			for(int i=0;areAttrsPresest&&i<getAttributesPresent().size();i++) {
 
-				if(!metadataObject.has(attributesPresent.get(i).toLowerCase())) {
+				if(!metadataObject.has(getAttributesPresent().get(i).toLowerCase())) {
 					areAttrsPresest=false;
 				}
 			}
@@ -141,7 +175,7 @@ public class Condition {
 	}
 
 	private boolean checkCategory(Produkt p) {
-		ArrayList<String> categoryNameInclusions = getCategoryNameInclusions();
+		List<String> categoryNameInclusions = getCategoryNameInclusions();
 
 		if(categoryNameInclusions==null||categoryNameInclusions.isEmpty()) {
 			return true;
@@ -153,7 +187,7 @@ public class Condition {
 		}else {
 			String metadane=p.getMetadata();
 			JSONObject json=new JSONObject(metadane);
-			String category = json.getString(MetadataConstants.categoryNameJsonPrefix);
+			String category = json.getString(MetadataConstants.categoryNameJsonName);
 
 
 
@@ -169,25 +203,21 @@ public class Condition {
 			return categoryIsOk;
 		}
 	}
-	private ArrayList<String> getCategoryNameInclusions() {
-		ArrayList<String> categoryNameInclusions=new ArrayList<String>();
-		if(this.attributeValues!=null&&!this.attributeValues.isEmpty()) {
-			for(Entry<String,String> entry:this.attributeValues.entrySet()) {
-				if(entry.getKey()!=null&&entry.getKey().startsWith(MetadataConstants.categoryNameJsonPrefix)) {
-					categoryNameInclusions.add(entry.getValue());
-				}
-			}
-		}
-		return categoryNameInclusions;
+	private List<String> getCategoryNameInclusions() {
+		String incs = this.getAttributeValues().get(MetadataConstants.categoryNameJsonName);
+		if(incs==null)
+			return new ArrayList<String>();
+		else
+			return Arrays.asList(incs.split(MetadataConstants.stringListSeparator));
+
 	}
 
 	public static Condition createNameInclusionsCondition(String...strings) {
 		Condition retValue=new Condition();
-		if(retValue.nameInclusions==null)
-			retValue.nameInclusions=new ArrayList<String>();
+		for(String a:strings) {
+			retValue.addNameInclusion(a);
 
-		retValue.nameInclusions.addAll(Arrays.asList(strings));
-
+		}
 		return retValue;
 
 	}
@@ -195,11 +225,9 @@ public class Condition {
 	public static Condition createCategoryNameInclusionsCondition(String... strings) {
 		Condition retValue=new Condition();
 
-		int currentAmount = retValue.getCategoryNameInclusions()==null?0
-				:retValue.getCategoryNameInclusions().size();
+		for(String a:strings) {
+			retValue.addCategoryNameInclusions(a);
 
-		for(String toBeAdded:strings) {
-			retValue.addAttributeValues(MetadataConstants.categoryNameJsonPrefix+currentAmount, toBeAdded);
 		}
 		return retValue;
 
@@ -261,6 +289,7 @@ public class Condition {
 		super();
 		this.attributesPresent=new ArrayList<String>();
 		this.attributeValues=new HashMap<String, String>();
+		this.attributeNotContainsValues=new HashMap<String, String>();
 		
 	}
 }

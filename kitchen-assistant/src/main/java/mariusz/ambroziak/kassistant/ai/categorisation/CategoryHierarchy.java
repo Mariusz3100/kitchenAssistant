@@ -121,7 +121,7 @@ public class CategoryHierarchy {
 				if(MetadataConstants.departmentNameConditionElementName.equals(conditionNode.getNodeName())) {
 					NamedNodeMap attributesMap = conditionNode.getAttributes();
 					Node contains=attributesMap.getNamedItem(MetadataConstants.containsAttribute);
-					addNewSearchPhraseToMap(retValue, MetadataConstants.categoryNameJsonPrefix,contains);
+					addNewSearchPhraseToMap(retValue, MetadataConstants.categoryNameJsonName,contains);
 				}else if(MetadataConstants.nameConditionElementName.equals(conditionNode.getNodeName())) {
 					NamedNodeMap attributesMap = conditionNode.getAttributes();
 					Node contains=attributesMap.getNamedItem(MetadataConstants.containsAttribute);
@@ -135,8 +135,8 @@ public class CategoryHierarchy {
 				}else if(MetadataConstants.propertiesConditionElementName.equals(conditionNode.getNodeName())) {
 					NamedNodeMap attributesMap = conditionNode.getAttributes();
 					Node contains=attributesMap.getNamedItem(MetadataConstants.containsAttribute);
-					addNewSearchPhraseToMap(retValue, MetadataConstants.containsAttribute,contains);
 
+					retValue.addAttributePresent(contains.getTextContent());
 				}
 			}
 		}
@@ -257,6 +257,13 @@ public class CategoryHierarchy {
 		root.addChildren(raw);
 		//raw.addCategoryNameInclusions("fresh");
 		raw.addConditions(Condition.createCategoryNameInclusionsCondition("fresh","food"));
+
+
+		Category packageCategory=new Category("package");
+		packageCategory.setParent(raw);
+		raw.addChildren(packageCategory);
+		//raw.addCategoryNameInclusions("fresh");
+		packageCategory.addConditions(Condition.createNameInclusionsCondition("mix"));
 
 
 		Category processed=new Category("processed");
