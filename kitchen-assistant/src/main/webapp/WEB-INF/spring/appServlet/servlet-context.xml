@@ -133,6 +133,10 @@
 		</constructor-arg>
 	</bean>
 
+	<bean id="filesProvider" class="mariusz.ambroziak.kassistant.ai.FilesProvider">
+  		 <property name="categoriesFile" value="WEB-INF/resources/categories.xml"/>
+	</bean>
+
 	<bean id="daoProvider" class="mariusz.ambroziak.kassistant.dao.DaoProvider">
 		<constructor-arg>
 			<ref bean="userDao" />
