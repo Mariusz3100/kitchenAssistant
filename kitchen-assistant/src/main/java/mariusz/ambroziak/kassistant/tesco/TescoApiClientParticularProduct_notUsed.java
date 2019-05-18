@@ -28,6 +28,8 @@ import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 public class TescoApiClientParticularProduct_notUsed {
 	public static float fakeWeight=1000000;
 	private static final String DETAILS_BASE_URL = "https://dev.tescolabs.com/product/";
+	private static final String DETAILS_BASE_URL_TO_BE_SAVED_IN_DB= "https://dev.tescolabs.com/product/?tpnb=";
+
 	private static final String headerName="Ocp-Apim-Subscription-Key";
 	private static final String headerValue="bb40509242724f799153796d8718c3f3";
 
@@ -163,7 +165,15 @@ public class TescoApiClientParticularProduct_notUsed {
 
 
 			JSONObject jsonRoot=new JSONObject(response);
-			JSONObject metadataJson=new JSONObject(p.getMetadata());
+			JSONObject metadataJson=null;
+
+			if(p.getMetadata()==null||p.getMetadata().equals("")) {
+				metadataJson=new JSONObject();
+			}else {
+				metadataJson=new JSONObject(p.getMetadata());
+			}
+
+
 
 			JSONArray jsonProducts=jsonRoot.getJSONArray("products");
 			if(jsonProducts.length()>0) {
@@ -184,12 +194,14 @@ public class TescoApiClientParticularProduct_notUsed {
 	private static Produkt createParticularProduct(JSONObject singleProductJson) {
 		String name = singleProductJson.getString("description");
 		long tpnb = singleProductJson.getLong("tpnb");
-		String detailsUrl=DETAILS_BASE_URL+tpnb;
+		String detailsUrl=DETAILS_BASE_URL_TO_BE_SAVED_IN_DB+tpnb;
 		String description = "";//actual description is missing in this api
 		float price = -1;//(float)singleProductJson.getDouble("price");//price is missing too
-
+		JSONObject  metadataJson=new JSONObject();
 		JSONObject qtyContents = singleProductJson.getJSONObject("qtyContents");
-
+		if(qtyContents.has("drainedWeight")) {
+			metadataJson.put("drainedWeight",qtyContents.get("drainedWeight"));
+		}
 		String quantityString = calculateQuantityJspString(qtyContents, detailsUrl);
 
 		Produkt result=new Produkt(detailsUrl,quantityString,name,"",description,price,false);
