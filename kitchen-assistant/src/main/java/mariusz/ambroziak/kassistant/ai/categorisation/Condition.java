@@ -93,7 +93,27 @@ public class Condition {
 	//	public ArrayList<String> getCategoryNameInclusions() {
 	//		return categoryNameInclusions;
 	//	}
-		public void addCategoryNameInclusions(String inclusion) {
+	public void addServingPhraseInclusion(String inclusion) {
+
+			String servingNameInclusions = attributeValues.get(MetadataConstants.servingPhraseNameJsonName);
+			if(servingNameInclusions==null)
+				attributeValues.put(MetadataConstants.servingPhraseNameJsonName, inclusion);
+			else
+				attributeValues.put(MetadataConstants.servingPhraseNameJsonName, servingNameInclusions+MetadataConstants.stringListSeparator+inclusion);
+
+
+		}
+	
+	public List<String> getServingPhraseInclusions() {
+		String incs = this.getAttributeValues().get(MetadataConstants.servingPhraseNameJsonName);
+		if(incs==null)
+			return new ArrayList<String>();
+		else
+			return Arrays.asList(incs.split(MetadataConstants.stringListSeparator));
+
+	}
+		
+	public void addCategoryNameInclusions(String inclusion) {
 			String categoryNameInclusions = attributeValues.get(MetadataConstants.categoryNameJsonName);
 			if(categoryNameInclusions==null)
 				attributeValues.put(MetadataConstants.categoryNameJsonName, inclusion);
@@ -102,6 +122,9 @@ public class Condition {
 
 
 		}
+		
+
+		
 	public List<String> getNameInclusions() {
 		String nameInclusions = attributeValues.get(MetadataConstants.produktNameJsonPrefix);
 		if(nameInclusions==null)
@@ -122,11 +145,32 @@ public class Condition {
 
 		boolean categoryIsOk=checkCategory(p);
 		boolean areAttributesOk=checkMetadataAttributesPresence(p);
-
-		return nameHasInclusions&&categoryIsOk&&areAttributesOk&&nameHasNoExclusions;
+		boolean isServingPhraseOk=checkServingPhraseInclusions(p);
+		
+		boolean retValue = nameHasInclusions&&categoryIsOk&&areAttributesOk&&nameHasNoExclusions&&isServingPhraseOk;
+		if(retValue) {
+			System.out.println("For produkt:"+p.getUrl()+" called "+p.getNazwa()
+					+"\n condition object passed:"+this.toJsonRepresentation());
+		}
+		return retValue;
 	}
 
+	private boolean checkServingPhraseInclusions(Produkt p) {
+		boolean phraseIsOk=true;
+		List<String> servingPhraseInclusions = getServingPhraseInclusions();
+		if(servingPhraseInclusions!=null&&!servingPhraseInclusions.isEmpty()) {
+			for(int i=0;phraseIsOk&&i<servingPhraseInclusions.size();i++) {
+				String metadane=p.getMetadata();
+				JSONObject json=metadane==null?new JSONObject():new JSONObject(metadane);
+				String serving = json.has(MetadataConstants.servingPhraseNameJsonName)?json.getString(MetadataConstants.servingPhraseNameJsonName):null;
 
+				if(serving==null||!serving.toLowerCase().contains(servingPhraseInclusions.get(i).toLowerCase())) {
+					phraseIsOk=false;
+				}
+			}
+		}
+		return phraseIsOk;
+	}
 
 	private boolean checkNameInclusions(Produkt p) {
 		boolean nameIsOk=true;
@@ -212,6 +256,8 @@ public class Condition {
 
 	}
 
+	
+	
 	public static Condition createNameInclusionsCondition(String...strings) {
 		Condition retValue=new Condition();
 		for(String a:strings) {
@@ -221,7 +267,16 @@ public class Condition {
 		return retValue;
 
 	}
+	
+	public static Condition createServingPhraseInclusionsCondition(String...strings) {
+		Condition retValue=new Condition();
+		for(String a:strings) {
+			retValue.addServingPhraseInclusion(a);
 
+		}
+		return retValue;
+
+	}
 	public static Condition createCategoryNameInclusionsCondition(String... strings) {
 		Condition retValue=new Condition();
 

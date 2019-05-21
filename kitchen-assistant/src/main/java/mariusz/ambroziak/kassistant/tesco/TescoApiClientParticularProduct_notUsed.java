@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import javax.ws.rs.core.MultivaluedMap;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.sun.jersey.api.client.Client;
@@ -15,6 +16,7 @@ import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 
+import mariusz.ambroziak.kassistant.ai.categorisation.MetadataConstants;
 import mariusz.ambroziak.kassistant.model.Problem;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.quantity.AmountTypes;
@@ -26,6 +28,7 @@ import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 
 
 public class TescoApiClientParticularProduct_notUsed {
+	private static final String SERVING_PHRASE = "servingPhrase";
 	public static float fakeWeight=1000000;
 	private static final String DETAILS_BASE_URL = "https://dev.tescolabs.com/product/";
 	private static final String DETAILS_BASE_URL_TO_BE_SAVED_IN_DB= "https://dev.tescolabs.com/product/?tpnb=";
@@ -180,10 +183,50 @@ public class TescoApiClientParticularProduct_notUsed {
 				JSONObject jsonProduct = jsonProducts.getJSONObject(0);
 				if(jsonProduct.has("qtyContents")) {
 					JSONObject jsonQtyContents = jsonProduct.getJSONObject("qtyContents");
-					if(jsonQtyContents.has("drainedWeight")) {
-						metadataJson.put("drainedWeight",jsonQtyContents.get("drainedWeight"));
+					if(jsonQtyContents.has(MetadataConstants.drainedWeightMetaPropertyName)) {
+						metadataJson.put(MetadataConstants.drainedWeightMetaPropertyName,jsonQtyContents.get(MetadataConstants.drainedWeightMetaPropertyName));
 						p.setMetadata(metadataJson.toString());
 					}
+				}
+				
+				String servingString="";
+				try {
+				if(jsonProduct.has("gda")) {
+					JSONObject gdaJson = jsonProduct.getJSONObject("gda");
+					if(gdaJson.has("gdaRefs")) {
+						JSONArray gdaRefsJson = gdaJson.getJSONArray("gdaRefs");
+						if(gdaRefsJson.length()>0&&gdaRefsJson.getJSONObject(0).has("headers")) {
+							JSONArray headersJson = gdaRefsJson.getJSONObject(0).getJSONArray("headers");
+							for(int i=0;i<headersJson.length();i++) {
+								String line=headersJson.getString(i);
+								servingString+=line;
+							}
+						}
+					}
+				}
+				
+				if(servingString.isEmpty()) {
+					if(jsonProduct.has("calcNutrition")) {
+						JSONObject calcNutritionJson = jsonProduct.getJSONObject("calcNutrition");
+						if(calcNutritionJson.has("perServingHeader")) {
+							String perServingHeaderJson = calcNutritionJson.getString("perServingHeader");
+							servingString=perServingHeaderJson;
+							
+						}
+						
+					}
+				}
+
+			
+				
+				if(servingString!=null&&!servingString.isEmpty()) {
+					metadataJson.put(SERVING_PHRASE,servingString);
+					p.setMetadata(metadataJson.toString());
+
+				}
+				}catch(JSONException e) {
+					ProblemLogger.logProblem("Json metadata parsing error");
+					ProblemLogger.logStackTrace(e.getStackTrace());
 				}
 
 			}
@@ -199,8 +242,8 @@ public class TescoApiClientParticularProduct_notUsed {
 		float price = -1;//(float)singleProductJson.getDouble("price");//price is missing too
 		JSONObject  metadataJson=new JSONObject();
 		JSONObject qtyContents = singleProductJson.getJSONObject("qtyContents");
-		if(qtyContents.has("drainedWeight")) {
-			metadataJson.put("drainedWeight",qtyContents.get("drainedWeight"));
+		if(qtyContents.has(MetadataConstants.drainedWeightMetaPropertyName)) {
+			metadataJson.put(MetadataConstants.drainedWeightMetaPropertyName,qtyContents.get(MetadataConstants.drainedWeightMetaPropertyName));
 		}
 		String quantityString = calculateQuantityJspString(qtyContents, detailsUrl);
 

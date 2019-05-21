@@ -5,7 +5,9 @@ public class MetadataConstants {
 //	public static final String categoryJsonName2="categoryName2";
 	public static final String categoryNameJsonName="categoryName";
 	public static final String produktNameJsonPrefix="name";
+	public static final String servingPhraseNameJsonName="servingPhrase";
 
+	
 	
 	public static final String emptyCategoryName="empty";
 	
@@ -19,7 +21,12 @@ public class MetadataConstants {
 	public static final String childrenElementName="children";
 	public static final String nameConditionElementName="name";
 	public static final String departmentNameConditionElementName="departmentName";
-	public static final String propertiesConditionElementName="attributes";
+	public static final String propertyPresentConditionElementName="attributes";
+
+	
+	public static final String servingPhraseConditionElementName="serving";
+
+	public static final String drainedWeightMetaPropertyName = "drainedWeight";
 
 	
 	public static final String containsAttribute="contains";

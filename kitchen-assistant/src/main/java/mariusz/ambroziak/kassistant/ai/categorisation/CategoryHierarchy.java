@@ -42,6 +42,16 @@ public class CategoryHierarchy {
 		root=rootCandidate;
 	}
 
+	
+	public static Category createCategoryFromTestXmlFile() {
+		Document doc=getXmlTestDocumentContentHandleExceptions();
+		
+		Element xmlRoot = doc.getDocumentElement();	
+
+		Category rootCandidate=parseCategoryXmlNode(xmlRoot);
+		return rootCandidate;
+		
+	}
 	public static Category createCategoriesFromXmlFile() {
 		Document doc=getXmlDocumentContentHandleExceptions();
 
@@ -53,26 +63,26 @@ public class CategoryHierarchy {
 	public static void testXmlVsStaticInitialisation(Node node) {
 		Category rootFromXml= createCategoriesFromXmlFile();
 		Category rootStatically=initializeCategoriesStaticlly();
-		
+
 		testIfTwoCategoriesAreSame(rootFromXml,rootStatically);
 	}
 
 
 	private static void testIfTwoCategoriesAreSame(Category rootFromXml, Category rootStatically) {
-//		if(rootFromXml.getName()==rootStatically.getName()
-//				||rootFromXml.getName().equals(rootStatically.getName())) {
-//			if(rootFromXml.getChildren())
-//			
-//			for(int i=0;i<) {
-//				
-//			}
-//		}else {
-//			ProblemLogger.logProblem("not equal category names");
-//			
-//		}
-//		
-		
-		
+		//		if(rootFromXml.getName()==rootStatically.getName()
+		//				||rootFromXml.getName().equals(rootStatically.getName())) {
+		//			if(rootFromXml.getChildren())
+		//			
+		//			for(int i=0;i<) {
+		//				
+		//			}
+		//		}else {
+		//			ProblemLogger.logProblem("not equal category names");
+		//			
+		//		}
+		//		
+
+
 	}
 
 	public static Category parseCategoryXmlNode(Node node) {
@@ -121,22 +131,47 @@ public class CategoryHierarchy {
 				if(MetadataConstants.departmentNameConditionElementName.equals(conditionNode.getNodeName())) {
 					NamedNodeMap attributesMap = conditionNode.getAttributes();
 					Node contains=attributesMap.getNamedItem(MetadataConstants.containsAttribute);
-					addNewSearchPhraseToMap(retValue, MetadataConstants.categoryNameJsonName,contains);
+					Node notContains=attributesMap.getNamedItem(MetadataConstants.notContainsAttribute);
+					if(contains!=null) {
+						addNewSearchPhraseToMap(retValue, MetadataConstants.categoryNameJsonName,contains);
+					}
+					if(notContains!=null) {
+						addNewExclusionPhraseToMap(retValue, MetadataConstants.categoryNameJsonName,contains);
+					}
 				}else if(MetadataConstants.nameConditionElementName.equals(conditionNode.getNodeName())) {
 					NamedNodeMap attributesMap = conditionNode.getAttributes();
 					Node contains=attributesMap.getNamedItem(MetadataConstants.containsAttribute);
-					addNewSearchPhraseToMap(retValue, MetadataConstants.produktNameJsonPrefix,contains);
+					Node notContains=attributesMap.getNamedItem(MetadataConstants.notContainsAttribute);
 
-				}else if(MetadataConstants.notContainsAttribute.equals(conditionNode.getNodeName())) {
-					NamedNodeMap attributesMap = conditionNode.getAttributes();
-					Node contains=attributesMap.getNamedItem(MetadataConstants.notContainsAttribute);
-					addNewSearchPhraseToMap(retValue, MetadataConstants.notContainsAttribute,contains);
-
-				}else if(MetadataConstants.propertiesConditionElementName.equals(conditionNode.getNodeName())) {
+					if(contains!=null) {
+						addNewSearchPhraseToMap(retValue, MetadataConstants.produktNameJsonPrefix,contains);
+					}
+					if(notContains!=null) {
+						addNewExclusionPhraseToMap(retValue, MetadataConstants.produktNameJsonPrefix,contains);
+					}
+					//				}else if(MetadataConstants.notContainsAttribute.equals(conditionNode.getNodeName())) {
+					//					NamedNodeMap attributesMap = conditionNode.getAttributes();
+					//					Node contains=attributesMap.getNamedItem(MetadataConstants.notContainsAttribute);
+					//					addNewSearchPhraseToMap(retValue, MetadataConstants.notContainsAttribute,contains);
+					//
+				}else if(MetadataConstants.propertyPresentConditionElementName.equals(conditionNode.getNodeName())) {
 					NamedNodeMap attributesMap = conditionNode.getAttributes();
 					Node contains=attributesMap.getNamedItem(MetadataConstants.containsAttribute);
 
 					retValue.addAttributePresent(contains.getTextContent());
+				}else if(MetadataConstants.servingPhraseConditionElementName.equals(conditionNode.getNodeName())) {
+					NamedNodeMap attributesMap = conditionNode.getAttributes();
+					Node contains=attributesMap.getNamedItem(MetadataConstants.containsAttribute);
+					Node notContains=attributesMap.getNamedItem(MetadataConstants.notContainsAttribute);
+
+					
+					if(contains!=null) {
+						addNewSearchPhraseToMap(retValue, MetadataConstants.servingPhraseNameJsonName,contains);
+					}
+					if(notContains!=null) {
+						addNewExclusionPhraseToMap(retValue, MetadataConstants.servingPhraseNameJsonName,contains);
+					}
+					
 				}
 			}
 		}
@@ -148,18 +183,26 @@ public class CategoryHierarchy {
 		String existingCategoryConditions =null;
 		if(condition==null||containsAttribute==null)
 			return;
-//		if(condition.getAttributeValues().containsKey(keyInMap)) {
-			existingCategoryConditions = condition.getAttributeValues().get(keyInMap);
-			if(existingCategoryConditions==null||existingCategoryConditions.isEmpty())
-				existingCategoryConditions=containsAttribute.getTextContent();
-			else
-				existingCategoryConditions+=MetadataConstants.stringListSeparator+containsAttribute.getTextContent();
-
-//		}
-
+		existingCategoryConditions = condition.getAttributeValues().get(keyInMap);
+		if(existingCategoryConditions==null||existingCategoryConditions.isEmpty())
+			existingCategoryConditions=containsAttribute.getTextContent();
+		else
+			existingCategoryConditions+=MetadataConstants.stringListSeparator+containsAttribute.getTextContent();
 		condition.addAttributeValues(keyInMap, existingCategoryConditions);
 	}
 
+	
+	private static void addNewExclusionPhraseToMap(Condition condition,String keyInMap, Node containsAttribute) {
+		String existingCategoryConditions =null;
+		if(condition==null||containsAttribute==null)
+			return;
+		existingCategoryConditions = condition.getAttributeValues().get(keyInMap);
+		if(existingCategoryConditions==null||existingCategoryConditions.isEmpty())
+			existingCategoryConditions=containsAttribute.getTextContent();
+		else
+			existingCategoryConditions+=MetadataConstants.stringListSeparator+containsAttribute.getTextContent();
+		condition.addAttributeNotContainsValue(keyInMap, existingCategoryConditions);
+	}
 	//	private static void retrieveAttributesValue(Node node,String name) {
 	//		NamedNodeMap attributes = node.getAttributes();
 	//		
@@ -206,6 +249,24 @@ public class CategoryHierarchy {
 		}
 		return retValue; 
 	}
+	private static Document getXmlTestDocumentContentHandleExceptions() {
+		String xmlContent = getTestXmlContent();
+
+		DocumentBuilderFactory factory =DocumentBuilderFactory.newInstance();
+		Document doc=null;
+		try {
+			DocumentBuilder builder = factory.newDocumentBuilder();
+
+			doc = builder.parse(new StringBufferInputStream(xmlContent));
+		} catch (SAXException | IOException | ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			ProblemLogger.logProblem("Some unexpected exception trying to import xml categories file");
+			ProblemLogger.logStackTrace(e.getStackTrace());
+
+		}
+
+		return doc;
+	}
 
 
 	private static Document getXmlDocumentContentHandleExceptions() {
@@ -229,6 +290,29 @@ public class CategoryHierarchy {
 
 	private static String getXmlContent() {
 		Resource categoriesFile = FilesProvider.getInstance().getCategoriesFile();
+		StringBuilder content=new StringBuilder();
+
+		InputStream inputStream;
+		try {
+			inputStream = categoriesFile.getInputStream();
+
+			BufferedReader br=new BufferedReader(new InputStreamReader(inputStream));
+			String temp=br.readLine();
+			while(temp!=null) {
+				content.append(temp);
+				temp=br.readLine();
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return content.toString();
+	}
+	
+	
+	private static String getTestXmlContent() {
+		Resource categoriesFile = FilesProvider.getInstance().getCategoriesTestFile();
 		StringBuilder content=new StringBuilder();
 
 		InputStream inputStream;
@@ -287,7 +371,9 @@ public class CategoryHierarchy {
 		processed.addChildren(conserved);
 		//		conserved.addCategoryNameInclusions("canned");
 		conserved.addConditions(Condition.createNameInclusionsCondition("pickles"));
-		conserved.addConditions(Condition.createAttributePresentCondition("drainedWeight"));
+		conserved.addConditions(Condition.createServingPhraseInclusionsCondition("can"));
+
+		conserved.addConditions(Condition.createAttributePresentCondition(MetadataConstants.drainedWeightMetaPropertyName));
 		Condition createCategoryNameInclusionsCondition = Condition.createCategoryNameInclusionsCondition("cans");
 		createCategoryNameInclusionsCondition.addNameExclusions("puree");
 		conserved.addConditions(createCategoryNameInclusionsCondition);

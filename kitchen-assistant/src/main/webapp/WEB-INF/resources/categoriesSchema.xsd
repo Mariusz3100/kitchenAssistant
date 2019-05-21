@@ -44,6 +44,11 @@
 					minOccurs="0" />
 				<xs:element name="attributes"
 					type="kaxsd:attributesQuery" minOccurs="0" />
+				<xs:element name="serving"
+					type="kaxsd:servingPhraseQuery" minOccurs="0" />
+					
+					
+					
 			</xs:choice>
 		</xs:sequence>
 
@@ -77,6 +82,13 @@
 		</xs:complexContent>
 	</xs:complexType>
 
+	<xs:complexType name="servingPhraseQuery">
+		<xs:complexContent>
+			<xs:extension base="kaxsd:query">
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
 	<xs:complexType name="attributesQuery">
 		<xs:complexContent>
 			<xs:extension base="kaxsd:query">
