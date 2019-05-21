@@ -210,8 +210,11 @@ public class Category {
 		return jsonRep;
 	}
 
-
-
+	
+	@Override
+	public String toString() {
+		return name;
+	}
 
 
 }
