@@ -16,7 +16,7 @@ import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = "url"))
-public class Produkt {
+public class Produkt implements Comparable<Produkt>{
 	public static final int opis_length=5000;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -192,6 +192,21 @@ public class Produkt {
 		return "Produkt [id=" + p_id + ", url=" + url + ", nazwa=" + nazwa
 				+ ", sklad=" + sklad + ", opis=" + opis + ", cena=" + cena
 				+ ", przetworzony=" + przetworzony+"]";
+	}
+
+	@Override
+	public int compareTo(Produkt o2) {
+		if(this==o2)
+			return 0;
+		else if(o2==null)
+			return 1;
+		else if(this.getNazwa()==o2.getNazwa())
+			return 0;
+		else if(o2.getNazwa()==null)
+			return 1;
+		else if(this.getNazwa()==null)		
+			return -1;
+		else return this.getNazwa().compareTo(o2.getNazwa());
 	}
 }
 

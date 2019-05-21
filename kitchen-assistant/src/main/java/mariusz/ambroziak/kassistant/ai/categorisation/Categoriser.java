@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.tesco.TescoApiClient;
@@ -62,7 +63,7 @@ public class Categoriser {
 
 		ArrayList<Produkt> produkts = createProductDetailsList(phrase);
 
-
+//		produkts.sort(new ProduktNameComparator());
 		Map<Produkt, Category> categories = assignCategories(produkts);
 
 		return categories;
@@ -90,7 +91,7 @@ public class Categoriser {
 
 
 	private static Map<Produkt, Category> assignCategories(ArrayList<Produkt> produkts) {
-		Map<Produkt,Category> retValue=new HashMap<Produkt, Category>();
+		Map<Produkt,Category> retValue=new TreeMap<Produkt, Category>();
 
 
 		for(Produkt p:produkts) {
@@ -110,7 +111,11 @@ public class Categoriser {
 		Category root=CategoryHierarchy.getSingletonCategoryRoot();
 
 		Category result=root.assignCategoryFromTree(p);
+		
+		if(result.getName().equals("root")) {
+			result=root.assignCategoryFromTree(p);
 
+		}
 
 		return result;
 
