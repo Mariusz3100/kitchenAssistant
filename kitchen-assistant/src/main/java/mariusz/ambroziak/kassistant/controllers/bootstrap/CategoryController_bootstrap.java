@@ -55,6 +55,19 @@ public class CategoryController_bootstrap {
 		return mav;
 	}
 	
+	@RequestMapping(value="/get_xml_test_category")
+	public ModelAndView get_xml_test_category() throws IOException, GoogleDriveAccessNotAuthorisedException {
+		Category createCategoriesFromXmlFile = CategoryHierarchy.createCategoryFromTestXmlFile();
+		String results=createCategoriesFromXmlFile.toJsonRepresentation().toString();
+		List<String> list=new ArrayList<String>();
+		list.add(results);
+		ModelAndView mav=new ModelAndView("List");
+		mav.addObject("list",list);
+		return mav;
+	}
+	
+	
+	
 	@RequestMapping(value="/get_static_category")
 	public ModelAndView get_static_category() throws IOException, GoogleDriveAccessNotAuthorisedException {
 		Category createCategoriesFromXmlFile = CategoryHierarchy.initializeCategoriesStaticlly();

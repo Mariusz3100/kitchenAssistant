@@ -24,6 +24,16 @@ public class FilesProvider {
 	}
 
 	Resource categoriesFile;
+	Resource categoriesTestFile;
+
+	
+	public Resource getCategoriesTestFile() {
+		return categoriesTestFile;
+	}
+
+	public void setCategoriesTestFile(Resource categoriesTestFile) {
+		this.categoriesTestFile = categoriesTestFile;
+	}
 
 	public Resource getCategoriesFile() {
 		return categoriesFile;
