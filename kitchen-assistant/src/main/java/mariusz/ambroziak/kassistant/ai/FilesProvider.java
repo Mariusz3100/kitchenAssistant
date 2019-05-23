@@ -25,8 +25,17 @@ public class FilesProvider {
 
 	Resource categoriesFile;
 	Resource categoriesTestFile;
+	Resource teachingExpectationsFile;
 
 	
+	public Resource getTeachingExpectationsFile() {
+		return teachingExpectationsFile;
+	}
+
+	public void setTeachingExpectationsFile(Resource teachingExpectationsFile) {
+		this.teachingExpectationsFile = teachingExpectationsFile;
+	}
+
 	public Resource getCategoriesTestFile() {
 		return categoriesTestFile;
 	}

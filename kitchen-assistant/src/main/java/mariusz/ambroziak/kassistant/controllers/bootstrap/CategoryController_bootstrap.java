@@ -17,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 import mariusz.ambroziak.kassistant.Apiclients.googleAuth.GoogleCalendarApiClient;
 import mariusz.ambroziak.kassistant.Apiclients.googleAuth.GoogleDriveApiClient;
 import mariusz.ambroziak.kassistant.ai.FilesProvider;
+import mariusz.ambroziak.kassistant.ai.categorisation.CategorisationTeacher;
 import mariusz.ambroziak.kassistant.ai.categorisation.Categoriser;
 import mariusz.ambroziak.kassistant.ai.categorisation.Category;
 import mariusz.ambroziak.kassistant.ai.categorisation.CategoryHierarchy;
@@ -31,7 +32,23 @@ import mariusz.ambroziak.kassistant.utils.StringHolder;
 public class CategoryController_bootstrap {
 
 	
+	@RequestMapping(value="/categorisation_teaching")
+	public ModelAndView categorisation_teaching() throws IOException, GoogleDriveAccessNotAuthorisedException {
+		ArrayList<String> list=new ArrayList<String>();
 
+		list.add("tomato:");
+		List<String> correctnessChecked = CategorisationTeacher.checkCorectness();
+
+		
+//		for(Entry<Produkt, Category> e:testedCategoriesForTomato.entrySet()) {
+//			list.add(e.getKey().getNazwa()+" ("+e.getKey().getUrl()+")->"+e.getValue());
+//		}
+		
+		
+		ModelAndView mav=new ModelAndView("List");
+		mav.addObject("list",correctnessChecked);
+		return mav;
+	}
 	
 	@RequestMapping(value="/xml_categorize_test")
 	public ModelAndView xml_categorize_test() throws IOException, GoogleDriveAccessNotAuthorisedException {
