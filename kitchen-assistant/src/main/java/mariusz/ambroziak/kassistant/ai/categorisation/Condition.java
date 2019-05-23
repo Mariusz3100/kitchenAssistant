@@ -231,7 +231,7 @@ public class Condition {
 		}else {
 			String metadane=p.getMetadata();
 			JSONObject json=new JSONObject(metadane);
-			String category = json.getString(MetadataConstants.categoryNameJsonName);
+			String category = json.has(MetadataConstants.categoryNameJsonName)?json.getString(MetadataConstants.categoryNameJsonName):"";
 
 
 

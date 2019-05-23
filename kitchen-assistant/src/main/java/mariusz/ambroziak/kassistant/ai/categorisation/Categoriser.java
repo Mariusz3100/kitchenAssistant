@@ -2,6 +2,7 @@ package mariusz.ambroziak.kassistant.ai.categorisation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -46,6 +47,18 @@ public class Categoriser {
 
 	}
 
+	public static Map<Produkt, Category> testCategoryProduct(String url) {
+		Produkt produktByShopId = TescoApiClientParticularProduct_notUsed.getProduktByUrlWithExtensiveMetadata(url);
+		produktByShopId = TescoApiClientParticularProduct_notUsed.updateParticularProduct(produktByShopId);
+
+		Map<Produkt, Category> retValue=new HashMap<Produkt, Category>();
+		Category assignedCategory = assignCategory(produktByShopId);
+		retValue.put(produktByShopId, assignedCategory);
+
+		return retValue;
+
+	}
+	
 	public static Map<Produkt, Category> testCategoryProduct(int id) {
 		Produkt produktByShopId = TescoApiClientParticularProduct_notUsed.getProduktByShopId(id);
 		produktByShopId = TescoApiClientParticularProduct_notUsed.updateParticularProduct(produktByShopId);
@@ -72,6 +85,23 @@ public class Categoriser {
 	}
 
 
+	public static Map<Produkt, Category> testCategoriesFor(List<String> urls) {
+		Category cat=CategoryHierarchy.getSingletonCategoryRoot();
+
+		ArrayList<Produkt> produkts = new ArrayList<>();
+		
+		for(int i=0;i<produkts.size();i++) {
+			Produkt p=produkts.get(i);
+			p=TescoApiClientParticularProduct_notUsed.updateParticularProduct(p);
+		}
+		
+//		produkts.sort(new ProduktNameComparator());
+		Map<Produkt, Category> categories = assignCategories(produkts);
+
+		return categories;
+
+
+	}
 
 
 
@@ -107,7 +137,7 @@ public class Categoriser {
 
 
 
-	private static Category assignCategory(Produkt p) {
+	public static Category assignCategory(Produkt p) {
 		Category root=CategoryHierarchy.getSingletonCategoryRoot();
 
 		Category result=root.assignCategoryFromTree(p);

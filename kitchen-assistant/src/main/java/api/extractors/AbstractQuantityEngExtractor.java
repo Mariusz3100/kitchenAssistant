@@ -37,7 +37,7 @@ public class AbstractQuantityEngExtractor {
 		translations.put("pounds",new QuantityTranslation(AmountTypes.mg, 453000) );
 		 
 		
-		
+		translations.put("cl",new QuantityTranslation(AmountTypes.ml, 100) );		
 		translations.put("l",new QuantityTranslation(AmountTypes.ml, 1000) );
 		translations.put("teaspoon",new QuantityTranslation(AmountTypes.ml, 5) );
 		translations.put("teaspoons",new QuantityTranslation(AmountTypes.ml, 5) );

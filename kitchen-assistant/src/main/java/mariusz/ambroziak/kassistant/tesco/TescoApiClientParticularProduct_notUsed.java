@@ -241,11 +241,19 @@ public class TescoApiClientParticularProduct_notUsed {
 		String description = "";//actual description is missing in this api
 		float price = -1;//(float)singleProductJson.getDouble("price");//price is missing too
 		JSONObject  metadataJson=new JSONObject();
-		JSONObject qtyContents = singleProductJson.getJSONObject("qtyContents");
-		if(qtyContents.has(MetadataConstants.drainedWeightMetaPropertyName)) {
-			metadataJson.put(MetadataConstants.drainedWeightMetaPropertyName,qtyContents.get(MetadataConstants.drainedWeightMetaPropertyName));
+		String quantityString = "";
+
+		if(singleProductJson.has("qtyContents")) {
+			JSONObject qtyContents = singleProductJson.getJSONObject("qtyContents");
+			if(qtyContents.has(MetadataConstants.drainedWeightMetaPropertyName)) {
+				metadataJson.put(MetadataConstants.drainedWeightMetaPropertyName,qtyContents.get(MetadataConstants.drainedWeightMetaPropertyName));
+			}
+			quantityString=calculateQuantityJspString(qtyContents, detailsUrl);
+		}else {
+			ProblemLogger.logProblem("Product with unknown quantity:"+detailsUrl);
+			PreciseQuantity pq=new PreciseQuantity(1, AmountTypes.szt);
+			quantityString=pq.toJspString();
 		}
-		String quantityString = calculateQuantityJspString(qtyContents, detailsUrl);
 
 		Produkt result=new Produkt(detailsUrl,quantityString,name,"",description,price,false);
 		return result;
@@ -283,6 +291,28 @@ public class TescoApiClientParticularProduct_notUsed {
 	public static void main(String [] args){
 		//System.out.println(getProduktsFor("chicken"));
 		//System.out.println(getProduktByShopId("81866107"));
+	}
+	public static Produkt getProduktByUrlWithExtensiveMetadata(String url) {
+		Produkt produktByUrl = getProduktByUrl(url);
+		ArrayList<Produkt> produktsFor = TescoApiClient.getProduktsFor(produktByUrl.getNazwa());
+	
+		for(Produkt p:produktsFor) {
+			if(p.getNazwa().equals(produktByUrl.getNazwa())) {
+				String produktByUrlMeta=produktByUrl.getMetadata();
+				String pMeta=p.getMetadata();
+				JSONObject aJson=produktByUrlMeta==null||produktByUrlMeta.isEmpty()?new JSONObject():new JSONObject(produktByUrlMeta);
+				JSONObject bJson=pMeta==null||pMeta.isEmpty()?new JSONObject():new JSONObject(pMeta);
+				JSONArray names=bJson.names();
+				
+				for(int i=0;i<names.length();i++) {
+					aJson.put(names.getString(i),bJson.get(names.getString(i)));
+				}
+				
+				produktByUrl.setMetadata(aJson.toString());
+			}
+		}
+		
+		return produktByUrl;
 	}
 
 
