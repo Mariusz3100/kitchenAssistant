@@ -8,12 +8,14 @@ import javax.ws.rs.core.MultivaluedMap;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.google.api.client.json.Json;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 
+import mariusz.ambroziak.kassistant.ai.categorisation.MetadataConstants;
 import mariusz.ambroziak.kassistant.model.Problem;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.model.quantity.AmountTypes;
@@ -128,10 +130,30 @@ public class ShopComApiClientParticularProduct {
 		resultProdukt.setUrl("https://api.shop.com/stores/v1/products/"+id);
 		resultProdukt.setCena((float)price);
 		resultProdukt.setQuantityPhrase(pq.toJspString());
+		String metadata=calculateMetadata(root);
 
+		resultProdukt.setMetadata(metadata);
+		
 		return resultProdukt;
 	}
 
+
+	private static String calculateMetadata(JSONObject root) {
+		if(root==null||!root.has("categoryInfo"))
+			return new JSONObject().toString();
+		else
+		{
+			JSONObject catInfo = root.getJSONObject("categoryInfo");
+			String category1 =catInfo.has("department")?catInfo.getString("department"):"";
+			String category2 = catInfo.has("category")?catInfo.getString("category"):"";
+			String category3= catInfo.has("productType")?catInfo.getString("productType"):"";
+			JSONObject result=new JSONObject();
+			String value = category1+MetadataConstants.stringListSeparator+category2+MetadataConstants.stringListSeparator+category3;
+			result.put(MetadataConstants.categoryNameJsonName, value);
+			return result.toString();
+		}
+		
+	}
 
 	public static Produkt getProduktByUrl(String url){
 		String response=getResponseByUrl(url);
@@ -148,7 +170,9 @@ public class ShopComApiClientParticularProduct {
 		resultProdukt.setUrl(url);
 		resultProdukt.setCena((float)price);
 		resultProdukt.setQuantityPhrase(pq.toJspString());
+		String metadata=calculateMetadata(root);
 
+		resultProdukt.setMetadata(metadata);
 		return resultProdukt;
 	}
 
