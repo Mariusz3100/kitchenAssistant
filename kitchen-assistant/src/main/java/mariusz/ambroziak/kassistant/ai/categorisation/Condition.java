@@ -8,10 +8,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 
 import mariusz.ambroziak.kassistant.model.Produkt;
+import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 
 public class Condition {
 //	ArrayList<String> nameInclusions;
@@ -66,14 +68,17 @@ public class Condition {
 	
 	
 	public List<String> getNameExclusions() {
-		String nameExclusions = attributeNotContainsValues.get(MetadataConstants.produktNameJsonPrefix);
+		String nameExclusions = attributeNotContainsValues.get(MetadataConstants.conditionProduktNameMapKey);
 		if(nameExclusions==null)
 			return new ArrayList<String>();
 		else
 			return Arrays.asList(nameExclusions.split(MetadataConstants.stringListSeparator));
 	}
+	public Map<String, String> getAttributeNotContainsValues() {
+		return attributeNotContainsValues;
+	}
 	public void addNameExclusions(String nameExclusion) {
-		this.addAttributeNotContainsValue(MetadataConstants.produktNameJsonPrefix,nameExclusion );
+		this.addAttributeNotContainsValue(MetadataConstants.conditionProduktNameMapKey,nameExclusion );
 	}
 
 
@@ -126,7 +131,7 @@ public class Condition {
 
 		
 	public List<String> getNameInclusions() {
-		String nameInclusions = attributeValues.get(MetadataConstants.produktNameJsonPrefix);
+		String nameInclusions = attributeValues.get(MetadataConstants.conditionProduktNameMapKey);
 		if(nameInclusions==null)
 			return new ArrayList<String>();
 		else
@@ -134,7 +139,7 @@ public class Condition {
 
 	}
 	public void addNameInclusion(String nameInclusion) {
-		this.addAttributeValues(MetadataConstants.produktNameJsonPrefix,nameInclusion );
+		this.addAttributeValues(MetadataConstants.conditionProduktNameMapKey,nameInclusion );
 
 	}
 
@@ -161,9 +166,13 @@ public class Condition {
 		if(servingPhraseInclusions!=null&&!servingPhraseInclusions.isEmpty()) {
 			for(int i=0;phraseIsOk&&i<servingPhraseInclusions.size();i++) {
 				String metadane=p.getMetadata();
-				JSONObject json=metadane==null?new JSONObject():new JSONObject(metadane);
-				String serving = json.has(MetadataConstants.servingPhraseNameJsonName)?json.getString(MetadataConstants.servingPhraseNameJsonName):null;
-
+				String serving =null;
+				try {
+				JSONObject json=metadane==null||metadane.isEmpty()?new JSONObject():new JSONObject(metadane);
+				serving = json.has(MetadataConstants.servingPhraseNameJsonName)?json.getString(MetadataConstants.servingPhraseNameJsonName):null;
+				}catch(JSONException e) {
+					phraseIsOk=false;
+				}
 				if(serving==null||!serving.toLowerCase().contains(servingPhraseInclusions.get(i).toLowerCase())) {
 					phraseIsOk=false;
 				}
@@ -174,16 +183,41 @@ public class Condition {
 
 	private boolean checkNameInclusions(Produkt p) {
 		boolean nameIsOk=true;
+		
+		String productName = calculateNameOfAProduct(p);
+
+		
+
 		List<String> nameInclusions = getNameInclusions();
 		if(nameInclusions!=null&&!nameInclusions.isEmpty()) {
 			for(int i=0;nameIsOk&&i<nameInclusions.size();i++) {
 
-				if(p.getNazwa()==null||!p.getNazwa().toLowerCase().contains(nameInclusions.get(i).toLowerCase())) {
+				if(productName==null||!productName.toLowerCase().contains(nameInclusions.get(i).toLowerCase())) {
 					nameIsOk=false;
 				}
 			}
 		}
 		return nameIsOk;
+	}
+	private String calculateNameOfAProduct(Produkt p) {
+		String metadane=p.getMetadata();
+		String productName ="";
+
+		try {
+			JSONObject json=metadane==null?new JSONObject():new JSONObject(metadane);
+			
+			if(json.has(MetadataConstants.productNameMetaPropertyName)) {
+				productName= json.getString(MetadataConstants.productNameMetaPropertyName);
+			}else {
+				productName = p.getNazwa();
+			}
+			
+		}catch(JSONException e) {
+			ProblemLogger.logProblem("bad metadata for product id="+p.getP_id()+"("+p.getUrl()+")");
+			productName = p.getNazwa();
+
+		}
+		return productName;
 	}
 
 	private boolean checkNameExclusons(Produkt p) {
@@ -192,7 +226,8 @@ public class Condition {
 		if(nameExclusions!=null&&!nameExclusions.isEmpty()) {
 			for(int i=0;i<nameExclusions.size();i++) {
 
-				if(p.getNazwa()!=null&&p.getNazwa().toLowerCase().contains(nameExclusions.get(i).toLowerCase())) {
+				String productName = p.getNazwa();
+				if(productName!=null&&productName.toLowerCase().contains(nameExclusions.get(i).toLowerCase())) {
 					return false;
 				}
 			}
@@ -320,23 +355,30 @@ public class Condition {
 		
 		retValue.put("attributeValuesConditions", attributeValuesArray);
 		
-		JSONArray nameKeywordsConditionsJsonArray=new JSONArray();
-
-		for(String c:getNameInclusions()) {
-			nameKeywordsConditionsJsonArray.put(c);
+		JSONArray attributeNotContainsValuesArray=new JSONArray();
+		for(Entry<String, String> c:getAttributeNotContainsValues().entrySet()) {
+			attributeNotContainsValuesArray.put(c.getKey()+"='"+c.getValue()+"'");
 		}
 		
-		retValue.put("nameInclusionsConditions", nameKeywordsConditionsJsonArray);
-		
-		JSONArray nameNotContainsConditionsJsonArray=new JSONArray();
+		retValue.put("attributeValuesNotContains", attributeNotContainsValuesArray);
 
-		for(String c:getNameExclusions()) {
-			nameNotContainsConditionsJsonArray.put(c);
-		}
-		
-		retValue.put("nameExclusionsConditions", nameNotContainsConditionsJsonArray);
-		
-		
+//		JSONArray nameKeywordsConditionsJsonArray=new JSONArray();
+//
+//		for(String c:getNameInclusions()) {
+//			nameKeywordsConditionsJsonArray.put(c);
+//		}
+//		
+//		retValue.put("nameInclusionsConditions", nameKeywordsConditionsJsonArray);
+//		
+//		JSONArray nameNotContainsConditionsJsonArray=new JSONArray();
+//
+//		for(String c:getNameExclusions()) {
+//			nameNotContainsConditionsJsonArray.put(c);
+//		}
+//		
+//		retValue.put("nameExclusionsConditions", nameNotContainsConditionsJsonArray);
+//		
+//		
 		return retValue;
 		
 	}

@@ -96,7 +96,7 @@ public class CategoryHierarchy {
 
 		for(int i=0;i<childNodes.getLength();i++) {
 			Node childNode = childNodes.item(i);
-			if(node.getNodeType()==Node.TEXT_NODE||node.getNodeType()==Node.COMMENT_NODE) {
+			if(childNode.getNodeType()==Node.TEXT_NODE||childNode.getNodeType()==Node.COMMENT_NODE) {
 				//no handling for text node now
 			}else {
 				if(MetadataConstants.childrenElementName.equals(childNode.getNodeName())) {
@@ -136,7 +136,7 @@ public class CategoryHierarchy {
 						addNewSearchPhraseToMap(retValue, MetadataConstants.categoryNameJsonName,contains);
 					}
 					if(notContains!=null) {
-						addNewExclusionPhraseToMap(retValue, MetadataConstants.categoryNameJsonName,contains);
+						addNewExclusionPhraseToMap(retValue, MetadataConstants.categoryNameJsonName,notContains);
 					}
 				}else if(MetadataConstants.nameConditionElementName.equals(conditionNode.getNodeName())) {
 					NamedNodeMap attributesMap = conditionNode.getAttributes();
@@ -144,10 +144,10 @@ public class CategoryHierarchy {
 					Node notContains=attributesMap.getNamedItem(MetadataConstants.notContainsAttribute);
 
 					if(contains!=null) {
-						addNewSearchPhraseToMap(retValue, MetadataConstants.produktNameJsonPrefix,contains);
+						addNewSearchPhraseToMap(retValue, MetadataConstants.conditionProduktNameMapKey,contains);
 					}
 					if(notContains!=null) {
-						addNewExclusionPhraseToMap(retValue, MetadataConstants.produktNameJsonPrefix,contains);
+						addNewExclusionPhraseToMap(retValue, MetadataConstants.conditionProduktNameMapKey,notContains);
 					}
 					//				}else if(MetadataConstants.notContainsAttribute.equals(conditionNode.getNodeName())) {
 					//					NamedNodeMap attributesMap = conditionNode.getAttributes();
@@ -169,7 +169,7 @@ public class CategoryHierarchy {
 						addNewSearchPhraseToMap(retValue, MetadataConstants.servingPhraseNameJsonName,contains);
 					}
 					if(notContains!=null) {
-						addNewExclusionPhraseToMap(retValue, MetadataConstants.servingPhraseNameJsonName,contains);
+						addNewExclusionPhraseToMap(retValue, MetadataConstants.servingPhraseNameJsonName,notContains);
 					}
 					
 				}
@@ -182,7 +182,10 @@ public class CategoryHierarchy {
 	private static void addNewSearchPhraseToMap(Condition condition,String keyInMap, Node containsAttribute) {
 		String existingCategoryConditions =null;
 		if(condition==null||containsAttribute==null)
+		{
+			ProblemLogger.logProblem("Wow, either condition or addon is null, how??");
 			return;
+		}
 		existingCategoryConditions = condition.getAttributeValues().get(keyInMap);
 		if(existingCategoryConditions==null||existingCategoryConditions.isEmpty())
 			existingCategoryConditions=containsAttribute.getTextContent();
@@ -195,7 +198,10 @@ public class CategoryHierarchy {
 	private static void addNewExclusionPhraseToMap(Condition condition,String keyInMap, Node containsAttribute) {
 		String existingCategoryConditions =null;
 		if(condition==null||containsAttribute==null)
+		{
+			ProblemLogger.logProblem("Wow, either condition or addon is null, how??");
 			return;
+		}
 		existingCategoryConditions = condition.getAttributeValues().get(keyInMap);
 		if(existingCategoryConditions==null||existingCategoryConditions.isEmpty())
 			existingCategoryConditions=containsAttribute.getTextContent();
