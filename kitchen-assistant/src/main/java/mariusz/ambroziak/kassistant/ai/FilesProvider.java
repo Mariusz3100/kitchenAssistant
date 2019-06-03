@@ -5,6 +5,14 @@ import org.springframework.core.io.*;
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
 
 public class FilesProvider {
+	public Resource getTeachingShopComFile() {
+		return teachingShopComFile;
+	}
+
+	public void setTeachingShopComFile(Resource teachingShopComFile) {
+		this.teachingShopComFile = teachingShopComFile;
+	}
+
 	private static FilesProvider singleton;
 	
 	public static FilesProvider getInstance(){
@@ -26,7 +34,7 @@ public class FilesProvider {
 	Resource categoriesFile;
 	Resource categoriesTestFile;
 	Resource teachingExpectationsFile;
-
+	Resource teachingShopComFile;
 	
 	public Resource getTeachingExpectationsFile() {
 		return teachingExpectationsFile;
