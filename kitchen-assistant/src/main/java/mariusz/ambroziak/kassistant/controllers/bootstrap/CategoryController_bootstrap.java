@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +27,7 @@ import mariusz.ambroziak.kassistant.exceptions.GoogleDriveAccessNotAuthorisedExc
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.tesco.TescoApiClient;
 import mariusz.ambroziak.kassistant.tesco.TescoApiClientParticularProduct_notUsed;
+import mariusz.ambroziak.kassistant.utils.JspStringHolder;
 import mariusz.ambroziak.kassistant.utils.StringHolder;
 
 
@@ -32,12 +35,12 @@ import mariusz.ambroziak.kassistant.utils.StringHolder;
 public class CategoryController_bootstrap {
 
 	
-	@RequestMapping(value="/categorisation_teaching")
+	@RequestMapping(value="/tesco_categorisation_teaching")
 	public ModelAndView categorisation_teaching() throws IOException, GoogleDriveAccessNotAuthorisedException {
 		ArrayList<String> list=new ArrayList<String>();
 
 		list.add("tomato:");
-		List<String> correctnessChecked = CategorisationTeacher.checkCorectness();
+		List<String> correctnessChecked = CategorisationTeacher.TescoCheckCorectness();
 
 		
 //		for(Entry<Produkt, Category> e:testedCategoriesForTomato.entrySet()) {
@@ -50,6 +53,18 @@ public class CategoryController_bootstrap {
 		return mav;
 	}
 	
+	@RequestMapping(value="/shopcom_categorisation_teaching")
+	public ModelAndView shopcom_categorisation_teaching() throws IOException, GoogleDriveAccessNotAuthorisedException {
+		ArrayList<String> list=new ArrayList<String>();
+
+		list.add("tomato:");
+		List<String> correctnessChecked = CategorisationTeacher.checkCorectness_inShopCom();
+		
+		ModelAndView mav=new ModelAndView("List");
+		mav.addObject("list",correctnessChecked);
+		return mav;
+	}
+//	
 	@RequestMapping(value="/xml_categorize_test")
 	public ModelAndView xml_categorize_test() throws IOException, GoogleDriveAccessNotAuthorisedException {
 		CategoryHierarchy.initializeCategoriesFromXml();
@@ -148,25 +163,34 @@ public class CategoryController_bootstrap {
 	@RequestMapping(value="/categorisation_test")
 	public ModelAndView categorisation_test() {
 		ArrayList<String> list=new ArrayList<String>();
-//		list.add("cucumber:");
-//		
-//		Map<Produkt, Category> testedCategoriesFor = Categoriser.testCategoriesFor("cucumber", 10);
-//		for(Entry<Produkt, Category> e:testedCategoriesFor.entrySet()) {
-//			list.add(e.getKey().getNazwa()+" ("+e.getKey().getUrl()+")->"+e.getValue().getName());
-//		}
-		
+
 		list.add("tomato:");
 		Map<Produkt, Category> testedCategoriesForTomato = Categoriser.testCategoriesFor("tomato", 10);
 		for(Entry<Produkt, Category> e:testedCategoriesForTomato.entrySet()) {
 			list.add(e.getKey().getNazwa()+" ("+e.getKey().getUrl()+")->"+e.getValue());
 		}
-//		
+
 		ModelAndView modelAndView = new ModelAndView("List");
 		modelAndView.addObject("list",list);
 		return modelAndView;
 	}
 	
-	@RequestMapping(value="/categorisation_test_single")
+	@RequestMapping(value="/categorisation_test_shopcom")
+	public ModelAndView categorisation_test_shopcom() {
+		ArrayList<String> list=new ArrayList<String>();
+
+		list.add("tomato:");
+		Map<Produkt, Category> testedCategoriesForTomato = Categoriser.testCategoriesInShopComFor("tomato");
+		for(Entry<Produkt, Category> e:testedCategoriesForTomato.entrySet()) {
+			list.add(e.getKey().getNazwa()+" ("+e.getKey().getUrl()+")->"+e.getValue());
+		}
+
+		ModelAndView modelAndView = new ModelAndView("List");
+		modelAndView.addObject("list",list);
+		return modelAndView;
+	}
+	
+	@RequestMapping(value="/tesco_categorisation_test_for")
 	public ModelAndView categorisation_test_single() {
 		ArrayList<String> list=new ArrayList<String>();
 
@@ -174,6 +198,26 @@ public class CategoryController_bootstrap {
 		
 		int id=56774766;
 		Map<Produkt, Category> testCategoryProduct = Categoriser.testCategoryProduct(id);
+		Produkt product = testCategoryProduct.keySet().iterator().next();
+		list.add(""+id);
+		list.add(""+product.getNazwa());
+		list.add(""+product.getUrl());
+		list.add(testCategoryProduct.get(product).getName());
+		
+		
+		ModelAndView modelAndView = new ModelAndView("List");
+		modelAndView.addObject("list",list);
+		return modelAndView;
+	}
+
+	@RequestMapping(value="/shopcom_categorisation_test_for")
+	public ModelAndView categorisation_test_for(HttpServletRequest request) {
+		ArrayList<String> list=new ArrayList<String>();
+		String id=request.getParameter("id");
+
+//		int id=83286592;
+		
+		Map<Produkt, Category> testCategoryProduct = Categoriser.testCategoryShopComProduct(id);
 		Produkt product = testCategoryProduct.keySet().iterator().next();
 		list.add(""+id);
 		list.add(""+product.getNazwa());

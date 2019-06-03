@@ -8,6 +8,8 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import mariusz.ambroziak.kassistant.model.Produkt;
+import mariusz.ambroziak.kassistant.shopcom.ShopComApiClient;
+import mariusz.ambroziak.kassistant.shopcom.ShopComApiClientParticularProduct;
 import mariusz.ambroziak.kassistant.tesco.TescoApiClient;
 import mariusz.ambroziak.kassistant.tesco.TescoApiClientParticularProduct_notUsed;
 
@@ -59,6 +61,17 @@ public class Categoriser {
 
 	}
 	
+	public static Map<Produkt, Category> testCategoryShopComProduct(String id) {
+//		Produkt produktByShopId = TescoApiClientParticularProduct_notUsed.getProduktByUrlWithExtensiveMetadata(url);
+//		produktByShopId = TescoApiClientParticularProduct_notUsed.updateParticularProduct(produktByShopId);
+		Produkt produktByShopId =ShopComApiClientParticularProduct.getProduktByShopId(id);
+		Map<Produkt, Category> retValue=new HashMap<Produkt, Category>();
+		Category assignedCategory = assignCategory(produktByShopId);
+		retValue.put(produktByShopId, assignedCategory);
+
+		return retValue;
+
+	}
 	public static Map<Produkt, Category> testCategoryProduct(int id) {
 		Produkt produktByShopId = TescoApiClientParticularProduct_notUsed.getProduktByShopId(id);
 		produktByShopId = TescoApiClientParticularProduct_notUsed.updateParticularProduct(produktByShopId);
@@ -84,6 +97,7 @@ public class Categoriser {
 
 	}
 
+	
 
 	public static Map<Produkt, Category> testCategoriesFor(List<String> urls) {
 		Category cat=CategoryHierarchy.getSingletonCategoryRoot();
@@ -103,6 +117,16 @@ public class Categoriser {
 
 	}
 
+	public static Map<Produkt, Category> testCategoriesInShopComFor(String phrase) {
+		ArrayList<Produkt> produkts = createShopComProductDetailsList(phrase);
+
+//		produkts.sort(new ProduktNameComparator());
+		Map<Produkt, Category> categories = assignCategories(produkts);
+
+		return categories;
+
+
+	}
 
 
 	private static ArrayList<Produkt> createProductDetailsList(String phrase) {
@@ -116,6 +140,17 @@ public class Categoriser {
 		return produkts;
 	}
 
+
+	private static ArrayList<Produkt> createShopComProductDetailsList(String phrase) {
+		ArrayList<Produkt> produkts = ShopComApiClient.getProduktsFor(phrase);
+
+//		for(int i=0;i<produkts.size();i++) {
+//			Produkt p=produkts.get(i);
+//			p=ShopComApiClientParticularProduct.getProduktByUrl(url)
+//		}
+
+		return produkts;
+	}
 
 
 
@@ -142,10 +177,10 @@ public class Categoriser {
 
 		Category result=root.assignCategoryFromTree(p);
 		
-		if(result.getName().equals("root")) {
+//		if(result.getName().equals("root")) {
 			result=root.assignCategoryFromTree(p);
 
-		}
+//		}
 
 		return result;
 
