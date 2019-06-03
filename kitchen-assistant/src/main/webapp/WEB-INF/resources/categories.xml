@@ -35,7 +35,7 @@
 						produktow, np. wloszczyzna -->
 					<conditions>
 						<condition>
-							<name contains="mix" />
+							<name contains="package" />
 						</condition>
 					</conditions>
 
@@ -65,6 +65,8 @@
 
 						<condition>
 							<name contains="dried" />
+							<name notContains="oil" />
+
 						</condition>
 						<condition>
 							<name contains="powder" />
@@ -85,6 +87,10 @@
 						<condition>
 							<name contains="puree" />
 						</condition>
+
+						<condition>
+							<name contains="passata" />
+						</condition>
 						<condition>
 							<departmentName contains="puree" />
 						</condition>
@@ -101,8 +107,54 @@
 						<condition>
 							<name contains="soup" />
 						</condition>
+						<condition>
+							<name contains="sauce" />
+						</condition>
+						<condition>
+							<name contains="marinade" />
+						</condition>
+
+						<condition>
+							<name contains="pesto" />
+						</condition>
+						<condition>
+							<name contains="salsa" />
+						</condition>
+						<condition>
+							<departmentName contains="snacks" />
+						</condition>
+						<condition>
+							<departmentName contains="sauce" />
+						</condition>
+						<condition>
+							<departmentName contains="Oils, Fats" />
+							<name contains="tomato" />
+						</condition>
+						<condition>
+							<departmentName contains="soup" />
+						</condition>
+						<condition>
+							<departmentName contains="salsa" />
+						</condition>
+
+						<!--<condition> <departmentName contains="sauce" /> </condition> -->
 					</conditions>
-					<children></children>
+					<children>
+						<category name="ketchup">
+							<conditions>
+
+								<condition>
+									<name contains="ketchup" />
+								</condition>
+							</conditions>
+
+							<children></children>
+							<branchConditions>
+							</branchConditions>
+
+						</category>
+
+					</children>
 					<branchConditions>
 					</branchConditions>
 
@@ -117,7 +169,12 @@
 								zawiera slowo "cans", ale nazwa produktu nie zawiera slowa "puree" -->
 							<departmentName contains="cans" />
 							<name notContains="puree" />
+							<name notContains="soup" />
+							<name notContains="sauce" />
 
+						</condition>
+						<condition>
+							<serving contains="can" />
 						</condition>
 					</conditions>
 
