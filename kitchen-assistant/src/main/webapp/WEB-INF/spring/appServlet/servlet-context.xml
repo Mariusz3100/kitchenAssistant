@@ -136,8 +136,8 @@
 	<bean id="filesProvider" class="mariusz.ambroziak.kassistant.ai.FilesProvider">
   		 <property name="categoriesFile" value="WEB-INF/resources/categories.xml"/>
   		 <property name="categoriesTestFile" value="WEB-INF/resources/testCategories.xml"/>
-  		 <property name="teachingExpectationsFile" value="WEB-INF/resources/teachingFile"/>
-  		 <property name="teachingShopComFile" value="WEB-INF/resources/teachingFileShopCom"/>
+  		 <property name="teachingTescoFile" value="WEB-INF/resources/teaching/tesco"/>
+  		 <property name="teachingShopComFile" value="WEB-INF/resources/teaching/shopcom"/>
 
 
 

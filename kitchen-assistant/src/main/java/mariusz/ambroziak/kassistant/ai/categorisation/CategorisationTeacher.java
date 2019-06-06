@@ -61,7 +61,7 @@ public class CategorisationTeacher{
 	}
 
 	public static List<String> TescoCheckCorectness(){
-		String testFileContents = getTeachingFileContents();
+		String testFileContents = getTeachingTescoContents();
 		ArrayList<String> retValue=new ArrayList<String>();
 		String[] lines = testFileContents.split("<");
 		int greens=0,reds=0,yellows=0;
@@ -101,8 +101,8 @@ public class CategorisationTeacher{
 
 
 
-	private static String getTeachingFileContents() {
-		Resource teachingExpectationsFile = FilesProvider.getInstance().getTeachingExpectationsFile();
+	private static String getTeachingTescoContents() {
+		Resource teachingExpectationsFile = FilesProvider.getInstance().getTeachingTescoFile();
 		StringBuilder content=new StringBuilder();
 
 		InputStream inputStream;

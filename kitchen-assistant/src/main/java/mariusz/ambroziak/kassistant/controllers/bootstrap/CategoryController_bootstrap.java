@@ -64,6 +64,8 @@ public class CategoryController_bootstrap {
 		mav.addObject("list",correctnessChecked);
 		return mav;
 	}
+	
+	
 //	
 	@RequestMapping(value="/xml_categorize_test")
 	public ModelAndView xml_categorize_test() throws IOException, GoogleDriveAccessNotAuthorisedException {
@@ -191,13 +193,15 @@ public class CategoryController_bootstrap {
 	}
 	
 	@RequestMapping(value="/tesco_categorisation_test_for")
-	public ModelAndView categorisation_test_single() {
+	public ModelAndView categorisation_test_single(HttpServletRequest request) {
 		ArrayList<String> list=new ArrayList<String>();
+		String id=request.getParameter("id");
 
 //		int id=83286592;
 		
-		int id=56774766;
-		Map<Produkt, Category> testCategoryProduct = Categoriser.testCategoryProduct(id);
+//		int id=56774766;
+		String url="https://dev.tescolabs.com/product/?tpnb="+id;
+		Map<Produkt, Category> testCategoryProduct = Categoriser.testTescoCategoryProduct(url);
 		Produkt product = testCategoryProduct.keySet().iterator().next();
 		list.add(""+id);
 		list.add(""+product.getNazwa());
