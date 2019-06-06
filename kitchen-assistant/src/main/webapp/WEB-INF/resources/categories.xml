@@ -66,7 +66,16 @@
 						<condition>
 							<name contains="dried" />
 							<name notContains="oil" />
-
+							<name notContains="pesto" />
+							<name notContains="sauce" />
+							<name notContains="marinada" />
+							<name notContains="dressing" />
+							<name notContains="spread" />
+							
+							
+							<ingredients notContains="oil" />
+							<ingredients notRegex=".*,.*,.*,.*,.*,.*" />
+							
 						</condition>
 						<condition>
 							<name contains="powder" />
@@ -85,7 +94,16 @@
 							<name contains="paste" />
 						</condition>
 						<condition>
+							<name contains="juice" />
+							<name contains="100%" />
+
+						</condition>
+
+						<condition>
 							<name contains="puree" />
+
+							<name notContains="puree with" />
+
 						</condition>
 
 						<condition>
@@ -108,12 +126,22 @@
 							<name contains="soup" />
 						</condition>
 						<condition>
+							<name contains="puree with" />
+						</condition>
+
+						<condition>
+							<name contains="dressing" />
+						</condition>
+						<condition>
 							<name contains="sauce" />
 						</condition>
 						<condition>
 							<name contains="marinade" />
 						</condition>
-
+						<condition>
+							<name contains="pizza" />
+							<name notContains="pizza sauce" />
+						</condition>
 						<condition>
 							<name contains="pesto" />
 						</condition>
@@ -136,7 +164,10 @@
 						<condition>
 							<departmentName contains="salsa" />
 						</condition>
+						<condition>
+							<ingredients regex=".*,.*,.*,.*,.*,.*" />
 
+						</condition>
 						<!--<condition> <departmentName contains="sauce" /> </condition> -->
 					</conditions>
 					<children>
@@ -171,10 +202,14 @@
 							<name notContains="puree" />
 							<name notContains="soup" />
 							<name notContains="sauce" />
+							<name notContains="passata" />
 
 						</condition>
 						<condition>
 							<serving contains="can" />
+							<name notContains="puree" />
+							<name notContains="soup" />
+							<name notContains="sauce" />
 						</condition>
 					</conditions>
 
@@ -208,9 +243,7 @@
 				<condition>
 					<name contains="flavoured" />
 				</condition>
-				<condition>
-					<departmentName contains="drinks" />
-				</condition>
+				<!-- <condition> <departmentName contains="drinks" /> </condition> -->
 				<condition>
 					<departmentName contains="household" />
 				</condition>
