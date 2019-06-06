@@ -2,11 +2,14 @@ package mariusz.ambroziak.kassistant.shopcom;
 
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.ws.rs.core.MultivaluedMap;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.jsoup.Jsoup;
 
 import com.google.api.client.json.Json;
 import com.sun.jersey.api.client.Client;
@@ -29,6 +32,9 @@ import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 public class ShopComApiClientParticularProduct {
 	public static float fakeWeight=1000000;
 
+	public static String ingredientsRegex="<p[^<]*<strong>Ingredients:<\\/strong>.*?<\\/p>";
+	public static String ingredientsTag="<strong>Ingredients:</strong>";
+
 	private static String getResponseById(String id) {
 		ClientConfig cc = new DefaultClientConfig();
 		cc.getProperties().put(ClientConfig.PROPERTY_FOLLOW_REDIRECTS, true);
@@ -39,9 +45,9 @@ public class ShopComApiClientParticularProduct {
 		MultivaluedMap<String, String> queryParams = new MultivaluedMapImpl();
 		queryParams.add("allperms","false");
 		queryParams.add("apikey", "l7xxeb4363ce0bcc441eb94134734dec9aed");
-		
-//		sleep(2000);
-		
+
+		//		sleep(2000);
+
 		try{
 			String response1 = resource.queryParams(queryParams).accept("application/json").get(String.class);
 			return response1;
@@ -57,7 +63,7 @@ public class ShopComApiClientParticularProduct {
 				System.err.println("Double: "+ex);
 				ProblemLogger.logProblem("Double: "+ex);
 				ex.printStackTrace();
-			
+
 			}
 		}
 		return "";
@@ -85,40 +91,40 @@ public class ShopComApiClientParticularProduct {
 
 	public static Produkt getProduktByShopId(Integer id){
 		return getProduktByShopId(Integer.toString(id));
-//		JSONObject root=new JSONObject(response);
-//		String description=(String) root.get("description");
-//		String name=(String) root.get("caption");
-//		Object proceObj = root.get("price");
-//		float price=Float.parseFloat(proceObj==null?"0":proceObj.toString());
-//		
-//		
-//		
-//		
-//		double weight=(double) root.get("weight");
-//		
-//		PreciseQuantity pq=new PreciseQuantity(fakeWeight,AmountTypes.mg);
-//		Produkt resultProdukt =new Produkt();
-//		resultProdukt.setNazwa(name);
-//		resultProdukt.setOpis(description);
-//		resultProdukt.setUrl("https://api.shop.com/stores/v1/products/"+id);
-//		resultProdukt.setCena((float)price);
-//		resultProdukt.setQuantityPhrase(pq.toJspString());
-//
-//		return resultProdukt;
+		//		JSONObject root=new JSONObject(response);
+		//		String description=(String) root.get("description");
+		//		String name=(String) root.get("caption");
+		//		Object proceObj = root.get("price");
+		//		float price=Float.parseFloat(proceObj==null?"0":proceObj.toString());
+		//		
+		//		
+		//		
+		//		
+		//		double weight=(double) root.get("weight");
+		//		
+		//		PreciseQuantity pq=new PreciseQuantity(fakeWeight,AmountTypes.mg);
+		//		Produkt resultProdukt =new Produkt();
+		//		resultProdukt.setNazwa(name);
+		//		resultProdukt.setOpis(description);
+		//		resultProdukt.setUrl("https://api.shop.com/stores/v1/products/"+id);
+		//		resultProdukt.setCena((float)price);
+		//		resultProdukt.setQuantityPhrase(pq.toJspString());
+		//
+		//		return resultProdukt;
 	}
 	public static Produkt getProduktByShopId(String id){
 		String response=getResponseById(id);
-		
+
 		if(response==null||response.equals(""))
 			return null;
-		
+
 		JSONObject root=new JSONObject(response);
 		String description=(String) root.get("description");
 		String name=(String) root.get("caption");
 		Object proceObj = root.get("price");
 		float price=Float.parseFloat(proceObj==null?"0":proceObj.toString());
-		
-		
+
+
 		double weight=-1;
 		if(root.has("weight")) {
 			weight=(double) root.get("weight");
@@ -133,7 +139,7 @@ public class ShopComApiClientParticularProduct {
 		String metadata=calculateMetadata(root);
 
 		resultProdukt.setMetadata(metadata);
-		
+
 		return resultProdukt;
 	}
 
@@ -143,16 +149,41 @@ public class ShopComApiClientParticularProduct {
 			return new JSONObject().toString();
 		else
 		{
-			JSONObject catInfo = root.getJSONObject("categoryInfo");
-			String category1 =catInfo.has("department")?catInfo.getString("department"):"";
-			String category2 = catInfo.has("category")?catInfo.getString("category"):"";
-			String category3= catInfo.has("productType")?catInfo.getString("productType"):"";
 			JSONObject result=new JSONObject();
-			String value = category1+MetadataConstants.stringListSeparator+category2+MetadataConstants.stringListSeparator+category3;
-			result.put(MetadataConstants.categoryNameJsonName, value);
+//
+//			String ingredientsString = extractIngredientsString(root);
+//
+//			if(ingredientsString!=null&&!ingredientsString.isEmpty())
+//				result.put(MetadataConstants.ingredientsJsonName, ingredientsString);
+
+			addCategoryData(root, result);
 			return result.toString();
 		}
-		
+
+	}
+
+	private static String extractIngredientsString(JSONObject root) {
+		String description=(String) root.get("description");
+
+		Pattern p = Pattern.compile(ingredientsRegex);
+		Matcher m = p.matcher(description);
+		String groupFound = m.group();
+		if(groupFound!=null&&!groupFound.isEmpty()) {
+			String a=groupFound.replace(ingredientsTag, "");
+			
+			String results = Jsoup.parse(groupFound).text();
+			return results;
+		}
+		return "";
+	}
+
+	private static void addCategoryData(JSONObject root, JSONObject result) {
+		JSONObject catInfo = root.getJSONObject("categoryInfo");
+		String category1 =catInfo.has("department")?catInfo.getString("department"):"";
+		String category2 = catInfo.has("category")?catInfo.getString("category"):"";
+		String category3= catInfo.has("productType")?catInfo.getString("productType"):"";
+		String value = category1+MetadataConstants.stringListSeparator+category2+MetadataConstants.stringListSeparator+category3;
+		result.put(MetadataConstants.categoryNameJsonName, value);
 	}
 
 	public static Produkt getProduktByUrl(String url){
@@ -162,7 +193,7 @@ public class ShopComApiClientParticularProduct {
 		String name=(String) root.get("caption");
 		double price=(double) root.get("price");
 		double weight=(double) root.get("weight");
-		
+
 		PreciseQuantity pq=new PreciseQuantity((float)(weight*1000),AmountTypes.mg);
 		Produkt resultProdukt =new Produkt();
 		resultProdukt.setNazwa(name);

@@ -16,12 +16,13 @@ import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 
 public class Condition {
-//	ArrayList<String> nameInclusions;
-//	ArrayList<String> nameExclusions;
+	//	ArrayList<String> nameInclusions;
+	//	ArrayList<String> nameExclusions;
 
 
 	//	ArrayList<String> categoryNameInclusions;
 	ArrayList<String> attributesPresent;
+
 	Map<String,String> attributeValues;
 	Map<String,String> attributeNotContainsValues;
 
@@ -36,37 +37,37 @@ public class Condition {
 			attributeValues=new HashMap<String, String>();
 
 		String existingValue = attributeValues.get(attribute);
-		
+
 		if(existingValue==null||existingValue.isEmpty())
 			existingValue=inclusion;
 		else
 			existingValue+=MetadataConstants.stringListSeparator+inclusion;
 		this.attributeValues.put(attribute, inclusion);
 	}
-	
+
 	public void replaceAttributeValues(String attribute, String inclusion) {
 		if(attributeValues==null)
 			attributeValues=new HashMap<String, String>();
 
 		this.attributeValues.put(attribute, inclusion);
 	}
-	
+
 	public void addAttributeNotContainsValue(String attribute, String exclusion) {
 		if(attributeNotContainsValues==null)
 			attributeNotContainsValues=new HashMap<String, String>();
 
 		this.attributeNotContainsValues.put(attribute, exclusion);
 	}
-	
+
 	public void replaceAttributeNotContainsValue(String attribute, String exclusion) {
 		if(attributeNotContainsValues==null)
 			attributeNotContainsValues=new HashMap<String, String>();
 
 		this.attributeNotContainsValues.put(attribute, exclusion);
 	}
-	
-	
-	
+
+
+
 	public List<String> getNameExclusions() {
 		String nameExclusions = attributeNotContainsValues.get(MetadataConstants.conditionProduktNameMapKey);
 		if(nameExclusions==null)
@@ -100,15 +101,15 @@ public class Condition {
 	//	}
 	public void addServingPhraseInclusion(String inclusion) {
 
-			String servingNameInclusions = attributeValues.get(MetadataConstants.servingPhraseNameJsonName);
-			if(servingNameInclusions==null)
-				attributeValues.put(MetadataConstants.servingPhraseNameJsonName, inclusion);
-			else
-				attributeValues.put(MetadataConstants.servingPhraseNameJsonName, servingNameInclusions+MetadataConstants.stringListSeparator+inclusion);
+		String servingNameInclusions = attributeValues.get(MetadataConstants.servingPhraseNameJsonName);
+		if(servingNameInclusions==null)
+			attributeValues.put(MetadataConstants.servingPhraseNameJsonName, inclusion);
+		else
+			attributeValues.put(MetadataConstants.servingPhraseNameJsonName, servingNameInclusions+MetadataConstants.stringListSeparator+inclusion);
 
 
-		}
-	
+	}
+
 	public List<String> getServingPhraseInclusions() {
 		String incs = this.getAttributeValues().get(MetadataConstants.servingPhraseNameJsonName);
 		if(incs==null)
@@ -117,19 +118,35 @@ public class Condition {
 			return Arrays.asList(incs.split(MetadataConstants.stringListSeparator));
 
 	}
-		
+
+	public List<String> getIngredientsInclusions() {
+		String incs = this.getAttributeValues().get(MetadataConstants.ingredientsConditionElementName);
+		if(incs==null)
+			return new ArrayList<String>();
+		else
+			return Arrays.asList(incs.split(MetadataConstants.stringListSeparator));
+
+	}
+	public List<String> getIngredientsExclusions() {
+		String incs = this.getAttributeNotContainsValues().get(MetadataConstants.ingredientsConditionElementName);
+		if(incs==null)
+			return new ArrayList<String>();
+		else
+			return Arrays.asList(incs.split(MetadataConstants.stringListSeparator));
+
+	}
 	public void addCategoryNameInclusions(String inclusion) {
-			String categoryNameInclusions = attributeValues.get(MetadataConstants.categoryNameJsonName);
-			if(categoryNameInclusions==null)
-				attributeValues.put(MetadataConstants.categoryNameJsonName, inclusion);
-			else
-				attributeValues.put(MetadataConstants.categoryNameJsonName, categoryNameInclusions+MetadataConstants.stringListSeparator+inclusion);
+		String categoryNameInclusions = attributeValues.get(MetadataConstants.categoryNameJsonName);
+		if(categoryNameInclusions==null)
+			attributeValues.put(MetadataConstants.categoryNameJsonName, inclusion);
+		else
+			attributeValues.put(MetadataConstants.categoryNameJsonName, categoryNameInclusions+MetadataConstants.stringListSeparator+inclusion);
 
 
-		}
-		
+	}
 
-		
+
+
 	public List<String> getNameInclusions() {
 		String nameInclusions = attributeValues.get(MetadataConstants.conditionProduktNameMapKey);
 		if(nameInclusions==null)
@@ -151,11 +168,15 @@ public class Condition {
 		boolean categoryIsOk=checkCategory(p);
 		boolean areAttributesOk=checkMetadataAttributesPresence(p);
 		boolean isServingPhraseOk=checkServingPhraseInclusions(p);
+		boolean areIngredientInclusionsOk=checkIngredientsInclusions(p);
+		boolean areIngredientExclusionsOk=checkIngredientsExclusons(p);
+
 		
-		boolean retValue = nameHasInclusions&&categoryIsOk&&areAttributesOk&&nameHasNoExclusions&&isServingPhraseOk;
+		boolean retValue = nameHasInclusions&&categoryIsOk&&areAttributesOk&&nameHasNoExclusions&&isServingPhraseOk
+				&&areIngredientInclusionsOk&&areIngredientExclusionsOk;
 		if(retValue) {
 			System.out.println("For produkt:"+p.getUrl()+" called "+p.getNazwa()
-					+"\n condition object passed:"+this.toJsonRepresentation());
+			+"\n condition object passed:"+this.toJsonRepresentation());
 		}
 		return retValue;
 	}
@@ -168,8 +189,7 @@ public class Condition {
 				String metadane=p.getMetadata();
 				String serving =null;
 				try {
-				JSONObject json=metadane==null||metadane.isEmpty()?new JSONObject():new JSONObject(metadane);
-				serving = json.has(MetadataConstants.servingPhraseNameJsonName)?json.getString(MetadataConstants.servingPhraseNameJsonName):null;
+					serving = retrieveMetadataProperty(metadane,MetadataConstants.servingPhraseNameJsonName);
 				}catch(JSONException e) {
 					phraseIsOk=false;
 				}
@@ -180,13 +200,59 @@ public class Condition {
 		}
 		return phraseIsOk;
 	}
+	private String retrieveMetadataProperty(String metadane,String propertyName) {
+		try {
+			String propertyValue;
+			JSONObject json=metadane==null||metadane.isEmpty()?new JSONObject():new JSONObject(metadane);
+
+			propertyValue = json.has(propertyName)?json.getString(propertyName):null;
+			return propertyValue;
+		}catch(JSONException e) {
+			return "";
+		}
+	}
+
+
+	private boolean checkIngredientsInclusions(Produkt p) {
+		boolean ingredientsAreOk=true;
+		List<String> ingredientsInclusions = getIngredientsInclusions();
+		if(ingredientsInclusions!=null&&!ingredientsInclusions.isEmpty()) {
+			for(int i=0;ingredientsAreOk&&i<ingredientsInclusions.size();i++) {
+				String metadane=p.getMetadata();
+				String ingredientsList =null;
+
+				//		JSONObject json=metadane==null||metadane.isEmpty()?new JSONObject():new JSONObject(metadane);
+				ingredientsList = retrieveMetadataProperty(metadane,MetadataConstants.ingredientsJsonName);
+
+				if(ingredientsList==null||!ingredientsList.toLowerCase().contains(ingredientsInclusions.get(i).toLowerCase())) {
+					ingredientsAreOk=false;
+				}
+			}
+		}
+		return ingredientsAreOk;
+	}
+
+	private boolean checkIngredientsExclusons(Produkt p) {
+		List<String> ingredientExclusions = getIngredientsExclusions();
+
+		if(ingredientExclusions!=null&&!ingredientExclusions.isEmpty()) {
+			for(int i=0;i<ingredientExclusions.size();i++) {
+
+				String ingredientList =retrieveMetadataProperty(p.getMetadata(),MetadataConstants.ingredientsJsonName) ;
+				if(ingredientList!=null&&ingredientList.toLowerCase().contains(ingredientExclusions.get(i).toLowerCase())) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
 
 	private boolean checkNameInclusions(Produkt p) {
 		boolean nameIsOk=true;
-		
+
 		String productName = calculateNameOfAProduct(p);
 
-		
+
 
 		List<String> nameInclusions = getNameInclusions();
 		if(nameInclusions!=null&&!nameInclusions.isEmpty()) {
@@ -205,13 +271,13 @@ public class Condition {
 
 		try {
 			JSONObject json=metadane==null?new JSONObject():new JSONObject(metadane);
-			
+
 			if(json.has(MetadataConstants.productNameMetaPropertyName)) {
 				productName= json.getString(MetadataConstants.productNameMetaPropertyName);
 			}else {
 				productName = p.getNazwa();
 			}
-			
+
 		}catch(JSONException e) {
 			ProblemLogger.logProblem("bad metadata for product id="+p.getP_id()+"("+p.getUrl()+")");
 			productName = p.getNazwa();
@@ -226,7 +292,7 @@ public class Condition {
 		if(nameExclusions!=null&&!nameExclusions.isEmpty()) {
 			for(int i=0;i<nameExclusions.size();i++) {
 
-				String productName = p.getNazwa();
+				String productName = calculateNameOfAProduct(p);
 				if(productName!=null&&productName.toLowerCase().contains(nameExclusions.get(i).toLowerCase())) {
 					return false;
 				}
@@ -291,8 +357,8 @@ public class Condition {
 
 	}
 
-	
-	
+
+
 	public static Condition createNameInclusionsCondition(String...strings) {
 		Condition retValue=new Condition();
 		for(String a:strings) {
@@ -302,7 +368,7 @@ public class Condition {
 		return retValue;
 
 	}
-	
+
 	public static Condition createServingPhraseInclusionsCondition(String...strings) {
 		Condition retValue=new Condition();
 		for(String a:strings) {
@@ -332,61 +398,61 @@ public class Condition {
 
 		return retValue;
 	}
-	
+
 	public String toString() {
 		String retValue=toJsonRepresentation().toString();
-		
+
 		return retValue;
 	}
-	
+
 	public JSONObject toJsonRepresentation(){
 		JSONObject retValue=new JSONObject();
 		JSONArray attrPresentConditionsJsonArray=new JSONArray();
 		for(String c:getAttributesPresent()) {
 			attrPresentConditionsJsonArray.put(c);
 		}
-		
+
 		retValue.put("attributesPresentConditions", attrPresentConditionsJsonArray);
-		
+
 		JSONArray attributeValuesArray=new JSONArray();
 		for(Entry<String, String> c:getAttributeValues().entrySet()) {
 			attributeValuesArray.put(c.getKey()+"='"+c.getValue()+"'");
 		}
-		
+
 		retValue.put("attributeValuesConditions", attributeValuesArray);
-		
+
 		JSONArray attributeNotContainsValuesArray=new JSONArray();
 		for(Entry<String, String> c:getAttributeNotContainsValues().entrySet()) {
 			attributeNotContainsValuesArray.put(c.getKey()+"='"+c.getValue()+"'");
 		}
-		
+
 		retValue.put("attributeValuesNotContains", attributeNotContainsValuesArray);
 
-//		JSONArray nameKeywordsConditionsJsonArray=new JSONArray();
-//
-//		for(String c:getNameInclusions()) {
-//			nameKeywordsConditionsJsonArray.put(c);
-//		}
-//		
-//		retValue.put("nameInclusionsConditions", nameKeywordsConditionsJsonArray);
-//		
-//		JSONArray nameNotContainsConditionsJsonArray=new JSONArray();
-//
-//		for(String c:getNameExclusions()) {
-//			nameNotContainsConditionsJsonArray.put(c);
-//		}
-//		
-//		retValue.put("nameExclusionsConditions", nameNotContainsConditionsJsonArray);
-//		
-//		
+		//		JSONArray nameKeywordsConditionsJsonArray=new JSONArray();
+		//
+		//		for(String c:getNameInclusions()) {
+		//			nameKeywordsConditionsJsonArray.put(c);
+		//		}
+		//		
+		//		retValue.put("nameInclusionsConditions", nameKeywordsConditionsJsonArray);
+		//		
+		//		JSONArray nameNotContainsConditionsJsonArray=new JSONArray();
+		//
+		//		for(String c:getNameExclusions()) {
+		//			nameNotContainsConditionsJsonArray.put(c);
+		//		}
+		//		
+		//		retValue.put("nameExclusionsConditions", nameNotContainsConditionsJsonArray);
+		//		
+		//		
 		return retValue;
-		
+
 	}
 	public Condition() {
 		super();
 		this.attributesPresent=new ArrayList<String>();
 		this.attributeValues=new HashMap<String, String>();
 		this.attributeNotContainsValues=new HashMap<String, String>();
-		
+
 	}
 }

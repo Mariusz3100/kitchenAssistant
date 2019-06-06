@@ -128,7 +128,17 @@ public class CategoryHierarchy {
 			if(conditionNode.getNodeType()==Node.TEXT_NODE||conditionNode.getNodeType()==Node.COMMENT_NODE) {
 				//no handling for text node now
 			}else {
-				if(MetadataConstants.departmentNameConditionElementName.equals(conditionNode.getNodeName())) {
+				if(MetadataConstants.ingredientsConditionElementName.equals(conditionNode.getNodeName())) {
+					NamedNodeMap attributesMap = conditionNode.getAttributes();
+					Node contains=attributesMap.getNamedItem(MetadataConstants.containsAttribute);
+					Node notContains=attributesMap.getNamedItem(MetadataConstants.notContainsAttribute);
+					if(contains!=null) {
+						addNewSearchPhraseToMap(retValue, MetadataConstants.ingredientsJsonName,contains);
+					}
+					if(notContains!=null) {
+						addNewExclusionPhraseToMap(retValue, MetadataConstants.ingredientsJsonName,notContains);
+					}
+				}else if(MetadataConstants.departmentNameConditionElementName.equals(conditionNode.getNodeName())) {
 					NamedNodeMap attributesMap = conditionNode.getAttributes();
 					Node contains=attributesMap.getNamedItem(MetadataConstants.containsAttribute);
 					Node notContains=attributesMap.getNamedItem(MetadataConstants.notContainsAttribute);
@@ -149,11 +159,7 @@ public class CategoryHierarchy {
 					if(notContains!=null) {
 						addNewExclusionPhraseToMap(retValue, MetadataConstants.conditionProduktNameMapKey,notContains);
 					}
-					//				}else if(MetadataConstants.notContainsAttribute.equals(conditionNode.getNodeName())) {
-					//					NamedNodeMap attributesMap = conditionNode.getAttributes();
-					//					Node contains=attributesMap.getNamedItem(MetadataConstants.notContainsAttribute);
-					//					addNewSearchPhraseToMap(retValue, MetadataConstants.notContainsAttribute,contains);
-					//
+
 				}else if(MetadataConstants.propertyPresentConditionElementName.equals(conditionNode.getNodeName())) {
 					NamedNodeMap attributesMap = conditionNode.getAttributes();
 					Node contains=attributesMap.getNamedItem(MetadataConstants.containsAttribute);
@@ -202,7 +208,7 @@ public class CategoryHierarchy {
 			ProblemLogger.logProblem("Wow, either condition or addon is null, how??");
 			return;
 		}
-		existingCategoryConditions = condition.getAttributeValues().get(keyInMap);
+		existingCategoryConditions = condition.getAttributeNotContainsValues().get(keyInMap);
 		if(existingCategoryConditions==null||existingCategoryConditions.isEmpty())
 			existingCategoryConditions=containsAttribute.getTextContent();
 		else

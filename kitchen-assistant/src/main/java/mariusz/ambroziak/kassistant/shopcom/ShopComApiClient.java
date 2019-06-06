@@ -2,6 +2,9 @@ package mariusz.ambroziak.kassistant.shopcom;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 import javax.ws.rs.core.MultivaluedMap;
 
@@ -24,8 +27,10 @@ import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 
 public class ShopComApiClient {
 
-
 	private static String getResponse(String phrase) {
+		return getResponse(phrase,20,0);
+	}
+	private static String getResponse(String phrase,int amount,int offset) {
 		ClientConfig cc = new DefaultClientConfig();
 		cc.getProperties().put(ClientConfig.PROPERTY_FOLLOW_REDIRECTS, true);
 
@@ -37,7 +42,10 @@ public class ShopComApiClient {
 		queryParams.add("publisherID", "TEST");
 		queryParams.add("locale","en_US");
 		queryParams.add("categoryId","1-32806");
-		queryParams.add("perPage","50");
+		queryParams.add("perPage",Integer.toString(amount));
+		queryParams.add("start",Integer.toString(offset));
+		
+		
 		queryParams.add("apikey", "l7xxeb4363ce0bcc441eb94134734dec9aed");
 		
 		String response1 ="";
@@ -65,28 +73,39 @@ public class ShopComApiClient {
 		return response1;
 	}
 
+	public static ArrayList<Produkt> getDistinctProduktsFor(String phrase,int targetAmout){
+		Map<String,Produkt> retValue=new TreeMap<String,Produkt>();
+		Map<String,Produkt> allProducts=new TreeMap<String,Produkt>();
 
+		int offset=0;
+		while(retValue.size()<=targetAmout) {
+			ArrayList<Produkt> produktsFor = getProduktsFor(phrase,50,offset);
+			for(Produkt p:produktsFor) {
+				allProducts.put(p.getUrl(), p);
+				if(!retValue.containsKey(p.getUrl())&&p.getNazwa().toLowerCase().indexOf(phrase.toLowerCase())>=0) {
+					retValue.put(p.getUrl(), p);
+				}
+			}
+			offset+=20;
+		}
+		ArrayList<Produkt> ret=new ArrayList<Produkt>();
+		ret.addAll(retValue.values());
+		return ret;
+		
+	}
 	public static ArrayList<Produkt> getProduktsFor(String phrase){
+		return getProduktsFor(phrase, 50, 0);
+	}
+	public static ArrayList<Produkt> getProduktsFor(String phrase,int amount,int offset){
 		ArrayList<Produkt> retValue=new ArrayList<Produkt>();
 		
-		String response=getResponse(phrase);
+		String response=getResponse(phrase,amount,offset);
 //		sleep(1000); //just to not exceed limit
 		JSONObject root=new JSONObject(response);
 		JSONArray produkts=((JSONArray)root.get("products"));
 		
 		for(int i=0;i<produkts.length();i++){
 			JSONObject ApiProdukt=(JSONObject) produkts.get(i);
-//			String description=(String) ApiProdukt.get("description");
-//			String name=(String) ApiProdukt.get("name");
-//			String url=(String) ApiProdukt.get("referralUrl");
-//			float price=getPrice(ApiProdukt,url);
-//			
-//			Produkt resultProdukt =new Produkt();
-//			resultProdukt.setNazwa(name);
-//			resultProdukt.setOpis(description);
-//			resultProdukt.setUrl(url);
-//			resultProdukt.setCena(price);
-//			retValue.add(resultProdukt);
 			retValue.add(ShopComApiClientParticularProduct.getProduktByShopId((Integer)ApiProdukt.get("id")));
 		}
 		

@@ -1,6 +1,7 @@
 package mariusz.ambroziak.kassistant.tesco;
 
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 import javax.ws.rs.core.MultivaluedMap;
@@ -181,57 +182,93 @@ public class TescoApiClientParticularProduct_notUsed {
 			JSONArray jsonProducts=jsonRoot.getJSONArray("products");
 			if(jsonProducts.length()>0) {
 				JSONObject jsonProduct = jsonProducts.getJSONObject(0);
-				if(jsonProduct.has("qtyContents")) {
-					JSONObject jsonQtyContents = jsonProduct.getJSONObject("qtyContents");
-					if(jsonQtyContents.has(MetadataConstants.drainedWeightMetaPropertyName)) {
-						metadataJson.put(MetadataConstants.drainedWeightMetaPropertyName,jsonQtyContents.get(MetadataConstants.drainedWeightMetaPropertyName));
-						p.setMetadata(metadataJson.toString());
-					}
-				}
-				
-				String servingString="";
-				try {
-				if(jsonProduct.has("gda")) {
-					JSONObject gdaJson = jsonProduct.getJSONObject("gda");
-					if(gdaJson.has("gdaRefs")) {
-						JSONArray gdaRefsJson = gdaJson.getJSONArray("gdaRefs");
-						if(gdaRefsJson.length()>0&&gdaRefsJson.getJSONObject(0).has("headers")) {
-							JSONArray headersJson = gdaRefsJson.getJSONObject(0).getJSONArray("headers");
-							for(int i=0;i<headersJson.length();i++) {
-								String line=headersJson.getString(i);
-								servingString+=line;
-							}
-						}
-					}
-				}
-				
-				if(servingString.isEmpty()) {
-					if(jsonProduct.has("calcNutrition")) {
-						JSONObject calcNutritionJson = jsonProduct.getJSONObject("calcNutrition");
-						if(calcNutritionJson.has("perServingHeader")) {
-							String perServingHeaderJson = calcNutritionJson.getString("perServingHeader");
-							servingString=perServingHeaderJson;
-							
-						}
-						
-					}
-				}
 
-			
+
+				addDifferentNamesToMetadata(p, metadataJson, jsonProduct);
+				addDrainedWeightIfPresent(metadataJson, jsonProduct);
+				addIngredientsIfPresent(metadataJson, jsonProduct);
+				addServingPhraseIfPresent( metadataJson, jsonProduct);
 				
-				if(servingString!=null&&!servingString.isEmpty()) {
-					metadataJson.put(SERVING_PHRASE,servingString);
-					p.setMetadata(metadataJson.toString());
-
-				}
-				}catch(JSONException e) {
-					ProblemLogger.logProblem("Json metadata parsing error");
-					ProblemLogger.logStackTrace(e.getStackTrace());
-				}
-
+				
+				p.setMetadata(metadataJson.toString());
 			}
 		}
 		return p;
+	}
+	
+	
+	private static void addIngredientsIfPresent(JSONObject metadataJson, JSONObject jsonProduct) {
+		if(jsonProduct.has("ingredients")) {
+			JSONArray ingredients = jsonProduct.getJSONArray("ingredients");
+			String result="";
+			for(int i=0;i<ingredients.length();i++) {
+				result+=ingredients.get(i)+MetadataConstants.stringListSeparator;
+			}
+			metadataJson.put(MetadataConstants.ingredientsJsonName,result);
+			
+		}
+	}
+	
+	
+	private static void addDrainedWeightIfPresent(JSONObject metadataJson, JSONObject jsonProduct) {
+		if(jsonProduct.has("qtyContents")) {
+			JSONObject jsonQtyContents = jsonProduct.getJSONObject("qtyContents");
+			if(jsonQtyContents.has(MetadataConstants.drainedWeightMetaPropertyName)) {
+				metadataJson.put(MetadataConstants.drainedWeightMetaPropertyName,jsonQtyContents.get(MetadataConstants.drainedWeightMetaPropertyName));
+			}
+		}
+	}
+	private static void addServingPhraseIfPresent(JSONObject metadataJson, JSONObject jsonProduct) {
+		try {
+			String servingString="";
+
+			if(jsonProduct.has("gda")) {
+				JSONObject gdaJson = jsonProduct.getJSONObject("gda");
+				if(gdaJson.has("gdaRefs")) {
+					JSONArray gdaRefsJson = gdaJson.getJSONArray("gdaRefs");
+					if(gdaRefsJson.length()>0&&gdaRefsJson.getJSONObject(0).has("headers")) {
+						JSONArray headersJson = gdaRefsJson.getJSONObject(0).getJSONArray("headers");
+						for(int i=0;i<headersJson.length();i++) {
+							String line=headersJson.getString(i);
+							servingString+=line;
+						}
+					}
+				}
+			}
+
+			if(servingString.isEmpty()) {
+				if(jsonProduct.has("calcNutrition")) {
+					JSONObject calcNutritionJson = jsonProduct.getJSONObject("calcNutrition");
+					if(calcNutritionJson.has("perServingHeader")) {
+						String perServingHeaderJson = calcNutritionJson.getString("perServingHeader");
+						servingString=perServingHeaderJson;
+
+					}
+
+				}
+			}
+
+
+
+			if(servingString!=null&&!servingString.isEmpty()) {
+				metadataJson.put(SERVING_PHRASE,servingString);
+
+			}
+		}catch(JSONException e) {
+			ProblemLogger.logProblem("Json metadata parsing error");
+			ProblemLogger.logStackTrace(e.getStackTrace());
+		}
+	}
+	private static void addDifferentNamesToMetadata(Produkt p, JSONObject metadataJson, JSONObject jsonProduct) {
+		if(jsonProduct.has("description")) {
+			String name=jsonProduct.getString("description");
+			if(!name.equals(p.getNazwa())) {
+				String compoundName=name+MetadataConstants.stringListSeparator+p.getNazwa();
+				metadataJson.put(MetadataConstants.productNameMetaPropertyName,compoundName);
+
+			}
+
+		}
 	}
 
 	private static Produkt createParticularProduct(JSONObject singleProductJson) {
@@ -243,20 +280,25 @@ public class TescoApiClientParticularProduct_notUsed {
 		JSONObject  metadataJson=new JSONObject();
 		String quantityString = "";
 
-		if(singleProductJson.has("qtyContents")) {
-			JSONObject qtyContents = singleProductJson.getJSONObject("qtyContents");
-			if(qtyContents.has(MetadataConstants.drainedWeightMetaPropertyName)) {
-				metadataJson.put(MetadataConstants.drainedWeightMetaPropertyName,qtyContents.get(MetadataConstants.drainedWeightMetaPropertyName));
-			}
-			quantityString=calculateQuantityJspString(qtyContents, detailsUrl);
-		}else {
-			ProblemLogger.logProblem("Product with unknown quantity:"+detailsUrl);
-			PreciseQuantity pq=new PreciseQuantity(1, AmountTypes.szt);
-			quantityString=pq.toJspString();
-		}
+//		if(singleProductJson.has("qtyContents")) {
+//			JSONObject qtyContents = singleProductJson.getJSONObject("qtyContents");
+//			if(qtyContents.has(MetadataConstants.drainedWeightMetaPropertyName)) {
+//				metadataJson.put(MetadataConstants.drainedWeightMetaPropertyName,qtyContents.get(MetadataConstants.drainedWeightMetaPropertyName));
+//			}
+//			quantityString=calculateQuantityJspString(qtyContents, detailsUrl);
+//		}else {
+//			ProblemLogger.logProblem("Product with unknown quantity:"+detailsUrl);
+//			PreciseQuantity pq=new PreciseQuantity(1, AmountTypes.szt);
+//			quantityString=pq.toJspString();
+//		}
+		Produkt p=new Produkt(detailsUrl,quantityString,name,"",description,price,false);
 
-		Produkt result=new Produkt(detailsUrl,quantityString,name,"",description,price,false);
-		return result;
+		addDifferentNamesToMetadata(p, metadataJson, singleProductJson);
+		addDrainedWeightIfPresent(metadataJson, singleProductJson);
+		addIngredientsIfPresent(metadataJson, singleProductJson);
+		addServingPhraseIfPresent(metadataJson, singleProductJson);
+		p.setMetadata(metadataJson.toString());
+		return p;
 	}
 
 
@@ -294,24 +336,29 @@ public class TescoApiClientParticularProduct_notUsed {
 	}
 	public static Produkt getProduktByUrlWithExtensiveMetadata(String url) {
 		Produkt produktByUrl = getProduktByUrl(url);
-		ArrayList<Produkt> produktsFor = TescoApiClient.getProduktsFor(produktByUrl.getNazwa());
-	
+		String encodedName = URLEncoder.encode(produktByUrl.getNazwa());
+		ArrayList<Produkt> produktsFor = TescoApiClient.getProduktsFor(encodedName);
+
 		for(Produkt p:produktsFor) {
-			if(p.getNazwa().equals(produktByUrl.getNazwa())) {
+			if(p.getUrl().equals(produktByUrl.getUrl())) {
 				String produktByUrlMeta=produktByUrl.getMetadata();
 				String pMeta=p.getMetadata();
 				JSONObject aJson=produktByUrlMeta==null||produktByUrlMeta.isEmpty()?new JSONObject():new JSONObject(produktByUrlMeta);
 				JSONObject bJson=pMeta==null||pMeta.isEmpty()?new JSONObject():new JSONObject(pMeta);
 				JSONArray names=bJson.names();
-				
+
 				for(int i=0;i<names.length();i++) {
 					aJson.put(names.getString(i),bJson.get(names.getString(i)));
 				}
-				
+				if(!produktByUrl.getNazwa().equals(p.getNazwa())) {
+					String compoundName=produktByUrl.getNazwa()+MetadataConstants.stringListSeparator+p.getNazwa();
+					aJson.put(MetadataConstants.productNameMetaPropertyName,compoundName);
+
+				}
 				produktByUrl.setMetadata(aJson.toString());
 			}
 		}
-		
+
 		return produktByUrl;
 	}
 

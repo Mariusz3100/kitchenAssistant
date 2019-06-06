@@ -49,9 +49,9 @@ public class Categoriser {
 
 	}
 
-	public static Map<Produkt, Category> testCategoryProduct(String url) {
+	public static Map<Produkt, Category> testTescoCategoryProduct(String url) {
 		Produkt produktByShopId = TescoApiClientParticularProduct_notUsed.getProduktByUrlWithExtensiveMetadata(url);
-		produktByShopId = TescoApiClientParticularProduct_notUsed.updateParticularProduct(produktByShopId);
+//		produktByShopId = TescoApiClientParticularProduct_notUsed.updateParticularProduct(produktByShopId);
 
 		Map<Produkt, Category> retValue=new HashMap<Produkt, Category>();
 		Category assignedCategory = assignCategory(produktByShopId);
@@ -118,10 +118,16 @@ public class Categoriser {
 	}
 
 	public static Map<Produkt, Category> testCategoriesInShopComFor(String phrase) {
-		ArrayList<Produkt> produkts = createShopComProductDetailsList(phrase);
+		ArrayList<Produkt> produkts = createShopComProductDetailsList(phrase,55);
 
 //		produkts.sort(new ProduktNameComparator());
-		Map<Produkt, Category> categories = assignCategories(produkts);
+		ArrayList<Produkt> goodOnes=new ArrayList<Produkt>();
+		for(Produkt p:produkts) {
+			if(p.getNazwa().toLowerCase().contains(phrase.toLowerCase())) {
+				goodOnes.add(p);
+			}
+		}
+		Map<Produkt, Category> categories = assignCategories(goodOnes);
 
 		return categories;
 
@@ -152,7 +158,16 @@ public class Categoriser {
 		return produkts;
 	}
 
+	private static ArrayList<Produkt> createShopComProductDetailsList(String phrase, int productsToGet) {
+		ArrayList<Produkt> produkts = ShopComApiClient.getDistinctProduktsFor(phrase,productsToGet);
 
+//		for(int i=0;i<produkts.size();i++) {
+//			Produkt p=produkts.get(i);
+//			p=ShopComApiClientParticularProduct.getProduktByUrl(url)
+//		}
+
+		return produkts;
+	}
 
 
 	private static Map<Produkt, Category> assignCategories(ArrayList<Produkt> produkts) {

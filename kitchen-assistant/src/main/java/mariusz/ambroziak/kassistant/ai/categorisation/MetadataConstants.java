@@ -4,6 +4,8 @@ public class MetadataConstants {
 //	public static final String categoryJsonName1="categoryName1";
 //	public static final String categoryJsonName2="categoryName2";
 	public static final String categoryNameJsonName="categoryName";
+	public static final String ingredientsJsonName="ingredients";
+
 //	public static final String produktNameJsonPrefix="name";
 	public static final String servingPhraseNameJsonName="servingPhrase";
 
@@ -22,6 +24,7 @@ public class MetadataConstants {
 	public static final String nameConditionElementName="name";
 	public static final String departmentNameConditionElementName="departmentName";
 	public static final String propertyPresentConditionElementName="attributes";
+	public static final String ingredientsConditionElementName="ingredients";
 
 	
 	public static final String servingPhraseConditionElementName="serving";
