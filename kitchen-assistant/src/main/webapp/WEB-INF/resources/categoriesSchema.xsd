@@ -46,9 +46,10 @@
 					type="kaxsd:attributesQuery" minOccurs="0" />
 				<xs:element name="serving"
 					type="kaxsd:servingPhraseQuery" minOccurs="0" />
-					
-					
-					
+				<xs:element name="ingredients"
+					type="kaxsd:IngredientsIncludeQuery" minOccurs="0" />
+
+
 			</xs:choice>
 		</xs:sequence>
 
@@ -65,7 +66,10 @@
 			use="optional" />
 		<xs:attribute name="notContains" type="xs:string"
 			use="optional" />
-
+		<xs:attribute name="regex" type="xs:string"
+			use="optional" />
+		<xs:attribute name="notRegex" type="xs:string"
+			use="optional" />
 	</xs:complexType>
 
 	<xs:complexType name="nameQuery">
@@ -88,7 +92,12 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	
+	<xs:complexType name="IngredientsIncludeQuery">
+		<xs:complexContent>
+			<xs:extension base="kaxsd:query">
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 	<xs:complexType name="attributesQuery">
 		<xs:complexContent>
 			<xs:extension base="kaxsd:query">

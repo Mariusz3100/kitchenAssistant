@@ -34,6 +34,7 @@ public class ShopComApiClientParticularProduct {
 
 	public static String ingredientsRegex="<p[^<]*<strong>Ingredients:<\\/strong>.*?<\\/p>";
 	public static String ingredientsTag="<strong>Ingredients:</strong>";
+	public static String ingredientsHeader="<strong>Ingredients:</strong><br>";
 
 	private static String getResponseById(String id) {
 		ClientConfig cc = new DefaultClientConfig();
@@ -151,10 +152,10 @@ public class ShopComApiClientParticularProduct {
 		{
 			JSONObject result=new JSONObject();
 //
-//			String ingredientsString = extractIngredientsString(root);
-//
-//			if(ingredientsString!=null&&!ingredientsString.isEmpty())
-//				result.put(MetadataConstants.ingredientsJsonName, ingredientsString);
+			String ingredientsString = extractIngredientsString(root);
+
+			if(ingredientsString!=null&&!ingredientsString.isEmpty())
+				result.put(MetadataConstants.ingredientsJsonName, ingredientsString);
 
 			addCategoryData(root, result);
 			return result.toString();
@@ -163,16 +164,26 @@ public class ShopComApiClientParticularProduct {
 	}
 
 	private static String extractIngredientsString(JSONObject root) {
+//		Pattern p = Pattern.compile(ingredientsRegex);
+//		Matcher m = p.matcher(description);
+//		String groupFound = m.group();
+//		if(groupFound!=null&&!groupFound.isEmpty()) {
+//			String a=groupFound.replace(ingredientsTag, "");
+//			
+//			String results = Jsoup.parse(groupFound).text();
+//			return results;
+//		}
 		String description=(String) root.get("description");
-
-		Pattern p = Pattern.compile(ingredientsRegex);
-		Matcher m = p.matcher(description);
-		String groupFound = m.group();
-		if(groupFound!=null&&!groupFound.isEmpty()) {
-			String a=groupFound.replace(ingredientsTag, "");
+		if(description!=null&&!description.isEmpty())
+		{
+			int start=description.indexOf(ingredientsHeader);
+			int end=description.indexOf("</p>",start);
 			
-			String results = Jsoup.parse(groupFound).text();
-			return results;
+			if(start>0&&end>0&&end>start) {
+				String tmp=description.substring(start,end);
+				tmp=tmp.replaceAll(ingredientsHeader, "").replaceAll("\n", "").replaceAll("\r", "");
+				return tmp;
+			}
 		}
 		return "";
 	}

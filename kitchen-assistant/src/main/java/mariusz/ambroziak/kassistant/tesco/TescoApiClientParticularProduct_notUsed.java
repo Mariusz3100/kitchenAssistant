@@ -9,6 +9,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.jsoup.Jsoup;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
@@ -202,8 +203,10 @@ public class TescoApiClientParticularProduct_notUsed {
 			JSONArray ingredients = jsonProduct.getJSONArray("ingredients");
 			String result="";
 			for(int i=0;i<ingredients.length();i++) {
-				result+=ingredients.get(i)+MetadataConstants.stringListSeparator;
+				result+=ingredients.get(i)+" ";
 			}
+			result=Jsoup.parse(result).text();
+			result=result.replaceAll("INGREDIENTS:", "").replaceAll("\n", "").replaceAll("\r", "");
 			metadataJson.put(MetadataConstants.ingredientsJsonName,result);
 			
 		}

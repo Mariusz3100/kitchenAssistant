@@ -22,6 +22,8 @@ public class Condition {
 
 	//	ArrayList<String> categoryNameInclusions;
 	ArrayList<String> attributesPresent;
+	Map<String,String> attributeRegex;
+	Map<String,String> attributeRegexNotMatched;
 
 	Map<String,String> attributeValues;
 	Map<String,String> attributeNotContainsValues;
@@ -42,8 +44,49 @@ public class Condition {
 			existingValue=inclusion;
 		else
 			existingValue+=MetadataConstants.stringListSeparator+inclusion;
-		this.attributeValues.put(attribute, inclusion);
+		this.attributeValues.put(attribute, existingValue);
 	}
+	
+	
+	public Map<String, String> getAttributeRegexes() {
+		if(attributeRegex==null)
+			attributeRegex=new HashMap<String, String>();
+
+		return attributeRegex;
+	}
+	public void addAttributeRegex(String attribute, String regex) {
+		if(attributeRegex==null)
+			attributeRegex=new HashMap<String, String>();
+
+		String existingValue = attributeRegex.get(attribute);
+
+		if(existingValue==null||existingValue.isEmpty())
+			existingValue=regex;
+		else
+			existingValue+=MetadataConstants.stringListSeparator+regex;
+		this.attributeRegex.put(attribute, existingValue);
+	}
+
+	public Map<String, String> getAttributeRegexNotMatched() {
+		if(attributeRegexNotMatched==null)
+			attributeRegexNotMatched=new HashMap<String, String>();
+
+		return attributeRegexNotMatched;
+	}
+	public void addAttributeRegexNotMatched(String attribute, String regex) {
+		if(attributeRegexNotMatched==null)
+			attributeRegexNotMatched=new HashMap<String, String>();
+
+		String existingValue = attributeRegexNotMatched.get(attribute);
+
+		if(existingValue==null||existingValue.isEmpty())
+			existingValue=regex;
+		else
+			existingValue+=MetadataConstants.stringListSeparator+regex;
+		this.attributeRegexNotMatched.put(attribute, existingValue);
+	}
+
+
 
 	public void replaceAttributeValues(String attribute, String inclusion) {
 		if(attributeValues==null)
@@ -56,7 +99,14 @@ public class Condition {
 		if(attributeNotContainsValues==null)
 			attributeNotContainsValues=new HashMap<String, String>();
 
-		this.attributeNotContainsValues.put(attribute, exclusion);
+		String existingValue = attributeNotContainsValues.get(attribute);
+
+		if(existingValue==null||existingValue.isEmpty())
+			existingValue=exclusion;
+		else
+			existingValue+=MetadataConstants.stringListSeparator+exclusion;
+
+		this.attributeNotContainsValues.put(attribute, existingValue);
 	}
 
 	public void replaceAttributeNotContainsValue(String attribute, String exclusion) {
@@ -118,7 +168,23 @@ public class Condition {
 			return Arrays.asList(incs.split(MetadataConstants.stringListSeparator));
 
 	}
+	public List<String> getIngredientsRegexes() {
+		String regexes = this.getAttributeRegexes().get(MetadataConstants.ingredientsConditionElementName);
+		if(regexes==null)
+			return new ArrayList<String>();
+		else
+			return Arrays.asList(regexes.split(MetadataConstants.stringListSeparator));
 
+	}
+	
+	public List<String> getIngredientsNotMatchRegexes() {
+		String regexes = this.getAttributeRegexNotMatched().get(MetadataConstants.ingredientsConditionElementName);
+		if(regexes==null)
+			return new ArrayList<String>();
+		else
+			return Arrays.asList(regexes.split(MetadataConstants.stringListSeparator));
+
+	}
 	public List<String> getIngredientsInclusions() {
 		String incs = this.getAttributeValues().get(MetadataConstants.ingredientsConditionElementName);
 		if(incs==null)
@@ -171,9 +237,12 @@ public class Condition {
 		boolean areIngredientInclusionsOk=checkIngredientsInclusions(p);
 		boolean areIngredientExclusionsOk=checkIngredientsExclusons(p);
 
+		boolean areIngredientRegexesOk=checkIngredientRegexes(p);
+		boolean areIngredientNotMatchRegexesOk=checkIngredientNotMatchRegexes(p);
+
 		
 		boolean retValue = nameHasInclusions&&categoryIsOk&&areAttributesOk&&nameHasNoExclusions&&isServingPhraseOk
-				&&areIngredientInclusionsOk&&areIngredientExclusionsOk;
+				&&areIngredientInclusionsOk&&areIngredientExclusionsOk&&areIngredientRegexesOk&&areIngredientNotMatchRegexesOk;
 		if(retValue) {
 			System.out.println("For produkt:"+p.getUrl()+" called "+p.getNazwa()
 			+"\n condition object passed:"+this.toJsonRepresentation());
@@ -231,7 +300,45 @@ public class Condition {
 		}
 		return ingredientsAreOk;
 	}
+	
+	private boolean checkIngredientRegexes(Produkt p) {
+		boolean ingredientsAreOk=true;
+		List<String> ingredientsRegex = getIngredientsRegexes();
+		if(ingredientsRegex!=null&&!ingredientsRegex.isEmpty()) {
+			for(int i=0;ingredientsAreOk&&i<ingredientsRegex.size();i++) {
+				String metadane=p.getMetadata();
+				String ingredientsList =null;
 
+				//		JSONObject json=metadane==null||metadane.isEmpty()?new JSONObject():new JSONObject(metadane);
+				ingredientsList = retrieveMetadataProperty(metadane,MetadataConstants.ingredientsJsonName);
+
+				if(ingredientsList==null||!ingredientsList.matches(ingredientsRegex.get(i))) {
+					ingredientsAreOk=false;
+				}
+			}
+		}
+		return ingredientsAreOk;
+	}
+
+	
+	
+	private boolean checkIngredientNotMatchRegexes(Produkt p) {
+		List<String> ingredientsNotMatchRegex = getIngredientsNotMatchRegexes();
+		if(ingredientsNotMatchRegex!=null&&!ingredientsNotMatchRegex.isEmpty()) {
+			for(int i=0;i<ingredientsNotMatchRegex.size();i++) {
+				String metadane=p.getMetadata();
+				String ingredientsList =null;
+
+				//		JSONObject json=metadane==null||metadane.isEmpty()?new JSONObject():new JSONObject(metadane);
+				ingredientsList = retrieveMetadataProperty(metadane,MetadataConstants.ingredientsJsonName);
+
+				if(ingredientsList!=null&&ingredientsList.matches(ingredientsNotMatchRegex.get(i))) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
 	private boolean checkIngredientsExclusons(Produkt p) {
 		List<String> ingredientExclusions = getIngredientsExclusions();
 
@@ -428,23 +535,22 @@ public class Condition {
 
 		retValue.put("attributeValuesNotContains", attributeNotContainsValuesArray);
 
-		//		JSONArray nameKeywordsConditionsJsonArray=new JSONArray();
-		//
-		//		for(String c:getNameInclusions()) {
-		//			nameKeywordsConditionsJsonArray.put(c);
-		//		}
-		//		
-		//		retValue.put("nameInclusionsConditions", nameKeywordsConditionsJsonArray);
-		//		
-		//		JSONArray nameNotContainsConditionsJsonArray=new JSONArray();
-		//
-		//		for(String c:getNameExclusions()) {
-		//			nameNotContainsConditionsJsonArray.put(c);
-		//		}
-		//		
-		//		retValue.put("nameExclusionsConditions", nameNotContainsConditionsJsonArray);
-		//		
-		//		
+		JSONArray attributeRegexMap=new JSONArray();
+		for(Entry<String, String> c:getAttributeRegexes().entrySet()) {
+			attributeRegexMap.put(c.getKey()+"='"+c.getValue()+"'");
+		}
+
+		retValue.put("attributeRegex", attributeRegexMap);
+		
+		JSONArray attributeRegexNotMatchMap=new JSONArray();
+		for(Entry<String, String> c:getAttributeRegexNotMatched().entrySet()) {
+			attributeRegexNotMatchMap.put(c.getKey()+"='"+c.getValue()+"'");
+		}
+
+		retValue.put("attributeRegexNotMatch", attributeRegexNotMatchMap);
+
+	
+		
 		return retValue;
 
 	}

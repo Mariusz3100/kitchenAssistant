@@ -35,6 +35,8 @@ public class MetadataConstants {
 	
 	public static final String containsAttribute="contains";
 	public static final String notContainsAttribute="notContains";
+	public static final String regexMatchedAttribute="regex";
+	public static final String regexNotMatchedAttribute="notRegex";
 
 	
 	

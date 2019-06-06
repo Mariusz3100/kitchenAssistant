@@ -132,34 +132,65 @@ public class CategoryHierarchy {
 					NamedNodeMap attributesMap = conditionNode.getAttributes();
 					Node contains=attributesMap.getNamedItem(MetadataConstants.containsAttribute);
 					Node notContains=attributesMap.getNamedItem(MetadataConstants.notContainsAttribute);
+					Node regex=attributesMap.getNamedItem(MetadataConstants.regexMatchedAttribute);
+
+
 					if(contains!=null) {
 						addNewSearchPhraseToMap(retValue, MetadataConstants.ingredientsJsonName,contains);
 					}
 					if(notContains!=null) {
 						addNewExclusionPhraseToMap(retValue, MetadataConstants.ingredientsJsonName,notContains);
 					}
+					if(regex!=null) {
+						addNewRegexToMap(retValue, MetadataConstants.ingredientsJsonName,regex);
+					}
+					Node notRegex=attributesMap.getNamedItem(MetadataConstants.regexNotMatchedAttribute);
+
+					if(notRegex!=null) {
+						addNewRegexExclusionToMap(retValue, MetadataConstants.ingredientsJsonName,notRegex);
+					}
 				}else if(MetadataConstants.departmentNameConditionElementName.equals(conditionNode.getNodeName())) {
 					NamedNodeMap attributesMap = conditionNode.getAttributes();
 					Node contains=attributesMap.getNamedItem(MetadataConstants.containsAttribute);
 					Node notContains=attributesMap.getNamedItem(MetadataConstants.notContainsAttribute);
+					Node regex=attributesMap.getNamedItem(MetadataConstants.regexMatchedAttribute);
+
+					if(regex!=null) {
+						addNewRegexToMap(retValue, MetadataConstants.categoryNameJsonName,regex);
+					}
 					if(contains!=null) {
 						addNewSearchPhraseToMap(retValue, MetadataConstants.categoryNameJsonName,contains);
 					}
 					if(notContains!=null) {
 						addNewExclusionPhraseToMap(retValue, MetadataConstants.categoryNameJsonName,notContains);
 					}
+					Node notRegex=attributesMap.getNamedItem(MetadataConstants.regexNotMatchedAttribute);
+
+					if(notRegex!=null) {
+						addNewRegexExclusionToMap(retValue, MetadataConstants.categoryNameJsonName,notRegex);
+					}
 				}else if(MetadataConstants.nameConditionElementName.equals(conditionNode.getNodeName())) {
 					NamedNodeMap attributesMap = conditionNode.getAttributes();
 					Node contains=attributesMap.getNamedItem(MetadataConstants.containsAttribute);
 					Node notContains=attributesMap.getNamedItem(MetadataConstants.notContainsAttribute);
 
+					
+					Node regex=attributesMap.getNamedItem(MetadataConstants.regexMatchedAttribute);
+
+					if(regex!=null) {
+						addNewRegexToMap(retValue, MetadataConstants.conditionProduktNameMapKey,regex);
+					}
 					if(contains!=null) {
 						addNewSearchPhraseToMap(retValue, MetadataConstants.conditionProduktNameMapKey,contains);
 					}
 					if(notContains!=null) {
 						addNewExclusionPhraseToMap(retValue, MetadataConstants.conditionProduktNameMapKey,notContains);
 					}
+					Node notRegex=attributesMap.getNamedItem(MetadataConstants.regexNotMatchedAttribute);
 
+					if(notRegex!=null) {
+						addNewRegexExclusionToMap(retValue, MetadataConstants.conditionProduktNameMapKey,notRegex);
+					}
 				}else if(MetadataConstants.propertyPresentConditionElementName.equals(conditionNode.getNodeName())) {
 					NamedNodeMap attributesMap = conditionNode.getAttributes();
 					Node contains=attributesMap.getNamedItem(MetadataConstants.containsAttribute);
@@ -169,13 +200,22 @@ public class CategoryHierarchy {
 					NamedNodeMap attributesMap = conditionNode.getAttributes();
 					Node contains=attributesMap.getNamedItem(MetadataConstants.containsAttribute);
 					Node notContains=attributesMap.getNamedItem(MetadataConstants.notContainsAttribute);
+					Node regex=attributesMap.getNamedItem(MetadataConstants.regexMatchedAttribute);
 
+					if(regex!=null) {
+						addNewRegexToMap(retValue, MetadataConstants.servingPhraseNameJsonName,regex);
+					}
 					
 					if(contains!=null) {
 						addNewSearchPhraseToMap(retValue, MetadataConstants.servingPhraseNameJsonName,contains);
 					}
 					if(notContains!=null) {
 						addNewExclusionPhraseToMap(retValue, MetadataConstants.servingPhraseNameJsonName,notContains);
+					}
+					Node notRegex=attributesMap.getNamedItem(MetadataConstants.regexNotMatchedAttribute);
+
+					if(notRegex!=null) {
+						addNewRegexExclusionToMap(retValue, MetadataConstants.servingPhraseNameJsonName,notRegex);
 					}
 					
 				}
@@ -192,12 +232,12 @@ public class CategoryHierarchy {
 			ProblemLogger.logProblem("Wow, either condition or addon is null, how??");
 			return;
 		}
-		existingCategoryConditions = condition.getAttributeValues().get(keyInMap);
-		if(existingCategoryConditions==null||existingCategoryConditions.isEmpty())
-			existingCategoryConditions=containsAttribute.getTextContent();
-		else
-			existingCategoryConditions+=MetadataConstants.stringListSeparator+containsAttribute.getTextContent();
-		condition.addAttributeValues(keyInMap, existingCategoryConditions);
+//		existingCategoryConditions = condition.getAttributeValues().get(keyInMap);
+//		if(existingCategoryConditions==null||existingCategoryConditions.isEmpty())
+//			existingCategoryConditions=containsAttribute.getTextContent();
+//		else
+//			existingCategoryConditions+=MetadataConstants.stringListSeparator+containsAttribute.getTextContent();
+		condition.addAttributeValues(keyInMap, containsAttribute.getTextContent());
 	}
 
 	
@@ -208,12 +248,42 @@ public class CategoryHierarchy {
 			ProblemLogger.logProblem("Wow, either condition or addon is null, how??");
 			return;
 		}
-		existingCategoryConditions = condition.getAttributeNotContainsValues().get(keyInMap);
-		if(existingCategoryConditions==null||existingCategoryConditions.isEmpty())
-			existingCategoryConditions=containsAttribute.getTextContent();
-		else
-			existingCategoryConditions+=MetadataConstants.stringListSeparator+containsAttribute.getTextContent();
-		condition.addAttributeNotContainsValue(keyInMap, existingCategoryConditions);
+//		existingCategoryConditions = condition.getAttributeNotContainsValues().get(keyInMap);
+//		if(existingCategoryConditions==null||existingCategoryConditions.isEmpty())
+//			existingCategoryConditions=containsAttribute.getTextContent();
+//		else
+//			existingCategoryConditions+=MetadataConstants.stringListSeparator+containsAttribute.getTextContent();
+		condition.addAttributeNotContainsValue(keyInMap, containsAttribute.getTextContent());
+	}
+	
+	private static void addNewRegexToMap(Condition condition,String keyInMap, Node regex) {
+		String existingCategoryConditions =null;
+		if(condition==null||regex==null)
+		{
+			ProblemLogger.logProblem("Wow, either condition or addon is null, how??");
+			return;
+		}
+//		existingCategoryConditions = condition.getAttributeRegexes().get(keyInMap);
+//		if(existingCategoryConditions==null||existingCategoryConditions.isEmpty())
+//			existingCategoryConditions=regex.getTextContent();
+//		else
+			//existingCategoryConditions+=MetadataConstants.stringListSeparator+regex.getTextContent();
+		condition.addAttributeRegex(keyInMap, regex.getTextContent());
+	}
+	
+	private static void addNewRegexExclusionToMap(Condition condition,String keyInMap, Node notRegex) {
+		String existingCategoryConditions =null;
+		if(condition==null||notRegex==null)
+		{
+			ProblemLogger.logProblem("Wow, either condition or addon is null, how??");
+			return;
+		}
+//		existingCategoryConditions = condition.getAttributeRegexes().get(keyInMap);
+//		if(existingCategoryConditions==null||existingCategoryConditions.isEmpty())
+//			existingCategoryConditions=notRegex.getTextContent();
+//		else
+//			existingCategoryConditions+=MetadataConstants.stringListSeparator+notRegex.getTextContent();
+		condition.addAttributeRegexNotMatched(keyInMap, notRegex.getTextContent());
 	}
 	//	private static void retrieveAttributesValue(Node node,String name) {
 	//		NamedNodeMap attributes = node.getAttributes();
