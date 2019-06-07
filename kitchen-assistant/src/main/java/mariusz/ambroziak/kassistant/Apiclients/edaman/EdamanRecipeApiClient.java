@@ -96,7 +96,11 @@ public class EdamanRecipeApiClient {
 				if(retrievedDL!=null)
 					rd.addDietLabel(retrievedDL);
 			}
+			
+			
+			ArrayList<ApiIngredientAmount> parsedIngredients = parseIngredientListFromRoot(recipeUrlList);
 
+			rd.setIngredients(parsedIngredients);
 			rdList.add(rd);
 		}
 		return rdList;
@@ -140,18 +144,7 @@ public class EdamanRecipeApiClient {
 			String label=(String)root.get("label");
 			String imgUrl=(String)root.get("image");
 			String uri=(String)root.get("uri");
-			JSONArray recipeIngredients = root.getJSONArray("ingredients");
-
-			ArrayList<ApiIngredientAmount> parsedIngredients=new ArrayList<>();
-			for(int i=0;i<recipeIngredients.length();i++){
-				JSONObject ingredient = (JSONObject) recipeIngredients.get(i);
-				Double weight = (Double) ingredient.get("weight");
-				String name= (String) ingredient.get("text");
-
-				//name=EdamanQExtract.correctText(name);
-				ApiIngredientAmount aia=new ApiIngredientAmount(name,(float)(weight*1000));
-				parsedIngredients.add(aia);
-			}
+			ArrayList<ApiIngredientAmount> parsedIngredients = parseIngredientListFromRoot(root);
 
 
 
@@ -163,6 +156,27 @@ public class EdamanRecipeApiClient {
 			rd.setIngredients(parsedIngredients);
 			return rd;
 		}
+	}
+
+	private static ArrayList<ApiIngredientAmount> parseIngredientListFromRoot(JSONObject root) {
+		JSONArray recipeIngredients = root.getJSONArray("ingredients");
+
+		ArrayList<ApiIngredientAmount> parsedIngredients = parseIngredientsFromArray(recipeIngredients);
+		return parsedIngredients;
+	}
+
+	private static ArrayList<ApiIngredientAmount> parseIngredientsFromArray(JSONArray recipeIngredients) {
+		ArrayList<ApiIngredientAmount> parsedIngredients=new ArrayList<>();
+		for(int i=0;i<recipeIngredients.length();i++){
+			JSONObject ingredient = (JSONObject) recipeIngredients.get(i);
+			Double weight = (Double) ingredient.get("weight");
+			String name= (String) ingredient.get("text");
+
+			//name=EdamanQExtract.correctText(name);
+			ApiIngredientAmount aia=new ApiIngredientAmount(name,(float)(weight*1000));
+			parsedIngredients.add(aia);
+		}
+		return parsedIngredients;
 	}
 
 	private static String getResponse(String phrase) {
