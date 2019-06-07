@@ -138,6 +138,7 @@
   		 <property name="categoriesTestFile" value="WEB-INF/resources/testCategories.xml"/>
   		 <property name="teachingTescoFile" value="WEB-INF/resources/teaching/tesco"/>
   		 <property name="teachingShopComFile" value="WEB-INF/resources/teaching/shopcom"/>
+  		 <property name="teachingEdamanFile" value="WEB-INF/resources/teaching/edaman"/>
 
 
 

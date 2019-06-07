@@ -62,7 +62,7 @@ public class RecipeIngredientsCategorisation_bootstrap {
 		String phrase="tomato";
 		
 		ArrayList<ParseableRecipeData> relevantIngredientsFor = IngredientCategoriser.getRelevantIngredientsFor(phrase);
-		
+		ArrayList<ApiIngredientAmount> relevantIngredientsfiltered=new ArrayList<ApiIngredientAmount>();
 		
 		List<String> returnList = new ArrayList<String>();
 		
@@ -77,6 +77,7 @@ public class RecipeIngredientsCategorisation_bootstrap {
 				ApiIngredientAmount apiIngredientAmount = entry.getIngredients().get(i);
 				if(apiIngredientAmount.getName().indexOf(phrase)>=0) {
 					lines+="<br><b>"+apiIngredientAmount.getName()+"</b>";
+					relevantIngredientsfiltered.add(apiIngredientAmount);
 				}else {
 					lines+="<br>"+apiIngredientAmount.getName()+"";
 				}
@@ -86,10 +87,63 @@ public class RecipeIngredientsCategorisation_bootstrap {
 			
 		}
 
+		
+		String lines="<br><br><h2>Results:</h2>";
+
+		for(int i=0;i<relevantIngredientsfiltered.size();i++) {
+			ApiIngredientAmount apiIngredientAmount = relevantIngredientsfiltered.get(i);
+			lines+="<br>"+apiIngredientAmount.getName()+"";
+			
+		}
+		returnList.add(lines);
+
 		ModelAndView mav=new ModelAndView("List");
 		mav.addObject("list",returnList);
 		return mav;
 	}
 	
 	
+	@RequestMapping(value="/edaman_ingredient_categorisation_teaching")
+	public ModelAndView edaman_ingredient_categorisation_teaching() throws IOException, GoogleDriveAccessNotAuthorisedException {
+		String teachingEdamanContents = getTeachingEdamanContents();
+		
+		String[] split = teachingEdamanContents.split("\n");
+		
+		for(String line:split) {
+			String[] lineSplitted = line.split("->");
+			
+			String ingredientPhrase=lineSplitted[0];
+			String catPhrase=lineSplitted[1];
+			
+			
+			
+			
+		}
+		
+		
+		return null;
+	}
+	
+	
+	private static String getTeachingEdamanContents() {
+		Resource teachingExpectationsFile = FilesProvider.getInstance().getTeachingEdamanFile();
+		StringBuilder content=new StringBuilder();
+
+		InputStream inputStream;
+		try {
+			inputStream = teachingExpectationsFile.getInputStream();
+
+			BufferedReader br=new BufferedReader(new InputStreamReader(inputStream));
+			String temp=br.readLine();
+			while(temp!=null) {
+				content.append(temp);
+				temp=br.readLine();
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return content.toString();
+	}
+
 }
