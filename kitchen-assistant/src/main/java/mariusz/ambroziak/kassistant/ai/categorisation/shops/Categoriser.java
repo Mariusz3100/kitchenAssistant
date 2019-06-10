@@ -100,7 +100,7 @@ public class Categoriser {
 	
 
 	public static Map<Produkt, Category> testCategoriesFor(List<String> urls) {
-		Category cat=CategoryHierarchy.getSingletonCategoryRoot();
+		Category  cat=CategoryHierarchy.getSingletonCategoryRoot();
 
 		ArrayList<Produkt> produkts = new ArrayList<>();
 		
@@ -187,7 +187,7 @@ public class Categoriser {
 
 
 
-	public static Category assignCategory(Produkt p) {
+	public static Category  assignCategory(Produkt p) {
 		Category root=CategoryHierarchy.getSingletonCategoryRoot();
 
 		Category result=root.assignCategoryFromTree(p);

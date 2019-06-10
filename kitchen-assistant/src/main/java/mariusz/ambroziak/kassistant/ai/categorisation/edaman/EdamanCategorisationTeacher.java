@@ -10,13 +10,14 @@ import org.springframework.core.io.Resource;
 
 import com.google.api.services.drive.model.File;
 
+import api.extractors.AbstractQuantityEngExtractor;
 import mariusz.ambroziak.kassistant.ai.FilesProvider;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.shopcom.ShopComApiClient;
 import mariusz.ambroziak.kassistant.shopcom.ShopComApiClientParticularProduct;
 import mariusz.ambroziak.kassistant.tesco.TescoApiClientParticularProduct_notUsed;
 
-public class EdamanCategorisationTeacher{
+public class EdamanCategorisationTeacher {
 
 	
 	public static Map<String,IngredientParsed> checkCorectness_inEdaman(){

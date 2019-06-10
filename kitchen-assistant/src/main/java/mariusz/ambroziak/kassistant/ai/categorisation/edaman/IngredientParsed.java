@@ -6,11 +6,14 @@ public class IngredientParsed {
 	private String originalPhrase;
 	private String productPhrase;
 	private NotPreciseQuantity quantity;
-	private Category category;
+	private IngredientCategory category;
 	
 	
 	
 	
+	public IngredientParsed() {
+		super();
+	}
 	public String getOriginalPhrase() {
 		return originalPhrase;
 	}
@@ -29,10 +32,10 @@ public class IngredientParsed {
 	public void setQuantity(NotPreciseQuantity quantity) {
 		this.quantity = quantity;
 	}
-	public Category getCategory() {
+	public IngredientCategory getCategory() {
 		return category;
 	}
-	public void setCategory(Category category) {
+	public void setCategory(IngredientCategory category) {
 		this.category = category;
 	}
 	

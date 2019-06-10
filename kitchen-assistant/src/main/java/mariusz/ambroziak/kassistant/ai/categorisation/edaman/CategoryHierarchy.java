@@ -23,7 +23,7 @@ import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 
 public class CategoryHierarchy {
 
-	private static Category root;
+	private static IngredientCategory root;
 
 
 	private CategoryHierarchy() {
@@ -31,7 +31,7 @@ public class CategoryHierarchy {
 
 	}
 
-	public static Category getSingletonCategoryRoot() {
+	public static IngredientCategory getSingletonCategoryRoot() {
 		if(root==null) {
 			root=createCategoriesFromXmlFile();
 		}
@@ -39,37 +39,37 @@ public class CategoryHierarchy {
 	}
 
 	public static void initializeCategoriesFromXml() {
-		Category rootCandidate = createCategoriesFromXmlFile();
+		IngredientCategory rootCandidate = createCategoriesFromXmlFile();
 		root=rootCandidate;
 	}
 
 	
-	public static Category createCategoryFromTestXmlFile() {
+	public static IngredientCategory createCategoryFromTestXmlFile() {
 		Document doc=getXmlTestDocumentContentHandleExceptions();
 		
 		Element xmlRoot = doc.getDocumentElement();	
 
-		Category rootCandidate=parseCategoryXmlNode(xmlRoot);
+		IngredientCategory rootCandidate=parseCategoryXmlNode(xmlRoot);
 		return rootCandidate;
 		
 	}
-	public static Category createCategoriesFromXmlFile() {
+	public static IngredientCategory createCategoriesFromXmlFile() {
 		Document doc=getXmlDocumentContentHandleExceptions();
 
 		Element xmlRoot = doc.getDocumentElement();	
 
-		Category rootCandidate=parseCategoryXmlNode(xmlRoot);
+		IngredientCategory rootCandidate=parseCategoryXmlNode(xmlRoot);
 		return rootCandidate;
 	}
 	public static void testXmlVsStaticInitialisation(Node node) {
-		Category rootFromXml= createCategoriesFromXmlFile();
-		Category rootStatically=null;//initializeCategoriesStaticlly();
+		IngredientCategory rootFromXml= createCategoriesFromXmlFile();
+		IngredientCategory rootStatically=null;//initializeCategoriesStaticlly();
 
 		testIfTwoCategoriesAreSame(rootFromXml,rootStatically);
 	}
 
 
-	private static void testIfTwoCategoriesAreSame(Category rootFromXml, Category rootStatically) {
+	private static void testIfTwoCategoriesAreSame(IngredientCategory rootFromXml, IngredientCategory rootStatically) {
 		//		if(rootFromXml.getName()==rootStatically.getName()
 		//				||rootFromXml.getName().equals(rootStatically.getName())) {
 		//			if(rootFromXml.getChildren())
@@ -86,12 +86,12 @@ public class CategoryHierarchy {
 
 	}
 
-	public static Category parseCategoryXmlNode(Node node) {
+	public static IngredientCategory parseCategoryXmlNode(Node node) {
 		NamedNodeMap attributesMap = node.getAttributes();
 
 		Attr nameAttribute = (Attr) attributesMap.getNamedItem("name");
 		System.out.println(nameAttribute);
-		Category retValue=new Category(nameAttribute.getValue());
+		IngredientCategory retValue=new IngredientCategory(nameAttribute.getValue());
 		NodeList childNodes = node.getChildNodes();
 		Node childrenElement=null;
 
@@ -112,9 +112,9 @@ public class CategoryHierarchy {
 			}
 		}
 
-		List<Category> childCategoriesResults = handleChildCategories(childrenElement);
+		List<IngredientCategory> childCategoriesResults = handleChildCategories(childrenElement);
 		retValue.addChildren(childCategoriesResults);
-		for(Category c:childCategoriesResults) {
+		for(IngredientCategory c:childCategoriesResults) {
 			c.setParent(retValue);
 		}
 		return retValue;
@@ -309,8 +309,8 @@ public class CategoryHierarchy {
 		return retValue;
 	}
 
-	private static List<Category> handleChildCategories(Node childrenListNode) {
-		List<Category> retValue=new ArrayList<Category>();
+	private static List<IngredientCategory> handleChildCategories(Node childrenListNode) {
+		List<IngredientCategory> retValue=new ArrayList<IngredientCategory>();
 
 		NodeList childCategories = childrenListNode.getChildNodes();
 		if(childCategories==null||childCategories.getLength()<1) {
@@ -323,7 +323,7 @@ public class CategoryHierarchy {
 				//no handling for text node now
 			}else {
 				if(MetadataConstants.categoryElementName.equals(childCategory.getNodeName())) {
-					Category parsedCategory = parseCategoryXmlNode(childCategory);
+					IngredientCategory parsedCategory = parseCategoryXmlNode(childCategory);
 					retValue.add(parsedCategory);
 				}else {
 					ProblemLogger.logProblem("Children element contains elements besides category:"+childCategory.getNodeName());

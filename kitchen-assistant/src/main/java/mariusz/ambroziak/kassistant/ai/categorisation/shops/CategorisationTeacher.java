@@ -35,7 +35,7 @@ public class CategorisationTeacher{
 			String catPhrase=lineSplitted[2].replace("->", "");
 			Produkt produktByShopId = ShopComApiClientParticularProduct.getProduktByShopId(id);
 			if(produktByShopId!=null) {
-				Category assignCategory = Categoriser.assignCategory(produktByShopId);
+				Category  assignCategory = Categoriser.assignCategory(produktByShopId);
 
 				String htmlLine=name+" "+id+" :: ";
 				if(catPhrase.startsWith(assignCategory.getName())) {
@@ -75,7 +75,7 @@ public class CategorisationTeacher{
 
 			String catPhrase=lineSplitted[2].replace("->", "");
 			Produkt produktByShopId = TescoApiClientParticularProduct_notUsed.getProduktByUrlWithExtensiveMetadata(url);
-			Category assignCategory = Categoriser.assignCategory(produktByShopId);
+			Category  assignCategory = Categoriser.assignCategory(produktByShopId);
 
 			String htmlLine=name+" "+url+" :: ";
 			if(catPhrase.startsWith(assignCategory.getName())) {
@@ -143,7 +143,7 @@ public class CategorisationTeacher{
 		return content.toString();
 	}
 
-	public static boolean checkCorrectness(Produkt p,Category c) {
+	public static boolean checkCorrectness(Produkt p,Category  c) {
 		return false;
 
 

@@ -13,11 +13,11 @@ import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 
 
 
-public class Category {
+public class IngredientCategory {
 
 	private String name;
-	private Category parent;
-	private List<Category> children;
+	private IngredientCategory parent;
+	private List<IngredientCategory> children;
 
 	private List<Condition> conditions;
 	private List<Condition> childrenConditions;
@@ -40,11 +40,11 @@ public class Category {
 
 		this.childrenConditions.addAll(conditions);
 	}
-	Category(String name) {
+	public IngredientCategory(String name) {
 		super();
 		this.name = name;
 		this.childrenConditions=new ArrayList<Condition>();
-		this.children=new ArrayList<Category>();
+		this.children=new ArrayList<IngredientCategory>();
 		this.conditions=new ArrayList<Condition>();
 	}
 	public String getName() {
@@ -53,25 +53,25 @@ public class Category {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public Category getParent() {
+	public IngredientCategory getParent() {
 		return parent;
 	}
-	public void setParent(Category parent) {
+	public void setParent(IngredientCategory parent) {
 		this.parent = parent;
 	}
-	public List<Category> getChildren() {
+	public List<IngredientCategory> getChildren() {
 
 		return children;
 	}
-	public void addChildren(Category child) {
+	public void addChildren(IngredientCategory child) {
 		if(children==null)
-			children=new ArrayList<Category>();
+			children=new ArrayList<IngredientCategory>();
 
 		this.children.add(child);
 	}
-	public void addChildren(List<Category> childs) {
+	public void addChildren(List<IngredientCategory> childs) {
 		if(children==null)
-			children=new ArrayList<Category>();
+			children=new ArrayList<IngredientCategory>();
 
 		this.children.addAll(childs);
 	}
@@ -93,12 +93,12 @@ public class Category {
 	}
 	
 	
-	public Category assignCategoryFromTree(IngredientCategoriationData ingredient) {
+	public IngredientCategory assignCategoryFromTree(IngredientCategoriationData ingredient) {
 		if(ingredient==null)
 			return null;
 
 		if(checkListOfConditions(childrenConditions, ingredient)) {
-			Category child=checkChildren(ingredient);
+			IngredientCategory child=checkChildren(ingredient);
 			if(child!=null&&!child.checkIfEmpty()) {
 				return child;
 			}
@@ -126,19 +126,19 @@ public class Category {
 		return false;
 	}
 
-	public Category createEmpty() {
-		return new Category(MetadataConstants.emptyCategoryName);
+	public IngredientCategory createEmpty() {
+		return new IngredientCategory(MetadataConstants.emptyCategoryName);
 	}
 	public boolean checkIfEmpty() {
 		return MetadataConstants.emptyCategoryName.equals(this.getName());
 	}
 
 
-	private Category checkChildren(IngredientCategoriationData ingredient) {
-		Category match=null;
+	private IngredientCategory checkChildren(IngredientCategoriationData ingredient) {
+		IngredientCategory match=null;
 		if(getChildren()!=null&&!getChildren().isEmpty()) {
-			for(Category ck:getChildren()) {
-				Category found=ck.assignCategoryFromTree(ingredient);
+			for(IngredientCategory ck:getChildren()) {
+				IngredientCategory found=ck.assignCategoryFromTree(ingredient);
 				if(match!=null&&found!=null&&!found.checkIfEmpty()) {
 					ProblemLogger.logProblem("Two different categories assigned for "+ingredient.getPhrase()+": "+match.getName()+" and "+found.getName());
 					return createEmpty();
@@ -162,7 +162,7 @@ public class Category {
 
 		
 		JSONArray childrenJsonArray=new JSONArray();
-		for(Category c:getChildren()) {
+		for(IngredientCategory c:getChildren()) {
 			childrenJsonArray.put(c.toJsonRepresentation());
 		}
 		jsonRep.put("children", childrenJsonArray);

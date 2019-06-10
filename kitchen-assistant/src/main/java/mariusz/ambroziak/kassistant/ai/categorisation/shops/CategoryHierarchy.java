@@ -53,7 +53,7 @@ public class CategoryHierarchy {
 		return rootCandidate;
 		
 	}
-	public static Category createCategoriesFromXmlFile() {
+	public static Category  createCategoriesFromXmlFile() {
 		Document doc=getXmlDocumentContentHandleExceptions();
 
 		Element xmlRoot = doc.getDocumentElement();	
@@ -416,7 +416,7 @@ public class CategoryHierarchy {
 		return content.toString();
 	}
 
-	public static Category initializeCategoriesStaticlly() {
+	public static Category  initializeCategoriesStaticlly() {
 		Category root=new Category("root");
 
 		Category raw=new Category("raw");

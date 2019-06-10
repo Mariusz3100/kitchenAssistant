@@ -71,7 +71,7 @@ public class CategoryController_bootstrap {
 	public ModelAndView xml_categorize_test() throws IOException, GoogleDriveAccessNotAuthorisedException {
 		CategoryHierarchy.initializeCategoriesFromXml();
 		
-		Category singletonRoot = CategoryHierarchy.getSingletonCategoryRoot();
+		Category  singletonRoot = CategoryHierarchy.getSingletonCategoryRoot();
 
 		ModelAndView mav=new ModelAndView("List");
 		mav.addObject("list",singletonRoot==null?"nothing":singletonRoot.getName());
@@ -80,7 +80,7 @@ public class CategoryController_bootstrap {
 	
 	@RequestMapping(value="/get_xml_category")
 	public ModelAndView get_xml_category() throws IOException, GoogleDriveAccessNotAuthorisedException {
-		Category createCategoriesFromXmlFile = CategoryHierarchy.createCategoriesFromXmlFile();
+		Category  createCategoriesFromXmlFile = CategoryHierarchy.createCategoriesFromXmlFile();
 		String results=createCategoriesFromXmlFile.toJsonRepresentation().toString();
 		List<String> list=new ArrayList<String>();
 		list.add(results);
@@ -91,7 +91,7 @@ public class CategoryController_bootstrap {
 	
 	@RequestMapping(value="/get_xml_test_category")
 	public ModelAndView get_xml_test_category() throws IOException, GoogleDriveAccessNotAuthorisedException {
-		Category createCategoriesFromXmlFile = CategoryHierarchy.createCategoryFromTestXmlFile();
+		Category  createCategoriesFromXmlFile = CategoryHierarchy.createCategoryFromTestXmlFile();
 		String results=createCategoriesFromXmlFile.toJsonRepresentation().toString();
 		List<String> list=new ArrayList<String>();
 		list.add(results);
@@ -104,7 +104,7 @@ public class CategoryController_bootstrap {
 	
 	@RequestMapping(value="/get_static_category")
 	public ModelAndView get_static_category() throws IOException, GoogleDriveAccessNotAuthorisedException {
-		Category createCategoriesFromXmlFile = CategoryHierarchy.initializeCategoriesStaticlly();
+		Category  createCategoriesFromXmlFile = CategoryHierarchy.initializeCategoriesStaticlly();
 		String results=createCategoriesFromXmlFile.toJsonRepresentation().toString();
 		List<String> list=new ArrayList<String>();
 		list.add(results);
@@ -136,7 +136,7 @@ public class CategoryController_bootstrap {
 	
 	@RequestMapping(value="/categories_read_test")
 	public ModelAndView categories_read_test() {
-		Category singletonRoot = CategoryHierarchy.getSingletonCategoryRoot();
+		Category  singletonRoot = CategoryHierarchy.getSingletonCategoryRoot();
 		
 		
 		ModelAndView mav=new ModelAndView("List");
@@ -151,8 +151,8 @@ public class CategoryController_bootstrap {
 		ArrayList<String> list=new ArrayList<String>();
 		list.add("cucumber:");
 		
-		Map<Produkt, Category> testedCategoriesFor = Categoriser.testStaticCategoriesFor("cucumber", 10);
-		for(Entry<Produkt, Category> e:testedCategoriesFor.entrySet()) {
+		Map<Produkt, Category > testedCategoriesFor = Categoriser.testStaticCategoriesFor("cucumber", 10);
+		for(Entry<Produkt, Category > e:testedCategoriesFor.entrySet()) {
 			list.add(e.getKey().getNazwa()+" ("+e.getKey().getUrl()+")->"+e.getValue());
 		}
 		
@@ -167,8 +167,8 @@ public class CategoryController_bootstrap {
 		ArrayList<String> list=new ArrayList<String>();
 
 		list.add("tomato:");
-		Map<Produkt, Category> testedCategoriesForTomato = Categoriser.testCategoriesFor("tomato", 10);
-		for(Entry<Produkt, Category> e:testedCategoriesForTomato.entrySet()) {
+		Map<Produkt, Category > testedCategoriesForTomato = Categoriser.testCategoriesFor("tomato", 10);
+		for(Entry<Produkt, Category > e:testedCategoriesForTomato.entrySet()) {
 			list.add(e.getKey().getNazwa()+" ("+e.getKey().getUrl()+")->"+e.getValue());
 		}
 
@@ -182,8 +182,8 @@ public class CategoryController_bootstrap {
 		ArrayList<String> list=new ArrayList<String>();
 
 		list.add("tomato:");
-		Map<Produkt, Category> testedCategoriesForTomato = Categoriser.testCategoriesInShopComFor("tomato");
-		for(Entry<Produkt, Category> e:testedCategoriesForTomato.entrySet()) {
+		Map<Produkt, Category > testedCategoriesForTomato = Categoriser.testCategoriesInShopComFor("tomato");
+		for(Entry<Produkt, Category > e:testedCategoriesForTomato.entrySet()) {
 			list.add(e.getKey().getNazwa()+" ("+e.getKey().getUrl()+")->"+e.getValue());
 		}
 
@@ -201,7 +201,7 @@ public class CategoryController_bootstrap {
 		
 //		int id=56774766;
 		String url="https://dev.tescolabs.com/product/?tpnb="+id;
-		Map<Produkt, Category> testCategoryProduct = Categoriser.testTescoCategoryProduct(url);
+		Map<Produkt, Category > testCategoryProduct = Categoriser.testTescoCategoryProduct(url);
 		Produkt product = testCategoryProduct.keySet().iterator().next();
 		list.add(""+id);
 		list.add(""+product.getNazwa());
@@ -221,7 +221,7 @@ public class CategoryController_bootstrap {
 
 //		int id=83286592;
 		
-		Map<Produkt, Category> testCategoryProduct = Categoriser.testCategoryShopComProduct(id);
+		Map<Produkt, Category > testCategoryProduct = Categoriser.testCategoryShopComProduct(id);
 		Produkt product = testCategoryProduct.keySet().iterator().next();
 		list.add(""+id);
 		list.add(""+product.getNazwa());
