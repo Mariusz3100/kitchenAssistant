@@ -1,4 +1,4 @@
-package mariusz.ambroziak.kassistant.ai.categorisation;
+package mariusz.ambroziak.kassistant.ai.categorisation.shops;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,6 +17,7 @@ import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
 import mariusz.ambroziak.kassistant.ai.FilesProvider;
+import mariusz.ambroziak.kassistant.ai.categorisation.MetadataConstants;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 

@@ -1,4 +1,4 @@
-package mariusz.ambroziak.kassistant.ai.categorisation;
+package mariusz.ambroziak.kassistant.ai.categorisation.shops;
 
 import java.util.ArrayList;
 import java.util.HashMap;

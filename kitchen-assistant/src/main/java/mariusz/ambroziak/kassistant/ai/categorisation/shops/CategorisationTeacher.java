@@ -1,4 +1,4 @@
-package mariusz.ambroziak.kassistant.ai.categorisation;
+package mariusz.ambroziak.kassistant.ai.categorisation.shops;
 
 import java.io.BufferedReader;
 import java.io.IOException;

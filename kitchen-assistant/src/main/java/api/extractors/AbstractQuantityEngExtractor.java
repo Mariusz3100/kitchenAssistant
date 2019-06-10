@@ -12,6 +12,8 @@ public class AbstractQuantityEngExtractor {
 	
 	protected static Map<String,QuantityTranslation> translations;
 	protected static ArrayList<String> ommissions;
+	protected static ArrayList<String> splitingPronouns;
+
 	
 	static{
 		
@@ -67,7 +69,8 @@ public class AbstractQuantityEngExtractor {
 		translations.put("pack",new QuantityTranslation(AmountTypes.szt, 1) );
 		translations.put("bunch",new QuantityTranslation(AmountTypes.szt, 1) );
 		translations.put("sngl",new QuantityTranslation(AmountTypes.szt, 1) );
-		
+		translations.put("sprig",new QuantityTranslation(AmountTypes.szt, 1) );
+
 		
 //		translations.put("sztuka",new QuantityTranslation(AmountTypes.szt, 1) );
 //		translations.put("",new QuantityTranslation(AmountTypes.szt, 1) );
@@ -75,8 +78,18 @@ public class AbstractQuantityEngExtractor {
 		ommissions=new ArrayList<String>();
 		
 		ommissions.add("circa");
+		ommissions.add("rounded");
 		ommissions.add("round");
+		ommissions.add("large");
+		ommissions.add("small");
+		ommissions.add("medium");
+		ommissions.add("thin");
+
 		
+		
+		splitingPronouns=new ArrayList<String>();
+		
+		splitingPronouns.add("or");
 		
 		
 	}

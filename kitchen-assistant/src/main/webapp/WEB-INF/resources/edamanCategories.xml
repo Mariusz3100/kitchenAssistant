@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<category
+	xmlns="http://app.kitchenassistant.com.pl/categoriesSchema"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://app.kitchenassistant.com.pl/categoriesSchema categoriesSchema.xsd"
+	name="root"><!-- kategoria podstawowa, do ktorej zawsze sa zaliczane wszystkie 
+		produkty - nie ma zadnych warunkow -->
+
+	<conditions>
+	</conditions>
+	<branchConditions>
+	</branchConditions>
+
+
+	<children><!-- lista kategorii dziedziczacych -->
+		<category name="raw"><!-- kategoria swiezych produktow -->
+			<conditions><!-- element "conditions" zawiera liste elementow "condition", 
+					z ktorych wystarczy, ze jeden jest spelniony, by produkt zostal zakwalifikowany 
+					do tej kategorii. -->
+				<condition><!-- element "condition" zawiera liste klauzul/predykatow/warunkow, 
+						z ktorych kazda musi byc spelniona, aby produkt spelnial otaczajacy "condition" -->
+					<name contains="fresh" /><!-- klauzula sprawdzania, czy dzial w 
+						jakim sprzedawany jest produkt zawiera slowo "fresh" -->
+				</condition>
+			</conditions>
+
+			<branchConditions><!-- element zawiera warunki, ktore sa wymagane, by 
+					sprawdzac, czy kategorie potomne beda brane pod uwage -->
+			</branchConditions>
+
+			<children>
+				<category name="package"><!-- kategoria paczek roznych nieprzetworzonych 
+						produktow, np. wloszczyzna -->
+					<conditions>
+						<condition>
+							<name contains="mirepoix" />
+						</condition>
+
+					</conditions>
+
+					<branchConditions>
+					</branchConditions>
+					<children>
+					</children>
+				</category>
+
+			</children>
+
+
+		</category>
+		<category name="processed"><!-- kategoria produktow przetworzonych, obawiam 
+				sie, ze raczej wszystko trafi do kategorii potomnych -->
+			<conditions>
+				<condition>
+					<name contains="processed" /><!-- klauzula sprawdzajaca, czy w 
+						nazwie produktu jest slowo "processed" -->
+				</condition>
+			</conditions>
+			<branchConditions>
+			</branchConditions>
+			<children>
+				<category name="dried"><!-- kategoria suszonych produktow, -->
+					<conditions>
+
+						<condition>
+							<name contains="dried" />
+							<name notContains="oil" />
+
+						</condition>
+						<condition>
+							<name contains="powder" />
+						</condition>
+						<condition>
+							<name contains="powdered" />
+						</condition>
+
+
+					</conditions>
+					<children></children>
+					<branchConditions>
+					</branchConditions>
+
+				</category>
+				<category name="grinded"><!-- kategoria produktow zmielonych/startych 
+						i ogolnie na tyle przetworzonych, ze ciezko rozpoznac, z czego sa zrobione -->
+					<conditions>
+
+						<condition>
+							<name contains="paste" />
+						</condition>
+						<condition>
+							<name contains="juice" />
+
+						</condition>
+
+						<condition>
+							<name contains="puree" />
+						</condition>
+
+						<condition>
+							<name contains="passata" />
+						</condition>
+					</conditions>
+
+					<children></children>
+					<branchConditions>
+					</branchConditions>
+
+				</category>
+				<category name="compoundDish"><!-- kategoria produktow przetworzonych, zlozonych 
+						z wiecej niz jednego produktu, np. wieprzowina w sosie pomidorowym -->
+					<conditions>
+						<condition>
+							<name contains="puree with" />
+						</condition>
+
+						<condition>
+							<name contains="dressing" />
+						</condition>
+						<condition>
+							<name contains="sauce" />
+						</condition>
+						<condition>
+							<name contains="marinade" />
+						</condition>
+						<condition>
+							<name contains="pesto" />
+						</condition>
+						<condition>
+							<name contains="salsa" />
+						</condition>
+					</conditions>
+					<children>
+						<category name="ketchup">
+							<conditions>
+
+								<condition>
+									<name contains="ketchup" />
+								</condition>
+							</conditions>
+
+							<children></children>
+							<branchConditions>
+							</branchConditions>
+
+						</category>
+
+					</children>
+					<branchConditions>
+					</branchConditions>
+
+				</category>
+				<category name="conserved"><!-- kategoria produktow konserwowych -->
+					<conditions>
+						<condition>
+							<name contains="can" />
+						</condition>
+					</conditions>
+
+					<branchConditions>
+					</branchConditions>
+					<children>
+						<category name="pickles"><!-- kategoria produktow konserwowych -->
+							<conditions>
+								<condition>
+									<name contains="pickles" />
+								</condition>
+
+							</conditions>
+
+							<branchConditions>
+							</branchConditions>
+							<children></children>
+						</category>
+					</children>
+				</category>
+
+			</children>
+
+		</category>
+
+
+		<category name="residual">
+			<!-- kategoria produktow, ktore maja albo sladowa ilosc produktu pierwotnego, 
+				albo sa tylko sztucznie aromatyzowane, np.cola o smaku wisniowym -->
+			<conditions>
+				<condition>
+					<name contains="flavoured" />
+				</condition>
+				<!-- <condition> <departmentName contains="drinks" /> </condition> -->
+				<condition>
+					<departmentName contains="household" />
+				</condition>
+				<condition>
+					<departmentName contains="beauty" />
+				</condition>
+			</conditions>
+			<branchConditions>
+			</branchConditions>
+			<children>
+			</children>
+		</category>
+
+	</children>
+</category>

@@ -1,6 +1,7 @@
 package mariusz.ambroziak.kassistant.utils;
 
 import mariusz.ambroziak.kassistant.dao.DaoProvider;
+import mariusz.ambroziak.kassistant.dao.ProblemDAO;
 import mariusz.ambroziak.kassistant.model.Problem;
 
 public class ProblemLogger {
@@ -8,9 +9,12 @@ public class ProblemLogger {
 	
 	public static void logProblem(String message){
 		System.err.println(message);
+		DaoProvider provider = DaoProvider.getInstance();
+		if(provider==null)
+			return;
 		if(message.length()<singleMessageLength){
 			Problem p=new Problem(0l,true, message,false);
-			DaoProvider.getInstance().getProblemDao().addProblem(p);
+			provider.getProblemDao().addProblem(p);
 		}else{
 			Long nextId=0l;
 			while(message.length()>0){
@@ -29,7 +33,7 @@ public class ProblemLogger {
 
 				Problem p=new Problem(nextId,firstMessage,smallMessage,false);
 				
-				DaoProvider.getInstance().getProblemDao().addProblem(p);
+				provider.getProblemDao().addProblem(p);
 				nextId=p.getP_id();
 			}
 			

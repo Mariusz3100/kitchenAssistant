@@ -1,4 +1,4 @@
-package mariusz.ambroziak.kassistant.ai.categorisation;
+package mariusz.ambroziak.kassistant.ai.categorisation.edaman;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,12 +8,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-
-import mariusz.ambroziak.kassistant.model.Produkt;
-import mariusz.ambroziak.kassistant.utils.ProblemLogger;
+import mariusz.ambroziak.kassistant.ai.categorisation.MetadataConstants;
 
 public class Condition {
 	//	ArrayList<String> nameInclusions;
@@ -201,15 +198,7 @@ public class Condition {
 			return Arrays.asList(incs.split(MetadataConstants.stringListSeparator));
 
 	}
-	public void addCategoryNameInclusions(String inclusion) {
-		String categoryNameInclusions = attributeValues.get(MetadataConstants.categoryNameJsonName);
-		if(categoryNameInclusions==null)
-			attributeValues.put(MetadataConstants.categoryNameJsonName, inclusion);
-		else
-			attributeValues.put(MetadataConstants.categoryNameJsonName, categoryNameInclusions+MetadataConstants.stringListSeparator+inclusion);
 
-
-	}
 
 
 
@@ -227,137 +216,24 @@ public class Condition {
 	}
 
 
-	public boolean check(Produkt p) {
-		boolean nameHasInclusions=checkNameInclusions(p);
-		boolean nameHasNoExclusions=checkNameExclusons(p);
-
-		boolean categoryIsOk=checkCategory(p);
-		boolean areAttributesOk=checkMetadataAttributesPresence(p);
-		boolean isServingPhraseOk=checkServingPhraseInclusions(p);
-		boolean areIngredientInclusionsOk=checkIngredientsInclusions(p);
-		boolean areIngredientExclusionsOk=checkIngredientsExclusons(p);
-
-		boolean areIngredientRegexesOk=checkIngredientRegexes(p);
-		boolean areIngredientNotMatchRegexesOk=checkIngredientNotMatchRegexes(p);
+	public boolean check(IngredientCategoriationData ingredient) {
+		boolean nameHasInclusions=checkNameInclusions(ingredient);
+		boolean nameHasNoExclusions=checkNameExclusons(ingredient);
 
 		
-		boolean retValue = nameHasInclusions&&categoryIsOk&&areAttributesOk&&nameHasNoExclusions&&isServingPhraseOk
-				&&areIngredientInclusionsOk&&areIngredientExclusionsOk&&areIngredientRegexesOk&&areIngredientNotMatchRegexesOk;
+		boolean retValue = nameHasInclusions&&nameHasNoExclusions;
 		if(retValue) {
-			System.out.println("For produkt:"+p.getUrl()+" called "+p.getNazwa()
+			System.out.println("For ingredient:"+ingredient.getPhrase()
 			+"\n condition object passed:"+this.toJsonRepresentation());
 		}
 		return retValue;
 	}
 
-	private boolean checkServingPhraseInclusions(Produkt p) {
-		boolean phraseIsOk=true;
-		List<String> servingPhraseInclusions = getServingPhraseInclusions();
-		if(servingPhraseInclusions!=null&&!servingPhraseInclusions.isEmpty()) {
-			for(int i=0;phraseIsOk&&i<servingPhraseInclusions.size();i++) {
-				String metadane=p.getMetadata();
-				String serving =null;
-				try {
-					serving = retrieveMetadataProperty(metadane,MetadataConstants.servingPhraseNameJsonName);
-				}catch(JSONException e) {
-					phraseIsOk=false;
-				}
-				if(serving==null||!serving.toLowerCase().contains(servingPhraseInclusions.get(i).toLowerCase())) {
-					phraseIsOk=false;
-				}
-			}
-		}
-		return phraseIsOk;
-	}
-	private String retrieveMetadataProperty(String metadane,String propertyName) {
-		try {
-			String propertyValue;
-			JSONObject json=metadane==null||metadane.isEmpty()?new JSONObject():new JSONObject(metadane);
 
-			propertyValue = json.has(propertyName)?json.getString(propertyName):null;
-			return propertyValue;
-		}catch(JSONException e) {
-			return "";
-		}
-	}
-
-
-	private boolean checkIngredientsInclusions(Produkt p) {
-		boolean ingredientsAreOk=true;
-		List<String> ingredientsInclusions = getIngredientsInclusions();
-		if(ingredientsInclusions!=null&&!ingredientsInclusions.isEmpty()) {
-			for(int i=0;ingredientsAreOk&&i<ingredientsInclusions.size();i++) {
-				String metadane=p.getMetadata();
-				String ingredientsList =null;
-
-				//		JSONObject json=metadane==null||metadane.isEmpty()?new JSONObject():new JSONObject(metadane);
-				ingredientsList = retrieveMetadataProperty(metadane,MetadataConstants.ingredientsJsonName);
-
-				if(ingredientsList==null||!ingredientsList.toLowerCase().contains(ingredientsInclusions.get(i).toLowerCase())) {
-					ingredientsAreOk=false;
-				}
-			}
-		}
-		return ingredientsAreOk;
-	}
-	
-	private boolean checkIngredientRegexes(Produkt p) {
-		boolean ingredientsAreOk=true;
-		List<String> ingredientsRegex = getIngredientsRegexes();
-		if(ingredientsRegex!=null&&!ingredientsRegex.isEmpty()) {
-			for(int i=0;ingredientsAreOk&&i<ingredientsRegex.size();i++) {
-				String metadane=p.getMetadata();
-				String ingredientsList =null;
-
-				//		JSONObject json=metadane==null||metadane.isEmpty()?new JSONObject():new JSONObject(metadane);
-				ingredientsList = retrieveMetadataProperty(metadane,MetadataConstants.ingredientsJsonName);
-
-				if(ingredientsList==null||!ingredientsList.matches(ingredientsRegex.get(i))) {
-					ingredientsAreOk=false;
-				}
-			}
-		}
-		return ingredientsAreOk;
-	}
-
-	
-	
-	private boolean checkIngredientNotMatchRegexes(Produkt p) {
-		List<String> ingredientsNotMatchRegex = getIngredientsNotMatchRegexes();
-		if(ingredientsNotMatchRegex!=null&&!ingredientsNotMatchRegex.isEmpty()) {
-			for(int i=0;i<ingredientsNotMatchRegex.size();i++) {
-				String metadane=p.getMetadata();
-				String ingredientsList =null;
-
-				//		JSONObject json=metadane==null||metadane.isEmpty()?new JSONObject():new JSONObject(metadane);
-				ingredientsList = retrieveMetadataProperty(metadane,MetadataConstants.ingredientsJsonName);
-
-				if(ingredientsList!=null&&ingredientsList.matches(ingredientsNotMatchRegex.get(i))) {
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-	private boolean checkIngredientsExclusons(Produkt p) {
-		List<String> ingredientExclusions = getIngredientsExclusions();
-
-		if(ingredientExclusions!=null&&!ingredientExclusions.isEmpty()) {
-			for(int i=0;i<ingredientExclusions.size();i++) {
-
-				String ingredientList =retrieveMetadataProperty(p.getMetadata(),MetadataConstants.ingredientsJsonName) ;
-				if(ingredientList!=null&&ingredientList.toLowerCase().contains(ingredientExclusions.get(i).toLowerCase())) {
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-
-	private boolean checkNameInclusions(Produkt p) {
+	private boolean checkNameInclusions(IngredientCategoriationData ingredient) {
 		boolean nameIsOk=true;
 
-		String productName = calculateNameOfAProduct(p);
+		String productName = ingredient.getPhrase();
 
 
 
@@ -372,138 +248,20 @@ public class Condition {
 		}
 		return nameIsOk;
 	}
-	private String calculateNameOfAProduct(Produkt p) {
-		String metadane=p.getMetadata();
-		String productName ="";
 
-		try {
-			JSONObject json=metadane==null?new JSONObject():new JSONObject(metadane);
-
-			if(json.has(MetadataConstants.productNameMetaPropertyName)) {
-				productName= json.getString(MetadataConstants.productNameMetaPropertyName);
-			}else {
-				productName = p.getNazwa();
-			}
-
-		}catch(JSONException e) {
-			ProblemLogger.logProblem("bad metadata for product id="+p.getP_id()+"("+p.getUrl()+")");
-			productName = p.getNazwa();
-
-		}
-		return productName;
-	}
-
-	private boolean checkNameExclusons(Produkt p) {
+	private boolean checkNameExclusons(IngredientCategoriationData ingredient) {
 		List<String> nameExclusions = getNameExclusions();
 
 		if(nameExclusions!=null&&!nameExclusions.isEmpty()) {
 			for(int i=0;i<nameExclusions.size();i++) {
 
-				String productName = calculateNameOfAProduct(p);
+				String productName = ingredient.getPhrase();
 				if(productName!=null&&productName.toLowerCase().contains(nameExclusions.get(i).toLowerCase())) {
 					return false;
 				}
 			}
 		}
 		return true;
-	}
-
-	private boolean checkMetadataAttributesPresence(Produkt p) {
-		boolean areAttrsPresest=true;
-
-		if(getAttributesPresent()!=null&&!getAttributesPresent().isEmpty()) {
-			if(p==null||p.getMetadata()==null||p.getMetadata().equals("")) {
-				return false;
-			}
-			JSONObject metadataObject=new JSONObject(p.getMetadata().toLowerCase());
-			for(int i=0;areAttrsPresest&&i<getAttributesPresent().size();i++) {
-
-				if(!metadataObject.has(getAttributesPresent().get(i).toLowerCase())) {
-					areAttrsPresest=false;
-				}
-			}
-		}
-		return areAttrsPresest;
-	}
-
-	private boolean checkCategory(Produkt p) {
-		List<String> categoryNameInclusions = getCategoryNameInclusions();
-
-		if(categoryNameInclusions==null||categoryNameInclusions.isEmpty()) {
-			return true;
-		}
-		boolean categoryIsOk=true;
-
-		if(p.getMetadata()==null||p.getMetadata().equals("")) {
-			return false;
-		}else {
-			String metadane=p.getMetadata();
-			JSONObject json=new JSONObject(metadane);
-			String category = json.has(MetadataConstants.categoryNameJsonName)?json.getString(MetadataConstants.categoryNameJsonName):"";
-
-
-
-			if(categoryNameInclusions!=null&&!categoryNameInclusions.isEmpty()) {
-				for(int i=0;categoryIsOk&&i<categoryNameInclusions.size();i++) {
-
-					if(category==null||!category.toLowerCase().contains(categoryNameInclusions.get(i).toLowerCase())) {
-						categoryIsOk=false;
-					}
-				}
-			}
-
-			return categoryIsOk;
-		}
-	}
-	private List<String> getCategoryNameInclusions() {
-		String incs = this.getAttributeValues().get(MetadataConstants.categoryNameJsonName);
-		if(incs==null)
-			return new ArrayList<String>();
-		else
-			return Arrays.asList(incs.split(MetadataConstants.stringListSeparator));
-
-	}
-
-
-
-	public static Condition createNameInclusionsCondition(String...strings) {
-		Condition retValue=new Condition();
-		for(String a:strings) {
-			retValue.addNameInclusion(a);
-
-		}
-		return retValue;
-
-	}
-
-	public static Condition createServingPhraseInclusionsCondition(String...strings) {
-		Condition retValue=new Condition();
-		for(String a:strings) {
-			retValue.addServingPhraseInclusion(a);
-
-		}
-		return retValue;
-
-	}
-	public static Condition createCategoryNameInclusionsCondition(String... strings) {
-		Condition retValue=new Condition();
-
-		for(String a:strings) {
-			retValue.addCategoryNameInclusions(a);
-
-		}
-		return retValue;
-
-	}
-
-	public static Condition createAttributePresentCondition(String... strings) {
-		Condition retValue=new Condition();
-		if(retValue.attributesPresent==null)
-			retValue.attributesPresent=new ArrayList<String>();
-
-		retValue.attributesPresent.addAll(Arrays.asList(strings));
-
-		return retValue;
 	}
 
 	public String toString() {

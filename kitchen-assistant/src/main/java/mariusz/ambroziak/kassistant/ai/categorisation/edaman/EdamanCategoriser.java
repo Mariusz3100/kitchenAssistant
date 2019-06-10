@@ -1,19 +1,7 @@
 package mariusz.ambroziak.kassistant.ai.categorisation.edaman;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.TreeMap;
-
-import mariusz.ambroziak.kassistant.ai.categorisation.Category;
-import mariusz.ambroziak.kassistant.ai.categorisation.CategoryHierarchy;
 import mariusz.ambroziak.kassistant.model.Produkt;
-import mariusz.ambroziak.kassistant.shopcom.ShopComApiClient;
-import mariusz.ambroziak.kassistant.shopcom.ShopComApiClientParticularProduct;
-import mariusz.ambroziak.kassistant.tesco.TescoApiClient;
-import mariusz.ambroziak.kassistant.tesco.TescoApiClientParticularProduct_notUsed;
+import mariusz.ambroziak.kassistant.model.utils.ApiIngredientAmount;
 
 public class EdamanCategoriser {
 	private static EdamanCategoriser singleton;
@@ -52,11 +40,16 @@ public class EdamanCategoriser {
 	}
 
 	
-	public Category categorize(String ingredientPhrase) {
+	public Category assignCategory(IngredientCategoriationData toBeCategorised) {
 		Category root=CategoryHierarchy.getSingletonCategoryRoot();
 		
-		return root.assignCategoryFromTree(null);
+		return root.assignCategoryFromTree(toBeCategorised);
 	}
 
+//	public Category assignCategory(ApiIngredientAmount product) {
+//		Category root=CategoryHierarchy.getSingletonCategoryRoot();
+//		
+//		return root.assignCategoryFromTree(product);
+//	}
 
 }

@@ -5,61 +5,35 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.mortbay.util.UrlEncoded;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import api.extractors.EdamanQExtract;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.ParseableRecipeData;
-import mariusz.ambroziak.kassistant.Apiclients.googleAuth.GoogleCalendarApiClient;
-import mariusz.ambroziak.kassistant.Apiclients.googleAuth.GoogleDriveApiClient;
 import mariusz.ambroziak.kassistant.ai.FilesProvider;
-import mariusz.ambroziak.kassistant.ai.categorisation.CategorisationTeacher;
-import mariusz.ambroziak.kassistant.ai.categorisation.Categoriser;
-import mariusz.ambroziak.kassistant.ai.categorisation.Category;
-import mariusz.ambroziak.kassistant.ai.categorisation.CategoryHierarchy;
-import mariusz.ambroziak.kassistant.ai.categorisation.IngredientCategoriser;
+import mariusz.ambroziak.kassistant.ai.categorisation.edaman.Category;
+import mariusz.ambroziak.kassistant.ai.categorisation.edaman.EdamanCategoriser;
+import mariusz.ambroziak.kassistant.ai.categorisation.edaman.FakeProduct;
+import mariusz.ambroziak.kassistant.ai.categorisation.edaman.IngredientCategoriationData;
+import mariusz.ambroziak.kassistant.ai.categorisation.shops.IngredientCategoriser;
 import mariusz.ambroziak.kassistant.exceptions.GoogleDriveAccessNotAuthorisedException;
-import mariusz.ambroziak.kassistant.model.Produkt;
+import mariusz.ambroziak.kassistant.model.quantity.PreciseQuantity;
 import mariusz.ambroziak.kassistant.model.utils.ApiIngredientAmount;
-import mariusz.ambroziak.kassistant.tesco.TescoApiClient;
-import mariusz.ambroziak.kassistant.tesco.TescoApiClientParticularProduct_notUsed;
-import mariusz.ambroziak.kassistant.utils.JspStringHolder;
-import mariusz.ambroziak.kassistant.utils.StringHolder;
 
 
 @Controller
 public class RecipeIngredientsCategorisation_bootstrap {
 
 	
-	@RequestMapping(value="/edaman_ingredient_categorisation_teaching")
-	public ModelAndView categorisation_teaching() throws IOException, GoogleDriveAccessNotAuthorisedException {
-//		ArrayList<String> list=new ArrayList<String>();
-//
-//		list.add("tomato:");
-		List<String> correctnessChecked = CategorisationTeacher.TescoCheckCorectness();
-//
-//		
-////		for(Entry<Produkt, Category> e:testedCategoriesForTomato.entrySet()) {
-////			list.add(e.getKey().getNazwa()+" ("+e.getKey().getUrl()+")->"+e.getValue());
-////		}
-//		
-		
-		ModelAndView mav=new ModelAndView("List");
-		mav.addObject("list",correctnessChecked);
-		return mav;
-	}
-
 	@RequestMapping(value="/edaman_relevant_ingredients")
 	public ModelAndView edaman_relevant_ingredients() throws IOException, GoogleDriveAccessNotAuthorisedException {
-		String phrase="tomato";
+		String phrase="cucumber";
 		
 		ArrayList<ParseableRecipeData> relevantIngredientsFor = IngredientCategoriser.getRelevantIngredientsFor(phrase);
 		ArrayList<ApiIngredientAmount> relevantIngredientsfiltered=new ArrayList<ApiIngredientAmount>();
@@ -106,22 +80,61 @@ public class RecipeIngredientsCategorisation_bootstrap {
 	@RequestMapping(value="/edaman_ingredient_categorisation_teaching")
 	public ModelAndView edaman_ingredient_categorisation_teaching() throws IOException, GoogleDriveAccessNotAuthorisedException {
 		String teachingEdamanContents = getTeachingEdamanContents();
+		ArrayList<String> retList=new ArrayList<String>();
+		ArrayList<String> phrases=new ArrayList<String>();
+
+		String[] split = teachingEdamanContents.split("<");
+		int greens=0,reds=0,yellows=0;
+		Map<String,String> categorisationResults=new HashMap<String, String>();
+		Map<String,String> productPhrases=new HashMap<String, String>();
+		Map<String,String> quantityPhrases=new HashMap<String, String>();
 		
-		String[] split = teachingEdamanContents.split("\n");
 		
 		for(String line:split) {
 			String[] lineSplitted = line.split("->");
 			
 			String ingredientPhrase=lineSplitted[0];
-			String catPhrase=lineSplitted[1];
+			String catPhrase=lineSplitted[1].trim();
+			phrases.add(ingredientPhrase);
 			
+			FakeProduct fp=new FakeProduct(ingredientPhrase);
+			PreciseQuantity extractQuantity = EdamanQExtract.extractQuantity(ingredientPhrase);
 			
+			IngredientCategoriationData dataToBeCategorised=new IngredientCategoriationData(ingredientPhrase, extractQuantity);
 			
+			Category assignedCategory = EdamanCategoriser.getSingleton().assignCategory(dataToBeCategorised);
 			
+			quantityPhrases.put(ingredientPhrase, extractQuantity.toString());
+			productPhrases.put(ingredientPhrase, EdamanQExtract.correctText(ingredientPhrase));
+			
+			String htmlLine=ingredientPhrase;
+			
+			if(catPhrase.startsWith(assignedCategory.getName())) {
+				greens++;
+				categorisationResults.put(ingredientPhrase,"<span style=\"background-color:green\">"+assignedCategory+"(("+catPhrase+"))</span>");
+			}else if(catPhrase.endsWith("??")) {
+				yellows++;
+				categorisationResults.put(ingredientPhrase,"<span style=\"background-color:yellow\">"+assignedCategory+"(("+catPhrase+"))</span>");
+			}else {
+				reds++;
+				categorisationResults.put(ingredientPhrase,"<span style=\"background-color:red\">"+assignedCategory+"(("+catPhrase+"))</span>");
+			}
+			retList.add(htmlLine);
+			System.out.println(htmlLine);
 		}
 		
+		String sumLine="<b>Reds:"+reds+"   yellows:"+yellows+"    greens:"+greens+"    All:"+(reds+yellows+greens)+"</b>";
+
+		ModelAndView mav=new ModelAndView("ingredientCategoriesList");
+		mav.addObject("results",phrases);
+		mav.addObject("categorisationResults",categorisationResults);
+		mav.addObject("quantityPhrases",quantityPhrases);
+		mav.addObject("productPhrases",productPhrases);
+
+		mav.addObject("sumLine",sumLine);
 		
-		return null;
+		return mav;
+		
 	}
 	
 	
