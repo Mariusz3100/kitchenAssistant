@@ -103,10 +103,10 @@ public class CategoryHierarchy {
 				if(MetadataConstants.childrenElementName.equals(childNode.getNodeName())) {
 					childrenElement=childNode;
 				}else if(MetadataConstants.descendantsConditionsElementName.equals(childNode.getNodeName())) {
-					List<Condition> childrenConditionsPassed=parseElementWithConditions(childNode);
+					List<IngredientCondition> childrenConditionsPassed=parseElementWithConditions(childNode);
 					retValue.addChildrenConditions(childrenConditionsPassed);
 				}else if(MetadataConstants.conditionsElementName.equals(childNode.getNodeName())) {
-					List<Condition> conditions=parseElementWithConditions(childNode);
+					List<IngredientCondition> conditions=parseElementWithConditions(childNode);
 					retValue.addConditions(conditions);
 				}
 			}
@@ -121,9 +121,9 @@ public class CategoryHierarchy {
 
 	}
 
-	private static Condition parseConditionElement(Node node) {
+	private static IngredientCondition parseConditionElement(Node node) {
 		NodeList childNodes = node.getChildNodes();
-		Condition retValue=new Condition();
+		IngredientCondition retValue=new IngredientCondition();
 		for(int i=0;i<childNodes.getLength();i++) {
 			Node conditionNode = childNodes.item(i);
 			if(conditionNode.getNodeType()==Node.TEXT_NODE||conditionNode.getNodeType()==Node.COMMENT_NODE) {
@@ -226,7 +226,7 @@ public class CategoryHierarchy {
 
 	}
 
-	private static void addNewSearchPhraseToMap(Condition condition,String keyInMap, Node containsAttribute) {
+	private static void addNewSearchPhraseToMap(IngredientCondition condition,String keyInMap, Node containsAttribute) {
 		String existingCategoryConditions =null;
 		if(condition==null||containsAttribute==null)
 		{
@@ -242,7 +242,7 @@ public class CategoryHierarchy {
 	}
 
 	
-	private static void addNewExclusionPhraseToMap(Condition condition,String keyInMap, Node containsAttribute) {
+	private static void addNewExclusionPhraseToMap(IngredientCondition condition,String keyInMap, Node containsAttribute) {
 		String existingCategoryConditions =null;
 		if(condition==null||containsAttribute==null)
 		{
@@ -257,7 +257,7 @@ public class CategoryHierarchy {
 		condition.addAttributeNotContainsValue(keyInMap, containsAttribute.getTextContent());
 	}
 	
-	private static void addNewRegexToMap(Condition condition,String keyInMap, Node regex) {
+	private static void addNewRegexToMap(IngredientCondition condition,String keyInMap, Node regex) {
 		String existingCategoryConditions =null;
 		if(condition==null||regex==null)
 		{
@@ -272,7 +272,7 @@ public class CategoryHierarchy {
 		condition.addAttributeRegex(keyInMap, regex.getTextContent());
 	}
 	
-	private static void addNewRegexExclusionToMap(Condition condition,String keyInMap, Node notRegex) {
+	private static void addNewRegexExclusionToMap(IngredientCondition condition,String keyInMap, Node notRegex) {
 		String existingCategoryConditions =null;
 		if(condition==null||notRegex==null)
 		{
@@ -293,15 +293,15 @@ public class CategoryHierarchy {
 	//		
 	//	}
 
-	private static List<Condition> parseElementWithConditions(Node node) {
+	private static List<IngredientCondition> parseElementWithConditions(Node node) {
 		NodeList childNodes = node.getChildNodes();
-		List<Condition> retValue=new ArrayList<Condition>();
+		List<IngredientCondition> retValue=new ArrayList<IngredientCondition>();
 		for(int i=0;i<childNodes.getLength();i++) {
 			Node childNode = childNodes.item(i);
 			if(childNode.getNodeType()==Node.TEXT_NODE||childNode.getNodeType()==Node.COMMENT_NODE) {
 				//no handling for text node now
 			}else {
-				Condition parsedCondition = parseConditionElement(childNode);
+				IngredientCondition parsedCondition = parseConditionElement(childNode);
 				retValue.add(parsedCondition);
 			}
 		}

@@ -19,33 +19,34 @@ public class IngredientCategory {
 	private IngredientCategory parent;
 	private List<IngredientCategory> children;
 
-	private List<Condition> conditions;
-	private List<Condition> childrenConditions;
+
+	private List<IngredientCondition> conditions;
+	private List<IngredientCondition> childrenConditions;
 
 
 
-	public List<Condition> getChildrenConditions() {
+	public List<IngredientCondition> getChildrenConditions() {
 		return childrenConditions;
 	}
-	public void addChildrenConditions(Condition condition) {
+	public void addChildrenConditions(IngredientCondition condition) {
 		if(this.childrenConditions==null)
-			this.childrenConditions =new ArrayList<Condition>();
+			this.childrenConditions =new ArrayList<IngredientCondition>();
 
 		this.childrenConditions.add(condition);
 	}
 	
-	public void addChildrenConditions(List<Condition> conditions) {
+	public void addChildrenConditions(List<IngredientCondition> conditions) {
 		if(this.childrenConditions==null)
-			this.childrenConditions =new ArrayList<Condition>();
+			this.childrenConditions =new ArrayList<IngredientCondition>();
 
 		this.childrenConditions.addAll(conditions);
 	}
 	public IngredientCategory(String name) {
 		super();
 		this.name = name;
-		this.childrenConditions=new ArrayList<Condition>();
+		this.childrenConditions=new ArrayList<IngredientCondition>();
 		this.children=new ArrayList<IngredientCategory>();
-		this.conditions=new ArrayList<Condition>();
+		this.conditions=new ArrayList<IngredientCondition>();
 	}
 	public String getName() {
 		return name;
@@ -75,19 +76,19 @@ public class IngredientCategory {
 
 		this.children.addAll(childs);
 	}
-	public List<Condition> getConditions() {
+	public List<IngredientCondition> getConditions() {
 		return conditions;
 	}
-	public void addConditions(Condition... conditions) {
+	public void addConditions(IngredientCondition... conditions) {
 		if(this.conditions==null)
-			this.conditions =new ArrayList<Condition>();
+			this.conditions =new ArrayList<IngredientCondition>();
 
 		this.conditions.addAll(Arrays.asList(conditions));
 	}
 
-	public void addConditions(List<Condition> conditions) {
+	public void addConditions(List<IngredientCondition> conditions) {
 		if(this.conditions==null)
-			this.conditions =new ArrayList<Condition>();
+			this.conditions =new ArrayList<IngredientCondition>();
 
 		this.conditions.addAll(conditions);
 	}
@@ -114,11 +115,11 @@ public class IngredientCategory {
 
 		return createEmpty();
 	}
-	public boolean checkListOfConditions(List<Condition> conditions, IngredientCategoriationData ingredient) {
+	public boolean checkListOfConditions(List<IngredientCondition> conditions, IngredientCategoriationData ingredient) {
 		if(conditions==null||conditions.isEmpty()) 
 			return true;
 		
-		for(Condition c:conditions) {
+		for(IngredientCondition c:conditions) {
 			if(c.check(ingredient)) {
 				return true;
 			}
@@ -168,13 +169,13 @@ public class IngredientCategory {
 		jsonRep.put("children", childrenJsonArray);
 		
 		JSONArray conditionsJsonArray=new JSONArray();
-		for(Condition c:getConditions()) {
+		for(IngredientCondition c:getConditions()) {
 			conditionsJsonArray.put(c.toJsonRepresentation());
 		}
 		jsonRep.put("conditions", conditionsJsonArray);
 
 		JSONArray branchTraverseConditions=new JSONArray();
-		for(Condition c:getChildrenConditions()) {
+		for(IngredientCondition c:getChildrenConditions()) {
 			branchTraverseConditions.put(c.toJsonRepresentation());
 		}
 		jsonRep.put("branchTraverseCondition", branchTraverseConditions);

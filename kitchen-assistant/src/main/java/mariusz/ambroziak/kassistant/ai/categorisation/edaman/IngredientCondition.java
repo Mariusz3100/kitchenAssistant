@@ -12,7 +12,7 @@ import org.json.JSONObject;
 
 import mariusz.ambroziak.kassistant.ai.categorisation.MetadataConstants;
 
-public class Condition {
+public class IngredientCondition {
 	//	ArrayList<String> nameInclusions;
 	//	ArrayList<String> nameExclusions;
 
@@ -312,7 +312,7 @@ public class Condition {
 		return retValue;
 
 	}
-	public Condition() {
+	public IngredientCondition() {
 		super();
 		this.attributesPresent=new ArrayList<String>();
 		this.attributeValues=new HashMap<String, String>();
