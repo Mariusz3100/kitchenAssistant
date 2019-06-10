@@ -40,16 +40,15 @@ public class EdamanCategoriser {
 	}
 
 	
-	public Category assignCategory(IngredientCategoriationData toBeCategorised) {
-		Category root=CategoryHierarchy.getSingletonCategoryRoot();
+	public IngredientParsed parseIngredient(String phrase) {
 		
-		return root.assignCategoryFromTree(toBeCategorised);
+		
+		return null;
 	}
-
-//	public Category assignCategory(ApiIngredientAmount product) {
-//		Category root=CategoryHierarchy.getSingletonCategoryRoot();
-//		
-//		return root.assignCategoryFromTree(product);
-//	}
-
+	
+	
+	
+	
+	
+	
 }

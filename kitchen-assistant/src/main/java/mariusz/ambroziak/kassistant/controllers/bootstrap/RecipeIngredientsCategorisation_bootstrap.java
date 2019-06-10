@@ -14,16 +14,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import api.extractors.EdamanQExtract;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.ParseableRecipeData;
 import mariusz.ambroziak.kassistant.ai.FilesProvider;
-import mariusz.ambroziak.kassistant.ai.categorisation.edaman.Category;
-import mariusz.ambroziak.kassistant.ai.categorisation.edaman.EdamanCategoriser;
-import mariusz.ambroziak.kassistant.ai.categorisation.edaman.FakeProduct;
-import mariusz.ambroziak.kassistant.ai.categorisation.edaman.IngredientCategoriationData;
+import mariusz.ambroziak.kassistant.ai.categorisation.edaman.EdamanCategorisationTeacher;
+import mariusz.ambroziak.kassistant.ai.categorisation.edaman.IngredientParsed;
 import mariusz.ambroziak.kassistant.ai.categorisation.shops.IngredientCategoriser;
 import mariusz.ambroziak.kassistant.exceptions.GoogleDriveAccessNotAuthorisedException;
-import mariusz.ambroziak.kassistant.model.quantity.PreciseQuantity;
 import mariusz.ambroziak.kassistant.model.utils.ApiIngredientAmount;
 
 
@@ -76,67 +72,125 @@ public class RecipeIngredientsCategorisation_bootstrap {
 		return mav;
 	}
 	
-	
 	@RequestMapping(value="/edaman_ingredient_categorisation_teaching")
 	public ModelAndView edaman_ingredient_categorisation_teaching() throws IOException, GoogleDriveAccessNotAuthorisedException {
-		String teachingEdamanContents = getTeachingEdamanContents();
-		ArrayList<String> retList=new ArrayList<String>();
+		
+		Map<String, String> targetValues = EdamanCategorisationTeacher.getTeachingExcercise();
+
+		Map<String, IngredientParsed> checkedCorectness = EdamanCategorisationTeacher.checkCorectness_inEdaman();
+		
+		
 		ArrayList<String> phrases=new ArrayList<String>();
 
-		String[] split = teachingEdamanContents.split("<");
 		int greens=0,reds=0,yellows=0;
 		Map<String,String> categorisationResults=new HashMap<String, String>();
 		Map<String,String> productPhrases=new HashMap<String, String>();
 		Map<String,String> quantityPhrases=new HashMap<String, String>();
-		
-		
-		for(String line:split) {
-			String[] lineSplitted = line.split("->");
-			
-			String ingredientPhrase=lineSplitted[0];
-			String catPhrase=lineSplitted[1].trim();
-			phrases.add(ingredientPhrase);
-			
-			FakeProduct fp=new FakeProduct(ingredientPhrase);
-			PreciseQuantity extractQuantity = EdamanQExtract.extractQuantity(ingredientPhrase);
-			
-			IngredientCategoriationData dataToBeCategorised=new IngredientCategoriationData(ingredientPhrase, extractQuantity);
-			
-			Category assignedCategory = EdamanCategoriser.getSingleton().assignCategory(dataToBeCategorised);
-			
-			quantityPhrases.put(ingredientPhrase, extractQuantity.toString());
-			productPhrases.put(ingredientPhrase, EdamanQExtract.correctText(ingredientPhrase));
-			
-			String htmlLine=ingredientPhrase;
-			
-			if(catPhrase.startsWith(assignedCategory.getName())) {
-				greens++;
-				categorisationResults.put(ingredientPhrase,"<span style=\"background-color:green\">"+assignedCategory+"(("+catPhrase+"))</span>");
-			}else if(catPhrase.endsWith("??")) {
-				yellows++;
-				categorisationResults.put(ingredientPhrase,"<span style=\"background-color:yellow\">"+assignedCategory+"(("+catPhrase+"))</span>");
-			}else {
-				reds++;
-				categorisationResults.put(ingredientPhrase,"<span style=\"background-color:red\">"+assignedCategory+"(("+catPhrase+"))</span>");
-			}
-			retList.add(htmlLine);
-			System.out.println(htmlLine);
-		}
-		
-		String sumLine="<b>Reds:"+reds+"   yellows:"+yellows+"    greens:"+greens+"    All:"+(reds+yellows+greens)+"</b>";
+		ArrayList<String> retList=new ArrayList<String>();
 
+		
+		for(String ingredientPhrase:targetValues.keySet()) {
+		IngredientParsed ingredientParsed = checkedCorectness.get(ingredientPhrase);
+		String catPhrase=targetValues.get(ingredientPhrase);
+		phrases.add(ingredientPhrase);
+		
+		
+		String quantityPhrase = ingredientParsed==null||ingredientParsed.getQuantity()==null?"brak":ingredientParsed.getQuantity().toString();
+		String categoryPhrase = ingredientParsed==null||ingredientParsed.getCategory()==null?"brak":ingredientParsed.getCategory().toString();
+		String productPhrase = ingredientParsed==null||ingredientParsed.getProductPhrase()==null?"brak":ingredientParsed.getProductPhrase().toString();
+
+		
+		quantityPhrases.put(ingredientPhrase, quantityPhrase);
+		productPhrases.put(ingredientPhrase,productPhrase);
+		
+		String htmlLine=ingredientPhrase;
+		
+		if(catPhrase.startsWith(categoryPhrase)) {
+			greens++;
+			categorisationResults.put(ingredientPhrase,"<span style=\"background-color:green\">"+categoryPhrase+"(("+catPhrase+"))</span>");
+		}else if(catPhrase.endsWith("??")) {
+			yellows++;
+			categorisationResults.put(ingredientPhrase,"<span style=\"background-color:yellow\">"+categoryPhrase+"(("+catPhrase+"))</span>");
+		}else {
+			reds++;
+			categorisationResults.put(ingredientPhrase,"<span style=\"background-color:red\">"+categoryPhrase+"(("+catPhrase+"))</span>");
+		}
+		retList.add(htmlLine);
+		System.out.println(htmlLine);
+	}
+		
 		ModelAndView mav=new ModelAndView("ingredientCategoriesList");
+
 		mav.addObject("results",phrases);
 		mav.addObject("categorisationResults",categorisationResults);
 		mav.addObject("quantityPhrases",quantityPhrases);
 		mav.addObject("productPhrases",productPhrases);
+		String sumLine="<b>Reds:"+reds+"   yellows:"+yellows+"    greens:"+greens+"    All:"+(reds+yellows+greens)+"</b>";
 
 		mav.addObject("sumLine",sumLine);
-		
 		return mav;
-		
 	}
-	
+//	
+//	@RequestMapping(value="/edaman_ingredient_categorisation_teaching")
+//	public ModelAndView edaman_ingredient_categorisation_teaching() throws IOException, GoogleDriveAccessNotAuthorisedException {
+//		String teachingEdamanContents = getTeachingEdamanContents();
+//		ArrayList<String> retList=new ArrayList<String>();
+//		ArrayList<String> phrases=new ArrayList<String>();
+//
+//		String[] split = teachingEdamanContents.split("<");
+//		int greens=0,reds=0,yellows=0;
+//		Map<String,String> categorisationResults=new HashMap<String, String>();
+//		Map<String,String> productPhrases=new HashMap<String, String>();
+//		Map<String,String> quantityPhrases=new HashMap<String, String>();
+//		
+//		
+//		for(String line:split) {
+//			String[] lineSplitted = line.split("->");
+//			
+//			String ingredientPhrase=lineSplitted[0];
+//			String catPhrase=lineSplitted[1].trim();
+//			phrases.add(ingredientPhrase);
+//			
+//			FakeProduct fp=new FakeProduct(ingredientPhrase);
+//			PreciseQuantity extractQuantity = EdamanQExtract.extractQuantity(ingredientPhrase);
+//			
+//			IngredientCategoriationData dataToBeCategorised=new IngredientCategoriationData(ingredientPhrase, extractQuantity);
+//			
+//			Category assignedCategory = EdamanCategoriser.getSingleton().assignCategory(dataToBeCategorised);
+//			
+//			quantityPhrases.put(ingredientPhrase, extractQuantity.toString());
+//			productPhrases.put(ingredientPhrase, EdamanQExtract.correctText(ingredientPhrase));
+//			
+//			String htmlLine=ingredientPhrase;
+//			
+//			if(catPhrase.startsWith(assignedCategory.getName())) {
+//				greens++;
+//				categorisationResults.put(ingredientPhrase,"<span style=\"background-color:green\">"+assignedCategory+"(("+catPhrase+"))</span>");
+//			}else if(catPhrase.endsWith("??")) {
+//				yellows++;
+//				categorisationResults.put(ingredientPhrase,"<span style=\"background-color:yellow\">"+assignedCategory+"(("+catPhrase+"))</span>");
+//			}else {
+//				reds++;
+//				categorisationResults.put(ingredientPhrase,"<span style=\"background-color:red\">"+assignedCategory+"(("+catPhrase+"))</span>");
+//			}
+//			retList.add(htmlLine);
+//			System.out.println(htmlLine);
+//		}
+//		
+//		String sumLine="<b>Reds:"+reds+"   yellows:"+yellows+"    greens:"+greens+"    All:"+(reds+yellows+greens)+"</b>";
+//
+//		ModelAndView mav=new ModelAndView("ingredientCategoriesList");
+//		mav.addObject("results",phrases);
+//		mav.addObject("categorisationResults",categorisationResults);
+//		mav.addObject("quantityPhrases",quantityPhrases);
+//		mav.addObject("productPhrases",productPhrases);
+//
+//		mav.addObject("sumLine",sumLine);
+//		
+//		return mav;
+//		
+//	}
+//	
 	
 	private static String getTeachingEdamanContents() {
 		Resource teachingExpectationsFile = FilesProvider.getInstance().getTeachingEdamanFile();

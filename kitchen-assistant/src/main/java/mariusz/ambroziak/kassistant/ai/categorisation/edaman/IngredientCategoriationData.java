@@ -4,10 +4,7 @@ import mariusz.ambroziak.kassistant.model.quantity.NotPreciseQuantity;
 
 public class IngredientCategoriationData {
 	private String phrase;
-	private NotPreciseQuantity quan;
-	
-	
-	
+
 	public String getPhrase() {
 		return phrase;
 	}
@@ -16,24 +13,9 @@ public class IngredientCategoriationData {
 		this.phrase = phrase;
 	}
 
-	public void setQuan(NotPreciseQuantity quan) {
-		this.quan = quan;
-	}
-
-	public IngredientCategoriationData(String phrase, NotPreciseQuantity quan) {
+	public IngredientCategoriationData(String phrase) {
 		super();
 		this.phrase = phrase;
-		this.quan = quan;
 	}
 
-	
-	
-	public NotPreciseQuantity getQuan() {
-		return quan;
-	}
-
-	@Override
-	public String toString() {
-		return "QuantityPhraseClone [phrase=" + phrase + ", quan=" + quan + "]";
-	}
 }
