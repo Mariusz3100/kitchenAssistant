@@ -21,12 +21,12 @@ import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 
 
 
-public class CategoryHierarchy {
+public class IngredientCategoryHierarchy {
 
 	private static IngredientCategory root;
 
 
-	private CategoryHierarchy() {
+	private IngredientCategoryHierarchy() {
 		super();
 
 	}
@@ -219,6 +219,28 @@ public class CategoryHierarchy {
 						addNewRegexExclusionToMap(retValue, MetadataConstants.servingPhraseNameJsonName,notRegex);
 					}
 					
+				}else if(MetadataConstants.unparsedPhraseConditionElementName.equals(conditionNode.getNodeName())) {
+					NamedNodeMap attributesMap = conditionNode.getAttributes();
+					Node contains=attributesMap.getNamedItem(MetadataConstants.containsAttribute);
+					Node notContains=attributesMap.getNamedItem(MetadataConstants.notContainsAttribute);
+					Node regex=attributesMap.getNamedItem(MetadataConstants.regexMatchedAttribute);
+
+					if(regex!=null) {
+						addNewRegexToMap(retValue, MetadataConstants.unparsedPhraseNameJsonName,regex);
+					}
+					
+					if(contains!=null) {
+						addNewSearchPhraseToMap(retValue, MetadataConstants.unparsedPhraseNameJsonName,contains);
+					}
+					if(notContains!=null) {
+						addNewExclusionPhraseToMap(retValue, MetadataConstants.unparsedPhraseNameJsonName,notContains);
+					}
+					Node notRegex=attributesMap.getNamedItem(MetadataConstants.regexNotMatchedAttribute);
+
+					if(notRegex!=null) {
+						addNewRegexExclusionToMap(retValue, MetadataConstants.unparsedPhraseNameJsonName,notRegex);
+					}
+					
 				}
 			}
 		}
@@ -372,7 +394,7 @@ public class CategoryHierarchy {
 	}
 
 	private static String getXmlContent() {
-		Resource categoriesFile = FilesProvider.getInstance().getCategoriesFile();
+		Resource categoriesFile = FilesProvider.getInstance().getEdamanCategoriesFile();
 		StringBuilder content=new StringBuilder();
 
 		InputStream inputStream;
