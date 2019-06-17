@@ -2,8 +2,7 @@ package mariusz.ambroziak.kassistant.ai.categorisation.edaman;
 
 import mariusz.ambroziak.kassistant.model.quantity.NotPreciseQuantity;
 
-public class IngredientParsed {
-	private String originalPhrase;
+public class IngredientParsed extends IngredientUnparsedApiDetails{
 	private String productPhrase;
 	private NotPreciseQuantity quantity;
 	private IngredientCategory category;
@@ -14,11 +13,15 @@ public class IngredientParsed {
 	public IngredientParsed() {
 		super();
 	}
-	public String getOriginalPhrase() {
-		return originalPhrase;
-	}
-	public void setOriginalPhrase(String originalPhrase) {
-		this.originalPhrase = originalPhrase;
+	
+	public IngredientParsed(IngredientUnparsedApiDetails source) {
+		super();
+		setAmount(source.getAmount());
+		setAmountTypePhrase(source.getAmountTypePhrase());
+		setOriginalPhrase(source.getOriginalPhrase());
+		setProductPhrase(source.getProductPhrase());
+		
+		
 	}
 	public String getProductPhrase() {
 		return productPhrase;

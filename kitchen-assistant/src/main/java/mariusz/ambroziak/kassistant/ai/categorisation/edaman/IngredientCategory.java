@@ -2,7 +2,9 @@ package mariusz.ambroziak.kassistant.ai.categorisation.edaman;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -14,7 +16,6 @@ import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 
 
 public class IngredientCategory {
-
 	private String name;
 	private IngredientCategory parent;
 	private List<IngredientCategory> children;
@@ -23,6 +24,8 @@ public class IngredientCategory {
 	private List<IngredientCondition> conditions;
 	private List<IngredientCondition> childrenConditions;
 
+
+	public static Map<String,IngredientCategory> categories=new HashMap<String,IngredientCategory>();
 
 
 	public List<IngredientCondition> getChildrenConditions() {
@@ -47,6 +50,7 @@ public class IngredientCategory {
 		this.childrenConditions=new ArrayList<IngredientCondition>();
 		this.children=new ArrayList<IngredientCategory>();
 		this.conditions=new ArrayList<IngredientCondition>();
+		categories.put(name, this);
 	}
 	public String getName() {
 		return name;
@@ -94,7 +98,7 @@ public class IngredientCategory {
 	}
 	
 	
-	public IngredientCategory assignCategoryFromTree(IngredientCategoriationData ingredient) {
+	public IngredientCategory assignCategoryFromTree(IngredientUnparsedApiDetails ingredient) {
 		if(ingredient==null)
 			return null;
 
@@ -115,7 +119,7 @@ public class IngredientCategory {
 
 		return createEmpty();
 	}
-	public boolean checkListOfConditions(List<IngredientCondition> conditions, IngredientCategoriationData ingredient) {
+	public boolean checkListOfConditions(List<IngredientCondition> conditions, IngredientUnparsedApiDetails ingredient) {
 		if(conditions==null||conditions.isEmpty()) 
 			return true;
 		
@@ -135,13 +139,13 @@ public class IngredientCategory {
 	}
 
 
-	private IngredientCategory checkChildren(IngredientCategoriationData ingredient) {
+	private IngredientCategory checkChildren(IngredientUnparsedApiDetails ingredient) {
 		IngredientCategory match=null;
 		if(getChildren()!=null&&!getChildren().isEmpty()) {
 			for(IngredientCategory ck:getChildren()) {
 				IngredientCategory found=ck.assignCategoryFromTree(ingredient);
 				if(match!=null&&found!=null&&!found.checkIfEmpty()) {
-					ProblemLogger.logProblem("Two different categories assigned for "+ingredient.getPhrase()+": "+match.getName()+" and "+found.getName());
+					ProblemLogger.logProblem("Two different categories assigned for "+ingredient.getOriginalPhrase()+": "+match.getName()+" and "+found.getName());
 					return createEmpty();
 				}else {
 					if((match==null||match.checkIfEmpty())&&found!=null&&!found.checkIfEmpty()) {

@@ -25,7 +25,7 @@ public class EdamanCategorisationTeacher {
 		Map<String,IngredientParsed> retValue=new HashMap<String, IngredientParsed>();
 		
 		for(String phrase:teachingExcercise.keySet()) {
-			IngredientParsed parsed = EdamanCategoriser.getSingleton().parseIngredient(phrase);
+			IngredientParsed parsed = EdamanCategoriser.getSingleton().parseIngredient(phrase,"tomato");
 			retValue.put(phrase, parsed);
 		}
 		

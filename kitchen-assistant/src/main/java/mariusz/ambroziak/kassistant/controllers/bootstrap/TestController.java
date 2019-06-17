@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import mariusz.ambroziak.kassistant.Apiclients.edaman.nutrientClients.EdamaneIngredientParsingApiClient;
 import mariusz.ambroziak.kassistant.Apiclients.googleAuth.GoogleCalendarApiClient;
 import mariusz.ambroziak.kassistant.Apiclients.googleAuth.GoogleDriveApiClient;
 import mariusz.ambroziak.kassistant.ai.FilesProvider;
@@ -65,7 +66,13 @@ public class TestController {
 
 	
 	
-
+	
+	@RequestMapping(value="/edamanParsingTest")
+	public ModelAndView edamanParsingTest() {
+		EdamaneIngredientParsingApiClient.main(null);
+		return new ModelAndView();
+	}
+	
 
 	
 	@RequestMapping(value="/tesco_test")

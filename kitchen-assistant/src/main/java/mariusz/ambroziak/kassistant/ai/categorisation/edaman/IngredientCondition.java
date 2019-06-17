@@ -13,6 +13,8 @@ import org.json.JSONObject;
 import mariusz.ambroziak.kassistant.ai.categorisation.MetadataConstants;
 
 public class IngredientCondition {
+
+	
 	//	ArrayList<String> nameInclusions;
 	//	ArrayList<String> nameExclusions;
 
@@ -122,6 +124,14 @@ public class IngredientCondition {
 		else
 			return Arrays.asList(nameExclusions.split(MetadataConstants.stringListSeparator));
 	}
+	
+	public List<String> getOriginalNameExclusions() {
+		String nameExclusions = attributeNotContainsValues.get(MetadataConstants.unparsedPhraseNameJsonName);
+		if(nameExclusions==null)
+			return new ArrayList<String>();
+		else
+			return Arrays.asList(nameExclusions.split(MetadataConstants.stringListSeparator));
+	}
 	public Map<String, String> getAttributeNotContainsValues() {
 		return attributeNotContainsValues;
 	}
@@ -210,30 +220,57 @@ public class IngredientCondition {
 			return Arrays.asList(nameInclusions.split(MetadataConstants.stringListSeparator));
 
 	}
+	
+	public List<String> getOriginalPhraseInclusions() {
+		String nameInclusions = attributeValues.get(MetadataConstants.unparsedPhraseNameJsonName);
+		if(nameInclusions==null)
+			return new ArrayList<String>();
+		else
+			return Arrays.asList(nameInclusions.split(MetadataConstants.stringListSeparator));
+
+	}
 	public void addNameInclusion(String nameInclusion) {
 		this.addAttributeValues(MetadataConstants.conditionProduktNameMapKey,nameInclusion );
 
 	}
 
 
-	public boolean check(IngredientCategoriationData ingredient) {
+	public boolean check(IngredientUnparsedApiDetails ingredient) {
 		boolean nameHasInclusions=checkNameInclusions(ingredient);
 		boolean nameHasNoExclusions=checkNameExclusons(ingredient);
 
+		boolean originalPhraseHasInclusions=checkUnparsedPhrase(ingredient);
+		boolean originalPhraseHasNoExclusions=checkUnparsedPhraseExclusions(ingredient);
+
 		
-		boolean retValue = nameHasInclusions&&nameHasNoExclusions;
+		boolean retValue = nameHasInclusions&&nameHasNoExclusions&&originalPhraseHasInclusions&&originalPhraseHasNoExclusions;
 		if(retValue) {
-			System.out.println("For ingredient:"+ingredient.getPhrase()
+			System.out.println("For ingredient:"+getIngredientsName(ingredient)
 			+"\n condition object passed:"+this.toJsonRepresentation());
 		}
 		return retValue;
 	}
 
 
-	private boolean checkNameInclusions(IngredientCategoriationData ingredient) {
+	private boolean checkUnparsedPhraseExclusions(IngredientUnparsedApiDetails ingredient) {
+		List<String> nameExclusions = getOriginalNameExclusions();
+
+		if(nameExclusions!=null&&!nameExclusions.isEmpty()) {
+			for(int i=0;i<nameExclusions.size();i++) {
+
+				String originalName = ingredient.getOriginalPhrase();
+				originalName=translateToBase(originalName);
+				if(originalName!=null&&originalName.toLowerCase().contains(nameExclusions.get(i).toLowerCase())) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	private boolean checkNameInclusions(IngredientUnparsedApiDetails ingredient) {
 		boolean nameIsOk=true;
 
-		String productName = ingredient.getPhrase();
+		String productName = getIngredientsName(ingredient);
 
 
 
@@ -248,14 +285,46 @@ public class IngredientCondition {
 		}
 		return nameIsOk;
 	}
+	private String getIngredientsName(IngredientUnparsedApiDetails ingredient) {
+		String temp= ingredient.getProductPhrase();
+		
+		return translateToBase(temp);
+	}
+	private String translateToBase(String temp) {
+		for(Entry<String, String> e:translationMap.entrySet()) {
+			temp=temp.replaceAll(e.getKey(),e.getValue());
+		}
+		
+		return temp;
+	}
+	
+	
+	private boolean checkUnparsedPhrase(IngredientUnparsedApiDetails ingredient) {
+		boolean nameIsOk=true;
 
-	private boolean checkNameExclusons(IngredientCategoriationData ingredient) {
+		String originalName = ingredient.getOriginalPhrase();
+
+
+
+		List<String> inclusions = getOriginalPhraseInclusions();
+		if(inclusions!=null&&!inclusions.isEmpty()) {
+			for(int i=0;nameIsOk&&i<inclusions.size();i++) {
+
+				if(originalName==null||!originalName.toLowerCase().contains(inclusions.get(i).toLowerCase())) {
+					nameIsOk=false;
+				}
+			}
+		}
+		return nameIsOk;
+	}
+
+	private boolean checkNameExclusons(IngredientUnparsedApiDetails ingredient) {
 		List<String> nameExclusions = getNameExclusions();
 
 		if(nameExclusions!=null&&!nameExclusions.isEmpty()) {
 			for(int i=0;i<nameExclusions.size();i++) {
 
-				String productName = ingredient.getPhrase();
+				String productName = getIngredientsName(ingredient);
 				if(productName!=null&&productName.toLowerCase().contains(nameExclusions.get(i).toLowerCase())) {
 					return false;
 				}
@@ -318,5 +387,14 @@ public class IngredientCondition {
 		this.attributeValues=new HashMap<String, String>();
 		this.attributeNotContainsValues=new HashMap<String, String>();
 
+	}
+	
+	
+	
+	public static Map<String,String> translationMap;
+	
+	static {
+		translationMap=new HashMap<String, String>();
+		translationMap.put("é", "e");
 	}
 }

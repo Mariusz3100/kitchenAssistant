@@ -1,27 +1,21 @@
 package mariusz.ambroziak.kassistant.ai.categorisation.edaman;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.jsoup.nodes.Element;
-
 import api.extractors.AbstractQuantityEngExtractor;
-import api.extractors.EdamanCategorisationQExtractor;
-import api.extractors.AbstractQuantityEngExtractor.QuantityTranslation;
-import mariusz.ambroziak.kassistant.model.Produkt;
+import api.extractors.EdamanQExtract;
+import mariusz.ambroziak.kassistant.Apiclients.edaman.nutrientClients.EdamaneIngredientParsingApiClient;
+import mariusz.ambroziak.kassistant.ai.categorisation.MetadataConstants;
 import mariusz.ambroziak.kassistant.model.quantity.AmountTypes;
-import mariusz.ambroziak.kassistant.model.quantity.NotPreciseQuantity;
 import mariusz.ambroziak.kassistant.model.quantity.PreciseQuantity;
-import mariusz.ambroziak.kassistant.model.utils.AbstractQuantity;
-import mariusz.ambroziak.kassistant.model.utils.ApiIngredientAmount;
 import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 
 public class EdamanCategoriser extends AbstractQuantityEngExtractor {
 	public static final String zamiastNawiasu = " ";
 	public static String bracketsRegex="(.*) (\\(.*\\)) (.*)";
 
-	
-	
+
+
 	private static EdamanCategoriser singleton;
 
 	public static void main(String [] args){
@@ -50,51 +44,134 @@ public class EdamanCategoriser extends AbstractQuantityEngExtractor {
 
 	}
 
-	
-	public IngredientParsed parseIngredient(String text) {
-		IngredientParsed retValue=new IngredientParsed();
-		retValue.setOriginalPhrase(text);
-		retValue.setProductPhrase(text);
-		NotPreciseQuantity retQuantity;
-		IngredientCategory retCategory;
+	public IngredientParsed parseIngredient(String text,String originalSearchPhrase) {
+		IngredientUnparsedApiDetails unparsedDetails=EdamaneIngredientParsingApiClient.parseIngredient(text);
+		IngredientCategoryHierarchy.getSingletonCategoryRoot();//initialize hierarchy
+		IngredientCategory foundCategory = checkSpecialCaseCategories(originalSearchPhrase, unparsedDetails);
 		
-		if(text==null||text.equals("")){
-			return retValue;
-		}
-
-		text=text.trim();
-
-		String ommissionLess=text;
-		for(String ommision:ommissions) {
-			ommissionLess=ommissionLess.replaceAll(" "+ommision, "");
-			ommissionLess=ommissionLess.replaceAll(ommision+" ", "");
-			ommissionLess=ommissionLess.replaceAll(ommision, "");
+		if(foundCategory==null||foundCategory.checkIfEmpty()) {
+			foundCategory=calculateCategory(unparsedDetails);
 
 		}
 
-		String bracketless=ommissionLess.replaceAll(" \\(.*\\) ", zamiastNawiasu);
+		IngredientParsed retValue=new IngredientParsed(unparsedDetails);
+		PreciseQuantity quantity = EdamanQExtract.getTranslationToBaseType(unparsedDetails.getAmountTypePhrase()).getQuantity((float)unparsedDetails.getAmount());
 
-		
-		Pattern pattern = Pattern.compile(bracketsRegex);
-		Matcher matcher = pattern.matcher(ommissionLess);
-		boolean matches = matcher.matches();
+		retValue.setQuantity(quantity);
+		retValue.setCategory(foundCategory);
 
-		
-		return null;
+		return retValue;	
 	}
-	
-	
-	
-		
-	
 
 
 
-	public static PreciseQuantity extractQuantity(String text){
+
+
+	private IngredientCategory checkSpecialCaseCategories(String originalSearchPhrase,
+			IngredientUnparsedApiDetails unparsedDetails) {
+		IngredientCategory foundCategory=null;
+
+		if(unparsedDetails.getProductPhrase().equals(originalSearchPhrase)
+				||unparsedDetails.getProductPhrase().equals(originalSearchPhrase+"s")
+				||unparsedDetails.getProductPhrase().equals(originalSearchPhrase+"es")) {
+			if(unparsedDetails.getOriginalPhrase().contains("(click recipe)"))
+				return null;
+			
+			foundCategory= IngredientCategory.categories.get(MetadataConstants.rawCategoryName);
+		}
+		return foundCategory;
+	}
+
+
+	//	public IngredientParsed parseIngredient(String text,String originalSearchPhrase) {
+	//		IngredientParsed retValue=new IngredientParsed();
+	//		IngredientCategoriationData categorisationArguments=new IngredientCategoriationData(text);
+	//		retValue.setOriginalPhrase(text);
+	//		//		retValue.setProductPhrase(text);
+	//		NotPreciseQuantity retQuantity=null;
+	//		IngredientCategory retCategory=null;//CategoryHierarchy.getSingletonCategoryRoot();
+	//		String productPhrase=null;
+	//		if(text==null||text.equals("")){
+	//			return retValue;
+	//		}
+	//
+	//		text=text.trim();
+	//
+	//		String ommissionLess=text;
+	//		for(String ommision:ommissions) {
+	//			ommissionLess=ommissionLess.replaceAll(" "+ommision, "");
+	//			ommissionLess=ommissionLess.replaceAll(ommision+" ", "");
+	//			ommissionLess=ommissionLess.replaceAll(ommision, "");
+	//
+	//		}
+	//
+	//
+	//		Pattern pattern = Pattern.compile(bracketsRegex);
+	//		Matcher matcher = pattern.matcher(ommissionLess);
+	//		boolean matches = matcher.matches();
+	//
+	//		if(matches) {
+	//
+	//			String brackets=matcher.group(2);
+	//
+	//			System.out.println(brackets);
+	//
+	//			String inBrackets = brackets.substring(1,brackets.length()-1);
+	//
+	//			IngredientParsed extractedQuantity = extractQuantity(inBrackets,originalSearchPhrase);
+	//
+	//			if(extractedQuantity!=null&&extractedQuantity.getQuantity()!=null&&extractedQuantity.getQuantity().isValid()) {
+	//				retQuantity= extractedQuantity.getQuantity();
+	//			}
+	//			productPhrase=extractedQuantity.getProductPhrase();
+	//
+	//		}else {
+	//			IngredientParsed extractedQuantity = extractQuantity(text,originalSearchPhrase);
+	//
+	//			if(extractedQuantity!=null&&extractedQuantity.getQuantity()!=null&&extractedQuantity.getQuantity().isValid()) {
+	//				retQuantity= extractedQuantity.getQuantity();
+	//			}
+	//
+	//			if(extractedQuantity!=null&&extractedQuantity.getCategory()!=null&&(retCategory==null||retCategory.checkIfEmpty())) {
+	//				retCategory=extractedQuantity.getCategory();
+	//			}
+	//			
+	//			productPhrase=extractedQuantity.getProductPhrase();
+	//		}
+	//
+	//		if(retCategory==null||retCategory.checkIfEmpty()) {
+	//			retCategory=calculateCategory(categorisationArguments);
+	//		}
+	//		
+	//		retValue.setCategory(retCategory);
+	//		retValue.setQuantity(retQuantity);
+	//		return retValue ;
+	//	}
+	//
+	//
+
+
+
+
+
+
+	private IngredientCategory calculateCategory(IngredientUnparsedApiDetails data) {
+		if(data==null)return null;
+
+		IngredientCategory resultCategory = IngredientCategoryHierarchy.getSingletonCategoryRoot().assignCategoryFromTree(data);
+		return resultCategory;
+	}
+
+
+
+
+
+	public static IngredientParsed extractQuantity(String text,String phrase){
 		PreciseQuantity retValue=null;
 		//		text=correctText(text);
 		if(text==null||text.equals("")){
-			return createInvalidPreciseQuantity();
+			IngredientParsed err= new IngredientParsed();
+			return err;
 		}
 
 		text=text.trim();
@@ -107,53 +184,13 @@ public class EdamanCategoriser extends AbstractQuantityEngExtractor {
 
 		}
 
-		String bracketless=ommissionLess.replaceAll(" \\(.*\\) ", zamiastNawiasu);
+		String[] elems = splitOverHyphenOrMax(ommissionLess);
 
-		
-		Pattern pattern = Pattern.compile(bracketsRegex);
-		Matcher matcher = pattern.matcher(ommissionLess);
-		boolean matches = matcher.matches();
-
-		if(matches) {
-
-			String brackets=matcher.group(2);
-
-			System.out.println(brackets);
-			
-			String inBrackets = brackets.substring(1,brackets.length()-1);
-			
-			PreciseQuantity extractedQuantity = EdamanCategorisationQExtractor.extractQuantity(inBrackets);
-
-			if(extractedQuantity!=null&&extractedQuantity.isValid()) {
-				return extractedQuantity;
-			}
-					
-		}
-
-		bracketless = getMaxFromRangeIfPossible(bracketless);
-		
-		
-		
-		String[] elems = splitOverHyphenOrMax(bracketless);
-		
+		IngredientParsed resultsOfQExtracting = tryGettingAmountFromTwoElements(elems,phrase);
+		//retValue=resultsOfQExtracting.getQuantity();
 
 
-
-		retValue=tryGettingAmountFromTwoElements(elems);
-
-		if(retValue.getType()==null){
-			QuantityTranslation quantityTranslation = tryGettingTranslationToActualQuantityType(elems);
-			if(quantityTranslation==null)
-			{
-				ProblemLogger.logProblem("Nieznana miara "+elems[1]);
-				return createInvalidPreciseQuantity();
-			}else{
-				retValue.setType(quantityTranslation.getTargetAmountType());
-				retValue.setAmount(retValue.getAmount()*quantityTranslation.getMultiplier());
-			}
-		}
-
-		return retValue;
+		return resultsOfQExtracting;
 
 
 	}
@@ -170,11 +207,12 @@ public class EdamanCategoriser extends AbstractQuantityEngExtractor {
 
 	private static String[] splitOverHyphenOrMax(String bracketless) {
 		String[] elems=null;
+		String minRangeRemoved=getMaxFromRangeIfPossible(bracketless);
 
-		if(bracketless.contains("-")){
-			elems=bracketless.split("-");
-		}else if(bracketless.contains(" ")){
-			elems=bracketless.split(" ");
+		if(Pattern.matches("\\d*-\\w*", minRangeRemoved)) {
+			elems=minRangeRemoved.split("-");
+		}else {
+			elems=minRangeRemoved.split(" ");
 		}
 		return elems;
 	}
@@ -255,24 +293,50 @@ public class EdamanCategoriser extends AbstractQuantityEngExtractor {
 
 
 
-	private static PreciseQuantity tryGettingAmountFromTwoElements(String[] elems) {
+	private static IngredientParsed tryGettingAmountFromTwoElements(String[] elems, String phrase) {
 		if(elems==null||elems.length<2)
 			return null;
 
-		PreciseQuantity retValue=new PreciseQuantity(-1,null);
+		IngredientParsed retValue=new IngredientParsed();
 
+		String rest="";
 
+		for(int i=2;i<elems.length;i++) {
+			rest+=elems[i]+" ";
+		}
 		String probablyQuantityTypePhrase=elems[1];
 		float parsedFloat = attemptParsingFloat(elems);
-
-		retValue.setAmount(parsedFloat);
+		PreciseQuantity pq=new PreciseQuantity(-1,null);
+		pq.setAmount(parsedFloat);
 		for(AmountTypes at:AmountTypes.values()){
 			if(at.getType().equals(probablyQuantityTypePhrase)){
-				retValue.setType(at);
+				pq.setType(at);
+			}
+		}
+
+		if(pq.getType()==null){
+			QuantityTranslation quantityTranslation = tryGettingTranslationToActualQuantityType(elems[1]);
+			if(quantityTranslation==null)
+			{
+				if(elems[1].equals(phrase)||elems[1].equals(phrase+"s")||elems[1].equals(phrase+"es")
+						||(elems[1]+"s").equals(phrase)||(elems[1]+"es").equals(phrase+"es")) {
+					pq.setType(AmountTypes.szt);
+					pq.setAmount(parsedFloat);
+					retValue.setCategory(new IngredientCategory("raw"));
+				}else {
+
+					ProblemLogger.logProblem("Nieznana miara "+elems[1]);
+					pq= createInvalidPreciseQuantity();
+				}
+			}else{
+				pq.setType(quantityTranslation.getTargetAmountType());
+				pq.setAmount(pq.getAmount()*quantityTranslation.getMultiplier());
 			}
 		}
 		//TODO poprawic
 
+		retValue.setProductPhrase(rest);
+		retValue.setQuantity(pq);
 
 
 		return retValue;
@@ -292,8 +356,13 @@ public class EdamanCategoriser extends AbstractQuantityEngExtractor {
 		}else if(probablyFloat.endsWith("¼")) {
 			retValue=0.5f;
 			probablyFloat=probablyFloat.substring(0,probablyFloat.length()-1);
-		}
-		if(!probablyFloat.isEmpty()) {
+		}else if(probablyFloat.contains("/")) {
+			String[] split = probablyFloat.split("/");
+			if(split.length>=2) {
+				retValue=Float.parseFloat(split[0])/Float.parseFloat(split[1]);
+			}
+
+		}else if(!probablyFloat.isEmpty()) {
 			try{
 				retValue+=Float.parseFloat(probablyFloat);
 			}catch(NumberFormatException e){
@@ -334,10 +403,10 @@ public class EdamanCategoriser extends AbstractQuantityEngExtractor {
 
 
 
-	private static QuantityTranslation tryGettingTranslationToActualQuantityType(String[] elems) {
-		QuantityTranslation quantityTranslation = translations.get(elems[1].toLowerCase());
+	private static QuantityTranslation tryGettingTranslationToActualQuantityType(String probablyType) {
+		QuantityTranslation quantityTranslation = translations.get(probablyType.toLowerCase());
 		if(quantityTranslation==null) {
-			String quant=elems[1].toLowerCase();
+			String quant=probablyType.toLowerCase();
 			if(quant.endsWith(".")) {
 				quant=quant.substring(0,quant.length()-1);
 			}
@@ -358,20 +427,20 @@ public class EdamanCategoriser extends AbstractQuantityEngExtractor {
 
 
 
-	private static PreciseQuantity extractRecursively(String text) {
-		if(text==null||text.isEmpty()||text.indexOf("x")<0)
-			return createInvalidPreciseQuantity();
-
-		PreciseQuantity extractedQuantity = extractQuantity(text);
-		extractedQuantity.setAmount(extractedQuantity.getAmount());
-		return extractedQuantity;
-	}
-
-
+	//	private static PreciseQuantity extractRecursively(String text) {
+	//		if(text==null||text.isEmpty()||text.indexOf("x")<0)
+	//			return createInvalidPreciseQuantity();
+	//
+	//		PreciseQuantity extractedQuantity = extractQuantity(text);
+	//		extractedQuantity.setAmount(extractedQuantity.getAmount());
+	//		return extractedQuantity;
+	//	}
 
 
 
 
-	
-	
+
+
+
+
 }

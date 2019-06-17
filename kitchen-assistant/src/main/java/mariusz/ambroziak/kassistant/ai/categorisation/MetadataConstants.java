@@ -8,10 +8,10 @@ public class MetadataConstants {
 
 //	public static final String produktNameJsonPrefix="name";
 	public static final String servingPhraseNameJsonName="servingPhrase";
+	public static final String unparsedPhraseNameJsonName="unparsedPhrase";
 
 	
 	
-	public static final String emptyCategoryName="empty";
 	
 	
 	
@@ -29,6 +29,8 @@ public class MetadataConstants {
 	
 	public static final String servingPhraseConditionElementName="serving";
 
+	public static final String unparsedPhraseConditionElementName="unparsedPhrase";
+
 	public static final String drainedWeightMetaPropertyName = "drainedWeight";
 	public static final String productNameMetaPropertyName = "productName";
 
@@ -44,4 +46,14 @@ public class MetadataConstants {
 	public static final String stringListSeparator="\n";
 	public static final String conditionProduktNameMapKey="conditionMapProductName";
 
+	
+	
+	
+
+	public static final String emptyCategoryName="empty";
+	public static final String rawCategoryName="raw";
+	public static final String specialRecipeCategoryName="specialRecipe";
+
+	
+	
 }
