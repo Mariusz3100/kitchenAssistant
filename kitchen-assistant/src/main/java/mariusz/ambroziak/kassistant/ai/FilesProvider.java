@@ -36,6 +36,17 @@ public class FilesProvider {
 	Resource teachingTescoFile;
 	Resource teachingShopComFile;
 	Resource teachingEdamanFile;
+	Resource edamanCategoriesFile;
+	
+	
+	public Resource getEdamanCategoriesFile() {
+		return edamanCategoriesFile;
+	}
+
+	public void setEdamanCategoriesFile(Resource edamanCategoriesFile) {
+		this.edamanCategoriesFile = edamanCategoriesFile;
+	}
+
 	public Resource getTeachingEdamanFile() {
 		return teachingEdamanFile;
 	}
