@@ -22,6 +22,13 @@
 					<name contains="fresh" /><!-- klauzula sprawdzania, czy dzial w 
 						jakim sprzedawany jest produkt zawiera slowo "fresh" -->
 				</condition>
+				<condition>
+					<name contains="raw" />
+					<unparsedPhrase notContains="(click recipe)" />
+					<unparsedPhrase notContains="preserved" /> 
+					
+				</condition>
+
 			</conditions>
 
 			<branchConditions><!-- element zawiera warunki, ktore sa wymagane, by 
@@ -55,6 +62,12 @@
 					<name contains="processed" /><!-- klauzula sprawdzajaca, czy w 
 						nazwie produktu jest slowo "processed" -->
 				</condition>
+				<condition>
+					<unparsedPhrase contains="preserved" /><!-- klauzula sprawdzajaca, czy w 
+						nazwie produktu jest slowo "processed" -->
+				</condition>				
+				
+				
 			</conditions>
 			<branchConditions>
 			</branchConditions>
@@ -81,6 +94,21 @@
 					</branchConditions>
 
 				</category>
+				<category name="specialRecipe"><!-- kategoria suszonych produktow, -->
+					<conditions>
+
+						<condition>
+							<unparsedPhrase contains="(click recipe)" />
+							
+						</condition>
+
+					</conditions>
+					<children></children>
+					<branchConditions>
+					</branchConditions>
+
+				</category>
+
 				<category name="grinded"><!-- kategoria produktow zmielonych/startych 
 						i ogolnie na tyle przetworzonych, ze ciezko rozpoznac, z czego sa zrobione -->
 					<conditions>
@@ -89,7 +117,11 @@
 							<name contains="paste" />
 						</condition>
 						<condition>
+							<name contains="crushed" />
+						</condition>
+						<condition>
 							<name contains="juice" />
+							<name notContains="can" />
 
 						</condition>
 
@@ -154,6 +186,10 @@
 					<conditions>
 						<condition>
 							<name contains="can" />
+							<name notContains="puree" />
+							<name notContains="paste" />
+
+
 						</condition>
 					</conditions>
 
@@ -189,11 +225,9 @@
 				</condition>
 				<!-- <condition> <departmentName contains="drinks" /> </condition> -->
 				<condition>
-					<departmentName contains="household" />
+					<name contains="flavoured" />
 				</condition>
-				<condition>
-					<departmentName contains="beauty" />
-				</condition>
+
 			</conditions>
 			<branchConditions>
 			</branchConditions>

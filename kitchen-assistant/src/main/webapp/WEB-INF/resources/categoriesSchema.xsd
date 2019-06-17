@@ -48,6 +48,11 @@
 					type="kaxsd:servingPhraseQuery" minOccurs="0" />
 				<xs:element name="ingredients"
 					type="kaxsd:IngredientsIncludeQuery" minOccurs="0" />
+				<xs:element name="unparsedPhrase"
+					type="kaxsd:unparsedRecipeIngredientQuery" minOccurs="0" />
+
+
+
 
 
 			</xs:choice>
@@ -107,7 +112,14 @@
 		</xs:complexContent>
 	</xs:complexType>
 
-
+	<xs:complexType name="unparsedRecipeIngredientQuery">
+		<xs:complexContent>
+			<xs:extension base="kaxsd:query">
+				<xs:attribute name="hasAttribute" type="xs:string"
+					use="optional" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 
 
 </xs:schema>
