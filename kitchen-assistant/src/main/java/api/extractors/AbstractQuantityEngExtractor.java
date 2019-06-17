@@ -53,6 +53,8 @@ public class AbstractQuantityEngExtractor {
 		translations.put("tbsp",new QuantityTranslation(AmountTypes.ml, 15) );
 		translations.put("tbs",new QuantityTranslation(AmountTypes.ml, 15) );
 		translations.put("cup",new QuantityTranslation(AmountTypes.ml, 250) );
+		translations.put("c",new QuantityTranslation(AmountTypes.ml, 250) );
+
 		translations.put("cups",new QuantityTranslation(AmountTypes.ml, 250) );
 		translations.put("glass",new QuantityTranslation(AmountTypes.ml, 250) );
 		translations.put("glasses",new QuantityTranslation(AmountTypes.ml, 250) );
@@ -70,6 +72,8 @@ public class AbstractQuantityEngExtractor {
 		translations.put("bunch",new QuantityTranslation(AmountTypes.szt, 1) );
 		translations.put("sngl",new QuantityTranslation(AmountTypes.szt, 1) );
 		translations.put("sprig",new QuantityTranslation(AmountTypes.szt, 1) );
+		translations.put("whole",new QuantityTranslation(AmountTypes.szt, 1) );
+		translations.put("half",new QuantityTranslation(AmountTypes.szt, 0.5f) );
 
 		
 //		translations.put("sztuka",new QuantityTranslation(AmountTypes.szt, 1) );
@@ -84,7 +88,9 @@ public class AbstractQuantityEngExtractor {
 		ommissions.add("small");
 		ommissions.add("medium");
 		ommissions.add("thin");
+		ommissions.add("about");
 
+		
 		
 		
 		splitingPronouns=new ArrayList<String>();
