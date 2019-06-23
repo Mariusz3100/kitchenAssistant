@@ -23,6 +23,14 @@
 						czy dzial w jakim sprzedawany jest produkt zawiera slowo "fresh" -->
 
 					<departmentName contains="food" />
+
+					<name notContains="soup" />
+					<name notContains="sour" />
+					<departmentName notContains="soup" />
+					<departmentName notContains="sandwich" />
+
+
+
 				</condition>
 			</conditions>
 
@@ -56,6 +64,11 @@
 					<name contains="processed" /><!-- klauzula sprawdzajaca, czy w 
 						nazwie produktu jest slowo "processed" -->
 				</condition>
+
+				<condition>
+					<name contains="chopped" />
+
+				</condition>
 			</conditions>
 			<branchConditions>
 			</branchConditions>
@@ -71,11 +84,11 @@
 							<name notContains="marinada" />
 							<name notContains="dressing" />
 							<name notContains="spread" />
-							
-							
+
+
 							<ingredients notContains="oil" />
 							<ingredients notRegex=".*,.*,.*,.*,.*,.*" />
-							
+
 						</condition>
 						<condition>
 							<name contains="powder" />
@@ -137,6 +150,12 @@
 						</condition>
 						<condition>
 							<name contains="marinade" />
+						</condition>
+						<condition>
+							<name contains="ready meal" />
+						</condition>
+						<condition>
+							<departmentName contains="ready meal" />
 						</condition>
 						<condition>
 							<name contains="pizza" />
@@ -206,6 +225,10 @@
 
 						</condition>
 						<condition>
+							<name contains="chopped" />
+
+						</condition>
+						<condition>
 							<serving contains="can" />
 							<name notContains="puree" />
 							<name notContains="soup" />
@@ -221,6 +244,11 @@
 								<condition>
 									<name contains="pickles" />
 								</condition>
+								
+								<condition>
+									<name contains="Sour Cucumber" />
+								</condition>
+								
 
 							</conditions>
 
@@ -249,6 +277,12 @@
 				</condition>
 				<condition>
 					<departmentName contains="beauty" />
+				</condition>
+				<condition>
+					<name contains="hint Of" />
+				</condition>
+				<condition>
+					<departmentName contains="tonic water" />
 				</condition>
 			</conditions>
 			<branchConditions>
