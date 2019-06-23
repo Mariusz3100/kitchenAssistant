@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +19,9 @@ import org.springframework.web.servlet.ModelAndView;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.nutrientClients.EdamaneIngredientParsingApiClient;
 import mariusz.ambroziak.kassistant.Apiclients.googleAuth.GoogleCalendarApiClient;
 import mariusz.ambroziak.kassistant.Apiclients.googleAuth.GoogleDriveApiClient;
+import mariusz.ambroziak.kassistant.Apiclients.wordsapi.WordNotFoundException;
+import mariusz.ambroziak.kassistant.Apiclients.wordsapi.WordsApiClient;
+import mariusz.ambroziak.kassistant.Apiclients.wordsapi.WordsApiResult;
 import mariusz.ambroziak.kassistant.ai.FilesProvider;
 import mariusz.ambroziak.kassistant.ai.categorisation.shops.Categoriser;
 import mariusz.ambroziak.kassistant.ai.categorisation.shops.Category;
@@ -86,5 +91,34 @@ public class TestController {
 	public ModelAndView tesco_particular_test() {
 		TescoApiClientParticularProduct_notUsed.main(null);
 		return new ModelAndView();
+	}
+	
+
+	@RequestMapping(value="/words_test")
+	public ModelAndView words_test() {
+		WordsApiClient.main(null);
+		return new ModelAndView();
+	}
+	
+
+	@RequestMapping(value="/word_definition_test")
+	public ModelAndView word_definition_test(HttpServletRequest request) {
+		String phrase=request.getParameter("phrase");
+		ArrayList<WordsApiResult> searchFor;
+		ModelAndView model = new ModelAndView("List");
+		ArrayList<String> list=new ArrayList<>();
+
+		try {
+			searchFor = WordsApiClient.searchFor(phrase);
+			for(WordsApiResult war:searchFor) {
+				list.add("<br>"+war.getOriginalWord()+" -> "+war.getBaseWord()+" -> "+war.getDefinition());
+			}
+			model.addObject("list",list);
+
+		} catch (WordNotFoundException e) {
+			list.add("<br>Words not found for "+phrase);
+		}
+
+		return model;
 	}
 }
