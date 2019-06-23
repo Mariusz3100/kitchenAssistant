@@ -3,6 +3,7 @@ package mariusz.ambroziak.kassistant.ai.categorisation.edaman;
 import mariusz.ambroziak.kassistant.model.quantity.NotPreciseQuantity;
 
 public class IngredientParsed extends IngredientUnparsedApiDetails{
+
 	private String productPhrase;
 	private NotPreciseQuantity quantity;
 	private IngredientCategory category;
@@ -42,7 +43,11 @@ public class IngredientParsed extends IngredientUnparsedApiDetails{
 		this.category = category;
 	}
 	
-	
+	@Override
+	public String toString() {
+		return "IngredientParsed [productPhrase=" + productPhrase + ", quantity=" + quantity + ", category=" + category
+				+ "]";
+	}
 	
 	
 }

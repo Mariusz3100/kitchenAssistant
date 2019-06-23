@@ -153,7 +153,7 @@ public class Category {
 	//		else				
 	//			return null;
 	//	}
-	public Category createEmpty() {
+	public static Category createEmpty() {
 		return new Category(MetadataConstants.emptyCategoryName);
 	}
 	public boolean checkIfEmpty() {

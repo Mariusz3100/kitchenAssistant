@@ -148,6 +148,14 @@ public class JSONObject {
      */
     public static final Object NULL = new Null();
 
+    public boolean checkIfNull() {
+    	if(this.equals(NULL))
+    		return true;
+    	else
+    		return false;
+    }
+    
+    
     /**
      * Construct an empty JSONObject.
      */

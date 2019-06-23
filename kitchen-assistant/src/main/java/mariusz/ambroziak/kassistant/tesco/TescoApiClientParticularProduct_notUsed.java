@@ -359,6 +359,16 @@ public class TescoApiClientParticularProduct_notUsed {
 
 				}
 				produktByUrl.setMetadata(aJson.toString());
+				
+				
+				if(p.getOpis()!=null&&!p.getOpis().isEmpty()) {
+					if(produktByUrl.getOpis()==null||produktByUrl.getOpis().isEmpty()) {
+						produktByUrl.setOpis(p.getOpis());
+					}else {
+						produktByUrl.setOpis(produktByUrl.getOpis()+MetadataConstants.stringListSeparator+p.getOpis());
+					}
+					
+				}
 			}
 		}
 

@@ -17,6 +17,7 @@ import org.springframework.http.MediaType;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
@@ -33,6 +34,7 @@ import mariusz.ambroziak.kassistant.model.quantity.AmountTypes;
 import mariusz.ambroziak.kassistant.model.quantity.PreciseQuantity;
 import mariusz.ambroziak.kassistant.model.utils.ApiIngredientAmount;
 import mariusz.ambroziak.kassistant.model.utils.ProduktIngredientQuantity;
+import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 
 
 
@@ -54,10 +56,15 @@ public class EdamaneIngredientParsingApiClient {
 		String input ="{\"ingr\":[\""+ingredientPhrase+"\"]}";
 		
 		WebResource resource = c.resource(fullBaseUrl);
+		try {
 		String response1 = resource.type(MediaType.APPLICATION_JSON_VALUE).accept(MediaType.APPLICATION_JSON_VALUE).post(String.class,input);
 		resource.getProperties().entrySet();
 		return response1;
-
+		}catch(UniformInterfaceException e) {
+			if(e.getMessage().contains("response status of 555")) {
+				ProblemLogger.logProblem("response status of 555 spotted (bad quality?) for "+input);
+			}
+		}
 		//
 		//
 		//		String encodedPhrase=UrlEncoded.encodeString(ingredientPhrase);
@@ -76,6 +83,8 @@ public class EdamaneIngredientParsingApiClient {
 		//
 		//		String response1 = resource.queryParams(queryParams_appId).queryParams(queryParams).accept("text/plain").get(String.class);
 		//		return response1;
+		
+		return null;
 	}
 
 

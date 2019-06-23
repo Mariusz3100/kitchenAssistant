@@ -193,7 +193,7 @@ public class Categoriser {
 		Category result=root.assignCategoryFromTree(p);
 		
 //		if(result.getName().equals("root")) {
-			result=root.assignCategoryFromTree(p);
+//			result=root.assignCategoryFromTree(p);
 
 //		}
 

@@ -46,6 +46,10 @@ public class EdamanCategoriser extends AbstractQuantityEngExtractor {
 
 	public IngredientParsed parseIngredient(String text,String originalSearchPhrase) {
 		IngredientUnparsedApiDetails unparsedDetails=EdamaneIngredientParsingApiClient.parseIngredient(text);
+		if(unparsedDetails==null) {
+			return null;
+		}
+		
 		IngredientCategoryHierarchy.getSingletonCategoryRoot();//initialize hierarchy
 		IngredientCategory foundCategory = checkSpecialCaseCategories(originalSearchPhrase, unparsedDetails);
 		
