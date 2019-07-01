@@ -26,6 +26,7 @@ import mariusz.ambroziak.kassistant.ai.FilesProvider;
 import mariusz.ambroziak.kassistant.ai.categorisation.shops.Categoriser;
 import mariusz.ambroziak.kassistant.ai.categorisation.shops.Category;
 import mariusz.ambroziak.kassistant.ai.categorisation.shops.CategoryHierarchy;
+import mariusz.ambroziak.kassistant.ai.nlp_old.NlpTesting;
 import mariusz.ambroziak.kassistant.exceptions.GoogleDriveAccessNotAuthorisedException;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.tesco.TescoApiClient;
@@ -100,7 +101,27 @@ public class TestController {
 		return new ModelAndView();
 	}
 	
+	@RequestMapping(value="/sentences_test")
+	public ModelAndView detect_sentences_test() throws Exception {
+		ArrayList<String> lines = NlpTesting.givenEnglishModel_whenDetect_thenSentencesAreDetected();
+		ArrayList<String> lines2 = NlpTesting.givenEnglishModel_whenTokenize_thenTokensAreDetected();
+		lines.addAll(lines2);
+		
+		ArrayList<String> lines3=NlpTesting.givenPOSModel_whenPOSTagging_thenPOSAreDetected();
+		lines.addAll(lines3);
+		
+		ModelAndView model = new ModelAndView("List");
+		model.addObject("list",lines);
 
+		return model;
+	}
+	
+	@RequestMapping(value="/tokenize_test")
+	public ModelAndView tokenize_test() {
+		NlpTesting.givenEnglishModel_whenTokenize_thenTokensAreDetected();
+		return new ModelAndView();
+	}
+	
 	@RequestMapping(value="/word_definition_test")
 	public ModelAndView word_definition_test(HttpServletRequest request) {
 		String phrase=request.getParameter("phrase");
@@ -121,4 +142,6 @@ public class TestController {
 
 		return model;
 	}
+	
+	
 }

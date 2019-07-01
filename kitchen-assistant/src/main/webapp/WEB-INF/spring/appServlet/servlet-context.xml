@@ -141,6 +141,13 @@
   		 <property name="teachingTescoFile" value="WEB-INF/resources/teaching/tesco"/>
   		 <property name="teachingShopComFile" value="WEB-INF/resources/teaching/shopcom"/>
   		 <property name="teachingEdamanFile" value="WEB-INF/resources/teaching/edaman"/>
+  		 <property name="wordsInputFile" value="WEB-INF/resources/teaching/wordsInput"/>
+
+  		 <property name="posModelFile" value="WEB-INF/resources/nlp_models/en-pos-perceptron.bin"/>
+  		 <property name="sentModelFile" value="WEB-INF/resources/nlp_models/en-sent.bin"/>
+  		 <property name="tokenModelFile" value="WEB-INF/resources/nlp_models/en-token.bin"/>
+
+
 
 
 

@@ -37,8 +37,46 @@ public class FilesProvider {
 	Resource teachingShopComFile;
 	Resource teachingEdamanFile;
 	Resource edamanCategoriesFile;
+	Resource posModelFile;
+	Resource sentModelFile;
+	Resource tokenModelFile;
+	Resource wordsInputFile;
+
 	
 	
+	
+	public Resource getWordsInputFile() {
+		return wordsInputFile;
+	}
+
+	public void setWordsInputFile(Resource wordsInputFile) {
+		this.wordsInputFile = wordsInputFile;
+	}
+
+	public Resource getTokenModelFile() {
+		return tokenModelFile;
+	}
+
+	public void setTokenModelFile(Resource tokenModelFile) {
+		this.tokenModelFile = tokenModelFile;
+	}
+
+	public Resource getPosModelFile() {
+		return posModelFile;
+	}
+
+	public void setPosModelFile(Resource posModelFile) {
+		this.posModelFile = posModelFile;
+	}
+
+	public Resource getSentModelFile() {
+		return sentModelFile;
+	}
+
+	public void setSentModelFile(Resource sentModelFile) {
+		this.sentModelFile = sentModelFile;
+	}
+
 	public Resource getEdamanCategoriesFile() {
 		return edamanCategoriesFile;
 	}

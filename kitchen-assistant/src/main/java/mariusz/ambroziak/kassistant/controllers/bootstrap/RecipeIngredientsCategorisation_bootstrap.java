@@ -27,6 +27,7 @@ import mariusz.ambroziak.kassistant.ai.categorisation.edaman.IngredientUnparsedA
 import mariusz.ambroziak.kassistant.ai.categorisation.shops.IngredientCategoriser;
 import mariusz.ambroziak.kassistant.exceptions.GoogleDriveAccessNotAuthorisedException;
 import mariusz.ambroziak.kassistant.model.utils.ApiIngredientAmount;
+import mariusz.ambroziak.kassistant.utils.StringLengthComparator;
 
 
 @Controller
@@ -69,8 +70,10 @@ public class RecipeIngredientsCategorisation_bootstrap {
 		ArrayList<ApiIngredientAmount> relevantIngredientsfiltered=new ArrayList<ApiIngredientAmount>();
 
 		List<String> returnList = new ArrayList<String>();
+		List<String> ingredientsList = new ArrayList<String>();
 
 		for(ParseableRecipeData entry:relevantIngredientsFor) {
+			
 			String edamanApi=entry.getEdamanId().replaceAll("#","%23");;
 			String detailsUrl="https://api.edamam.com/search?app_id=af08be14&app_key=2ac175efa4ddfeff85890bed42dff521&r="+edamanApi;
 			String lines="<br><h3>"+entry.getLabel()+"</h3>";
@@ -79,6 +82,8 @@ public class RecipeIngredientsCategorisation_bootstrap {
 
 			for(int i=0;i<entry.getIngredients().size();i++) {
 				ApiIngredientAmount apiIngredientAmount = entry.getIngredients().get(i);
+				ingredientsList.add(apiIngredientAmount.getName());
+
 				if(apiIngredientAmount.getName().indexOf(phrase)>=0) {
 					lines+="<br><b>"+apiIngredientAmount.getName()+"</b>";
 					relevantIngredientsfiltered.add(apiIngredientAmount);
@@ -91,16 +96,20 @@ public class RecipeIngredientsCategorisation_bootstrap {
 
 		}
 
+		ingredientsList.sort(new StringLengthComparator());
 
 		String lines="<br><br><h2>Results:</h2>";
 
-		for(int i=0;i<relevantIngredientsfiltered.size();i++) {
-			ApiIngredientAmount apiIngredientAmount = relevantIngredientsfiltered.get(i);
-			lines+="<br>"+apiIngredientAmount.getName()+"";
-
-		}
+//		for(int i=0;i<ingredientsList.size();i++) {
+//			ApiIngredientAmount apiIngredientAmount = relevantIngredientsfiltered.get(i);
+//			lines+="<br>"+apiIngredientAmount.getName()+"";
+//
+//		}
+		
+		
 		returnList.add(lines);
 
+		returnList.addAll(ingredientsList);
 		ModelAndView mav=new ModelAndView("List");
 		mav.addObject("list",returnList);
 		return mav;

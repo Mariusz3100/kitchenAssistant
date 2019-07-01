@@ -1,5 +1,6 @@
 package mariusz.ambroziak.kassistant.ai.categorisation.edaman;
 
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
