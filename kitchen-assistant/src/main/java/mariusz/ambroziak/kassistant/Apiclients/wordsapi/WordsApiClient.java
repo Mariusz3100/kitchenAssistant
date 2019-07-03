@@ -70,11 +70,19 @@ public class WordsApiClient {
 				for(int i=0;i<resultsArray.length();i++) {
 					JSONObject jsonSingleResult = resultsArray.getJSONObject(i);
 					String partOfSpeech="";
+					String typeOf="";
+
+					
 					if(jsonSingleResult.has("partOfSpeech")&&!jsonSingleResult.get("partOfSpeech").equals(JSONObject.NULL)) {
 						partOfSpeech=jsonSingleResult.getString("partOfSpeech");
 					}
 					ArrayList<String> childTypes=new ArrayList<String>();
 
+					
+					if(jsonSingleResult.has("typeOf")&&!jsonSingleResult.get("typeOf").equals(JSONObject.NULL)) {
+						typeOf=jsonSingleResult.getString("typeOf");
+					}
+					
 					if(jsonSingleResult.has("hasTypes")) {
 						try {
 							JSONArray jsonChildTypes=jsonSingleResult.getJSONArray("hasTypes");
@@ -87,7 +95,7 @@ public class WordsApiClient {
 					}
 					String definition=jsonSingleResult.getString("definition");
 
-					WordsApiResult parsingResult=new WordsApiResult(phrase, baseWord, definition, partOfSpeech);
+					WordsApiResult parsingResult=new WordsApiResult(phrase, baseWord, definition,typeOf, partOfSpeech,childTypes);
 					retValue.add(parsingResult);
 
 

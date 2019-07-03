@@ -19,6 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.nutrientClients.EdamaneIngredientParsingApiClient;
 import mariusz.ambroziak.kassistant.Apiclients.googleAuth.GoogleCalendarApiClient;
 import mariusz.ambroziak.kassistant.Apiclients.googleAuth.GoogleDriveApiClient;
+import mariusz.ambroziak.kassistant.Apiclients.wikipedia.WikipediaApiClient;
 import mariusz.ambroziak.kassistant.Apiclients.wordsapi.WordNotFoundException;
 import mariusz.ambroziak.kassistant.Apiclients.wordsapi.WordsApiClient;
 import mariusz.ambroziak.kassistant.Apiclients.wordsapi.WordsApiResult;
@@ -29,7 +30,11 @@ import mariusz.ambroziak.kassistant.ai.categorisation.shops.Category;
 import mariusz.ambroziak.kassistant.ai.categorisation.shops.CategoryHierarchy;
 import mariusz.ambroziak.kassistant.ai.nlp_old.EngTokenizer;
 import mariusz.ambroziak.kassistant.ai.nlp_old.NlpTesting;
+import mariusz.ambroziak.kassistant.ai.nlp_old.QuantityExtractor;
+import mariusz.ambroziak.kassistant.ai.nlp_old.WordClassification;
+import mariusz.ambroziak.kassistant.ai.nlp_old.enums.WordType;
 import mariusz.ambroziak.kassistant.exceptions.GoogleDriveAccessNotAuthorisedException;
+import mariusz.ambroziak.kassistant.exceptions.Page404Exception;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.tesco.TescoApiClient;
 import mariusz.ambroziak.kassistant.tesco.TescoApiClientParticularProduct_notUsed;
@@ -76,6 +81,22 @@ public class NlpController {
 		return model;
 	}
 
+	@RequestMapping(value="/check_wikipedia_redirects")
+	public static ModelAndView check_wikipedia_redirects() throws Page404Exception {
+		ArrayList<String> list=new ArrayList<String>();
+
+		list.add("tbsp"+"->"+WikipediaApiClient.getRedirectIfAny("tbsp"));
+		list.add("tablespoon"+"->"+WikipediaApiClient.getRedirectIfAny("tablespoon"));
+		list.add("tbsp."+"->"+WikipediaApiClient.getRedirectIfAny("tbsp."));
+		
+		ModelAndView model = new ModelAndView("List");
+		model.addObject("list",list);
+
+		return model;
+		
+		
+		
+	}
 	private static String getTeachingEdamanContents() {
 		Resource teachingExpectationsFile = FilesProvider.getInstance().getTeachingEdamanFile();
 		StringBuilder content=new StringBuilder();
@@ -97,4 +118,40 @@ public class NlpController {
 		return content.toString();
 	}
 	
+	
+	@RequestMapping(value="/quantity_mark")
+	public ModelAndView bhome() throws IOException {
+		InputStream wordsInputStream = FilesProvider.getInstance().getWordsInputFile().getInputStream();
+		ArrayList<String> list=new ArrayList<>();
+		BufferedReader reader=new BufferedReader(new InputStreamReader(wordsInputStream));
+
+		String line=reader.readLine();
+
+		while(line!=null) {
+			ArrayList<WordClassification> classifyWords = QuantityExtractor.classifyWords(line);
+			String single="";
+			for(WordClassification classificated:classifyWords ) {
+				if(classificated.getType()==null) {
+
+					single+="<span style=\"background-color:red\">"+classificated.getWord()+"</span> ";
+				}else if(classificated.getType()==WordType.QuantityElement) {
+
+					single+="<span style=\"background-color:blue\">"+classificated.getWord()+"</span>";
+				}else if(classificated.getType()==WordType.ProductElement) {
+
+					single+="<span style=\"background-color:green\">"+classificated.getWord()+"</span>";
+				}
+
+			}
+			list.add(single);
+
+			line=reader.readLine();
+		}
+
+		ModelAndView model = new ModelAndView("List");
+		model.addObject("list",list);
+
+		return model;
+	}
+
 }
