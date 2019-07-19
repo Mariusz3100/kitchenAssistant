@@ -7,7 +7,7 @@ import mariusz.ambroziak.kassistant.dao.DaoProvider;
 public class FilesProvider {
 	public Resource getTeachingShopComFile() {
 		return teachingShopComFile;
-	}
+	}	
 
 	public void setTeachingShopComFile(Resource teachingShopComFile) {
 		this.teachingShopComFile = teachingShopComFile;
@@ -40,6 +40,44 @@ public class FilesProvider {
 	Resource posModelFile;
 	Resource sentModelFile;
 	Resource tokenModelFile;
+	Resource lemmaModelFile;
+	Resource maxentModelFile;
+	Resource chunkerModelFile;
+	Resource parserChunkerModelFile;
+
+	
+	public Resource getParserChunkerModelFile() {
+		return parserChunkerModelFile;
+	}
+
+	public void setParserChunkerModelFile(Resource parserChunkerModelFile) {
+		this.parserChunkerModelFile = parserChunkerModelFile;
+	}
+
+	public Resource getMaxentModelFile() {
+		return maxentModelFile;
+	}
+
+	public void setMaxentModelFile(Resource maxentModelFile) {
+		this.maxentModelFile = maxentModelFile;
+	}
+
+	public Resource getChunkerModelFile() {
+		return chunkerModelFile;
+	}
+
+	public void setChunkerModelFile(Resource chunkerModelFile) {
+		this.chunkerModelFile = chunkerModelFile;
+	}
+
+	public Resource getLemmaModelFile() {
+		return lemmaModelFile;
+	}
+
+	public void setLemmaModelFile(Resource lemmaModelFile) {
+		this.lemmaModelFile = lemmaModelFile;
+	}
+
 	Resource wordsInputFile;
 
 	
