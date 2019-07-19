@@ -3,23 +3,18 @@ package mariusz.ambroziak.kassistant.Apiclients.wordsapi;
 import java.util.ArrayList;
 
 public class WordsApiResult {
-	public String getTypeOf() {
-		return typeOf;
-	}
-	public void setTypeOf(String typeOf) {
-		this.typeOf = typeOf;
-	}
+
 	private String originalWord;
 	private String baseWord;
 	private String definition;
-	private String typeOf;
+	private ArrayList<String> typeOf;
 
 
 	private String partOfSpeech;
 	private ArrayList<String> childTypes;
 	
 	
-	public WordsApiResult(String originalWord, String baseWord, String definition, String typeOf, String partOfSpeech,
+	public WordsApiResult(String originalWord, String baseWord, String definition, ArrayList<String> typeOf, String partOfSpeech,
 			ArrayList<String> childTypes) {
 		super();
 		this.originalWord = originalWord;
@@ -28,6 +23,19 @@ public class WordsApiResult {
 		this.typeOf = typeOf;
 		this.partOfSpeech = partOfSpeech;
 		this.childTypes = childTypes;
+	}
+	public ArrayList<String> getTypeOf() {
+		return typeOf;
+	}
+	public void setTypeOf(ArrayList<String> typeOf) {
+		this.typeOf = typeOf;
+	}
+	
+	public void addTypeOf(String type) {
+		if(this.typeOf==null)
+			this.typeOf=new ArrayList<String>();
+		
+		this.typeOf.add(type);
 	}
 	public ArrayList<String> getChildTypes() {
 		return childTypes;
