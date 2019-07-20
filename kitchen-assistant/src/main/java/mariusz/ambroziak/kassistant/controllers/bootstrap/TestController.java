@@ -19,6 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.nutrientClients.EdamaneIngredientParsingApiClient;
 import mariusz.ambroziak.kassistant.Apiclients.googleAuth.GoogleCalendarApiClient;
 import mariusz.ambroziak.kassistant.Apiclients.googleAuth.GoogleDriveApiClient;
+import mariusz.ambroziak.kassistant.Apiclients.wikipedia.WikipediaApiClient;
 import mariusz.ambroziak.kassistant.Apiclients.wordsapi.WordNotFoundException;
 import mariusz.ambroziak.kassistant.Apiclients.wordsapi.WordsApiClient;
 import mariusz.ambroziak.kassistant.Apiclients.wordsapi.WordsApiResult;
@@ -28,6 +29,7 @@ import mariusz.ambroziak.kassistant.ai.categorisation.shops.Category;
 import mariusz.ambroziak.kassistant.ai.categorisation.shops.CategoryHierarchy;
 import mariusz.ambroziak.kassistant.ai.nlp_old.NlpTesting;
 import mariusz.ambroziak.kassistant.exceptions.GoogleDriveAccessNotAuthorisedException;
+import mariusz.ambroziak.kassistant.exceptions.Page404Exception;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.tesco.TescoApiClient;
 import mariusz.ambroziak.kassistant.tesco.TescoApiClientParticularProduct_notUsed;
@@ -96,7 +98,7 @@ public class TestController {
 	
 
 	@RequestMapping(value="/words_test")
-	public ModelAndView words_test() {
+	public ModelAndView words_test() throws WordNotFoundException {
 		WordsApiClient.main(null);
 		return new ModelAndView();
 	}
@@ -110,6 +112,14 @@ public class TestController {
 		ArrayList<String> lines3=NlpTesting.givenPOSModel_whenPOSTagging_thenPOSAreDetected();
 		lines.addAll(lines3);
 		
+		
+		ArrayList<String> lines4=NlpTesting.givenEnglishDictionary_whenLemmatize_thenLemmasAreDetected();
+		lines.addAll(lines4);
+		
+		ArrayList<String> lines5=NlpTesting.givenChunkerModel_whenChunk_thenChunksAreDetected();
+		lines.addAll(lines5);
+		
+		NlpTesting.parsingSentences();
 		ModelAndView model = new ModelAndView("List");
 		model.addObject("list",lines);
 
@@ -122,6 +132,12 @@ public class TestController {
 		return new ModelAndView();
 	}
 	
+	@RequestMapping(value="/wikipedia_test")
+	public ModelAndView wikipedia_test() throws Page404Exception {
+		WikipediaApiClient.main(null);
+		return new ModelAndView();
+	}
+	
 	@RequestMapping(value="/word_definition_test")
 	public ModelAndView word_definition_test(HttpServletRequest request) {
 		String phrase=request.getParameter("phrase");
@@ -129,16 +145,14 @@ public class TestController {
 		ModelAndView model = new ModelAndView("List");
 		ArrayList<String> list=new ArrayList<>();
 
-		try {
+	
 			searchFor = WordsApiClient.searchFor(phrase);
 			for(WordsApiResult war:searchFor) {
 				list.add("<br>"+war.getOriginalWord()+" -> "+war.getBaseWord()+" -> "+war.getDefinition());
 			}
 			model.addObject("list",list);
 
-		} catch (WordNotFoundException e) {
-			list.add("<br>Words not found for "+phrase);
-		}
+		
 
 		return model;
 	}

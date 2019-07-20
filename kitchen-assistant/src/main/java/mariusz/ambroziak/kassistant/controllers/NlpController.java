@@ -19,6 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 import mariusz.ambroziak.kassistant.Apiclients.edaman.nutrientClients.EdamaneIngredientParsingApiClient;
 import mariusz.ambroziak.kassistant.Apiclients.googleAuth.GoogleCalendarApiClient;
 import mariusz.ambroziak.kassistant.Apiclients.googleAuth.GoogleDriveApiClient;
+import mariusz.ambroziak.kassistant.Apiclients.walmart.ConvertApiClient;
 import mariusz.ambroziak.kassistant.Apiclients.wikipedia.WikipediaApiClient;
 import mariusz.ambroziak.kassistant.Apiclients.wordsapi.WordNotFoundException;
 import mariusz.ambroziak.kassistant.Apiclients.wordsapi.WordsApiClient;
@@ -47,6 +48,8 @@ public class NlpController {
 	
 
 
+	
+	
 	@RequestMapping(value="/tokenize_ingredientPhrases")
 	public ModelAndView tokenize_ingredientPhrases() {
 		ModelAndView model = new ModelAndView("List");
@@ -85,9 +88,9 @@ public class NlpController {
 	public static ModelAndView check_wikipedia_redirects() throws Page404Exception {
 		ArrayList<String> list=new ArrayList<String>();
 
-		list.add("tbsp"+"->"+WikipediaApiClient.getRedirectIfAny("tbsp"));
-		list.add("tablespoon"+"->"+WikipediaApiClient.getRedirectIfAny("tablespoon"));
-		list.add("tbsp."+"->"+WikipediaApiClient.getRedirectIfAny("tbsp."));
+		list.add("onions"+"->"+WikipediaApiClient.getRedirectIfAny("onions"));
+//		list.add("tablespoon"+"->"+WikipediaApiClient.getRedirectIfAny("tablespoon"));
+//		list.add("tbsp."+"->"+WikipediaApiClient.getRedirectIfAny("tbsp."));
 		
 		ModelAndView model = new ModelAndView("List");
 		model.addObject("list",list);
@@ -97,6 +100,25 @@ public class NlpController {
 		
 		
 	}
+	
+	
+	@RequestMapping(value="/check_convert_example")
+	public static ModelAndView check_convert_example() throws WordNotFoundException {
+		ArrayList<String> list=new ArrayList<String>();
+
+//		list.add("tbsp"+"->"+ConvertApiClient.checkForTranslation("tbsp"));
+//		list.add("tablespoon"+"->"+ConvertApiClient.checkForTranslation("tablespoon"));
+		list.add("pinch"+"->"+ConvertApiClient.checkForTranslation("pinch"));
+		
+		ModelAndView model = new ModelAndView("List");
+		model.addObject("list",list);
+
+		return model;
+		
+		
+		
+	}
+	
 	private static String getTeachingEdamanContents() {
 		Resource teachingExpectationsFile = FilesProvider.getInstance().getTeachingEdamanFile();
 		StringBuilder content=new StringBuilder();

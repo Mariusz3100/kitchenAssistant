@@ -300,15 +300,11 @@ public class RecipeIngredientsCategorisation_bootstrap {
 			
 			for(String word:words) {
 				ArrayList<WordsApiResult> searchFor;
-				try {
 					searchFor = WordsApiClient.searchFor(word);
 					for(WordsApiResult war:searchFor) {
 						lines+="<br>"+(war.getOriginalWord()+" -> "+war.getBaseWord()+" -> "+war.getDefinition());
 					}
-				} catch (WordNotFoundException e) {
-					lines+="<br>"+phrase+" -> no results found";
-
-				}
+				
 				
 
 			}
