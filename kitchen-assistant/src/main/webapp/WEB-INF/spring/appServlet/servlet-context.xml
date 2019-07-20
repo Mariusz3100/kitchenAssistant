@@ -146,6 +146,10 @@
   		 <property name="posModelFile" value="WEB-INF/resources/nlp_models/en-pos-perceptron.bin"/>
   		 <property name="sentModelFile" value="WEB-INF/resources/nlp_models/en-sent.bin"/>
   		 <property name="tokenModelFile" value="WEB-INF/resources/nlp_models/en-token.bin"/>
+  		 <property name="lemmaModelFile" value="WEB-INF/resources/nlp_models/en-lemmatizer.dict"/>
+  		 <property name="maxentModelFile" value="WEB-INF/resources/nlp_models/en-pos-maxent.bin"/>
+  		 <property name="chunkerModelFile" value="WEB-INF/resources/nlp_models/en-chunker.bin"/>
+  		 <property name="parserChunkerModelFile" value="WEB-INF/resources/nlp_models/en-parser-chunking.bin"/>
 
 
 
