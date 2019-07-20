@@ -1,12 +1,17 @@
 package mariusz.ambroziak.kassistant.Apiclients.wordsapi;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 import javax.ws.rs.core.MultivaluedMap;
 
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.client.utils.URIUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.web.util.UriUtils;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
@@ -15,22 +20,20 @@ import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 
+import mariusz.ambroziak.kassistant.Apiclients.RapidApiClient;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.utils.ProblemLogger;
 
-public class WordsApiClient {
+public class WordsApiClient extends RapidApiClient {
 
 	private static final String baseUrl= "https://wordsapiv1.p.mashape.com/words/";
-	private static final String header1Name="X-RapidAPI-Host";
+	private static final String typeOfSuffix="/typeOf";
+	
 	private static final String header1Value="wordsapiv1.p.rapidapi.com";
-	private static final String header2Name="X-RapidAPI-Key";
-	private static final String header2Value="0a92a0113fmsh7837636f04b7a89p135639jsnf817375cb72c";
-
 	//https://dev.tescolabs.com/grocry/products/?query=cucumber&offset=0&limit=10
-	private static String getResponse(String phrase) throws WordNotFoundException {
+	private static String getResponse(String url) throws WordNotFoundException {
 		ClientConfig cc = new DefaultClientConfig();
 		cc.getProperties().put(ClientConfig.PROPERTY_FOLLOW_REDIRECTS, true);
-		String url=baseUrl+phrase;
 		Client c = Client.create();
 		WebResource client = c.resource(url);
 		Builder clientWithParamsAndHeader=client.header(header1Name, header1Value).header(header2Name, header2Value);
@@ -43,9 +46,9 @@ public class WordsApiClient {
 
 		}catch( com.sun.jersey.api.client.UniformInterfaceException e){
 			if(e.getMessage().contains("404")) {
-				throw new WordNotFoundException(phrase);
+				throw new WordNotFoundException(url);
 			}else {
-				ProblemLogger.logProblem("UniformInterfaceException for words api, term: "+phrase+". Waiting and retrying");
+				ProblemLogger.logProblem("UniformInterfaceException for words api, url: "+url+". Waiting and retrying");
 			}
 
 		}
@@ -54,12 +57,24 @@ public class WordsApiClient {
 		return response1;
 	}
 
-	public static ArrayList<WordsApiResult> searchFor(String phrase) throws WordNotFoundException {
-		String response=getResponse(phrase);
-
-		if(phrase==null|phrase.equals(""))
+	
+	
+	public static ArrayList<WordsApiResult> searchFor(String phrase)  {
+		String url;
+		try {
+			url = baseUrl+UriUtils.encodePath(phrase, java.nio.charset.StandardCharsets.UTF_8.toString());
+		} catch (UnsupportedEncodingException e1) {
+			url = baseUrl+URLEncoder.encode(phrase);
+		}
+		
+		
+		System.out.println("Retrieved: "+url);
+		if(phrase==null||phrase.equals(""))
 			return new ArrayList<WordsApiResult>();
+		try {
+		String response=getResponse(url);
 
+		
 		ArrayList<WordsApiResult> retValue=new ArrayList<WordsApiResult>();
 		JSONObject jsonRoot=new JSONObject(response);
 		try {
@@ -69,33 +84,7 @@ public class WordsApiClient {
 
 				for(int i=0;i<resultsArray.length();i++) {
 					JSONObject jsonSingleResult = resultsArray.getJSONObject(i);
-					String partOfSpeech="";
-					String typeOf="";
-
-					
-					if(jsonSingleResult.has("partOfSpeech")&&!jsonSingleResult.get("partOfSpeech").equals(JSONObject.NULL)) {
-						partOfSpeech=jsonSingleResult.getString("partOfSpeech");
-					}
-					ArrayList<String> childTypes=new ArrayList<String>();
-
-					
-					if(jsonSingleResult.has("typeOf")&&!jsonSingleResult.get("typeOf").equals(JSONObject.NULL)) {
-						typeOf=jsonSingleResult.getString("typeOf");
-					}
-					
-					if(jsonSingleResult.has("hasTypes")) {
-						try {
-							JSONArray jsonChildTypes=jsonSingleResult.getJSONArray("hasTypes");
-							for(int j=0;j<jsonChildTypes.length();j++) {
-								childTypes.add(jsonChildTypes.getString(j));
-							}
-						}catch(ClassCastException e) {
-							ProblemLogger.logProblem("'hasTypes' is of different type than list for "+phrase);
-						}
-					}
-					String definition=jsonSingleResult.getString("definition");
-
-					WordsApiResult parsingResult=new WordsApiResult(phrase, baseWord, definition,typeOf, partOfSpeech,childTypes);
+					WordsApiResult parsingResult = parseSingleJsonIntoWordObj(phrase, baseWord, jsonSingleResult);
 					retValue.add(parsingResult);
 
 
@@ -105,7 +94,89 @@ public class WordsApiClient {
 			ProblemLogger.logProblem("Problem parsing words api response for "+phrase);
 		}
 		return retValue;
+		}catch(WordNotFoundException e) {
+			return null;
+		}
 
+	}
+
+	public static ArrayList<String> getTypesOf(String phrase) throws WordNotFoundException {
+		String phraseEncoded;
+		try {
+			phraseEncoded = UriUtils.encodePath(phrase, java.nio.charset.StandardCharsets.UTF_8.toString());
+		} catch (UnsupportedEncodingException e1) {
+			phraseEncoded = baseUrl+URLEncoder.encode(phrase);
+		}
+		
+		String url=baseUrl+phraseEncoded+typeOfSuffix;
+		if(phrase==null||phrase.equals(""))
+			return new ArrayList<String>();
+
+		String response=getResponse(url);
+
+		
+		ArrayList<String> retValue=new ArrayList<String>();
+		JSONObject jsonRoot=new JSONObject(response);
+		try {
+			if(jsonRoot.has("typeOf")) {
+				JSONArray resultsArray = jsonRoot.getJSONArray("typeOf");
+
+				retValue= parseJsonArrayOfStrings(resultsArray);
+				
+			}
+		}catch(JSONException e) {
+			ProblemLogger.logProblem("Problem parsing words api response for "+phrase);
+		}
+		
+		
+		System.out.println(phrase+"->"+retValue);
+		return retValue;
+
+	}
+
+	private static WordsApiResult parseSingleJsonIntoWordObj(String phrase, String baseWord,
+			JSONObject jsonSingleResult) {
+		String partOfSpeech="";
+		ArrayList<String> typeOf=new ArrayList<String>();
+		
+		if(jsonSingleResult.has("partOfSpeech")&&!jsonSingleResult.get("partOfSpeech").equals(JSONObject.NULL)) {
+			partOfSpeech=jsonSingleResult.getString("partOfSpeech");
+		}
+		ArrayList<String> childTypes=new ArrayList<String>();
+
+		
+		if(jsonSingleResult.has("typeOf")&&!jsonSingleResult.get("typeOf").equals(JSONObject.NULL)) {
+			JSONArray jsonArray = jsonSingleResult.getJSONArray("typeOf");
+			
+			typeOf=parseJsonArrayOfStrings(jsonArray);
+		}
+		
+		if(jsonSingleResult.has("hasTypes")) {
+			try {
+				JSONArray jsonChildTypes=jsonSingleResult.getJSONArray("hasTypes");
+				for(int j=0;j<jsonChildTypes.length();j++) {
+					childTypes.add(jsonChildTypes.getString(j));
+				}
+			}catch(ClassCastException e) {
+				ProblemLogger.logProblem("'hasTypes' is of different type than list for "+phrase);
+			}
+		}
+		String definition=jsonSingleResult.getString("definition");
+
+		WordsApiResult parsingResult=new WordsApiResult(phrase, baseWord, definition,typeOf, partOfSpeech,childTypes);
+		return parsingResult;
+	}
+
+
+
+	private static ArrayList<String> parseJsonArrayOfStrings(JSONArray jsonArray) {
+		ArrayList<String> typeOf=new ArrayList<String>();
+
+		for(int i=0;i<jsonArray.length();i++) {
+			String type=jsonArray.getString(i);
+			typeOf.add(type);
+		}
+		return typeOf;
 	}
 
 
@@ -125,7 +196,7 @@ public class WordsApiClient {
 	public static void main(String[] arg) {
 		String x;
 		try {
-			x = getResponse("tomato");
+			x = getResponse(baseUrl+"tomato");
 			System.out.println(x);
 
 		} catch (WordNotFoundException e) {

@@ -1,5 +1,7 @@
 package mariusz.ambroziak.kassistant.Apiclients.wikipedia;
 
+import static org.hamcrest.CoreMatchers.nullValue;
+
 import javax.ws.rs.core.MultivaluedMap;
 
 import org.json.JSONArray;
@@ -19,6 +21,7 @@ import mariusz.ambroziak.kassistant.exceptions.Page404Exception;
 
 public class WikipediaApiClient {
 	public final static String baseUrl="https://en.wikipedia.org/api/rest_v1/page/title/";
+	public final static String baseUrlForSummary="https://en.wikipedia.org/api/rest_v1/page/summary/";
 
 
 	public static String getRedirectIfAny(String original) throws Page404Exception {
@@ -42,6 +45,19 @@ public class WikipediaApiClient {
 					if(comment.startsWith("redirect to [[")) {
 						String result=comment.substring(14,comment.length()-2);
 						return result;
+					}else {
+						boolean redirect=jsonObject.getBoolean("redirect");
+
+						if(redirect) {
+							String urlForSummary=baseUrlForSummary+original;
+							
+							String summaryResponse=getResponse(urlForSummary);
+							JSONObject summaryJson=new JSONObject(summaryResponse);
+							
+							String title=summaryJson.getString("title");
+							return title;
+							
+						}
 					}
 					
 				}
@@ -52,7 +68,7 @@ public class WikipediaApiClient {
 		}catch(UniformInterfaceException e) {
 			e.printStackTrace();
 			if(e.getMessage().endsWith("returned a response status of 404 Not Found")) {
-				throw new Page404Exception(url);
+				return null;
 			}
 		}
 			
@@ -74,14 +90,20 @@ public class WikipediaApiClient {
 	}
 
 
+	
+	
 	public static void main(String[] arg) throws Page404Exception {
 
-		String x=getRedirectIfAny("tbsp");
-		String y=getRedirectIfAny("tablespoon");
-		String z=getRedirectIfAny("tbsp.");
+//		String x=getRedirectIfAny("tbsp");
+//		String y=getRedirectIfAny("tablespoon");
+//		String z=getRedirectIfAny("tbsp.");
 		
-		System.out.println(x+" "+y+" "+z);
-
+	//	String z=getRedirectIfAny("onions");
+		
+		
+		String response=getResponse("https://en.wikipedia.org/api/rest_v1/page/summary/Onions");
+		System.out.println(response);
+//		System.out.println(getResponse("https://en.wikipedia.org/api/rest_v1/page/summary/Onions"));
 		
 		
 	}
