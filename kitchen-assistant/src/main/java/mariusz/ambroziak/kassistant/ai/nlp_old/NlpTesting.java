@@ -26,9 +26,10 @@ public class NlpTesting {
 	//	public static String paragraph="1 (15-ounce) can diced tomatoes, with juice";
 	//	public static String paragraph="600ml milk";
 	//	public static String paragraph="1/4 cup water";
-	public static String paragraph="2tbsps olive oil ( or reserved oil from the sun-dried tomatoes)";
-
-
+//	public static String paragraph="2tbsps olive oil ( or reserved oil from the sun-dried tomatoes)";
+//	public static String paragraph="pinch baking soda";
+	public static String paragraph="1 cup brown sugar";
+	
 	public static void main(String[] args) throws Exception {
 		givenEnglishModel_whenDetect_thenSentencesAreDetected();
 		givenEnglishModel_whenTokenize_thenTokensAreDetected();
@@ -111,7 +112,7 @@ public class NlpTesting {
 			throws Exception {
 
 		SimpleTokenizer tokenizer = SimpleTokenizer.INSTANCE;
-		String[] tokens = tokenizer.tokenize("4 onions");
+		String[] tokens = tokenizer.tokenize(paragraph);
 		ArrayList<String> lines=new ArrayList<String>();
 
 		InputStream inputStreamPOSTagger = FilesProvider.getInstance().getPosModelFile().getInputStream();
@@ -140,7 +141,7 @@ public class NlpTesting {
 
 		SimpleTokenizer tokenizer = SimpleTokenizer.INSTANCE;
 //		String phrase = "He reckons the current account deficit will narrow to only 8 billion.";
-		String phrase = " 2tbsps olive oil ( or reserved oil from the sun-dried tomatoes) ";
+		String phrase =paragraph;// " 2tbsps olive oil ( or reserved oil from the sun-dried tomatoes) ";
 		
 		String[] tokens = tokenizer.tokenize(phrase);
 
@@ -176,7 +177,7 @@ public class NlpTesting {
 			String sentence = " 2tbsps olive oil ( or reserved oil from the sun-dried tomatoes) ";
 
 	      
-	      Parse topParses[] = ParserTool.parseLine(sentence, parser, 2); 
+	      Parse topParses[] = ParserTool.parseLine(paragraph, parser, 2); 
 	    
 	      for (Parse p : topParses) 
 	         p.show();   
