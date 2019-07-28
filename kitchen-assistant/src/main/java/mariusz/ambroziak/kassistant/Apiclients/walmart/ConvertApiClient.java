@@ -106,6 +106,9 @@ public class ConvertApiClient extends RapidApiClient{
 		if("tsp".equals(phrase))
 			return new QuantityTranslation(AmountTypes.ml,(float)4.92892159375);
 		
+		if("oz".equals(phrase))
+			return new QuantityTranslation(AmountTypes.ml,(float)28.3);
+		
 		return null;
 	}
 
