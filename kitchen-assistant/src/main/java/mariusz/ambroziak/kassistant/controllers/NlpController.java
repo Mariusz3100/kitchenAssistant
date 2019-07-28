@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -29,17 +30,22 @@ import mariusz.ambroziak.kassistant.ai.categorisation.edaman.IngredientUnparsedA
 import mariusz.ambroziak.kassistant.ai.categorisation.shops.Categoriser;
 import mariusz.ambroziak.kassistant.ai.categorisation.shops.Category;
 import mariusz.ambroziak.kassistant.ai.categorisation.shops.CategoryHierarchy;
+import mariusz.ambroziak.kassistant.ai.nlp_old.EngConstituencyParser;
+import mariusz.ambroziak.kassistant.ai.nlp_old.EngPosTagger;
 import mariusz.ambroziak.kassistant.ai.nlp_old.EngTokenizer;
 import mariusz.ambroziak.kassistant.ai.nlp_old.NlpTesting;
 import mariusz.ambroziak.kassistant.ai.nlp_old.QuantityExtractor;
+import mariusz.ambroziak.kassistant.ai.nlp_old.StanfordNlpTesting;
 import mariusz.ambroziak.kassistant.ai.nlp_old.WordClassification;
 import mariusz.ambroziak.kassistant.ai.nlp_old.enums.WordType;
+import mariusz.ambroziak.kassistant.ai.nlp_old.teaching.NlpIngredientCategoriser;
 import mariusz.ambroziak.kassistant.exceptions.GoogleDriveAccessNotAuthorisedException;
 import mariusz.ambroziak.kassistant.exceptions.Page404Exception;
 import mariusz.ambroziak.kassistant.model.Produkt;
 import mariusz.ambroziak.kassistant.tesco.TescoApiClient;
 import mariusz.ambroziak.kassistant.tesco.TescoApiClientParticularProduct_notUsed;
 import mariusz.ambroziak.kassistant.utils.StringHolder;
+import opennlp.tools.parser.Parse;
 
 
 @Controller
@@ -150,21 +156,7 @@ public class NlpController {
 		String line=reader.readLine();
 
 		while(line!=null) {
-			ArrayList<WordClassification> classifyWords = QuantityExtractor.classifyWords(line);
-			String single="";
-			for(WordClassification classificated:classifyWords ) {
-				if(classificated.getType()==null) {
-
-					single+="<span style=\"background-color:red\">"+classificated.getWord()+"</span> ";
-				}else if(classificated.getType()==WordType.QuantityElement) {
-
-					single+="<span style=\"background-color:blue\">"+classificated.getWord()+"</span>";
-				}else if(classificated.getType()==WordType.ProductElement) {
-
-					single+="<span style=\"background-color:green\">"+classificated.getWord()+"</span>";
-				}
-
-			}
+			String single = colorListOfWords(line);
 			list.add(single);
 
 			line=reader.readLine();
@@ -176,4 +168,111 @@ public class NlpController {
 		return model;
 	}
 
+	private String colorListOfWords(String line) {
+		ArrayList<WordClassification> classifyWords = QuantityExtractor.classifyWords(line);
+		String single="";
+		for(WordClassification classificated:classifyWords ) {
+			single += colorSingleWord(classificated);
+		}
+		return single;
+	}
+
+	
+	private String colorSingleWord(WordClassification classificated) {
+		String single="";
+		if(classificated.getType()==null) {
+
+			single+="<span style=\"background-color:red\">"+classificated.getWord()+"</span> ";
+		}else if(classificated.getType()==WordType.QuantityElement) {
+
+			single+="<span style=\"background-color:blue\">"+classificated.getWord()+"</span>";
+		}else if(classificated.getType()==WordType.ProductElement) {
+
+			single+="<span style=\"background-color:green\">"+classificated.getWord()+"</span>";
+		}
+		return single;
+	}
+
+	
+	@RequestMapping(value="/pos_test")
+	public ModelAndView pos_test() throws WordNotFoundException {
+		String phrase="pinch baking soda";
+		String[] split = phrase.split(" ");
+		String[] tags=EngPosTagger.tagWithPos(split);
+		
+		ArrayList<String> list=new ArrayList<>();
+		
+		for(int i=0;i<tags.length;i++) {
+			list.add(split[i]+"->"+tags[i]);
+		}
+		
+		ModelAndView model = new ModelAndView("List");
+		model.addObject("list",list);
+		
+		return model;
+	}
+	
+	
+	@RequestMapping(value="/stanford_pos_test")
+	public ModelAndView stanford_pos_test() throws WordNotFoundException {
+		String phrase="pinch baking soda";
+		StanfordNlpTesting.main(null);
+		return new ModelAndView();
+	}
+	
+	
+	@RequestMapping(value="/open_nlp_constituencies")
+	public ModelAndView open_nlp_constituencies() throws IOException {
+		InputStream wordsInputStream = FilesProvider.getInstance().getWordsInputFile().getInputStream();
+		ArrayList<String> list=new ArrayList<>();
+		list.add("<table style=\"border:solid\">");
+		
+		BufferedReader reader=new BufferedReader(new InputStreamReader(wordsInputStream));
+
+		String line=reader.readLine();
+
+		while(line!=null) {
+			Parse constituency = EngConstituencyParser.parsingSentences(line);
+			
+			if(constituency!=null) {
+				StringBuffer outToString=new StringBuffer();
+				constituency.show(outToString);
+				list.add("<tr><td style=\"border:solid\">"+line+"</td><td style=\"border:solid\">"+outToString.toString()+"</td></tr>");
+			}
+			line=reader.readLine();	
+		}
+			
+		list.add("</table>");
+
+		
+		
+		ModelAndView model = new ModelAndView("List");
+		model.addObject("list",list);
+		
+		return model;
+		}
+	
+	@RequestMapping(value="/open_nlp_workspace")
+	public ModelAndView open_nlp_workspace() throws IOException {
+		ModelAndView mav=NlpIngredientCategoriser.categoriseFromFiles();
+		
+		return mav;
+		}
+
+	private void parseSingleLine(String line, ArrayList<String> phrases, Map<String, String> constituencies, Map<String, String> markedPhrases)
+			throws IOException {
+		phrases.add(line);
+		Parse constituency = EngConstituencyParser.parsingSentences(line);
+
+		String results = colorListOfWords(line);
+		markedPhrases.put(line, results);
+		if(constituency!=null) {
+			StringBuffer outToString=new StringBuffer();
+			constituency.show(outToString);
+			//list.add("<tr><td style=\"border:solid\">"+line+"</td><td style=\"border:solid\">"+outToString.toString()+"</td></tr>");
+			constituencies.put(line, outToString.toString());
+		}
+		
+		
+	}
 }
