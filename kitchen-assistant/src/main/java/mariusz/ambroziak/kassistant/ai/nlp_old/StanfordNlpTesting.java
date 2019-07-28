@@ -22,13 +22,13 @@ public class StanfordNlpTesting {
 //      "After hearing about Joe's trip, Jane decided she might go to France one day.";
 
   
-	public static String text = "1 (15-ounce) can diced tomatoes, with juice";
+	public static String text = "pinch baking soda";
   
 	public static void main(String[] args) {
 		// set up pipeline properties
 		Properties props = new Properties();
 		// set the list of annotators to run
-		props.setProperty("annotators", "tokenize,ssplit,pos,lemma,ner,parse,depparse,coref,kbp,quote");
+		props.setProperty("annotators", "tokenize,ssplit,pos,lemma,ner,parse,depparse,coref");
 		// set a property for an annotator, in this case the coref annotator is being set to use the neural algorithm
 		props.setProperty("coref.algorithm", "neural");
 		// build pipeline
@@ -97,7 +97,7 @@ public class StanfordNlpTesting {
 		List<RelationTriple> relations =
 				sentence.relations();
 		System.out.println("Example: relation");
-		System.out.println(relations.size()==0?"brak":relations.get(0));
+		System.out.println(relations==null||relations.size()==0?"brak":relations.get(0));
 		System.out.println();
 
 		// entity mentions in the second sentence
@@ -125,27 +125,27 @@ public class StanfordNlpTesting {
 		System.out.println();
 
 		// get quotes in document
-		List<CoreQuote> quotes = document.quotes();
-		if(quotes.size()==0) {
-			System.out.println("No quotes");
-
-		}else {
-			CoreQuote quote = quotes.get(0);
-			System.out.println("Example: quote");
-			System.out.println(quote);
-			System.out.println();
-
-			// original speaker of quote
-			// note that quote.speaker() returns an Optional
-			System.out.println("Example: original speaker of quote");
-			System.out.println(quote.speaker().get());
-			System.out.println();
-
-			// canonical speaker of quote
-			System.out.println("Example: canonical speaker of quote");
-			System.out.println(quote.canonicalSpeaker().get());
-			System.out.println();
-		}
+//		List<CoreQuote> quotes = document.quotes();
+//		if(quotes.size()==0) {
+//			System.out.println("No quotes");
+//
+//		}else {
+//			CoreQuote quote = quotes.get(0);
+//			System.out.println("Example: quote");
+//			System.out.println(quote);
+//			System.out.println();
+//
+//			// original speaker of quote
+//			// note that quote.speaker() returns an Optional
+//			System.out.println("Example: original speaker of quote");
+//			System.out.println(quote.speaker().get());
+//			System.out.println();
+//
+//			// canonical speaker of quote
+//			System.out.println("Example: canonical speaker of quote");
+//			System.out.println(quote.canonicalSpeaker().get());
+//			System.out.println();
+//		}
 	}
 	private static JSONObject parseRecursivelyAsJson(Tree constituencyParse) {
 		JSONObject retValue=new JSONObject();
