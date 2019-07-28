@@ -47,6 +47,9 @@ public class QuantityExtractor {
 
 		quantityTypeKeywords=new ArrayList<String>();
 		quantityTypeKeywords.add("containerful");
+		quantityTypeKeywords.add("small indefinite quantity");
+		
+		
 
 	}
 
@@ -104,7 +107,7 @@ public class QuantityExtractor {
 		WordType retValue=null;
 
 		try {
-
+	//		WordsApiClient.searchFor("baking soda");
 			ArrayList<WordsApiResult> wordResults = WordsApiClient.searchFor(token);
 
 			if(wordResults==null||wordResults.isEmpty()) {
