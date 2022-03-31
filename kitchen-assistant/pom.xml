@@ -11,7 +11,7 @@
 
 	<properties>
 		<java-version>9</java-version>
-		<org.springframework-version>4.2.5.RELEASE</org.springframework-version>
+		<org.springframework-version>5.3.18</org.springframework-version>
 	</properties>
 
 	<dependencies>
